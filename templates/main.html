@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html" lang="en-US" xml:lang="en-US">
+<head>
+    <title>Django Veta</title>
+
+    {% load static from staticfiles %}
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="SHORTCUT ICON" href="" type="image/x-icon">
+
+    <!-- CSS Styles -->
+    <link rel='stylesheet' media="screen" type='text/css' href='{% static "css/ready.css" %}'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='{% static "css/main.css" %}'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='{% static "css/forms.css" %}'/>
+    <!-- Fonts -->
+    <link rel='stylesheet' media="screen" type='text/css' href='{% static "css/icons.css" %}'/>
+    <!-- jQuery -->
+{#    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>#}
+    <!-- Utils -->
+{#    <script type="text/javascript" src="/static/js/utils.js"></script>#}
+    <!-- DateJs -->
+    <!-- <script type="text/javascript" src="/static/js/datejs/build/date-ru-RU.js"></script> -->
+    {% block add_static %}{% endblock %}
+</head>
+<body id="{% block body_id %}{% endblock %}">
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="listing.html"><div>&#xf015;<span>Главная</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0b1;<span>Клиенты</span></div></a>
+                    <div>
+                        <ul>
+                            <li><a href="listing.html">Картотека клиентов</a></li>
+                            <li><a href="listing.html">Контрагенты</a></li>
+                            <li><a href="listing.html">Баланс счетов</a></li>
+                            <li><hr></li>
+                            <li><a href="listing.html"><i>&#xf067;</i>Новый клиент</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="listing.html"><div>&#xf0c0;<span>Персоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf11e;<span>Рейсы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf041;<span>Объекты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0d1;<span>Авто</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf145;<span>Талоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf080;<span>Отчеты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf153;<span>Финансы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf085;<span>Управление</span></div></a></li>
+            </ul>
+        </nav>
+        <div class="sheet_row_headered">
+            <div class="block_item">
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <span>
+                            Фролова Татьяна
+                            <p>Диспетчер Группа I</p>
+                        </span>
+                        <em>&#xf0c9;</em>
+                    </div>
+                    <ul>
+                        <li><a href="listing.html">Настройки </a></li>
+                        <li><a href="listing.html">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>

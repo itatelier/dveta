@@ -1,0 +1,83 @@
+div.flex_row {
+    display: flex;
+    flex-direction: row;
+}
+
+div.flex_block {
+    flex: 1 0 auto;
+}
+div.flex_row > div.top_header { flex: 1 0 auto; }
+
+div.flex_block._zero {
+    flex: 0 0 auto;
+}
+div.sheet_block_mini {
+    flex:  1 0 300px;
+    padding: 1rem;
+    margin: 1rem;
+}
+div.sheet_block_mini > hr {
+    border: none;
+    height: 1px;
+    background-color: #D3D3D3;
+    margin: 0.5rem 0;
+}
+div.sheet_block_mini > table {
+    width: 100%;
+    margin: 0.5rem 1rem;
+}
+div.sheet_block_mini > table tr > td {
+    padding: 0.5rem;
+    height: 2.5rem;
+}
+
+div.sheet_block_mini > textarea {
+    width: 100%;
+    margin: 1rem 0;
+}
+
+div.tabbed_menu {
+    width: 100%;
+    /*background-color: #D3D3D3;*/
+    padding: 0 0 0 20px;
+}
+
+div.tabbed_menu > ul {
+    display: flex;
+    flex-wrap: wrap;
+	justify-content: flex-start;
+    list-style: none;
+    margin: 0;
+}
+
+div.tabbed_menu > ul > li {
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 0;
+}
+div.tabbed_menu > ul > li.active {
+    z-index: 100;
+}
+div.tabbed_menu > ul > li.active > a { background-color: white; }
+
+div.tabbed_menu > ul > li > a {
+    color: #4D4D4D;
+    display: block;
+    min-width: 100px;
+    margin: 0  6px 0 0;
+    padding: 0.8rem 1rem;
+    background-color: #dbdfd9;;
+    font-size: 1.3rem;
+    text-decoration: none;
+    text-align: center;
+}
+
+div.sheet_block_tabbed {
+    background-color: #ffffff;
+    min-height: 100px;
+    width: 100%;
+    margin: 0 1rem 1rem 1rem;
+    padding: 1rem;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
+}
+div.sheet_block_tabbed h2 { font-size: 2rem;}
