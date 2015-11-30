@@ -1,32 +1,54 @@
 # -*- coding: utf8 -*
 
 from django.db import models
-from django.contrib import admin
 
-
-class CompanyTypes(models.Model):
+class CompanyRelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255L, null=False, blank=False)
 
     class Meta:
-        db_table = 'company_types'
-        verbose_name_plural = 'Компании / Типы'
+        db_table = 'company_rel_types'
+        managed=False
+        verbose_name_plural = 'Компании / Типы отношений'
 
     def __unicode__(self):
-        return u'[%s] %s' % (self.id, self.name)
+        return u'[%s] %s' % (self.id, self.val)
 
 
-class MainBranchManager(models.Manager):
-    def get_queryset(self):
-        return super(MainBranchManager, self).get_queryset().branchmain.all()
+class CompanyOrgTypes(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=255L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'company_org_types'
+        managed=False
+        verbose_name_plural = 'Компании / Типы организации'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
+class CompanyStatus(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=255L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'company_status'
+        managed=False
+        verbose_name_plural = 'Компании / Статусы'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
 
 
 class Companies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    description = models.CharField(max_length=255, blank=True, null=True)
     www = models.CharField(max_length=255L, blank=True)
-    type = models.ForeignKey('CompanyTypes', null=False, blank=False)
+    org_type = models.ForeignKey('CompanyOrgTypes', null=False, blank=False)
+    rel_type = models.ForeignKey('CompanyRelTypes', null=False, blank=False)
+    status = models.ForeignKey('CompanyStatus', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
 
@@ -87,6 +109,11 @@ class Companies(models.Model):
 #
 #     def __unicode__(self):
 #         return u'[%s] %s' % (self.id, self.name)
+#
+#
+# class MainBranchManager(models.Manager):
+#     def get_queryset(self):
+#         return super(MainBranchManager, self).get_queryset().branchmain.all()
 #
 #
 # class Branches(models.Model):

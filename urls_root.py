@@ -7,6 +7,7 @@ from base import views as default
 urlpatterns = [
     url(r"^$", default.Index.as_view(), name='index'),
     url(r"^pg/card/", default.PlaygroundCard.as_view(), name='playground_card'),
+    url(r"^pg/listing/", default.PlaygroundListing.as_view(), name='playground_listing'),
 
     # API
     # url(r'^api/', include(view_api.urls)),

@@ -31,6 +31,9 @@ class PlaygroundCard(TemplateView):
     template_name = "pg/card.html"
 
 
+class PlaygroundListing(TemplateView):
+    template_name = "pg/listing.html"
+
 # class ac(JsonViewMix):
 #     param_names = ['model', 'field', 'query', 'filter_type']
 #
