@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel='stylesheet' media="screen" type='text/css' href='ready.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='forms.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='main.css'/>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="listing.html"><div>&#xf015;<span>Главная</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0b1;<span>Клиенты</span></div></a>
+                    <div>
+                        <ul>
+                            <li><a href="listing.html">Картотека клиентов</a></li>
+                            <li><a href="listing.html">Контрагенты</a></li>
+                            <li><a href="listing.html">Баланс счетов</a></li>
+                            <li><hr></li>
+                            <li><a href="listing.html"><i>&#xf067;</i>Новый клиент</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="listing.html"><div>&#xf0c0;<span>Персоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf11e;<span>Рейсы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf041;<span>Объекты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0d1;<span>Авто</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf145;<span>Талоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf080;<span>Отчеты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf153;<span>Финансы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf085;<span>Управление</span></div></a></li>
+            </ul>
+        </nav>
+        <div class="sheet_row_headered">
+            <div class="block_item">
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <span>
+                            Фролова Татьяна
+                            <p>Диспетчер Группа I</p>
+                        </span>
+                        <em>&#xf0c9;</em>
+                    </div>
+                    <ul>
+                        <li><a href="listing.html">Настройки </a></li>
+                        <li><a href="listing.html">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active"><a href="listing.html">Картотека</a></li>
+                <li ><a href="card.html">Карточка объекта</a></li>
+            </ul>
+        </div>
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            <div class="sheet">
+            <!--********************* Sheet *********************  -->
+                <!--*********** Left Sheet Bar ***********  -->
+                <div class="left_bar">
+                    <div class="form_row">
+                        <div class="input_wrapper nomargin">
+                            <legend>Наименование</legend>
+                            <div class="input_block _icon" icon="">
+                                <input type="text" size="15">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper nomargin">
+                            <legend>Контактное лицо</legend>
+                            <div class="input_block _icon" icon="">
+                                <input type="text" size="15">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper nomargin">
+                            <legend>Контактное лицо</legend>
+                            <div class="input_block">
+                                <select name="status">
+                                    <option value="1">любой статус</option>
+                                    <option value="2">новый</option>
+                                    <option value="3">на оформлении</option>
+                                    <option value="4">в работе</option>
+                                    <option value="5">заблокирован</option>
+                                    <option value="6">архивный</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper nomargin">
+                            <legend>Тип клиента</legend>
+                            <div class="input_block">
+                                <label><input type="radio" name="g1"><p>Любой тип</p></label>
+                                <label><input type="radio" name="g1"><p>Фирма</p></label>
+                                <label><input type="radio" name="g1"><p>Частник</p></label>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="filterblock_legend _text_ac">-->
+                        <!--<legend>Наименование</legend>-->
+                        <!--<i><input type="text"></i>-->
+                    <!--</div>-->
+                    <!--<div class="filterblock_legend _text_ac">-->
+                        <!--<legend>Контактное лицо</legend>-->
+                        <!--<i><input type="text"></i>-->
+                    <!--</div>-->
+                    <!--<div class="filterblock_legend _text_ac">-->
+                        <!--<legend>Статус клиента</legend>-->
+                        <!--<select name="status">-->
+                            <!--<option value="1">любой статус</option>-->
+                            <!--<option value="2">новый</option>-->
+                            <!--<option value="3">на оформлении</option>-->
+                            <!--<option value="4">в работе</option>-->
+                            <!--<option value="5">заблокирован</option>-->
+                            <!--<option value="6">архивный</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <!--<div class="filterblock_legend _radio">-->
+                        <!--<legend>Тип клиента</legend>-->
+                        <!--<span><label><input type="radio" name="g1"><p>Любой тип</p></label></span>-->
+                        <!--<span><label><input type="radio" name="g1"><p>Фирма</p></label></span>-->
+                        <!--<span><label><input type="radio" name="g1"><p>Частник</p></label></span>-->
+                    <!--</div>-->
+                    <!--<div class="filterblock_legend _checkbox">-->
+                        <!--<label><input type="checkbox">Показывать архивные</label>-->
+                        <!--<label><input type="checkbox" checked>Показывать новые</label>-->
+                    <!--</div>-->
+                    <!--<div class="filterblock_legend">-->
+                        <!--<span class="button_block">-->
+                            <!--<a href="#" class="textlink">Сбросить</a>-->
+                            <!--<a href="#" class="button">Найти</a>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                </div>
+                <!--*********** End Left Sheet Bar ***********  -->
+                <div class="data_grid_medium">
+                <!--*********** Data Table ***********  -->
+                    <table class="listing_grid">
+                        <thead class="">
+                            <tr>
+                                <th><a href="#" rel="">Наименование</a></th>
+                                <th><a href="#" rel="" class="sort">Телефон</a></th>
+                                <th><a href="#" rel="">Контактное лицо</a></th>
+                                <th><a href="#" rel="">Тип</a></th>
+                                <th><a href="#" rel="">Частота</a></th>
+                                <th><a href="#" rel="">Статус</a></th>
+                                <th><a href="#" rel="">Гр</a></th>
+                                <th><a href="#" rel="">Примечание</a></th>
+                            </tr>
+                        </thead>
+                        <tbody  id="datatable" class="scrollContent">
+                            <tr><td>Ашан</td>                               <td>8 495 756 2365</td><td>Агонесян Михал Ильдарови</td>    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>Идеальная защита</td>                   <td>8 499 123 6548</td><td>без контакта</td>                <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>ID120500014</td>                        <td>8 926 568 1345</td><td>Аратюнян Ашот</td>               <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td>старый знакомый</td></tr>
+                            <tr><td>МокКомСбыт</td>                         <td>8 499 986 1234</td><td>Петрова Мария</td>               <td>фирма</td>  <td>разовый</td>    <td class="red">остановлен</td><td>II</td><td></td></tr>
+                            <tr><td>Моск. ин-т Мир. Эконом.Междун.от.</td>  <td>8 495 756 2365</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>САГА ТЕХНОЛОГИИ</td>                    <td>8 499 123 6548</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
+                            <tr><td>ID120501755</td>                        <td>8 926 568 1345</td><td>Евгений Васильевич</td>          <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>II</td><td></td></tr>
+                            <tr><td>БАЗИС; СПОРТ- МАСТЕР</td>               <td>8 499 986 1234</td><td>Владимир</td>                    <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>Д Групп</td>                            <td>8 495 756 2365</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>Новая Концепция</td>                    <td>8 499 123 6548</td><td>Труфанов Сергей</td>             <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>ID120503255</td>                        <td>8 926 568 1345</td><td>Петр Евгеньевич</td>             <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>II</td><td></td></tr>
+                            <tr><td>ИНТЕЛ-МОНТАЖ</td>                       <td>8 499 986 1234</td><td>Евгений Васильевич</td>          <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>Инжстройинвест</td>                     <td>8 495 756 2365</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>ТеплоТехИнжиниринг</td>                 <td>8 499 123 6548</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="red">остановлен</td><td>II</td><td></td></tr>
+                            <tr><td>ID120503258</td>                        <td>8 926 568 1345</td><td>Труфанов Сергей</td>             <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>СПЕЦПРОМСТРОЙ</td>                      <td>8 499 986 1234</td><td>Петр Евгеньевич</td>             <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>АРХ СТЕКЛО</td>                         <td>8 495 756 2365</td><td>Аратюнян Ашот</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
+                            <tr><td>СтройИнвест</td>                        <td>8 499 123 6548</td><td>Петрова Мария</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
+                            <tr><td>ID120501793</td>                        <td>8 926 568 1345</td><td>Борис Симонов</td>               <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <tr><td>Альп Монтаж НАЛ</td>                    <td>8 499 986 1234</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
+                            <!--<tr><td>Колос</td>                              <td>8 495 756 2365</td><td>Евгений Васильевич</td>          <td>фирма</td>  <td>постоянный</td> <td>рабочий</td><td>I</td><td></td></tr>-->
+                            <!--<tr><td>СтенсЛайн</td>                          <td>8 499 123 6548</td><td>Аратюнян Ашот</td>               <td>фирма</td>  <td>разовый</td>    <td>рабочий</td><td>I</td><td></td></tr>-->
+                        </tbody>
+                    </table>
+                <!--*********** End Data Table ***********  -->
+                <!--*********** Table Bottom Bar ***********  -->
+                    <div class="table_bottom_bar">
+                        <div class="pages_block">
+                            <span>Страница</span>
+                            <a href="#" class="arrow">←</a><a href="#" class="current">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#" class="arrow">→</a>
+                            <span>всего записей 356</span>
+                            <a href="#" class="current">Скрол</a>
+                            <span>показывать</span>
+                            <a href="#" class="current">20</a>
+                            <a href="#" >50</a>
+                            <a href="#" >100</a>
+                        </div>
+                    </div>
+                <!--*********** End Table Bottom Bar ***********  -->
+                </div>
+            <!--********************* End Sheet *********************  -->
+            </div>
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+    </div>
+    <footer>
+        <!--FOOTER-->
+    </footer>
+</body>
+</html>

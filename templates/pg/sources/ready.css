@@ -1,0 +1,490 @@
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('./fonts/fontawesome-webfont.eot?v=4.4.0');
+  src: url('./fonts/fontawesome-webfont.eot?#iefix&v=4.4.0') format('embedded-opentype'), url('./fonts/fontawesome-webfont.woff2?v=4.4.0') format('woff2'), url('./fonts/fontawesome-webfont.woff?v=4.4.0') format('woff'), url('./fonts/fontawesome-webfont.ttf?v=4.4.0') format('truetype'), url('./fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+* {margin: 0;padding: 0;outline: none;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+*:after, *:before { -webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+
+.clear {display: block;	}
+.clear::after {clear: both;content: ".";display: block;height: 1px;visibility: hidden;}
+.flex { display: flex;  }
+.flex_vcentered { align-items: center;}
+html {
+    height: 100%;
+    font-size: 62.5%;
+}
+body {
+    display: block; padding: 0; margin:0;
+    font-size: 1.3rem;
+    font-family: 'Arial', sans-serif;
+    color: #333333;
+    height: auto !important;height: 100%;min-height: 100%;
+    background-color: #F2F5F7;
+}
+a { color: #009DDA; }
+h2 { font-size: 1.6rem; }
+table { border-spacing: 0;}
+.green { color: #74BA12 !important; }
+.red { color: #FE659C !important; }
+.blue { color: #009DDA !important; }
+.green_bg { background-color: #74BA12 !important; }
+.red_bg { background-color: #F7A3A3 !important; }
+.blue_bg { background-color: #009DDA !important; }
+
+.no_lr_margin {
+    margin-left: 0!important;
+    margin-right: 0!important;
+}
+.margint10 { margin-top: 1rem; }
+.centertext { text-align: center !important;}
+
+div._white_bordered {
+    background-color: #ffffff;
+    box-shadow: 2px 3px 1px rgba(0,0,0,.08);
+    border-radius: 0 0 2px 2px;
+}
+
+ /*======================== Main Header Menu ========================== */
+
+header {
+    background-color: #D3D3D3;
+	display: flex;
+    min-height: 85px;
+	width: 100%;
+}
+header > nav {
+    padding: 0rem 0rem 0rem 4rem;
+    flex: 1 0 57%;
+    /*z-index: 700;*/
+}
+header > nav > ul {
+    display: flex;
+    flex-wrap: wrap;
+	justify-content: flex-start;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0 0.5rem 0;
+}
+header > nav > ul > li {
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 0;
+    transition: all linear 0.1s;
+}
+header > nav > ul > li:hover { background: white; z-index: 1000;}
+header > nav > ul > li:hover > a {
+    color: #FE659C;
+}
+header > nav > ul > li:hover a + div { display: block; z-index: 1000; }
+
+header > nav ul > li > a {
+    display: flex;
+    min-width: 80px;
+    font-weight: 200;
+    font-size: 2.8rem;
+    text-decoration: none;
+    padding: 1.4rem 1.8rem;
+    font-family: 'FontAwesome';
+    color: #666666;
+    text-shadow: 0 1px 1px rgba(0,0,0,.1);
+    transition: all linear 0.1s;
+}
+header > nav ul > li > a > div  {
+        margin: 0 auto;
+        text-align: center;
+}
+header > nav ul > li > a > div > span {
+    display: block;
+    font-size: 1.4rem;
+    font-family: 'Arial', sans-serif;
+}
+header > nav ul > li > a + div {
+    display: none;
+    background-color: white;
+    position: absolute;
+    padding: 1rem 0rem;
+	/*border-radius: 0 0 2px 2px;  IE, Edge problem:  top border appears   */
+	box-shadow: 2px 3px 1px rgba(0,0,0,.08);
+}
+header > nav ul > li > a + div > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+header > nav ul > li > a + div > ul > li { display: list-item;  }
+
+header > nav ul > li > a + div > ul > li > a {
+    max-width: 351px;
+    font-size: 14px;
+    padding: 1rem 5rem 0.4rem 2rem;
+    font-family: 'Arial', sans-serif;
+}
+header > nav ul > li > a + div > ul > li > a:hover { color: #FE659C; }
+header > nav ul > li > a + div > ul > li > hr {
+    border: none;
+    height: 1px;
+    background-color: #D3D3D3;
+    margin: 0.5rem 2rem;
+}
+header > nav ul > li > a + div > ul > li > a > i {
+    font-size: 1.4rem;
+    text-decoration: none;
+    padding: 0 0.5rem 0 0;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    color: #74BA12;
+}
+
+ /*======================== Right Header Blocks ========================== */
+
+header > div.sheet_row_headered {
+    padding: 0rem 1rem 0rem 1rem;
+    flex: 0 0 220px;
+}
+header > div.sheet_row_headered > div.block_item {  padding: 0.5rem 0 0 0; }
+
+ /*======================== Header Blocks User menu========================== */
+
+header > div.sheet_row_headered > div.block_item > div.menu_item {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    color: #666666;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item > div.menu_item_header {
+    display: flex;
+    margin: 0;
+    padding: 1rem;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item > div.menu_item_header > span {
+    display: inline-block;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item > div.menu_item_header > span > p {
+    color: #9ea19c;
+    font-weight: normal;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item > div.menu_item_header > em {
+    display: inline-block;
+    padding: 0.2rem 0.5rem 0 1rem;
+    font-weight: 200;
+    font-size: 2.8rem;
+    font-style: normal;
+    font-family: 'FontAwesome';
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item > ul {
+    display: none;
+    position: absolute;
+    background-color: white;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    border-radius: 0 0 2px 2px;
+ 	box-shadow: 2px 3px 1px rgba(0,0,0,.08);
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item:hover {
+    background-color: white;
+    color: #FE659C;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item:hover > ul { display: block; }
+header > div.sheet_row_headered > div.block_item > div.menu_item:hover > div.menu_item_header > span { color: #666666; }
+header > div.sheet_row_headered > div.block_item > div.menu_item:hover > div.menu_item_header > em {  }
+header > div.sheet_row_headered > div.block_item > div.menu_item > ul > li {}
+header > div.sheet_row_headered > div.block_item > div.menu_item > ul > li > a {
+    display: block;
+    text-decoration: none;
+    font-size: 1.4rem;
+    color: #666666;
+    padding: 0.5rem 5rem 0.5rem 1rem;
+}
+header > div.sheet_row_headered > div.block_item > div.menu_item:hover > ul > li > a:hover { color: #FE659C; }
+
+/*======================== Sheet blocks ========================== */
+
+div.sheet_row_headered { margin: 1rem 0 0 0;}
+div.sheet_row_headered > h2 { color: #009DDA; }
+
+/*======================== Tables ========================== */
+
+table.sheet_simple { margin: 1.5rem 1rem; }
+table.sheet_simple > tbody > tr > td { padding: 0.5rem 1rem;}
+table.sheet_headered { margin: 1.5rem 1rem; }
+table.sheet_headered > thead > tr > th {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px #D3D3D3 solid;
+    background-color: #DBE9EA;
+}
+
+table.sheet_headered > tbody > tr > td { padding: 0.5rem;}
+table._bordered > tbody > tr > td {
+    border-bottom: 1px solid #D3D3D3;
+}
+
+ /*================== Center content ================*/
+
+div.content {
+    flex-direction: row;
+    background-color: #F2F5F7;
+    min-height: 100px;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+ /*================== breadcrumbs ================*/
+
+div.content > div.breadcrumbs {
+    width: 100%;
+    background-color: #D3D3D3;
+    padding: 0 0 0 20px;
+}
+
+div.content > div.breadcrumbs > ul {
+    display: flex;
+    flex-wrap: wrap;
+	justify-content: flex-start;
+    list-style: none;
+    margin: 0;
+}
+
+div.content > div.breadcrumbs > ul > li {
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 0;
+    /*transition: all linear 0.1s;*/
+}
+div.content > div.breadcrumbs > ul > li.active {
+    z-index: 100;
+    box-shadow:-1px -2px 1px rgba(0, 0, 0, 0.1); }
+div.content > div.breadcrumbs > ul > li.active > a { background-color: #F3F3F3; }
+
+div.content > div.breadcrumbs > ul > li > a {
+    color: #4D4D4D;
+    display: block;
+    min-width: 120px;
+    margin: 0  6px 0 0;
+    padding: 0.8rem 1rem;
+    background-color: #F2F5F7;
+    font-size: 1.3rem;
+    text-decoration: none;
+    text-align: center;
+}
+
+ /*================== main sheet  ================*/
+
+div.content > div.sheet_wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 400px;
+    min-width: 1360px;
+    padding: 0 0 20px 0;
+}
+div.content > div.sheet_wrapper > div.left_border {
+    flex-basis: 20px;
+    background-color: #F2F5F7;
+}
+div.content > div.sheet_wrapper > div.left_border > span {width: 20px;}
+div.content > div.sheet_wrapper > div.right_border {
+    flex-basis: 20px;
+    background-color: #F2F5F7;
+}
+div.content > div.sheet_wrapper > div.sheet {
+    display: flex;
+    width: 100%;
+    min-height: 400px;
+    background-color: #F3F3F3;
+    padding: 1.2rem;
+    box-shadow:1px 1px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
+}
+div.content > div.sheet_wrapper span.upblock {
+    display: block;
+    height: 30px;
+    background-color: #D3D3D3;
+}
+
+ /*================== Footer ================*/
+
+footer {
+    height: 40px;
+    background-color: #F2F5F7;
+}
+ /*======================== Main Sheet ========================== */
+
+div.sheet div.data_grid_medium {
+    flex: 1 0 auto;
+    padding: 0rem 1rem;
+    margin: 0 0 0 1rem;
+}
+ /*======================== Listing greed ========================== */
+table.listing_grid {
+    border-spacing: 0px;
+    width: 100%;
+}
+table.listing_grid > thead {
+    /*background-color: #F3F3F3; */
+}
+table.listing_grid > thead > tr {}
+
+table.listing_grid > thead > tr > th > a {
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    color: #495D69;
+    font-weight: bold;
+    font-size: 1.3rem;
+    padding: 0.7rem 0.5rem 0.4rem 0.5rem;
+    border-bottom: 1px #B8CBD0 solid;
+    min-width: 40px;
+}
+table.listing_grid > thead > tr > th > a:after {
+    display: none;
+    content: '';
+    font-size: 1.2rem;
+    font-weight: normal;
+    text-decoration: none;
+    margin-left: 0.3rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    color: #595959;
+}
+table.listing_grid > thead > tr > th > a:hover:after {
+    color: #FE659C;
+    display: inline;
+}
+table.listing_grid > thead > tr > th > a.sort:after {  display: inline;  }
+table.listing_grid > tbody > tr {}
+table.listing_grid > tbody > tr:hover {
+    background-color: #ffffff;
+}
+table.listing_grid > tbody > tr > td {
+    padding: 0.5rem 0.5rem;
+    border-bottom: 1px solid #eaeaea;
+}
+ /*======================== Table bottom bar ========================== */
+div.table_bottom_bar {
+    height: 40px;
+    display: flex;
+}
+div.table_bottom_bar > div.pages_block {
+    display: flex;
+    flex: 0 0 auto;
+    padding: 0.5rem;
+}
+div.table_bottom_bar > div.pages_block >span {
+    display: block;
+    margin-top: 0.7rem;
+    padding: 0 1rem;
+}
+div.table_bottom_bar > div.pages_block > a {
+    display: block;
+    text-decoration: none;
+    color: #595959;
+    padding: 0.2rem 0.5rem;
+    margin: 0.5rem 0.3rem;
+    height: 18px;
+    transition: all linear 0.1s;
+}
+div.table_bottom_bar > div.pages_block > a:hover {
+    background-color: #FE659C;
+    color: #595959;
+}
+div.table_bottom_bar > div.pages_block > a.current {  background-color: #D3D3D3;  }
+div.table_bottom_bar > div.pages_block > a.current:hover {  background-color: #FE659C;  }
+div.table_bottom_bar > div.pages_block > a.arrow {
+    margin: 0;
+    font-size: 2.2rem;
+    line-height: 1.9rem;
+    background-color: inherit;
+}
+div.table_bottom_bar > div.pages_block > a.arrow:hover {  color: #FE659C;  }
+
+
+/*======================== Left bar ========================== */
+
+div.sheet > div.left_bar {
+    flex: 0 0 180px;
+    flex-direction: column;
+    padding: 1rem;
+}
+div.sheet div.left_bar.visible {  background-color: #E6E3DA;  }
+div.left_bar input[type=text], div.left_bar select { width: 150px;}
+div.left_bar > ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+	justify-content: flex-start;
+    list-style: none;
+    margin: 0;
+}
+div.left_bar > ul > li {  display: block; }
+div.left_bar > ul > li > a {
+    display: block;
+    padding: 0.6rem 0 0.6rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #595959;
+}
+div.left_bar > ul > li > a.active {  color: #333333;  }
+div.left_bar > ul > li > a.active:after {
+    margin-left: 1rem;
+    content: '';
+    color: #FE659C;
+    font-family: 'FontAwesome';
+    font-style: normal;
+
+}
+div.left_bar > ul > li > a:hover {
+    margin-right: -1rem;
+    background-color: #F3F3F3;
+    color: #FE659C;
+}
+div.left_bar > hr {
+    border: none;
+    height: 1px;
+    background-color: #D3D3D3;
+    margin: 1rem 0.5rem;
+}
+div.left_bar > h3 {  padding: 1rem;  }
+
+i.icon::before {
+    content: attr(icon);
+    font-size: 1.5rem;
+    text-decoration: none;
+    padding: 0 0.5rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+}
+i.icon.gold::before {
+    color: gold;
+}
+/*======================== Customer details ========================== */
+
+div.customer_account_detales { display: flex; flex-direction: row; justify-content: flex-end; align-items: center; }
+div.customer_account_detales > span {  display: block; padding: 0.5rem 0.5rem 0.5rem 1rem;  }
+div.customer_account_detales > span.customer_status { font-size: 2.0rem; font-weight: bold; color: #74BA12;}
+div.customer_account_detales > span > p {display: inline-block; text-transform: uppercase; }
+div.customer_account_detales > span > em { display: inline-block; font-style: normal;font-weight: bold; font-size: 2.0rem;}
+div.customer_account_detales > span > em:after { content: '₽'; font-weight: normal; color: #9ea19c; }
+
+/*======================== Values block ========================== */
+
+div.values_block {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 3rem;
+    margin: 1rem 0;
+}
+div.values_block:not(:last-child) { border-right: 1px #D3D3D3 solid;}
+div.values_block > span { display: inline-block; padding: 0.5rem 0; color: #666666; }
+div.values_block > span > p { font-weight: bold; font-size: 2.0rem; line-height: 1.1rem;  }
+div.values_block > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; }
+div.values_block > span > textarea { display: block; margin-top: 5px;  }
+
+

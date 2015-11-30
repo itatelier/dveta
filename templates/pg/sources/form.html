@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel='stylesheet' media="screen" type='text/css' href='ready.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='forms.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='main.css'/>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="listing.html"><div>&#xf015;<span>Главная</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0b1;<span>Клиенты</span></div></a>
+                    <div>
+                        <ul>
+                            <li><a href="listing.html">Картотека клиентов</a></li>
+                            <li><a href="listing.html">Контрагенты</a></li>
+                            <li><a href="listing.html">Баланс счетов</a></li>
+                            <li><hr></li>
+                            <li><a href="listing.html"><i>&#xf067;</i>Новый клиент</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="listing.html"><div>&#xf0c0;<span>Персоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf11e;<span>Рейсы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf041;<span>Объекты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0d1;<span>Авто</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf145;<span>Талоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf080;<span>Отчеты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf153;<span>Финансы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf085;<span>Управление</span></div></a></li>
+            </ul>
+        </nav>
+        <div class="sheet_row_headered">
+            <div class="block_item">
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <span>
+                            Фролова Татьяна
+                            <p>Диспетчер Группа I</p>
+                        </span>
+                        <em>&#xf0c9;</em>
+                    </div>
+                    <ul>
+                        <li><a href="listing.html">Настройки </a></li>
+                        <li><a href="listing.html">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="listing.html">Картотека</a></li>
+                <li class="active" ><a href="listing.html">Новый клиент: фирма</a></li>
+            </ul>
+        </div>
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            <div class="sheet">
+            <!--********************* Sheet *********************  -->
+                <!--*********** Left Sheet Bar ***********  -->
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Ноый клиент</a></li></ul>
+                    <hr>
+                </div>
+                <!--*********** End Left Sheet Bar ***********  -->
+                <!--*********** Data grid medium ***********  -->
+                <div class="data_grid_medium">
+                    <!--*********** Header block ***********  -->
+                    <div class="form_row">
+                        <h2 class="blue">Основная информация</h2>
+                    </div>
+                    <div class="form_row">
+                       <div class="input_wrapper">
+                            <legend>Тип клиента</legend>
+                            <div class="input_block ">
+                                <select>
+                                    <option value="Фирма">Фирма</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Наименование<p>Краткое наименование клента, без организационной формы</p></legend>
+                            <div class="input_block reuired ">
+                                <input type="text">
+                                <em>Поле должно быть заполнено!</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Виды деятельности<p>Перечень основных видов деятельности</p></legend>
+                            <div class="input_block reuired ">
+                                <textarea rows="2" cols="30"></textarea>
+                                <!--<em>Поле должно быть заполнено!</em>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Источник привлечения<p>От куда клиент узнал о нас?</p></legend>
+                            <div class="input_block reuired">
+                                <select><option value="Фирма">Сайт Musorovozoff.ru</option></select>
+                                <!--<em>Значение должно быть выбрано!</em>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Основное отделение (офис)</h2>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <div class="input_block _inline">
+                                <label><input type="radio" name="ch1" ><p>об офисе пока не известно</p></label>
+                                <label><input type="radio" name="ch1" checked><p>основной офис</p></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Адрес основного офиса</h2>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Населенный пункт</legend>
+                            <div class="input_block reuired">
+                                <input type="text">
+                                <a class="textlink" href="#">Москва?</a>
+                            </div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Почтовый индекс</legend>
+                            <div class="input_block"><input type="text" size="6"></div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Улица</legend>
+                            <div class="input_block reuired"><input type="text"></div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Дом</legend>
+                            <div class="input_block reuired">
+                                <input type="text" size="2">
+                                <!--<em>Не заполнено!</em>-->
+                            </div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Корпус/стр.</legend>
+                            <div class="input_block"><input type="text" size="2"></div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Примечание</legend>
+                            <div class="input_block"><input type="text" size="50"></div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Контактные данные</h2>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <div class="input_block _inline">
+                                <label><input type="radio" name="ch2" checked><p>неизвестная ранее персона</p></label>
+                                <label><input type="radio" name="ch2" ><p>выбрать персону</p></label>
+                                <label><input type="radio" name="ch2" ><p>нет информации о контактном лице</p></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Персона<p>Фамилия или имя, а лучше все сразу!</p></legend>
+                            <div class="input_block reuired ">
+                                <input type="text" size="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Должность в компании</legend>
+                            <div class="input_block">
+                                <input type="text" size="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Телефон</legend>
+                            <div class="input_block reuired ">
+                                <input type="text" size="10" placeholder="987 1234567">
+                            </div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Примечание</legend>
+                            <div class="input_block reuired ">
+                                <input type="text" size="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>E-mail</legend>
+                            <div class="input_block">
+                                <input type="text" size="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <span class="button_block">
+                            <a class="button" href="#">Добавить клиента</a>
+                        </span>
+                    </div>
+                    <!--*********** End Header block ***********  -->
+                </div>
+                <!--*********** End Data grid medium ***********  -->
+            <!--********************* End Sheet *********************  -->
+            </div>
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+    </div>
+    <footer>
+        <!--FOOTER-->
+    </footer>
+</body>
+</html>

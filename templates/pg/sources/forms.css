@@ -1,0 +1,224 @@
+select {
+    box-shadow: inset 1px 1px 2px 0 #707070;
+    transition: box-shadow 0.3s;
+    padding: 4px 20px 4px 4px;
+    border: solid 1px #fff;
+    outline:none;
+    appearance:none;
+    cursor: pointer;
+}
+select:focus { box-shadow: inset 1px 1px 2px 0 #c9c9c9; }
+
+input[type=text] {
+    padding: 5px 20px 5px 4px;
+    border: solid 1px #fff;
+    box-shadow: inset 1px 1px 2px 0 #707070;
+    transition: box-shadow 0.3s;
+    height: 27px;
+    /*width: 100%;*/
+}
+input[type=text]:focus { box-shadow: inset 1px 1px 2px 0 #c9c9c9;  }
+input[type=checkbox] { margin: 0.5rem;  }
+textarea {
+    padding: 5px 20px 5px 4px;
+    border: solid 1px #fff;
+    box-shadow: inset 1px 1px 2px 0 #707070;
+    transition: box-shadow 0.3s;
+}
+textarea:focus { box-shadow: inset 1px 1px 2px 0 #c9c9c9;  }
+
+.error input, .error select, .error textarea { background-color: #ffeaea; }
+
+
+span.button_block {
+    display: block;
+    padding: 0.5rem;
+}
+a.button {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    padding: 4px 15px;
+    margin: 1px 5px;
+    /*background-color: #ffffd7;*/
+    background-color: rgb(208, 236, 169);
+    border-radius: 2px;
+    border: 1px #D3D3D3 solid;
+    color: #595959;
+}
+a.button:active { top: 1px;  }
+
+a.button.red_bg {border-color: #9C9292;}
+
+a.textlink {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    padding: 0.5rem 0.2rem 0 0.2rem;
+    margin: 0 0.5rem 0.4rem 0.5rem;
+    border-bottom: 1px dotted #009DDA;
+    color: #009DDA;
+}
+a.textlink:active {  top: 1px; }
+
+a.textlink._icon:before {
+    display: inline-block;
+    content: attr(icon);
+    font-size: 1.4rem;
+    font-weight: normal;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    color: #D84D4D;
+}
+a.textlink.red {
+    border-color: #D84D4D;
+    color: #D84D4D !important;
+}
+div.form_row { display: flex; padding: 0.5rem 0; }
+
+div.form_row legend {
+    display: block;
+    position: relative;
+    font-weight: bold;
+    padding: 0.3rem 0;
+    margin: 0;
+}
+div.form_row legend > p {
+    display: inline-block;
+    font-style: italic;
+    font-weight: normal;
+    color: #9ea19c;
+    padding: 0 1rem 0 0.5rem;
+    margin: 0 0 0 10px;
+    border-left: 1px solid #cbcfc9;
+}
+div.form_row > h2 { display: block; padding: 1rem 0 0.5rem 0; }
+
+div.input_wrapper {  margin: 0 1.5rem; }
+div.input_wrapper.nomargin {  margin: 0; }
+div.input_wrapper._half {
+    flex: 1 0 auto;
+    max-width: 500px;
+    margin: 0.5rem;
+}
+div.input_wrapper._half:not(:first-child) {
+    border-left: 1px solid #cbcfc9;
+    padding-left: 2rem;
+}
+div.input_wrapper._half > h2 {
+    margin: 1rem 0;
+}
+div.input_block.reuired:before {
+content: "▪";
+    color: #FE659C;
+    position: absolute;
+    left: 6px;
+    top: 7px;
+}
+
+div.input_block { position: relative; }
+div.input_block > label { display: block; padding: 0.3rem}
+div.input_block > label > p { display: inline; padding: 0 0.5rem;}
+div.input_block > select {
+    padding-left: 10px;
+    min-width: 12rem;
+}
+div.input_block > input[type=text], div.input_block > textarea {
+    display: inline-block;
+    padding-left: 12px;
+}
+div.input_block > textarea {}
+div.input_block > em {
+    display: inline-block;
+    font-style: normal;
+}
+div.input_block > em {
+    margin-top: 0.5rem;
+    display: block;
+    color: #D84D4D;
+}
+div.input_block > em:before {
+    position: relative;
+    top:0px;
+    width: 0px;
+    font-style: normal;
+    padding: 0 0.5rem 0 0rem;
+    font-family: 'FontAwesome';
+    font-size: 1.4rem;
+    content: '';
+    color: #D84D4D;
+}
+div.input_block > a {
+    display: inline-block;
+}
+div.input_block._inline > label { display: inline-block;}
+div.input_block._inline > label > input {
+    position: relative;
+    top: 2px;
+}
+div.input_block._inline > label > p {
+    display: inline-block;
+    font-style: normal;
+    padding: 0.5rem 1.5rem 0 0.5rem;
+    cursor: pointer;
+}
+div.input_block._icon:after {
+    width: 1.8rem;
+    display: inline-block;
+    content: attr(icon);
+    font-size: 1rem;
+    font-weight: normal;
+    text-decoration: none;
+    margin-left: -2rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    color: #595959;
+}
+div.input_block > span.static_value {
+    position: relative;
+    top: 0.7rem;
+    font-weight: bold;
+}
+div.input_wrapper > ins {
+    display: inline-block;
+    text-decoration: none;
+    font-style: italic;
+    color: #595959;
+    padding: 0.5rem 0 0 0;
+    max-width: 500px;
+}
+div.input_wrapper > ins:before {
+    display: inline-block;
+    content: attr(icon);
+    font-size: 1.6rem;
+    font-weight: normal;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    color: #595959;
+
+}
+
+div.input_wrapper > ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    list-style: none;
+    margin: 0.5rem 0 0 0;
+}
+div.input_wrapper > ul > li {
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 2px 1rem 0 0;
+}
+div.input_wrapper > ul > li > a {
+    margin: 0;
+    padding: 0;
+}
+div.input_wrapper > ul > li:not(:first-child)  {
+    border-left: 1px solid #cbcfc9;
+    padding-left: 0.7rem;
+}

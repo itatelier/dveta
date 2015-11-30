@@ -92,6 +92,9 @@ header > nav ul > li > a {
     text-shadow: 0 1px 1px rgba(0,0,0,.1);
     transition: all linear 0.1s;
 }
+header > nav ul > li > a.unused { cursor: not-allowed; color: #e2e2e2; }
+header > nav ul > li > a.unused:hover { cursor: not-allowed; color: #e2e2e2; }
+
 header > nav ul > li > a > div  {
         margin: 0 auto;
         text-align: center;

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel='stylesheet' media="screen" type='text/css' href='ready.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='forms.css'/>
+    <link rel='stylesheet' media="screen" type='text/css' href='main.css'/>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="listing.html"><div>&#xf015;<span>Главная</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0b1;<span>Клиенты</span></div></a>
+                    <div>
+                        <ul>
+                            <li><a href="listing.html">Картотека клиентов</a></li>
+                            <li><a href="listing.html">Контрагенты</a></li>
+                            <li><a href="listing.html">Баланс счетов</a></li>
+                            <li><hr></li>
+                            <li><a href="listing.html"><i>&#xf067;</i>Новый клиент</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="listing.html"><div>&#xf0c0;<span>Персоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf11e;<span>Рейсы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf041;<span>Объекты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf0d1;<span>Авто</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf145;<span>Талоны</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf080;<span>Отчеты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf153;<span>Финансы</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf085;<span>Управление</span></div></a></li>
+            </ul>
+        </nav>
+        <div class="sheet_row_headered">
+            <div class="block_item">
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <span>
+                            Фролова Татьяна
+                            <p>Диспетчер Группа I</p>
+                        </span>
+                        <em>&#xf0c9;</em>
+                    </div>
+                    <ul>
+                        <li><a href="listing.html">Настройки </a></li>
+                        <li><a href="listing.html">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="listing.html">Картотека</a></li>
+                <li class="active" ><a href="listing.html">Новый клиент: фирма</a></li>
+            </ul>
+        </div>
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            <div class="sheet">
+            <!--********************* Sheet *********************  -->
+                <!--*********** Left Sheet Bar ***********  -->
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Ноый клиент</a></li></ul>
+                    <hr>
+                </div>
+                <!--*********** End Left Sheet Bar ***********  -->
+                <!--*********** Data grid medium ***********  -->
+                <div class="data_grid_medium">
+                    <!--*********** Header block ***********  -->
+                    <div class="form_row">
+                        <h2 class="blue">Строчный тип контролов</h2>
+                    </div>
+                    <div class="form_row">
+                       <div class="input_wrapper">
+                            <legend>Наименование</legend>
+                            <div class="input_block reuired">
+                                <select>
+                                    <option value="Фирма">Элемент 1</option>
+                                    <option value="Фирма">Элемент 2</option>
+                                    <option value="Фирма">Элемент 3</option>
+                                    <option value="Фирма">Элемент 4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Наименование<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block reuired ">
+                                <input type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Наименование<p>Поле с иконкой и плейсхолдером</p></legend>
+                            <div class="input_block _icon reuired" icon="">
+                                <input type="text" placeholder="Пример заполнения">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Описание<p>Описание многострочного блока</p></legend>
+                            <div class="input_block reuired ">
+                                <textarea rows="2" cols="30"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <div class="input_block _inline">
+                                <label><input type="radio" name="ch1" ><p>Значение радио 1</p></label>
+                                <label><input type="radio" name="ch1" checked><p>Значение радио 2</p></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <div class="input_block _inline">
+                                <label><input type="checkbox" name="ch1" checked><p>Отметка чекбокс</p></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Ошибка при отправке формы / валидация</h2>
+                    </div>
+                    <div class="form_row">
+                       <div class="input_wrapper">
+                            <legend>Наименование</legend>
+                            <div class="input_block error reuired">
+                                <select>
+                                    <option value="Фирма">Элемент</option>
+                                </select>
+                                <em>Значение не выбрано!</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Наименование<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block error reuired ">
+                                <input type="text">
+                                <em>Поле должно быть заполнено!</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Описание<p>Описание многострочного блока</p></legend>
+                            <div class="input_block error reuired ">
+                                <textarea rows="2" cols="30"></textarea>
+                                <em>Произвольная ошибка заполнения!</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Несколько контролов в одной строке</h2>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper">
+                            <legend>Населенный пункт</legend>
+                            <div class="input_block reuired">
+                                <input type="text">
+                                <a class="textlink" href="#">Москва?</a>
+                            </div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Индекс</legend>
+                            <div class="input_block"><input type="text" size="6"></div>
+                        </div>
+                        <div class="input_wrapper">
+                            <legend>Наценка</legend>
+                            <div class="input_block"><span class="static_value">500р</span></div>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Кнопки управления формой</h2>
+                    </div>
+                    <div class="form_row">
+                        <span class="button_block">
+                            <a class="textlink red" href="#">Удалить клиента</a>
+                            <a class="button red_bg" href="#">Удалить клиента</a>
+                            <a class="button" href="#">Добавить клиента</a>
+                        </span>
+                    </div>
+                    <div class="form_row">
+                        <h2 class="blue">Блок 1/2 строки</h2>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper _half">
+                            <h2 class="blue">Первый заголовок</h2>
+                            <legend>Наименование первого<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block reuired"><input type="text"></div>
+                            <ins icon="">Комментарий пользователя получен из базы. Многострочный комментарий добавлен сегодня. Длина многострочного комментария не привышает длины враппера.</ins>
+                        </div>
+                        <div class="input_wrapper _half">
+                            <h2 class="blue">Второй заголовок</h2>
+                            <legend>Наименование второго<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block error reuired"><input type="text"><em>Ошибка заполнения!</em></div>
+
+                            <ins icon="">Однострочный комментарий</ins><br>
+                            <a class="textlink" href="#">Ссылка с разрывом строки..</a>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper _half">
+                            <h2 class="blue">Третий заголовок</h2>
+                            <legend>Наименование первого<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block reuired"><input type="text"></div>
+                            <ul>
+                                <li><a class="textlink" href="#">Ссылка</a></li>
+                                <li><a class="textlink" href="#">Ссылка</a></li>
+                                <li><a class="textlink" href="#">Ссылка</a></li>
+                                <li><a class="textlink _icon" icon="" icolor="" href="#">Карта</a></li>
+                            </ul>
+                        </div>
+                        <div class="input_wrapper _half">
+                            <h2 class="blue">Четвертый заголовок</h2>
+                            <legend>Наименование второго<p>Текстовое описание значения поля</p></legend>
+                            <div class="input_block reuired"><input type="text"></div>
+                            <ins icon="">Однострочный комментарий</ins>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <div class="input_wrapper _half">
+                            <h2 class="blue">Табличный список</h2>
+                            <div class="input_block _inline">
+                                <label><input type="checkbox" name="ch2" checked><a class="textlink">Смирнов Василий</a> +7-985-7982563<i class="icon gold" icon=""></i></label><br>
+                                <label><input type="checkbox" name="ch2" checked><a class="textlink">Пушкарева Анна</a> +7-745-6543216</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!--*********** End Header block ***********  -->
+                </div>
+                <!--*********** End Data grid medium ***********  -->
+            <!--********************* End Sheet *********************  -->
+            </div>
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+    </div>
+    <footer>
+        <!--FOOTER-->
+    </footer>
+</body>
+</html>

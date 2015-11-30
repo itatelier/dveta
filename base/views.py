@@ -19,6 +19,17 @@ class Forbidden(TemplateView):
 class Index(TemplateView):
     template_name = "index.html"
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(Index, self).get_context_data(*args, **kwargs)
+        context_data.update({
+            'some_strange_variable': 42,
+        })
+        return context_data
+
+
+class PlaygroundCard(TemplateView):
+    template_name = "pg/card.html"
+
 
 # class ac(JsonViewMix):
 #     param_names = ['model', 'field', 'query', 'filter_type']
