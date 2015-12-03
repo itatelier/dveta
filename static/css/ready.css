@@ -25,6 +25,9 @@ body {
     background-color: #F2F5F7;
 }
 a { color: #009DDA; }
+a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
+a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
+
 h2 { font-size: 1.6rem; }
 table { border-spacing: 0;}
 .green { color: #74BA12 !important; }

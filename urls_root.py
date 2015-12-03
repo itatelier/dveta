@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from base import views as default
+from dummyapp import views
 
 urlpatterns = [
     url(r"^$", default.Index.as_view(), name='index'),
@@ -12,6 +13,9 @@ urlpatterns = [
     # API
     # url(r'^api/', include(view_api.urls)),
 
+    #REST
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
     # Default
     url(r'^login/$', 'django.contrib.auth.views.login', name="login"),
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
@@ -20,6 +24,9 @@ urlpatterns = [
     # Ajax actions
     # url(r'^ac/$', default.ac.as_view(), name='ac'),
     # url(r'^acid/$', default.ac_with_id.as_view(), name='ac'),
+
+    # Dummy Views
+    url(r'^dummy/', include('dummyapp.urls')),
 
     # Apps
     url(r'^company/', include('company.urls')),
