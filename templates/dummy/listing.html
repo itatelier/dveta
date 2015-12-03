@@ -7,11 +7,18 @@
 
 
 <script>
+    var base_url = '/company';
+    var JsonDataUrl = "/dummy/companies/";
+    var req_preprocess_result = "0";
 
+    $(document).ready(function() {
+        list_data_api();
+    });
 
 function list_data_api(Mode,Page) {
     var $datatable = $('tbody#datatable');
     var $js_template = $('#tmpl_table').html(); /* шаблон таблицы */
+    console.log($js_template);
     var $params_form = $('form#params_form'); /* форма с параметрами JSON запроса */
 
     function Pager(limit, offset, total_count) {
@@ -21,6 +28,7 @@ function list_data_api(Mode,Page) {
         this.total_pages = Math.ceil(this.total_count / this.limit);
         this.current_page = Math.ceil(this.offset / this.limit) + 1
     };
+
 
     /* получаем данные из схемы */
     $.ajax({
@@ -43,25 +51,41 @@ function list_data_api(Mode,Page) {
         }
 
         /* Стандартная постобработка */
-        if (result.objects && result.objects.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
-            for (var i = 0,data_len = result.objects.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
-                var el = result.objects[i];
+        if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
+                var el = result.results[i];
+                console.log($js_template);
+                console.log("i:" + i + " Result: " + el);
                 var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
                 $datatable.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
             }
         }
         /* Постраничная навигация  */
-            var pager = new Pager(result.meta.limit, result.meta.offset, result.meta.total_count);
-            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
-
-            listing_pager(pager.current_page, pager.total_pages);  /* Заполняем пейджинг */
-            var rows_count = result.meta.total_count;   /* Количество записей */
-            $('span#total_entries > i').html(rows_count);
+{#            var pager = new Pager(result.meta.limit, result.meta.offset, result.meta.total_count);#}
+{#            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);#}
+{##}
+{#            listing_pager(pager.current_page, pager.total_pages);  /* Заполняем пейджинг */#}
+{#            var rows_count = result.meta.total_count;   /* Количество записей */#}
+{#            $('span#total_entries > i').html(rows_count);#}
         })
         .fail(function(result) { alert("Error!: "+ result)});
         return false;
 }
 </script>
+{# Шаблон основной таблицы #}
+<script type="text/template" id="tmpl_table">{% verbatim %}
+    <tr onCLick="card_args(['/company/',{{ id }},'/card']);">
+        <td>{{ name }}</td>
+        <td>{{ description }}</td>
+        <td><a href="http://{{ www }}">{{ www }}</td>
+        <td>{{ org_type.val }}
+        <td>{{ rel_type }}</td>
+        <td class="green">{{ status }}</td>
+        <td>{{ date_add }}</td>
+        <!-- replace -->
+    </tr>
+</script>{% endverbatim %}
+
         <!--********************* Breadcrumbs *********************  -->
         <div class="breadcrumbs">
             <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
@@ -138,13 +162,12 @@ function list_data_api(Mode,Page) {
                         <thead class="">
                             <tr>
                                 <th><a href="#" rel="">Наименование</a></th>
-                                <th><a href="#" rel="" class="sort">Телефон</a></th>
-                                <th><a href="#" rel="">Контактное лицо</a></th>
-                                <th><a href="#" rel="">Тип</a></th>
-                                <th><a href="#" rel="">Частота</a></th>
+                                <th><a href="#" rel="" class="sort">Описание</a></th>
+                                <th><a href="#" rel="">Ссылка</a></th>
+                                <th><a href="#" rel="">Связь preload</a></th>
+                                <th><a href="#" rel="">Связь</a></th>
                                 <th><a href="#" rel="">Статус</a></th>
-                                <th><a href="#" rel="">Гр</a></th>
-                                <th><a href="#" rel="">Примечание</a></th>
+                                <th><a href="#" rel="">Дата</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="scrollContent">

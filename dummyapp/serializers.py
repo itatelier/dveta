@@ -35,4 +35,4 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DummyCompanies
-        fields = ('url', 'id', 'name', 'description', 'www', 'org_type', 'rel_type', 'date_add',)
+        fields = ('url', 'id', 'name', 'description', 'www', 'org_type', 'rel_type', 'status', 'date_add',)
