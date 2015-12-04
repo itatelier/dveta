@@ -36,6 +36,11 @@ table { border-spacing: 0;}
 .green_bg { background-color: #74BA12 !important; }
 .red_bg { background-color: #F7A3A3 !important; }
 .blue_bg { background-color: #009DDA !important; }
+.scroll { overflow:auto; }
+.fixedheigth {
+    overflow: auto;
+    height: 600px;
+}
 
 .no_lr_margin {
     margin-left: 0!important;
@@ -348,7 +353,7 @@ table.listing_grid > thead > tr > th > a {
     min-width: 40px;
 }
 table.listing_grid > thead > tr > th > a:after {
-    display: none;
+    visibility: hidden;
     content: '';
     font-size: 1.2rem;
     font-weight: normal;
@@ -356,13 +361,13 @@ table.listing_grid > thead > tr > th > a:after {
     margin-left: 0.3rem;
     font-family: 'FontAwesome';
     font-style: normal;
-    color: #595959;
+    color: #FE659C;
 }
 table.listing_grid > thead > tr > th > a:hover:after {
     color: #FE659C;
-    display: inline;
+    visibility: visible;
 }
-table.listing_grid > thead > tr > th > a.sort:after {  display: inline;  }
+table.listing_grid > thead > tr > th > a.sort:after {  visibility: visible;  }
 table.listing_grid > tbody > tr {}
 table.listing_grid > tbody > tr:hover {
     background-color: #ffffff;
@@ -376,17 +381,17 @@ div.table_bottom_bar {
     height: 40px;
     display: flex;
 }
-div.table_bottom_bar > div.pages_block {
+div.table_bottom_bar > div {
     display: flex;
     flex: 0 0 auto;
     padding: 0.5rem;
 }
-div.table_bottom_bar > div.pages_block >span {
+div.table_bottom_bar span {
     display: block;
     margin-top: 0.7rem;
     padding: 0 1rem;
 }
-div.table_bottom_bar > div.pages_block > a {
+div.table_bottom_bar a {
     display: block;
     text-decoration: none;
     color: #595959;
@@ -395,21 +400,26 @@ div.table_bottom_bar > div.pages_block > a {
     height: 18px;
     transition: all linear 0.1s;
 }
-div.table_bottom_bar > div.pages_block > a:hover {
+div.table_bottom_bar a:hover {
     background-color: #FE659C;
     color: #595959;
 }
-div.table_bottom_bar > div.pages_block > a.current {  background-color: #D3D3D3;  }
-div.table_bottom_bar > div.pages_block > a.current:hover {  background-color: #FE659C;  }
-div.table_bottom_bar > div.pages_block > a.arrow {
+div.table_bottom_bar a.current {  background-color: #D3D3D3;  }
+div.table_bottom_bar a.current:hover {  background-color: #FE659C;  }
+div.table_bottom_bar a.arrow {
     margin: 0;
     font-size: 2.2rem;
     line-height: 1.9rem;
     background-color: inherit;
 }
-div.table_bottom_bar > div.pages_block > a.arrow:hover {  color: #FE659C;  }
+div.table_bottom_bar a.arrow:hover {  color: #FE659C;  }
 
-
+div.table_bottom_bar i {
+    display: block;
+    position: relative;
+    top: 3px;
+    font-size: 1.4em;
+}
 /*======================== Left bar ========================== */
 
 div.sheet > div.left_bar {

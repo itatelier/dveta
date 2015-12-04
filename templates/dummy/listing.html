@@ -18,7 +18,6 @@
 function list_data_api(Mode,Page) {
     var $datatable = $('tbody#datatable');
     var $js_template = $('#tmpl_table').html(); /* шаблон таблицы */
-    console.log($js_template);
     var $params_form = $('form#params_form'); /* форма с параметрами JSON запроса */
 
     function Pager(limit, offset, total_count) {
@@ -54,19 +53,21 @@ function list_data_api(Mode,Page) {
         if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
                 var el = result.results[i];
-                console.log($js_template);
-                console.log("i:" + i + " Result: " + el);
                 var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
                 $datatable.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
             }
         }
         /* Постраничная навигация  */
-{#            var pager = new Pager(result.meta.limit, result.meta.offset, result.meta.total_count);#}
-{#            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);#}
-{##}
-{#            listing_pager(pager.current_page, pager.total_pages);  /* Заполняем пейджинг */#}
-{#            var rows_count = result.meta.total_count;   /* Количество записей */#}
-{#            $('span#total_entries > i').html(rows_count);#}
+            var page_limit = $('input[name=limit]').val();
+            var page_offset = $('input[name=offset]').val();
+            var total_count = result.count;
+            var pager = new Pager(page_limit, page_offset, total_count);
+
+            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
+
+            /* Заполняем пейджинг */
+            listing_pager(pager.current_page, pager.total_pages);
+            $('span#total_entries > em').html(total_count);
         })
         .fail(function(result) { alert("Error!: "+ result)});
         return false;
@@ -85,79 +86,85 @@ function list_data_api(Mode,Page) {
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
-
-        <!--********************* Breadcrumbs *********************  -->
+        {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
         </div>
-        <!--********************* ! Breadcrumbs *********************  -->
+        {# - Breadcrumbs #}
         <div class="sheet_wrapper">
             <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
             <div class="sheet">
-            <!--********************* Sheet *********************  -->
-                <!--*********** Left Sheet Bar ***********  -->
                 <div class="left_bar">
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <legend>Наименование</legend>
-                            <div class="input_block _icon" icon="">
-                                <input type="text" size="15">
+                    {# Форма сортировки данных #}
+                    <form method="post" name="params_form" id="params_form">
+                        {# скрытые фильтры #}
+                        <input type="hidden" name="order_by" value="id"/>
+                        <input type="hidden" name="offset" value="0"/>
+                        <input type="hidden" name="limit" value="20"/>
+                        {# отображенные фильтры #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Наименование</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <legend>Контактное лицо</legend>
-                            <div class="input_block _icon" icon="">
-                                <input type="text" size="15">
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Контактное лицо</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <legend>Контактное лицо</legend>
-                            <div class="input_block">
-                                <select name="status">
-                                    <option value="1">любой статус</option>
-                                    <option value="2">новый</option>
-                                    <option value="3">на оформлении</option>
-                                    <option value="4">в работе</option>
-                                    <option value="5">заблокирован</option>
-                                    <option value="6">архивный</option>
-                                </select>
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Контактное лицо</legend>
+                                <div class="input_block">
+                                    <select name="status">
+                                        <option value="1">любой статус</option>
+                                        <option value="2">новый</option>
+                                        <option value="3">на оформлении</option>
+                                        <option value="4">в работе</option>
+                                        <option value="5">заблокирован</option>
+                                        <option value="6">архивный</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <legend>Тип клиента</legend>
-                            <div class="input_block">
-                                <label><input type="radio" name="g1"><p>Любой тип</p></label>
-                                <label><input type="radio" name="g1"><p>Фирма</p></label>
-                                <label><input type="radio" name="g1"><p>Частник</p></label>
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Тип клиента</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="g1"><p>Любой тип</p></label>
+                                    <label><input type="radio" name="g1"><p>Фирма</p></label>
+                                    <label><input type="radio" name="g1"><p>Частник</p></label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <div class="input_block">
-                                <label><input type="checkbox">Показать архивные</label>
-                                <label><input type="checkbox" checked>Показать новые</label>
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <div class="input_block">
+                                    <label><input type="checkbox">Показать архивные</label>
+                                    <label><input type="checkbox" checked>Показать новые</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form_row">
-                        <div class="input_wrapper nomargin">
-                            <div class="input_block">
-                                <a href="#" class="textlink">Сбросить</a>
-                                <a href="#" class="button">Найти</a>
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <div class="input_block">
+                                    <a href="#" class="textlink">Сбросить</a>
+                                    <a href="#" class="button">Найти</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
+                    {# - Форма сортировки данных #}
                 </div>
-                <!--*********** ! Left Sheet Bar ***********  -->
                 <div class="data_grid_medium">
-                <!--*********** Data Table ***********  -->
+                    {# Основная таблица данных #}
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
@@ -170,49 +177,28 @@ function list_data_api(Mode,Page) {
                                 <th><a href="#" rel="">Дата</a></th>
                             </tr>
                         </thead>
-                        <tbody id="datatable" class="scrollContent">
-                            <tr><td>Ашан</td>                               <td>8 495 756 2365</td><td>Агонесян Михал Ильдарови</td>    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>Идеальная защита</td>                   <td>8 499 123 6548</td><td>без контакта</td>                <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>ID120500014</td>                        <td>8 926 568 1345</td><td>Аратюнян Ашот</td>               <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td>старый знакомый</td></tr>
-                            <tr><td>МокКомСбыт</td>                         <td>8 499 986 1234</td><td>Петрова Мария</td>               <td>фирма</td>  <td>разовый</td>    <td class="red">остановлен</td><td>II</td><td></td></tr>
-                            <tr><td>Моск. ин-т Мир. Эконом.Междун.от.</td>  <td>8 495 756 2365</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>САГА ТЕХНОЛОГИИ</td>                    <td>8 499 123 6548</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
-                            <tr><td>ID120501755</td>                        <td>8 926 568 1345</td><td>Евгений Васильевич</td>          <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>II</td><td></td></tr>
-                            <tr><td>БАЗИС; СПОРТ- МАСТЕР</td>               <td>8 499 986 1234</td><td>Владимир</td>                    <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>Д Групп</td>                            <td>8 495 756 2365</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>Новая Концепция</td>                    <td>8 499 123 6548</td><td>Труфанов Сергей</td>             <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>ID120503255</td>                        <td>8 926 568 1345</td><td>Петр Евгеньевич</td>             <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>II</td><td></td></tr>
-                            <tr><td>ИНТЕЛ-МОНТАЖ</td>                       <td>8 499 986 1234</td><td>Евгений Васильевич</td>          <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>Инжстройинвест</td>                     <td>8 495 756 2365</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>ТеплоТехИнжиниринг</td>                 <td>8 499 123 6548</td><td>Борис Симонов</td>               <td>фирма</td>  <td>постоянный</td> <td class="red">остановлен</td><td>II</td><td></td></tr>
-                            <tr><td>ID120503258</td>                        <td>8 926 568 1345</td><td>Труфанов Сергей</td>             <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>СПЕЦПРОМСТРОЙ</td>                      <td>8 499 986 1234</td><td>Петр Евгеньевич</td>             <td>фирма</td>  <td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>АРХ СТЕКЛО</td>                         <td>8 495 756 2365</td><td>Аратюнян Ашот</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
-                            <tr><td>СтройИнвест</td>                        <td>8 499 123 6548</td><td>Петрова Мария</td>               <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>II</td><td></td></tr>
-                            <tr><td>ID120501793</td>                        <td>8 926 568 1345</td><td>Борис Симонов</td>               <td>частник</td><td>разовый</td>    <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <tr><td>Альп Монтаж НАЛ</td>                    <td>8 499 986 1234</td><td>Владимир</td>                    <td>фирма</td>  <td>постоянный</td> <td class="green">рабочий</td><td>I</td><td></td></tr>
-                            <!--<tr><td>Колос</td>                              <td>8 495 756 2365</td><td>Евгений Васильевич</td>          <td>фирма</td>  <td>постоянный</td> <td>рабочий</td><td>I</td><td></td></tr>-->
-                            <!--<tr><td>СтенсЛайн</td>                          <td>8 499 123 6548</td><td>Аратюнян Ашот</td>               <td>фирма</td>  <td>разовый</td>    <td>рабочий</td><td>I</td><td></td></tr>-->
+                        <tbody id="datatable" class="">
                         </tbody>
                     </table>
-                <!--*********** ! Data Table ***********  -->
-                <!--*********** Table Bottom Bar ***********  -->
+                    {# - Основная таблица данных #}
+                    {# Панель управления таблицей #}
                     <div class="table_bottom_bar">
-                        <div class="pages_block">
+                        <div id="pager_box">
                             <span>Страница</span>
                             <a href="#" class="arrow">←</a><a href="#" class="current">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#" class="arrow">→</a>
-                            <span>всего записей 356</span>
-                            <a href="#" class="current">Скрол</a>
+                        </div>
+                        <div id="rows_box">
+                            <span id="total_entries">всего записей <em></em></span>
                             <span>показывать</span>
-                            <a href="#" class="current">20</a>
-                            <a href="#" >50</a>
-                            <a href="#" >100</a>
+                            <a href="#" rel="limit" onClick="SetRows(20)"class="current">20</a>
+                            <a href="#" rel="limit" onClick="SetRows(50)">50</a>
+                            <a href="#" rel="limit" onClick="SetRows(100)">100</a>
                         </div>
                     </div>
-                <!--*********** ! Table Bottom Bar ***********  -->
+                    {# - Панель управления таблицей #}
                 </div>
-            <!--************* ! End Sheet **************  -->
             </div>
+            {# - Рабочий лист #}
             <div class="right_border"><span class="upblock"></span></div>
         </div>
 {% endblock %}
