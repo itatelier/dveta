@@ -20,9 +20,11 @@ import logging
 log = logging.getLogger('django')
 
 
-class main_list_index(LoginRequiredMixin, TemplateView):
+class main_list_index(TemplateView):
     template_name = "company/main_list_index.html"
 
+# class main_list_index(LoginRequiredMixin, TemplateView):
+#     template_name = "company/main_list_index.html"
 
 #
 # class main_create(MultiFormCreate):

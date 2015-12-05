@@ -384,12 +384,17 @@ div.table_bottom_bar {
 div.table_bottom_bar > div {
     display: flex;
     flex: 0 0 auto;
-    padding: 0.5rem;
+    padding: 1rem 0 0 0;
 }
 div.table_bottom_bar span {
     display: block;
     margin-top: 0.7rem;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
+}
+div.table_bottom_bar em {
+    font-style: normal;
+    font-weight: bold;
+    padding: 0 0.5em;
 }
 div.table_bottom_bar a {
     display: block;
@@ -404,7 +409,8 @@ div.table_bottom_bar a:hover {
     background-color: #FE659C;
     color: #595959;
 }
-div.table_bottom_bar a.current {  background-color: #D3D3D3;  }
+div.table_bottom_bar a.current {  background-color: #D3D3D3;     font-weight: bold;
+ }
 div.table_bottom_bar a.current:hover {  background-color: #FE659C;  }
 div.table_bottom_bar a.arrow {
     margin: 0;

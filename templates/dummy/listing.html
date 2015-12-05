@@ -1,7 +1,8 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- JS Template     --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="/static/js/utils/ajax_list.js"></script>
 {% endblock %}
 {% block content %}
 
@@ -188,7 +189,7 @@ function list_data_api(Mode,Page) {
                             <a href="#" class="arrow">←</a><a href="#" class="current">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#" class="arrow">→</a>
                         </div>
                         <div id="rows_box">
-                            <span id="total_entries">всего записей <em></em></span>
+                            <span id="total_entries">всего записей<em></em></span>
                             <span>показывать</span>
                             <a href="#" rel="limit" onClick="SetRows(20)"class="current">20</a>
                             <a href="#" rel="limit" onClick="SetRows(50)">50</a>
