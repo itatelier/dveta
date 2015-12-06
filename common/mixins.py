@@ -20,6 +20,7 @@ from datetime import date, timedelta
 from django.core.paginator import Paginator
 # from company.models import Companies
 from django.shortcuts import render_to_response
+from django.contrib.auth.views import redirect_to_login
 from django import http
 # from django.db.models import get_model
 import datetime
@@ -332,6 +333,7 @@ class JsonViewMix(View):
     param_names = []
     qs = False
     data = False
+    login_required = True
 
     def __init__(self, *args, **kwargs):
         self.values = {}
@@ -342,9 +344,11 @@ class JsonViewMix(View):
         super(JsonViewMix, self).__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        if self.login_required and not request.user.is_authenticated():
+            return redirect_to_login(request.path)
         if self.check(request):
             self.prepare()
-        return HttpResponse(self.to_json(), mimetype='text/plain')
+        return HttpResponse(self.to_json(), content_type='text/plain')
 
     def check(self, request):
         self.get_params = request.GET

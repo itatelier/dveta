@@ -1,11 +1,14 @@
 # -*- coding: utf8 -*
 
 from django.views.generic import TemplateView, View
-# from common.mixins import JsonViewMix, JsonUpdateObject
+from common.mixins import JsonViewMix
 from django.http import HttpResponse
 from django.db.models import Count
+# from django.db.models.loading import get_model
+from django.apps import apps
 import json
-from django.db.models import get_model
+import simplejson
+from django.contrib.auth.views import redirect_to_login
 import logging
 # from company.models import *
 
@@ -34,40 +37,24 @@ class PlaygroundCard(TemplateView):
 class PlaygroundListing(TemplateView):
     template_name = "pg/listing.html"
 
-# class ac(JsonViewMix):
-#     param_names = ['model', 'field', 'query', 'filter_type']
-#
-#     def prepare(self):
-#         model_param_value = self.values['model']
-#         model = get_model(*model_param_value.split('.'))
-#         log.info("Model param value: %s model: %s" % (model_param_value, model))
-#         field = self.values['field']
-#         qs = model.objects.values_list(field)
-#         if self.values['query']:
-#             sort_criteria = self.values['field'] + self.values['filter_type']
-#             sort_value = self.values['query']
-#             filters = {sort_criteria: sort_value}
-#             qs = qs.filter(**filters).annotate(aggregate=Count(field))
-#             #self.values['query'] = str(qs.query.__str__())
-#         self.data = list(qs)
-#
-#
-# class ac_with_id(View):
-#
-#     def get(self, request, *args, **kwargs):
-#         if request.is_ajax():
-#             q = request.GET.get('query', '')
-#             rows = Companies.objects.filter(name__icontains=q)[:20]
-#             results = []
-#             for row in rows:
-#                 json_data = {}
-#                 json_data['id'] = row.id
-#                 json_data['label'] = row.name
-#                 json_data['value'] = row.name
-#                 results.append(json_data)
-#             data = json.dumps(results)
-#         else:
-#             data = 'fail'
-#         return HttpResponse(data, mimetype='text/plain')
-#
+
+class ac(JsonViewMix):
+    param_names = ['model', 'field', 'query', 'filter_type']
+
+    def prepare(self, *args, **kwargs):
+        model_param_value = self.values['model']
+        try:
+            model = apps.get_model(*model_param_value.split('.'))
+        except LookupError:
+            self.errors.append("Model \'%s\' not found!" % model_param_value)
+            return
+        log.info("Model param value: %s model: %s" % (model_param_value, model))
+        field = self.values['field']
+        qs = model.objects.values_list(field)
+        if self.values['query']:
+            sort_criteria = self.values['field'] + self.values['filter_type']
+            sort_value = self.values['query']
+            filters = {sort_criteria: sort_value}
+            qs = qs.filter(**filters).annotate(aggregate=Count(field))[:10]
+        self.data = list(qs)
 

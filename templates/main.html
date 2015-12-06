@@ -2,11 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html" lang="en-US" xml:lang="en-US">
 <head>
     <title>Django Veta</title>
-
     {% load static from staticfiles %}
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-{#    <link rel="SHORTCUT ICON" href="" type="image/x-icon">#}
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.ico" %}"/>
 
     <!-- CSS Styles -->
@@ -24,7 +21,7 @@
 <body id="{% block body_id %}{% endblock %}">
 <body>
     <header>
-        {% include "navmenu.html" with selected_menu_id2=selected_menu_id %}
+        {% include "navmenu.html" %}
         <div class="sheet_row_headered">
             <div class="block_item">
                 <div class="menu_item">

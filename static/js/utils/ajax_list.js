@@ -68,3 +68,85 @@ function SetPage(pagenum) {
     list_data_api();
     return false;
 }
+
+function list_data_api(Mode,Page) {
+    var $datatable = $('tbody#datatable');
+    var $js_template = $('#tmpl_table').html(); /* шаблон таблицы */
+    var $params_form = $('form#params_form'); /* форма с параметрами JSON запроса */
+
+    function Pager(limit, offset, total_count) {
+        this.limit = limit || 15;
+        this.offset = offset || 0;
+        this.total_count = total_count || 0;
+        this.total_pages = Math.ceil(this.total_count / this.limit);
+        this.current_page = Math.ceil(this.offset / this.limit) + 1
+    };
+
+
+    /* получаем данные из схемы */
+    $.ajax({
+        tape: 'POST',
+        url:  JsonDataUrl,
+        dataType: "json",
+        data: $params_form.serialize()
+    })
+    .done(function(result) {
+        /* инициализация */
+
+        /* очищаяем таблицу, если она заполнена */
+        $datatable.empty();
+
+        /* if (Page == undefined) { $('input[name="page"]').val(1); }   /* устанавливаем страницу на номер 1*/
+
+        /* предворительная обработка result, функция preprocess_result() декларируется в основном скрипте вида, необходима глобальная req_preprocess_result = 1 */
+        if (typeof req_preprocess_result != 'undefined' && req_preprocess_result == "1") {
+            preprocess_result(result); /* постобработка вынесена из шаблона в функцию*/
+        }
+
+        /* Стандартная постобработка */
+        if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
+                var el = result.results[i];
+                var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
+                $datatable.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
+            }
+        }
+        /* Постраничная навигация  */
+            var page_limit = $('input[name=limit]').val();
+            var page_offset = $('input[name=offset]').val();
+            var total_count = result.count;
+            var pager = new Pager(page_limit, page_offset, total_count);
+
+            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
+
+            /* Заполняем пейджинг */
+            listing_pager(pager.current_page, pager.total_pages);
+            $('span#total_entries > em').html(total_count);
+        })
+        .fail(function(result) { alert("Error!: "+ result)});
+        return false;
+}
+
+function ResetFormDefault(formname) {
+    document.getElementById(formname).reset();
+    list_data_api();
+    return false;
+}
+
+function input_autocomplite(input_name, url, model_name, field_name, filter_type){
+    var $input = $('input[name=' + input_name+ ']');
+    $input.autocomplete({
+        source: function(request, response){
+            $.ajax({ url: url, dataType: "json", data: { query: request.term, model: model_name, field: field_name, filter_type: filter_type}})
+                    .done(function(result)  {
+                        var suggestions = [];
+                        if (result.data && result.data.length > 0) {
+                            for ( var i = 0, data_len = result.data.length; i < data_len; i++ ) {
+                                suggestions.push(result.data[i][0]);
+                            }
+                            response(suggestions);
+                        }
+                    })
+        }
+    });
+}

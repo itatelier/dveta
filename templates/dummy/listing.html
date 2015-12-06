@@ -2,7 +2,11 @@
 {% load static from staticfiles %}
 {% block add_static %}
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
-<!-- Ajax listing   --><script type="text/javascript" src="/static/js/utils/ajax_list.js"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
 {% endblock %}
 {% block content %}
 
@@ -14,65 +18,14 @@
 
     $(document).ready(function() {
         list_data_api();
+
+        {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("name_ac", "/ac/", 'dummyapp.Dummycompanies', 'name', '__icontains');
+        {#    Виджет datepicker #}
+        $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
     });
 
-function list_data_api(Mode,Page) {
-    var $datatable = $('tbody#datatable');
-    var $js_template = $('#tmpl_table').html(); /* шаблон таблицы */
-    var $params_form = $('form#params_form'); /* форма с параметрами JSON запроса */
 
-    function Pager(limit, offset, total_count) {
-        this.limit = limit || 15;
-        this.offset = offset || 0;
-        this.total_count = total_count || 0;
-        this.total_pages = Math.ceil(this.total_count / this.limit);
-        this.current_page = Math.ceil(this.offset / this.limit) + 1
-    };
-
-
-    /* получаем данные из схемы */
-    $.ajax({
-        tape: 'POST',
-        url:  JsonDataUrl,
-        dataType: "json",
-        data: $params_form.serialize()
-    })
-    .done(function(result) {
-        /* инициализация */
-
-        /* очищаяем таблицу, если она заполнена */
-        $datatable.empty();
-
-        /* if (Page == undefined) { $('input[name="page"]').val(1); }   /* устанавливаем страницу на номер 1*/
-
-        /* предворительная обработка result, функция preprocess_result() декларируется в основном скрипте вида, необходима глобальная req_preprocess_result = 1 */
-        if (typeof req_preprocess_result != 'undefined' && req_preprocess_result == "1") {
-            preprocess_result(result); /* постобработка вынесена из шаблона в функцию*/
-        }
-
-        /* Стандартная постобработка */
-        if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
-            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
-                var el = result.results[i];
-                var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
-                $datatable.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
-            }
-        }
-        /* Постраничная навигация  */
-            var page_limit = $('input[name=limit]').val();
-            var page_offset = $('input[name=offset]').val();
-            var total_count = result.count;
-            var pager = new Pager(page_limit, page_offset, total_count);
-
-            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
-
-            /* Заполняем пейджинг */
-            listing_pager(pager.current_page, pager.total_pages);
-            $('span#total_entries > em').html(total_count);
-        })
-        .fail(function(result) { alert("Error!: "+ result)});
-        return false;
-}
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
@@ -108,15 +61,15 @@ function list_data_api(Mode,Page) {
                             <div class="input_wrapper nomargin">
                                 <legend>Наименование</legend>
                                 <div class="input_block _icon" icon="">
-                                    <input type="text" size="15">
+                                    <input type="text" size="15" class="loading" name="name_ac">
                                 </div>
                             </div>
                         </div>
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Контактное лицо</legend>
+                                <legend>Начиная с даты</legend>
                                 <div class="input_block _icon" icon="">
-                                    <input type="text" size="15">
+                                    <input type="text" size="15" name="date_after">
                                 </div>
                             </div>
                         </div>
@@ -156,8 +109,8 @@ function list_data_api(Mode,Page) {
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <div class="input_block">
-                                    <a href="#" class="textlink">Сбросить</a>
-                                    <a href="#" class="button">Найти</a>
+                                    <a href="#" class="textlink" onclick="ResetFormDefault();">Сбросить</a>
+                                    <a href="#" class="button" onclick="list_data_api();">Найти</a>
                                 </div>
                             </div>
                         </div>
@@ -183,19 +136,7 @@ function list_data_api(Mode,Page) {
                     </table>
                     {# - Основная таблица данных #}
                     {# Панель управления таблицей #}
-                    <div class="table_bottom_bar">
-                        <div id="pager_box">
-                            <span>Страница</span>
-                            <a href="#" class="arrow">←</a><a href="#" class="current">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#" class="arrow">→</a>
-                        </div>
-                        <div id="rows_box">
-                            <span id="total_entries">всего записей<em></em></span>
-                            <span>показывать</span>
-                            <a href="#" rel="limit" onClick="SetRows(20)"class="current">20</a>
-                            <a href="#" rel="limit" onClick="SetRows(50)">50</a>
-                            <a href="#" rel="limit" onClick="SetRows(100)">100</a>
-                        </div>
-                    </div>
+                    {% include 'listing_bottom_navbar.html' %}
                     {# - Панель управления таблицей #}
                 </div>
             </div>

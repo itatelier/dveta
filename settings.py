@@ -8,6 +8,20 @@ import os
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_PATH = os.path.dirname(__file__)
 
+DATABASES = ''
+ALLOWED_HOSTS = ['*']
+TIME_ZONE = 'Europe/Moscow'
+LANGUAGE_CODE = 'ru-RU'
+DATE_FORMAT = "%d-%m-%Y"
+DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
+SITE_ID = 1
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False
+USE_THOUSAND_SEPARATOR = True
+NUMBER_GROUPING = 3
+DECIMAL_SEPARATOR = ","
+
 STATIC_ROOT = 'c:/www/vetastatic'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (ROOT_PATH + '/static',)
@@ -75,7 +89,26 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    'DATE_INPUT_FORMATS': ('%d-%m-%Y', '%Y-%m-%d'),
+    'DATE_FORMAT': "%d-%m-%Y",
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
 }
 
 WSGI_APPLICATION = 'wsgi.application'
