@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     #
     # Компании
     #
-    # url(r'^main_create/$', main_create.as_view(), name=base_path + '_create'),
+    url(r'^company_create/$', CompanyCreateForm.as_view(), name='company_create'),
     # url(r'^(?P<pk>\d+)/card/$', main_card.as_view(), name=base_path + '_main_card'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),

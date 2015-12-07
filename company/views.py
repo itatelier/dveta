@@ -12,7 +12,7 @@ from common.forms import *
 from models import *
 # from phones.models import *
 # from persons.models import *
-# from forms import *
+from forms import *
 
 from django.http import HttpResponseRedirect
 
@@ -20,48 +20,72 @@ import logging
 log = logging.getLogger('django')
 
 
-class main_list_index(TemplateView):
+class main_list_index(LoginRequiredMixin, TemplateView):
     template_name = "company/main_list_index.html"
 
-# class main_list_index(LoginRequiredMixin, TemplateView):
-#     template_name = "company/main_list_index.html"
 
-#
-# class main_create(MultiFormCreate):
-#     template_name = 'company/main_create.html'
-#     success_url = '/company/main_list/'
-#     formconf = {
-#         'company': {'formclass': CompanyEditForm},
-#         'branch': {'formclass': BranchCompanyCreateForm},
-#         'address': {'formclass': AddressEditForm}
-#     }
-#
-#     def post(self, request, *args, **kwargs):
-#         forms = self.get_forms()
-#         cform = forms['company']
-#         aform = forms['address']
-#         bform = forms['branch']
-#         if cform.is_valid() and aform.is_valid() and bform.is_valid():
-#             ''' Создаем объекты первичных форм (схраняем формы)'''
-#             company_object = cform.save()
-#             ''' Создаем объекты от зависимой формы '''
-#             address_object = aform.save(commit=False)
-#             branch_object = bform.save(commit=False)
-#             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-#             address_object.company = company_object
-#             address_object.company_main = True
-#             ''' Сохраняем зависимый объект '''
-#             address_object.save()
-#             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-#             branch_object.company = company_object
-#             branch_object.address = address_object
-#             branch_object.type = BranchTypes(pk=1)
-#             ''' Сохраняем зависимый объект '''
-#             branch_object.save()
-#             return HttpResponseRedirect(self.get_success_url())
-#         else:
-#             forms = self.get_forms()
-#             return self.render_to_response(self.get_context_data(forms=forms))
+class CompanyCreateForm(MultiFormCreate):
+    template_name = 'company/company_create.html'
+    success_url = '/'
+    formconf = {
+        'company': {'formclass': CompanyEditForm},
+        # 'branch': {'formclass': BranchCompanyCreateForm},
+        # 'address': {'formclass': AddressEditForm}
+    }
+
+    def post(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        cform = forms['company']
+        # aform = forms['address']
+        # bform = forms['branch']
+        if cform.is_valid():
+            ''' Создаем объекты первичных форм (схраняем формы)'''
+            company_object = cform.save()
+            ''' Создаем объекты от зависимой формы '''
+            # address_object = aform.save(commit=False)
+            # branch_object = bform.save(commit=False)
+            ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+            # address_object.company = company_object
+            # address_object.company_main = True
+            ''' Сохраняем зависимый объект '''
+            # address_object.save()
+            ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+            # branch_object.company = company_object
+            # branch_object.address = address_object
+            # branch_object.type = BranchTypes(pk=1)
+            ''' Сохраняем зависимый объект '''
+            # branch_object.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            forms = self.get_forms()
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+    # def post(self, request, *args, **kwargs):
+    #     forms = self.get_forms()
+    #     cform = forms['company']
+    #     aform = forms['address']
+    #     bform = forms['branch']
+    #     if cform.is_valid() and aform.is_valid() and bform.is_valid():
+    #         ''' Создаем объекты первичных форм (схраняем формы)'''
+    #         company_object = cform.save()
+    #         ''' Создаем объекты от зависимой формы '''
+    #         address_object = aform.save(commit=False)
+    #         branch_object = bform.save(commit=False)
+    #         ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+    #         address_object.company = company_object
+    #         address_object.company_main = True
+    #         ''' Сохраняем зависимый объект '''
+    #         address_object.save()
+    #         ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+    #         branch_object.company = company_object
+    #         branch_object.address = address_object
+    #         branch_object.type = BranchTypes(pk=1)
+    #         ''' Сохраняем зависимый объект '''
+    #         branch_object.save()
+    #         return HttpResponseRedirect(self.get_success_url())
+    #     else:
+    #         forms = self.get_forms()
+    #         return self.render_to_response(self.get_context_data(forms=forms))
 #
 #
 # class main_edit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
