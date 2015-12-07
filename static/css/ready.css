@@ -351,9 +351,13 @@ table.listing_grid > thead > tr > th > a {
     padding: 0.7rem 0.5rem 0.4rem 0.5rem;
     border-bottom: 1px #B8CBD0 solid;
     min-width: 40px;
+    cursor: default;
 }
-table.listing_grid > thead > tr > th > a:after {
-    visibility: hidden;
+table.listing_grid > thead > tr > th > a.sortable {
+    cursor: pointer;
+}
+
+table.listing_grid > thead > tr > th > a.sortable:after {
     content: '';
     font-size: 1.2rem;
     font-weight: normal;
@@ -361,13 +365,10 @@ table.listing_grid > thead > tr > th > a:after {
     margin-left: 0.3rem;
     font-family: 'FontAwesome';
     font-style: normal;
-    color: #FE659C;
+    color: #B8CBD0;
 }
-table.listing_grid > thead > tr > th > a:hover:after {
-    color: #FE659C;
-    visibility: visible;
-}
-table.listing_grid > thead > tr > th > a.sort:after {  visibility: visible;  }
+table.listing_grid > thead > tr > th > a.sortable:hover:after { color: #FE659C;  }
+table.listing_grid > thead > tr > th > a.sortable.active:after {  color: #FE659C;  }
 table.listing_grid > tbody > tr {}
 table.listing_grid > tbody > tr:hover {
     background-color: #ffffff;

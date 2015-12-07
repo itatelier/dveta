@@ -168,7 +168,7 @@ div.input_block._icon:after {
     width: 1.8rem;
     display: inline-block;
     content: attr(icon);
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: normal;
     text-decoration: none;
     margin-left: -2rem;

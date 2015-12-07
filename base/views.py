@@ -4,11 +4,7 @@ from django.views.generic import TemplateView, View
 from common.mixins import JsonViewMix
 from django.http import HttpResponse
 from django.db.models import Count
-# from django.db.models.loading import get_model
 from django.apps import apps
-import json
-import simplejson
-from django.contrib.auth.views import redirect_to_login
 import logging
 # from company.models import *
 

@@ -150,3 +150,28 @@ function input_autocomplite(input_name, url, model_name, field_name, filter_type
         }
     });
 }
+
+function SortUpdate(el) {
+    var $Thead = $( "table.listing_grid thead a.sortable" );    // Очищаем все ссылки в заголовках от отметки об активном фильтре
+        $Thead.removeClass('active');
+    $(el).addClass("active");                                   // Устанавливаем класс активный на текущий заголовок
+    var SortParam = $(el).attr("rel");
+    var $OrderParamInput = $('input[name="ordering"]');
+    var CurrentOrderField = $OrderParamInput.val();
+    var regex = new RegExp('^(-).*');
+        console.log("SortParam: " + SortParam + " CurrentOrderField: " + CurrentOrderField);
+    if (CurrentOrderField.search(SortParam) > -1)  {
+        console.log("Search > - 1");
+        if (CurrentOrderField.search(/^-/) > -1) {
+            console.log("- found");
+            $OrderParamInput.val(SortParam);
+        } else {
+            $OrderParamInput.val("-" + SortParam);
+        }
+    } else {
+        console.log("Sort param not found");
+        $OrderParamInput.val(SortParam);
+    }
+    list_data_api();
+    return false;
+}

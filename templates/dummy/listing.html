@@ -13,8 +13,8 @@
 
 <script>
     var base_url = '/company';
-    var JsonDataUrl = "/dummy/companies/";
-    var req_preprocess_result = "0";
+    var JsonDataUrl = "/dummy/api/companies/";
+    var req_preprocess_result = "1";
 
     $(document).ready(function() {
         list_data_api();
@@ -23,9 +23,17 @@
         input_autocomplite("name_ac", "/ac/", 'dummyapp.Dummycompanies', 'name', '__icontains');
         {#    Виджет datepicker #}
         $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
+        {#      Сортировка по заголовкам столбцов   #}
+        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
+
     });
 
-
+        {#  постобработка результата AJAX запроса #}
+        function preprocess_result(result) {
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                result.results[i].date_add = date_json2hr(result.results[i].date_add);
+            }
+        }
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
@@ -36,7 +44,7 @@
         <td>{{ org_type.val }}
         <td>{{ rel_type }}</td>
         <td class="green">{{ status }}</td>
-        <td>{{ date_add }}</td>
+        <td>{{ date_add.date }}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -53,7 +61,7 @@
                     {# Форма сортировки данных #}
                     <form method="post" name="params_form" id="params_form">
                         {# скрытые фильтры #}
-                        <input type="hidden" name="order_by" value="id"/>
+                        <input type="hidden" name="ordering" value="id"/>
                         <input type="hidden" name="offset" value="0"/>
                         <input type="hidden" name="limit" value="20"/>
                         {# отображенные фильтры #}
@@ -68,7 +76,7 @@
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <legend>Начиная с даты</legend>
-                                <div class="input_block _icon" icon="">
+                                <div class="input_block _icon" icon="">
                                     <input type="text" size="15" name="date_after">
                                 </div>
                             </div>
@@ -78,12 +86,12 @@
                                 <legend>Контактное лицо</legend>
                                 <div class="input_block">
                                     <select name="status">
-                                        <option value="1">любой статус</option>
-                                        <option value="2">новый</option>
-                                        <option value="3">на оформлении</option>
-                                        <option value="4">в работе</option>
-                                        <option value="5">заблокирован</option>
-                                        <option value="6">архивный</option>
+                                        <option value="">любой статус</option>
+                                        <option value="1">новый</option>
+                                        <option value="2">на оформлении</option>
+                                        <option value="3">в работе</option>
+                                        <option value="4">заблокирован</option>
+                                        <option value="5">архивный</option>
                                     </select>
                                 </div>
                             </div>
@@ -92,9 +100,9 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Тип клиента</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="g1"><p>Любой тип</p></label>
-                                    <label><input type="radio" name="g1"><p>Фирма</p></label>
-                                    <label><input type="radio" name="g1"><p>Частник</p></label>
+                                    <label><input type="radio" name="org_type" value=""><p>Любой тип</p></label>
+                                    <label><input type="radio" name="org_type" value="1"><p>Частник</p></label>
+                                    <label><input type="radio" name="org_type" value="2"><p>Фирма</p></label>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +117,7 @@
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <div class="input_block">
-                                    <a href="#" class="textlink" onclick="ResetFormDefault();">Сбросить</a>
+                                    <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
                                     <a href="#" class="button" onclick="list_data_api();">Найти</a>
                                 </div>
                             </div>
@@ -122,13 +130,13 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" rel="">Наименование</a></th>
-                                <th><a href="#" rel="" class="sort">Описание</a></th>
+                                <th><a href="#" class="sortable active" rel="id">Наименование</a></th>
+                                <th><a href="#" rel="" >Описание</a></th>
                                 <th><a href="#" rel="">Ссылка</a></th>
-                                <th><a href="#" rel="">Связь preload</a></th>
-                                <th><a href="#" rel="">Связь</a></th>
-                                <th><a href="#" rel="">Статус</a></th>
-                                <th><a href="#" rel="">Дата</a></th>
+                                <th><a href="#" class="sortable" rel="org_type">Связь [preload]</a></th>
+                                <th><a href="#" class="sortable" rel="rel_type">Орг.тип</a></th>
+                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
+                                <th><a href="#" class="sortable" rel="date_add">Дата</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">
