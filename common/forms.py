@@ -17,9 +17,14 @@ log = logging.getLogger('django')
 
 
 class ModelChoiceFieldNameLabel(ModelChoiceField):
+    # Возвращаем только определенное поле из таблицы для вариантов значений Select
+    def __init__(self, label_field, *args, **kwargs):
+        super(ModelChoiceFieldNameLabel, self).__init__(*args, **kwargs)
+        self.label_field = label_field
 
-    def label_from_instance(self, obj):
-        return obj.name
+    def label_from_instance(self, obj ):
+        if self.label_field is not None:
+            return getattr(obj, self.label_field)
 
 
 class MultiFormCreate(FormMixin, TemplateResponseMixin, View):

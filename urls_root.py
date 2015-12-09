@@ -8,6 +8,7 @@ urlpatterns = [
     url(r"^$", default.Index.as_view(), name='index'),
     url(r"^pg/card/", default.PlaygroundCard.as_view(), name='playground_card'),
     url(r"^pg/listing/", default.PlaygroundListing.as_view(), name='playground_listing'),
+    url(r"^pg/forms/", default.PlaygroundForms.as_view(), name='playground_forms'),
 
     #REST
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

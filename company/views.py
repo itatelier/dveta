@@ -60,6 +60,13 @@ class CompanyCreateForm(MultiFormCreate):
             forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
+        context_data.update({
+            'some_strange_variable': 42,
+        })
+        return context_data
+
     # def post(self, request, *args, **kwargs):
     #     forms = self.get_forms()
     #     cform = forms['company']

@@ -10,8 +10,8 @@ log = logging.getLogger('django')
 
 
 class CompanyEditForm(ModelForm):
-    name = CharField(label="Наименование", required=True, help_text="Краткое наименование компании")
-    org_type = ModelChoiceFieldNameLabel(queryset=CompanyOrgTypes.objects.all(), label="Тип компании", empty_label=None, initial=3)
+    name = CharField(label="Наименование", required=True, help_text="Краткое наименование клента, без организационной формы")
+    org_type = ModelChoiceFieldNameLabel(queryset=CompanyOrgTypes.objects.all(), label_field='val', empty_label=None, initial=3)
     description = CharField(label="Описание компании", required=False, widget=forms.Textarea(attrs={'cols': 60, 'rows':2}))
     www = CharField(label="WEB сайт", required=False, widget=forms.TextInput(attrs={'size': 50}))
 

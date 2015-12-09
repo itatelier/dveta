@@ -28,7 +28,7 @@ class CompanyFilters(django_filters.FilterSet):
 
 class CompanyViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter)
-    queryset = DummyCompanies.objects.all()
+    queryset = DummyCompanies.objects.select_related('org_type', 'rel_type', 'status')
     serializer_class = CompanySerializer
     filter_class = CompanyFilters
     search_fields = ('www', 'description')
