@@ -32,13 +32,17 @@
                     <hr>
                 </div>
                 <div class="data_grid_medium">
+                            <div class="sheet_switch_menu">
+                                <ul>
+                                    <li><a href="#" class="active">Частник</a></li>
+                                    <li><a href="#">Фирма</a></li>
+                                </ul>
+                            </div>
                     {# Форма нового объекта #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# Скрытые поля #}
                         {% for hidden in forms.company.hidden_fields %}{{ hidden }}{% endfor %}
-                        <div class="form_row">
-                            <h2 class="blue">Основная информация {{ some_strange_variable }}</h2>
-                        </div>
+                        <h2 class="blue">Основная информация {{ some_strange_variable }}</h2>
                         {# Input Text Name #}
                         <div class="form_row">
                             <div class="input_wrapper">
@@ -54,9 +58,9 @@
                         {# Select #}
                         <div class="form_row">
                            <div class="input_wrapper">
-                                <legend>Тип клиента</legend>
+                                <legend>Источник привлечения</legend>
                                 <div class="input_block ">
-                                     {{ forms.company.org_type }}
+                                     {{ forms.company.attr_source }}
                                 </div>
                             </div>
                         </div>

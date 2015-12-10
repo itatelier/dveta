@@ -81,3 +81,33 @@ div.sheet_block_tabbed {
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
 }
 div.sheet_block_tabbed h2 { font-size: 2rem;}
+
+div.sheet_switch_menu {}
+div.sheet_switch_menu > ul {
+    display: flex;
+    flex-direction: row;
+	justify-content: flex-start;
+    list-style: none;
+    margin: 1rem 0 2rem;
+}
+div.sheet_switch_menu > ul > li {
+    /*flex: 0 1 120px;*/
+    margin: 0;
+    padding: 0;
+}
+div.sheet_switch_menu > ul > li > a {
+    padding: 0.1rem 0.5rem 0.1rem 0.5rem;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #9b9b9b;
+}
+div.sheet_switch_menu > ul > li > a:hover {
+    color: #FE659C;
+}
+div.sheet_switch_menu > ul > li > a.active {
+    border-bottom: 3px solid #FE659C;
+    color: #4D4D4D;
+}

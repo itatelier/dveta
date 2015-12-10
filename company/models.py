@@ -2,6 +2,20 @@
 
 from django.db import models
 
+
+class CompanyAttractionSource(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=255L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'company_attraction_source'
+        managed=False
+        verbose_name_plural = 'Компании / Источник привлечения'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
 class CompanyRelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=255L, null=False, blank=False)

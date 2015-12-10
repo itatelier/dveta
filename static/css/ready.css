@@ -30,6 +30,7 @@ a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 
 h2 { font-size: 1.6rem; }
 table { border-spacing: 0;}
+form { margin: 1rem;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
 .blue { color: #009DDA !important; }
