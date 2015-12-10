@@ -39,7 +39,7 @@
                         <div class="form_row">
                             <h2 class="blue">Основная информация {{ some_strange_variable }}</h2>
                         </div>
-                        {# Input Text #}
+                        {# Input Text Name #}
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.company.name.label }}<p>{{ forms.company.name.help_text }}</p></legend>
@@ -57,6 +57,18 @@
                                 <legend>Тип клиента</legend>
                                 <div class="input_block ">
                                      {{ forms.company.org_type }}
+                                </div>
+                            </div>
+                        </div>
+                        {# Input Text Description #}
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.company.description.label }}<p>{{ forms.company.description.help_text }}</p></legend>
+                                <div class="input_block reuired ">
+                                    <input type="text" name="company-name">
+                                    {% for error in forms.company.name.errors %}
+                                    <em>{{ error|escape }}</em>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
