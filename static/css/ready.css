@@ -433,10 +433,10 @@ div.table_bottom_bar i {
 div.sheet > div.left_bar {
     flex: 0 0 180px;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0;
 }
 div.sheet div.left_bar.visible {  background-color: #E6E3DA;  }
-div.left_bar input[type=text], div.left_bar select { width: 150px;}
+div.left_bar input[type=text], div.left_bar select { width: 135px;}
 div.left_bar > ul {
     display: flex;
     flex-direction: column;

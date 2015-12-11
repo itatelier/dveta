@@ -38,9 +38,16 @@ class CompanyCreateForm(MultiFormCreate):
         cform = forms['company']
         # aform = forms['address']
         # bform = forms['branch']
+        # log.info("*** Cheking form... %s" % (forms.company,))
+        # log.info("*** Form is valid: .. %s" % (cform.is_valid()))
+        # for err in cform.non_field_errors:
+        #     log.info("*** Error: " + err)
         if cform.is_valid():
             ''' Создаем объекты первичных форм (схраняем формы)'''
             company_object = cform.save()
+            # log.info("*** Form saved!")
+            # Companies.objects.get(pk=2)
+            # company_object.org_type = CompanyOrgTypes(pk=company_object)
             ''' Создаем объекты от зависимой формы '''
             # address_object = aform.save(commit=False)
             # branch_object = bform.save(commit=False)
@@ -57,15 +64,19 @@ class CompanyCreateForm(MultiFormCreate):
             # branch_object.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
+            for form in forms:
+                for field in forms[form]:
+                    for err in field.errors:
+                        log.warn("Field %s Err: %s" % (field.name, err))
             forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
-        context_data.update({
-            'some_strange_variable': 42,
-        })
-        return context_data
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
+    #     context_data.update({
+    #         'some_strange_variable': 42,
+    #     })
+    #     return context_data
 
     # def post(self, request, *args, **kwargs):
     #     forms = self.get_forms()

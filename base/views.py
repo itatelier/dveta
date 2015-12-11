@@ -37,6 +37,7 @@ class PlaygroundListing(TemplateView):
 class PlaygroundForms(TemplateView):
     template_name = "pg/forms.html"
 
+
 class ac(JsonViewMix):
     param_names = ['model', 'field', 'query', 'filter_type']
 

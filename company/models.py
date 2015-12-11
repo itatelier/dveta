@@ -59,6 +59,7 @@ class Companies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.CharField(max_length=255, blank=True, null=True)
     www = models.CharField(max_length=255L, blank=True)
     org_type = models.ForeignKey('CompanyOrgTypes', null=False, blank=False)
     rel_type = models.ForeignKey('CompanyRelTypes', null=False, blank=False)
