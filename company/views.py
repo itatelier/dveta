@@ -11,7 +11,7 @@ from common.forms import *
 
 from models import *
 # from phones.models import *
-# from persons.models import *
+from person.forms import *
 from forms import *
 
 from django.http import HttpResponseRedirect
@@ -30,7 +30,9 @@ class CompanyCreateForm(MultiFormCreate):
     formconf = {
         'company': {'formclass': CompanyCreateForm},
         'branch': {'formclass': BranchCompanyCreateForm},
-        'address': {'formclass': AddressEditForm}
+        'address': {'formclass': AddressEditForm},
+        'person': {'formclass': PersonCompanyCreateForm},
+        'contact': {'formclass': ContactFirmCreateForm},
     }
 
     def post(self, request, *args, **kwargs):
@@ -38,27 +40,36 @@ class CompanyCreateForm(MultiFormCreate):
         cform = forms['company']
         aform = forms['address']
         bform = forms['branch']
+        pform = forms['person']
+        contform = forms['contact']
         if cform.is_valid():
-            ''' Создаем объекты первичных форм (сохраняем формы)'''
+            ''' Создаем объекты форм (не сохраняя в бд)'''
             company_object = cform.save(commit=False)
+            address_object = aform.save(commit=False)
+            branch_object = bform.save(commit=False)
+            person_object = pform.save(commit=False)
+            contact_object = contform.save(commit=False)
             ''' Зависимые поля, присваеваем инстанс со значением '''
             company_object.rel_type = CompanyRelTypes(pk=2)
             company_object.org_type = CompanyOrgTypes(pk=2)
             company_object.status = CompanyStatus(pk=1)
+            ''' Сохраняем готовые объекты форм, что бы получить ID объектов и назначить на следующий объект формы'''
             company_object.save()
-            ''' Создаем объекты от зависимой формы '''
-            address_object = aform.save(commit=False)
-            branch_object = bform.save(commit=False)
-            ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-            ''' Сохраняем зависимый объект '''
             address_object.save()
+            person_object.save()
             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-            branch_object.company = company_object
-            branch_object.address = address_object
             branch_object.company_main = True
             branch_object.type = BranchTypes(pk=1)
-            ''' Сохраняем зависимый объект '''
+            contact_object.is_work = True
+            ''' Создаем объекты от зависимой формы '''
+            branch_object.company = company_object
+            branch_object.address = address_object
+            contact_object.person = person_object
+            contact_object.company = company_object
+            ''' Сохраняем объекты форм в БД '''
             branch_object.save()
+            contact_object.save()
+            ''' Возвращаем урл страницы успеха'''
             return HttpResponseRedirect(self.get_success_url())
         else:
             for form in forms:

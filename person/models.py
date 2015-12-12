@@ -1,3 +1,5 @@
+# -*- coding: utf8 -*
+
 from django.db import models
 from django.core.urlresolvers import reverse
 
@@ -29,7 +31,7 @@ class Contacts(models.Model):
     email = models.CharField(max_length=255L, blank=True, null=True)
     comment = models.CharField(max_length=255L, blank=True, null=True)
     phonenumber = models.CharField(max_length=255L, blank=True, null=True)
-    is_work = models.BooleanField(null=True, blank=True)
+    is_work = models.BooleanField(default=0, editable=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='company')

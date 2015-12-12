@@ -44,7 +44,7 @@ class BranchCompanyCreateForm(ModelForm):
 
 
 class AddressEditForm(ModelForm):
-    city = CharField(label="Населенный пункт", required=True)
+    city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25}))
     postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5}))
     street = CharField(label="Улица", required=True)
     app = CharField(label="Дом", required=True, widget=TextInput(attrs={'size': 2}))

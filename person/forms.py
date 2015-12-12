@@ -19,7 +19,7 @@ class PersonEditForm(ModelForm):
 
 
 class PersonCompanyCreateForm(ModelForm):
-    nick_name = CharField(label="Контактное лицо", required=False, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}), help_text="Краткое наименование отделения")
+    nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}), help_text="Фамилия или имя, а лучше все сразу!")
 
     class Meta:
         model = Persons
@@ -27,10 +27,10 @@ class PersonCompanyCreateForm(ModelForm):
 
 
 class ContactFirmCreateForm(ModelForm):
-    role = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    email = CharField(label="Имя", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    comment = CharField(label="Отчество", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    phonenumber = CharField(label="Отчество", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
+    role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
+    email = CharField(label="email", required=False, widget=forms.TextInput(attrs={'size': 40, 'maxlength': 60}))
+    comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 9, 'maxlength': 50}))
+    phonenumber = IntegerField(label="Номер телефона", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts

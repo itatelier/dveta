@@ -51,7 +51,8 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'rest_framework',
     'dummyapp',
-    'company'
+    'company',
+    'person'
 )
 
 MIDDLEWARE_CLASSES = (
