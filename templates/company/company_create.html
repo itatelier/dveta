@@ -42,9 +42,6 @@
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# ------------ Company form ------------#}
                         {# Скрытые поля #}
-                        <input type="hidden" name="company-org_type" value="2">
-                        <input type="hidden" name="company-rel_type" value="2">
-                        <input type="hidden" name="company-status" value="1">
                         <input type="hidden" name="branch-name" value="Основной офис">
                         <h2 class="blue">Основная информация {{ some_strange_variable }}</h2>
                         {# Name Input Text  #}
@@ -95,9 +92,7 @@
                         </div>
                         {# ------------ Branch form ------------#}
                         {# Header #}
-                        <div class="form_row">
-                            <h2 class="blue">Основное отделение (офис)</h2>
-                        </div>
+                        <div class="form_row"><h2 class="blue">Основное отделение (офис)</h2></div>
                         {# Branch Switch #}
                         <div class="form_row">
                             <div class="input_wrapper">
@@ -107,10 +102,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form_row">
-                            <h2 class="blue">Адрес основного офиса</h2>
-                        </div>
                         {# --------- Address form --------- #}
+                        <div class="form_row"><h2 class="blue">Адрес основного офиса</h2></div>
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.address.city.label }}</legend>
@@ -148,6 +141,15 @@
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.address.comment.label }}</legend>
+                                <div class="input_block">
+                                    {{ forms.address.comment }}{% for error in forms.address.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {# --------- Contact form --------- #}
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.person.comment.label }}</legend>
                                 <div class="input_block">
                                     {{ forms.address.comment }}{% for error in forms.address.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                 </div>

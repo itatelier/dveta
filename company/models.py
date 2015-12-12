@@ -154,45 +154,7 @@ class Addresses(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s, ул %s, дом %s %s' % (self.id, self.city, self.street, self.app, self.app_extra,)
-#
-#
-# class BranchTypes(models.Model):
-#     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     name = models.CharField(max_length=200L, null=False, blank=False)
-#
-#     class Meta:
-#         db_table = 'branch_types'
-#         verbose_name_plural = 'Отделения / Типы'
-#
-#     def __unicode__(self):
-#         return u'[%s] %s' % (self.id, self.name)
-#
-#
-# class MainBranchManager(models.Manager):
-#     def get_queryset(self):
-#         return super(MainBranchManager, self).get_queryset().branchmain.all()
-#
-#
-# class Branches(models.Model):
-#     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     name = models.CharField(max_length=255L)
-#     type = models.ForeignKey('BranchTypes', null=False, blank=True)
-#     company = models.ForeignKey('Companies', null=False, blank=True, editable=True, related_name='branches')
-#     address = models.OneToOneField('Addresses', null=False, blank=True, editable=True)
-#     date_add = models.DateTimeField(auto_now_add=True)
-#     date_update = models.DateTimeField(auto_now=True)
-#     description = models.TextField(blank=True, null=True)
-#     is_active = models.BooleanField(default=1, editable=False)
-#
-#     class Meta:
-#         db_table = 'branches'
-#         verbose_name_plural = 'Отделения'
-#
-#     def __unicode__(self):
-#         return u'[%s] %s' % (self.id, self.name)
-#
-#     def main_phone(self):
-#         return self.branch_phone.filter(branch_main=1)
+
 #
 #
 # class ContragentTypes(models.Model):

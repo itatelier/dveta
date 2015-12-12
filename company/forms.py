@@ -9,19 +9,19 @@ import logging
 log = logging.getLogger('django')
 
 
-class CompanyEditForm(ModelForm):
+class CompanyCreateForm(ModelForm):
     name = CharField(label="Наименование", required=True, help_text="Краткое наименование клента, простое, как \"Утюг\"")
-    description = CharField(label="Род деятельности", required=True, widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
+    description = CharField(label="Род деятельности", required=True, help_text="Перечень основных видов деятельности", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
-    attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label=None, initial=1)
-    org_type = ModelChoiceField(queryset=CompanyOrgTypes.objects.all(), widget=HiddenInput())
-    rel_type = ModelChoiceField(queryset=CompanyRelTypes.objects.all(), widget=HiddenInput())
-    status = ModelChoiceField(queryset=CompanyStatus.objects.all())
+    attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label=None, initial=1, help_text="От куда клиент узнал о нас?")
+    # org_type = ModelChoiceField(queryset=CompanyOrgTypes.objects.all(), widget=HiddenInput())
+    # rel_type = ModelChoiceField(queryset=CompanyRelTypes.objects.all(), widget=HiddenInput())
+    # status = ModelChoiceField(queryset=CompanyStatus.objects.all())
 
     class Meta:
         model = Companies
         required_css_class = 'required'
-        fields = ('name', 'attr_source', 'description', 'comment', 'org_type', 'rel_type', 'status')
+        fields = ('name', 'attr_source', 'description', 'comment')
 
 
 class BranchEditForm(ModelForm):
@@ -45,10 +45,10 @@ class BranchCompanyCreateForm(ModelForm):
 
 class AddressEditForm(ModelForm):
     city = CharField(label="Населенный пункт", required=True)
-    postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 6}))
+    postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5}))
     street = CharField(label="Улица", required=True)
-    app = CharField(label="Дом", required=True, widget=TextInput(attrs={'size': 4}))
-    app_extra = CharField(label="Корпус Строение", required=False, widget=TextInput(attrs={'size': 4}))
+    app = CharField(label="Дом", required=True, widget=TextInput(attrs={'size': 2}))
+    app_extra = CharField(label="Корпус / Строение", required=False, widget=TextInput(attrs={'size': 2}))
     comment = CharField(label="Примечание к адресу", required=False)
     # exclude = ('company',)
 

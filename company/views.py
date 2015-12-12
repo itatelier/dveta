@@ -28,7 +28,7 @@ class CompanyCreateForm(MultiFormCreate):
     template_name = 'company/company_create.html'
     success_url = '/'
     formconf = {
-        'company': {'formclass': CompanyEditForm},
+        'company': {'formclass': CompanyCreateForm},
         'branch': {'formclass': BranchCompanyCreateForm},
         'address': {'formclass': AddressEditForm}
     }
@@ -40,7 +40,12 @@ class CompanyCreateForm(MultiFormCreate):
         bform = forms['branch']
         if cform.is_valid():
             ''' Создаем объекты первичных форм (сохраняем формы)'''
-            company_object = cform.save()
+            company_object = cform.save(commit=False)
+            ''' Зависимые поля, присваеваем инстанс со значением '''
+            company_object.rel_type = CompanyRelTypes(pk=2)
+            company_object.org_type = CompanyOrgTypes(pk=2)
+            company_object.status = CompanyStatus(pk=1)
+            company_object.save()
             ''' Создаем объекты от зависимой формы '''
             address_object = aform.save(commit=False)
             branch_object = bform.save(commit=False)
@@ -50,7 +55,7 @@ class CompanyCreateForm(MultiFormCreate):
             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
             branch_object.company = company_object
             branch_object.address = address_object
-            branch_object.company_main = 1
+            branch_object.company_main = True
             branch_object.type = BranchTypes(pk=1)
             ''' Сохраняем зависимый объект '''
             branch_object.save()
