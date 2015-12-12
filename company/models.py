@@ -48,7 +48,7 @@ class CompanyStatus(models.Model):
 
     class Meta:
         db_table = 'company_status'
-        managed=False
+        managed = False
         verbose_name_plural = 'Компании / Статусы'
 
     def __unicode__(self):
@@ -68,7 +68,7 @@ class Companies(models.Model):
     date_update = models.DateTimeField(auto_now=True)
 
 
-    objects = models.Manager()
+    # objects = models.Manager()
     #main_branch = MainBranchManager()
     #is_active = models.CharField(max_length=255L, default=1, editable=False)
 
@@ -78,6 +78,23 @@ class Companies(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.name)
+
+
+'''
+Branches
+'''
+
+
+class BranchTypes(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'branch_types'
+        verbose_name_plural = 'Отделения / Типы'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
 
     #def json(self):
     #    return {
@@ -91,27 +108,52 @@ class Companies(models.Model):
     #        'mainphone': [field.phone_number() for field in self.company_phone.all()]
     #    }
 
-#
-# class Addresses(models.Model):
-#     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     company = models.ForeignKey('Companies', null=False, blank=True, related_name='address')
-#     # branch = models.ForeignKey('Branches', null=False, blank=True, related_name='address')
-#     postalcode = models.IntegerField(max_length=255L, null=True, blank=True)
-#     city = models.CharField(max_length=255L, null=False, blank=False)
-#     street = models.CharField(max_length=255L, null=False, blank=False)
-#     app = models.CharField(max_length=255L, null=True, blank=True)
-#     app_extra = models.CharField(max_length=255L, blank=True, null=True)
-#     comment = models.TextField(blank=True, null=True)
-#     date_add = models.DateTimeField(auto_now_add=True)
-#     date_update = models.DateTimeField(auto_now=True)
-#     company_main = models.BooleanField(default=False, editable=False)
-#
-#     class Meta:
-#         db_table = 'addresses'
-#         verbose_name_plural = 'Адреса'
-#
-#     def __unicode__(self):
-#         return u'[%s] %s, ул %s, дом %s %s' % (self.id, self.city, self.street, self.app, self.app_extra,)
+
+class Branches(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L)
+    type = models.ForeignKey('BranchTypes', null=False, blank=True)
+    company = models.ForeignKey('Companies', null=False, blank=True, editable=True, related_name='branches')
+    address = models.OneToOneField('Addresses', null=False, blank=True, editable=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=1, editable=False)
+    company_main = models.BooleanField(default=0, editable=False)
+
+    class Meta:
+        db_table = 'branches'
+        verbose_name_plural = 'Отделения'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.name)
+
+    def main_phone(self):
+        return self.branch_phone.filter(branch_main=1)
+
+'''
+Addresses
+'''
+
+
+class Addresses(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    # branch = models.ForeignKey('Branches', null=False, blank=True, related_name='address')
+    postalcode = models.IntegerField(null=True, blank=True)
+    city = models.CharField(max_length=255L, null=False, blank=False)
+    street = models.CharField(max_length=255L, null=False, blank=False)
+    app = models.CharField(max_length=255L, null=True, blank=True)
+    app_extra = models.CharField(max_length=255L, blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'addresses'
+        verbose_name_plural = 'Адреса'
+
+    def __unicode__(self):
+        return u'[%s] %s, ул %s, дом %s %s' % (self.id, self.city, self.street, self.app, self.app_extra,)
 #
 #
 # class BranchTypes(models.Model):

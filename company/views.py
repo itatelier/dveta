@@ -29,39 +29,31 @@ class CompanyCreateForm(MultiFormCreate):
     success_url = '/'
     formconf = {
         'company': {'formclass': CompanyEditForm},
-        # 'branch': {'formclass': BranchCompanyCreateForm},
-        # 'address': {'formclass': AddressEditForm}
+        'branch': {'formclass': BranchCompanyCreateForm},
+        'address': {'formclass': AddressEditForm}
     }
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
         cform = forms['company']
-        # aform = forms['address']
-        # bform = forms['branch']
-        # log.info("*** Cheking form... %s" % (forms.company,))
-        # log.info("*** Form is valid: .. %s" % (cform.is_valid()))
-        # for err in cform.non_field_errors:
-        #     log.info("*** Error: " + err)
+        aform = forms['address']
+        bform = forms['branch']
         if cform.is_valid():
-            ''' Создаем объекты первичных форм (схраняем формы)'''
+            ''' Создаем объекты первичных форм (сохраняем формы)'''
             company_object = cform.save()
-            # log.info("*** Form saved!")
-            # Companies.objects.get(pk=2)
-            # company_object.org_type = CompanyOrgTypes(pk=company_object)
             ''' Создаем объекты от зависимой формы '''
-            # address_object = aform.save(commit=False)
-            # branch_object = bform.save(commit=False)
+            address_object = aform.save(commit=False)
+            branch_object = bform.save(commit=False)
             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-            # address_object.company = company_object
-            # address_object.company_main = True
             ''' Сохраняем зависимый объект '''
-            # address_object.save()
+            address_object.save()
             ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-            # branch_object.company = company_object
-            # branch_object.address = address_object
-            # branch_object.type = BranchTypes(pk=1)
+            branch_object.company = company_object
+            branch_object.address = address_object
+            branch_object.company_main = 1
+            branch_object.type = BranchTypes(pk=1)
             ''' Сохраняем зависимый объект '''
-            # branch_object.save()
+            branch_object.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             for form in forms:
