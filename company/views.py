@@ -35,7 +35,18 @@ class CompanyCreateForm(MultiFormCreate):
         'contact': {'formclass': ContactFirmCreateForm},
     }
 
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
+    #     context_data.update({
+    #         'branch_exist': self.request.POST.get('branch_exist', None),
+    #         'contact_exist': self.request.POST.get('contact_exist', None),
+    #     })
+
     def post(self, request, *args, **kwargs):
+        branch_exist = request.POST.get('branch_exist', None)
+        ''' Если параметра нет в POST, значение будет пустым, если есть но без value, будет None '''
+        contact_exist = request.POST.get('contact_exist', None)
+        log.info("Branch exist value [%s] Person exist value [%s]" % (branch_exist, contact_exist))
         forms = self.get_forms()
         cform = forms['company']
         aform = forms['address']
@@ -43,34 +54,65 @@ class CompanyCreateForm(MultiFormCreate):
         pform = forms['person']
         contform = forms['contact']
         if cform.is_valid():
+            log.info("cform valid!")
             ''' Создаем объекты форм (не сохраняя в бд)'''
             company_object = cform.save(commit=False)
-            address_object = aform.save(commit=False)
-            branch_object = bform.save(commit=False)
-            person_object = pform.save(commit=False)
-            contact_object = contform.save(commit=False)
             ''' Зависимые поля, присваеваем инстанс со значением '''
             company_object.rel_type = CompanyRelTypes(pk=2)
             company_object.org_type = CompanyOrgTypes(pk=2)
             company_object.status = CompanyStatus(pk=1)
             ''' Сохраняем готовые объекты форм, что бы получить ID объектов и назначить на следующий объект формы'''
-            company_object.save()
-            address_object.save()
-            person_object.save()
-            ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-            branch_object.company_main = True
-            branch_object.type = BranchTypes(pk=1)
-            contact_object.is_work = True
-            ''' Создаем объекты от зависимой формы '''
-            branch_object.company = company_object
-            branch_object.address = address_object
-            contact_object.person = person_object
-            contact_object.company = company_object
-            ''' Сохраняем объекты форм в БД '''
-            branch_object.save()
-            contact_object.save()
-            ''' Возвращаем урл страницы успеха'''
-            return HttpResponseRedirect(self.get_success_url())
+            if branch_exist and not contact_exist and aform.is_valid() and bform.is_valid():
+                log.info("Branch None, person exists!")
+                address_object = aform.save(commit=False)
+                branch_object = bform.save(commit=False)
+                company_object.save()
+                address_object.save()
+                ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+                branch_object.company_main = True
+                branch_object.type = BranchTypes(pk=1)
+                ''' Создаем объекты от зависимой формы '''
+                branch_object.company = company_object
+                branch_object.address = address_object
+                ''' Возвращаем урл страницы успеха'''
+                return HttpResponseRedirect(self.get_success_url())
+            elif not branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
+                log.info("Branch exist, person exist!")
+                company_object.save()
+                contact_object = contform.save(commit=False)
+                contact_object.is_work = True
+                person_object = pform.save(commit=False)
+                contact_object.person = person_object
+                contact_object.company = company_object
+                ''' Сохраняем объекты форм в БД '''
+                contact_object.save()
+                return HttpResponseRedirect(self.get_success_url())
+            elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
+                log.info("Branch exist, person exist!")
+                address_object = aform.save(commit=False)
+                branch_object = bform.save(commit=False)
+                person_object = pform.save(commit=False)
+                contact_object = contform.save(commit=False)
+                company_object.save()
+                address_object.save()
+                ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
+                branch_object.company_main = True
+                branch_object.type = BranchTypes(pk=1)
+                ''' Создаем объекты от зависимой формы '''
+                branch_object.company = company_object
+                branch_object.address = address_object
+                branch_object.save()
+                person_object.save()
+                contact_object.is_work = True
+                contact_object.person = person_object
+                contact_object.company = company_object
+                ''' Сохраняем объекты форм в БД '''
+                contact_object.save()
+                return HttpResponseRedirect(self.get_success_url())
+            else:
+                log.info("Some errors!")
+                forms = self.get_forms()
+                return self.render_to_response(self.get_context_data(forms=forms))
         else:
             for form in forms:
                 for field in forms[form]:
@@ -79,39 +121,6 @@ class CompanyCreateForm(MultiFormCreate):
             forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
-    #     context_data.update({
-    #         'some_strange_variable': 42,
-    #     })
-    #     return context_data
-
-    # def post(self, request, *args, **kwargs):
-    #     forms = self.get_forms()
-    #     cform = forms['company']
-    #     aform = forms['address']
-    #     bform = forms['branch']
-    #     if cform.is_valid() and aform.is_valid() and bform.is_valid():
-    #         ''' Создаем объекты первичных форм (схраняем формы)'''
-    #         company_object = cform.save()
-    #         ''' Создаем объекты от зависимой формы '''
-    #         address_object = aform.save(commit=False)
-    #         branch_object = bform.save(commit=False)
-    #         ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-    #         address_object.company = company_object
-    #         address_object.company_main = True
-    #         ''' Сохраняем зависимый объект '''
-    #         address_object.save()
-    #         ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
-    #         branch_object.company = company_object
-    #         branch_object.address = address_object
-    #         branch_object.type = BranchTypes(pk=1)
-    #         ''' Сохраняем зависимый объект '''
-    #         branch_object.save()
-    #         return HttpResponseRedirect(self.get_success_url())
-    #     else:
-    #         forms = self.get_forms()
-    #         return self.render_to_response(self.get_context_data(forms=forms))
 #
 #
 # class main_edit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
