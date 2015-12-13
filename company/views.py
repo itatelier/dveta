@@ -35,16 +35,14 @@ class CompanyCreateForm(MultiFormCreate):
         'contact': {'formclass': ContactFirmCreateForm},
     }
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super(CompanyCreateForm, self).get_context_data(*args, **kwargs)
-    #     context_data.update({
-    #         'branch_exist': self.request.POST.get('branch_exist', None),
-    #         'contact_exist': self.request.POST.get('contact_exist', None),
-    #     })
-
     def post(self, request, *args, **kwargs):
+        '''
+            В формах branch и contact присутствуют Hidden поля, которые регулируются из скрипта в шаблоне,
+            при переключении радио группы относящейся к этим формам. Переключение радио скрывает форму,
+            и ее валидация и сохранение после не требуются.
+        '''
         branch_exist = request.POST.get('branch_exist', None)
-        ''' Если параметра нет в POST, значение будет пустым, если есть но без value, будет None '''
+        ''' Параметр радио группы. Если его нет в POST, значение будет пустым, если есть но без value, будет None '''
         contact_exist = request.POST.get('contact_exist', None)
         log.info("Branch exist value [%s] Person exist value [%s]" % (branch_exist, contact_exist))
         forms = self.get_forms()
@@ -81,7 +79,9 @@ class CompanyCreateForm(MultiFormCreate):
                 company_object.save()
                 contact_object = contform.save(commit=False)
                 contact_object.is_work = True
-                person_object = pform.save(commit=False)
+                # person_object = pform.save(commit=False)
+                person_object = pform.save()
+                # person_object.save()
                 contact_object.person = person_object
                 contact_object.company = company_object
                 ''' Сохраняем объекты форм в БД '''
@@ -108,6 +108,9 @@ class CompanyCreateForm(MultiFormCreate):
                 contact_object.company = company_object
                 ''' Сохраняем объекты форм в БД '''
                 contact_object.save()
+                return HttpResponseRedirect(self.get_success_url())
+            elif not branch_exist and not contact_exist:
+                company_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             else:
                 log.info("Some errors!")

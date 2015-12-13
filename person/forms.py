@@ -18,12 +18,17 @@ class PersonEditForm(ModelForm):
         fields = ('family_name', 'given_name', 'middle_name', 'nick_name', 'date_ofbirth')
 
 
+
 class PersonCompanyCreateForm(ModelForm):
+    CHOICES = [('select1','select 1'),
+         ('select2', 'select 2')]
     nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}), help_text="Фамилия или имя, а лучше все сразу!")
+    contact_switch = CharField(max_length=100, widget=HiddenInput, required=False)
+    # contact_exist = ChoiceField(choices=CHOICES, widget=RadioSelect())
 
     class Meta:
         model = Persons
-        fields = ('nick_name',)
+        fields = ('nick_name', 'contact_switch')
 
 
 class ContactFirmCreateForm(ModelForm):

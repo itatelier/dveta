@@ -9,44 +9,7 @@
 {% endblock %}
 {% block content %}
 <script>
-    $(document).ready(function() {
-        {# Делаем видимой форму контакта, если был переключен contact_switch #}
-        var branch_switch_val = "{{ forms.branch.branch_switch.value }}";
-        if (branch_switch_val === "1") {
-            $('#branch_form').removeClass('none');
-            $('input[type=radio][name=branch_exist]').filter('[value="1"]').attr('checked', true);
-        }
-        var contact_switch_val = "{{ forms.person.contact_switch.value }}";
-        if (contact_switch_val === "1") {
-            $('#contact_form').removeClass('none');
-            $('input[type=radio][name=contact_exist]').filter('[value="1"]').attr('checked', true);
-        }
 
-        {# Переключаем отображение формы, если выбран пункт в радио группе #}
-        $('input[type=radio][name=branch_exist]').change(function() {
-            if (this.value == '1') {
-                {# даем значение в скрытый инпут (элемент формы contact_swith, что бы в случае валидации формы с ошибками значение вернулось #}
-                {# и при загрузке страницы скрытая по умолчанию форма была видима #}
-                $('input[name=branch-branch_switch]').val(1);
-                $('#branch_form em').remove();  {# удаляем ошибки валидации формы #}
-                $('#branch_form').fadeIn('fast');
-            }
-            else if (this.value == '') {
-                $('#branch_form').fadeOut('fast');
-                $('input[name=branch-branch_switch]').val("");
-            }
-        });
-        $('input[type=radio][name=contact_exist]').change(function() {
-            if (this.value == '1') {
-                $('input[name=person-contact_switch]').val(1);
-                $('#contact_form em').remove();  {# удаляем ошибки валидации формы #}
-                $('#contact_form').fadeIn('fast');
-            }
-            else if (this.value == '') {
-                $('input[name=person-contact_switch]').val("");
-                $('#contact_form').fadeOut('fast'); }
-        });
-    });
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">

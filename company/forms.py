@@ -36,11 +36,13 @@ class BranchEditForm(ModelForm):
 
 class BranchCompanyCreateForm(ModelForm):
     name = CharField(required=True, widget=HiddenInput(), initial="Основной офис")
+    branch_switch = CharField(max_length=100, widget=HiddenInput, required=False)
+
     # company_main = IntegerField(required=True, widget=HiddenInput())
 
     class Meta:
         model = Branches
-        fields = ('name',)
+        fields = ('name', 'branch_switch')
 
 
 class AddressEditForm(ModelForm):
