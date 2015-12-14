@@ -2,19 +2,27 @@
 
 from django.conf.urls import patterns, url, include
 from views import *
+from rest_framework import routers
 # from phones.views import *
 
 base_path = 'company'
 
+# REST
+router = routers.DefaultRouter()
+router.register(r'clients', CompanyClientsViewSet)
+
+
 urlpatterns = patterns('',
     #
-    # Компании
+    # REST API
+    url(r'^api/', include(router.urls)),
     #
-    url(r'^company_create/$', CompanyCreateForm.as_view(), name='company_create'),
+    url(r'^company_create/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
+    url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
     # url(r'^(?P<pk>\d+)/card/$', main_card.as_view(), name=base_path + '_main_card'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),
-    # url(r'^main_list/$', main_list_index.as_view(), name=base_path + '_main_list'),
+    url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
     # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
     # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
     # #

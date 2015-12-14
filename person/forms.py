@@ -4,6 +4,8 @@ from django.forms import *
 from models import *
 from company.models import *
 from common.forms import *
+from common.formfields import *
+from django.forms.utils import ErrorList
 
 
 class PersonEditForm(ModelForm):
@@ -18,10 +20,7 @@ class PersonEditForm(ModelForm):
         fields = ('family_name', 'given_name', 'middle_name', 'nick_name', 'date_ofbirth')
 
 
-
 class PersonCompanyCreateForm(ModelForm):
-    CHOICES = [('select1','select 1'),
-         ('select2', 'select 2')]
     nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}), help_text="Фамилия или имя, а лучше все сразу!")
     contact_switch = CharField(max_length=100, widget=HiddenInput, required=False)
     # contact_exist = ChoiceField(choices=CHOICES, widget=RadioSelect())
@@ -33,10 +32,19 @@ class PersonCompanyCreateForm(ModelForm):
 
 class ContactFirmCreateForm(ModelForm):
     role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
-    email = CharField(label="E-mail", required=False, widget=forms.TextInput(attrs={'size': 40, 'maxlength': 60}))
-    comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 9, 'maxlength': 50}))
+    email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
+    comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
     phonenumber = IntegerField(label="Номер телефона", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts
         fields = ('role', 'email', 'comment', 'phonenumber')
+
+    # def __init__(self, *args, **kwargs):
+    #     super(ContactFirmCreateForm, self).__init__(*args, **kwargs)
+    #     if self.errors:
+    #         for f_name in self.fields:
+    #             if f_name in self.errors:
+    #                 classes = self.fields[f_name].widget.attrs.get('class', '')
+    #                 classes += ' error'
+    #                 self.fields[f_name].widget.attrs['class'] = classes

@@ -55,6 +55,20 @@ class CompanyStatus(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
+class ClientOptions(models.Model):
+    request_tickets = models.BooleanField(blank=True, default=False)
+    request_special_sign = models.BooleanField(blank=True, default=False)
+    request_freq = models.IntegerField(blank=True, null=True, default=1)
+    use_client_talons_only = models.BooleanField(blank=True, default=False)
+    pay_condition = models.IntegerField(blank=True, null=True, default=1)
+    pay_type = models.IntegerField(blank=True, null=True, default=1)
+    credit_limit = models.IntegerField(blank=True, null=True, default=0)
+
+    class Meta:
+        managed = False
+        db_table = 'client_options'
+
+
 class Companies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -66,6 +80,7 @@ class Companies(models.Model):
     status = models.ForeignKey('CompanyStatus', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
+    client_options = models.ForeignKey('ClientOptions', null=True, blank=True)
 
 
     # objects = models.Manager()
@@ -78,7 +93,6 @@ class Companies(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.name)
-
 
 '''
 Branches

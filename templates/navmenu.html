@@ -1,14 +1,14 @@
         <nav>
             <ul>
                 <li><a href="/"><div>&#xf015;<span>Главная</span></div></a></li>
-                <li><a href="listing.html"><div>&#xf0b1;<span>Клиенты {{ selected_menu_id2 }}</span></div></a>
+                <li><a href="{% url 'company_list_clients' %}"><div>&#xf0b1;<span>Клиенты {{ selected_menu_id2 }}</span></div></a>
                     <div>
                         <ul>
-                            <li><a href="listing.html">Картотека клиентов</a></li>
+                            <li><a href="{% url 'company_list_clients' %}">Картотека клиентов</a></li>
                             <li><a href="listing.html">Контрагенты</a></li>
                             <li><a href="listing.html" class="unused">Баланс счетов</a></li>
                             <li><hr></li>
-                            <li><a href="{% url 'company_create' %}"><i>&#xf067;</i>Новый клиент</a></li>
+                            <li><a href="{% url 'company_create_private' %}"><i>&#xf067;</i>Новый клиент</a></li>
                         </ul>
                     </div>
                 </li>

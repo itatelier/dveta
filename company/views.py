@@ -13,6 +13,10 @@ from models import *
 # from phones.models import *
 from person.forms import *
 from forms import *
+from rest_framework import viewsets, generics, filters
+
+from serializers import *
+
 
 from django.http import HttpResponseRedirect
 
@@ -20,12 +24,74 @@ import logging
 log = logging.getLogger('django')
 
 
-class main_list_index(LoginRequiredMixin, TemplateView):
-    template_name = "company/main_list_index.html"
+class CompanyClientList(LoginRequiredMixin, TemplateView):
+    template_name = "company/list_clients.html"
 
 
-class CompanyCreateForm(MultiFormCreate):
-    template_name = 'company/company_create.html'
+class CompanyClientsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = Companies.objects.filter(rel_type=2).select_related('org_type', 'status', 'client_options')
+    serializer_class = CompanycLientsSerializer
+    filter_class = CompanyClientsFilters
+    search_fields = ('name', 'description', 'comment')
+    ordering_fields = ('id', 'name', 'status', 'org_type', 'date_add', 'client_options__request_freq')
+
+
+class CompanyCreatePrivateView(MultiFormCreate):
+    template_name = 'company/company_create_private.html'
+    success_url = '/'
+    formconf = {
+        'company': {'formclass': CompanyCreatePrivateForm},
+        'person': {'formclass': PersonCompanyCreateForm},
+        'contact': {'formclass': ContactFirmCreateForm}
+        }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CompanyCreatePrivateView, self).get_context_data(*args, **kwargs)
+        # генерируем ID для нового частного клиента
+        latest_private_company = Companies.objects.filter(org_type=1).latest('id')
+        context_data.update({
+            'new_private_company_ID': "ID%06d" % latest_private_company.id,
+        })
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        latest_private_company = Companies.objects.filter(org_type=1).latest('id')
+        forms = self.get_forms()
+        cform = forms['company']
+        pform = forms['person']
+        contform = forms['contact']
+        if cform.is_valid() and pform.is_valid() and contform.is_valid():
+            company_object = cform.save(commit=False)
+            ''' Создаем стартовый набор опций клиента '''
+            client_options = ClientOptions(pay_type=1, request_freq=1)
+            client_options.save()
+            company_object.client_options = client_options
+            ''' Автоматический номер частного клиента '''
+            latest_private_company = Companies.objects.filter(org_type=1).latest('id')
+            company_object.name = "ID%06d" % latest_private_company.id
+            company_object.rel_type = CompanyRelTypes(pk=2)
+            company_object.org_type = CompanyOrgTypes(pk=1)
+            company_object.status = CompanyStatus(pk=1)
+            company_object.save()
+            contact_object = contform.save(commit=False)
+            contact_object.is_work = True
+            person_object = pform.save()
+            contact_object.person = person_object
+            contact_object.company = company_object
+            contact_object.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            for form in forms:
+                for field in forms[form]:
+                    for err in field.errors:
+                        log.warn("Field %s Err: %s" % (field.name, err))
+            forms = self.get_forms()
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+
+class CompanyCreateFirmView(MultiFormCreate):
+    template_name = 'company/company_create_firm.html'
     success_url = '/'
     formconf = {
         'company': {'formclass': CompanyCreateForm},
@@ -62,6 +128,10 @@ class CompanyCreateForm(MultiFormCreate):
             ''' Сохраняем готовые объекты форм, что бы получить ID объектов и назначить на следующий объект формы'''
             if branch_exist and not contact_exist and aform.is_valid() and bform.is_valid():
                 log.info("Branch None, person exists!")
+                ''' Создаем стартовый набор опций клиента '''
+                client_options = ClientOptions(pay_type=1, request_freq=1)
+                client_options.save()
+                company_object.client_options = client_options
                 address_object = aform.save(commit=False)
                 branch_object = bform.save(commit=False)
                 company_object.save()
@@ -76,6 +146,10 @@ class CompanyCreateForm(MultiFormCreate):
                 return HttpResponseRedirect(self.get_success_url())
             elif not branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
                 log.info("Branch exist, person exist!")
+                ''' Создаем стартовый набор опций клиента '''
+                client_options = ClientOptions(pay_type=1, request_freq=1)
+                client_options.save()
+                company_object.client_options = client_options
                 company_object.save()
                 contact_object = contform.save(commit=False)
                 contact_object.is_work = True
@@ -89,6 +163,10 @@ class CompanyCreateForm(MultiFormCreate):
                 return HttpResponseRedirect(self.get_success_url())
             elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
                 log.info("Branch exist, person exist!")
+                ''' Создаем стартовый набор опций клиента '''
+                client_options = ClientOptions(pay_type=1, request_freq=1)
+                client_options.save()
+                company_object.client_options = client_options
                 address_object = aform.save(commit=False)
                 branch_object = bform.save(commit=False)
                 person_object = pform.save(commit=False)
@@ -110,6 +188,10 @@ class CompanyCreateForm(MultiFormCreate):
                 contact_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             elif not branch_exist and not contact_exist:
+                ''' Создаем стартовый набор опций клиента '''
+                client_options = ClientOptions(pay_type=1, request_freq=1)
+                client_options.save()
+                company_object.client_options = client_options
                 company_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             else:
