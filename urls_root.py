@@ -28,7 +28,7 @@ urlpatterns = [
     # Apps
     url(r'^company/', include('company.urls')),
     # url(r'^phones/', include('phones.urls')),
-    # url(r'^persons/', include('persons.urls')),
+    url(r'^persons/', include('person.urls')),
 
     # Admin
     # url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS

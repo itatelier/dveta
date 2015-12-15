@@ -111,3 +111,17 @@ div.sheet_switch_menu > ul > li > a.active {
     border-bottom: 3px solid #FE659C;
     color: #4D4D4D;
 }
+ul.contents {
+    padding: 1rem;
+    list-style: none;
+    margin: 0;
+}
+ul.contents > li {
+    display: block;
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+ul.contents > li > a {
+    padding: 0.5rem;
+}

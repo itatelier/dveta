@@ -58,10 +58,10 @@
                                 <legend>Источник привлечения</legend>
                                 <div class="input_block  {% if forms.company.attr_source.errors %}error{% endif %}">
                                      {{ forms.company.attr_source }}
-                                </div>
                                     {% for error in forms.company.attr_source.errors %}
                                     <em>{{ error|escape }}</em>
                                     {% endfor %}
+                                </div>
                             </div>
                         </div>
                         {# Comment Input Text #}

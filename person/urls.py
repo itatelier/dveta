@@ -9,7 +9,7 @@ base_path = 'company'
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-router.register(r'clients', CompanyClientsViewSet)
+router.register(r'contacts', ContactsClientsViewSet)
 
 
 urlpatterns = patterns('',
@@ -17,12 +17,15 @@ urlpatterns = patterns('',
     # REST API
     url(r'^api/', include(router.urls)),
     #
-    url(r'^company_create/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
-    url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
+    # Persons
+    url(r'^list_clients/$', PersonsContactClientsView.as_view(), name='persons_list_client_contacts'),
+
+    # url(r'^/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
+    # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
     # url(r'^(?P<pk>\d+)/card/$', main_card.as_view(), name=base_path + '_main_card'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),
-    url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
+    # url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
     # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
     # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
     # #

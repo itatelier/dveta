@@ -37,7 +37,6 @@ class Contacts(models.Model):
     company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='company')
     person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='person')
 
-
     class Meta:
         db_table = 'contacts'
         verbose_name_plural = 'Контакты'

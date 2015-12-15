@@ -67,6 +67,7 @@ class ClientOptions(models.Model):
     class Meta:
         managed = False
         db_table = 'client_options'
+        verbose_name_plural = 'Опции клиента'
 
 
 class Companies(models.Model):
@@ -80,7 +81,7 @@ class Companies(models.Model):
     status = models.ForeignKey('CompanyStatus', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    client_options = models.ForeignKey('ClientOptions', null=True, blank=True)
+    client_options = models.OneToOneField('ClientOptions', null=True, blank=True)
 
 
     # objects = models.Manager()

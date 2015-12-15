@@ -38,7 +38,7 @@ class ClientOptionsSerializer(serializers.ModelSerializer):
         fields = ('pk', 'request_tickets', 'request_special_sign', 'request_freq', 'use_client_talons_only', 'pay_condition', 'pay_type', 'credit_limit')
 
 
-class CompanycLientsSerializer(serializers.ModelSerializer):
+class CompanyClientsSerializer(serializers.ModelSerializer):
     # pk = serializers.IntegerField(read_only=True)
     # name = serializers.CharField(required=True, allow_blank=False, max_length=100)
     # description = serializers.CharField(required=False, allow_blank=True, max_length=255)

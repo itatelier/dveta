@@ -31,7 +31,7 @@ class CompanyClientList(LoginRequiredMixin, TemplateView):
 class CompanyClientsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = Companies.objects.filter(rel_type=2).select_related('org_type', 'status', 'client_options')
-    serializer_class = CompanycLientsSerializer
+    serializer_class = CompanyClientsSerializer
     filter_class = CompanyClientsFilters
     search_fields = ('name', 'description', 'comment')
     ordering_fields = ('id', 'name', 'status', 'org_type', 'date_add', 'client_options__request_freq')
