@@ -27,6 +27,7 @@ body {
 a { color: #009DDA; }
 a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
 a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
+b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
 
 h2 { font-size: 1.6rem; }
 table { border-spacing: 0;}

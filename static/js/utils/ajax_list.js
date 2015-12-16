@@ -117,7 +117,7 @@ function list_data_api(Mode,Page) {
             var total_count = result.count;
             var pager = new Pager(page_limit, page_offset, total_count);
 
-            console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
+            // console.log( "[Pager data] Limit: " + pager.limit + " offset: " + pager.offset + " total_count: " + pager.total_count + " total_pages: " + pager.total_pages + " current: " + pager.current_page);
 
             /* Заполняем пейджинг */
             listing_pager(pager.current_page, pager.total_pages);
@@ -159,17 +159,17 @@ function SortUpdate(el) {
     var $OrderParamInput = $('input[name="ordering"]');
     var CurrentOrderField = $OrderParamInput.val();
     var regex = new RegExp('^(-).*');
-        console.log("SortParam: " + SortParam + " CurrentOrderField: " + CurrentOrderField);
+        //console.log("SortParam: " + SortParam + " CurrentOrderField: " + CurrentOrderField);
     if (CurrentOrderField.search(SortParam) > -1)  {
-        console.log("Search > - 1");
+        //console.log("Search > - 1");
         if (CurrentOrderField.search(/^-/) > -1) {
-            console.log("- found");
+            //console.log("- found");
             $OrderParamInput.val(SortParam);
         } else {
             $OrderParamInput.val("-" + SortParam);
         }
     } else {
-        console.log("Sort param not found");
+        //console.log("Sort param not found");
         $OrderParamInput.val(SortParam);
     }
     list_data_api();

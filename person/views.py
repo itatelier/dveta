@@ -15,8 +15,8 @@ class ContactsClientsViewSet(viewsets.ModelViewSet):
     queryset = Contacts.objects.filter(company__rel_type=2).select_related('person', 'company', 'company__status', 'company__org_type', 'company__client_options')
     serializer_class = ContactsSerializer
     filter_class = ContactsFilters
-    search_fields = ('role', 'comment', 'email', 'phonenumber', 'company__name', 'date_add')
-    ordering_fields = ('id', 'role', )
+    search_fields = ('role', 'comment', 'email', 'phonenumber', 'company__name', 'person__nick_name')
+    ordering_fields = ('id', 'role', 'company__name', 'company__org_type', 'company__status', 'person', 'date_add')
 
 
 class PersonsContactClientsView(LoginRequiredMixin, TemplateView):

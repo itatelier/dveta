@@ -1,0 +1,126 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Ajax listing   --><script type="text/javascript" src="{% static 'js/utils/ajax_list.js' %}" xmlns="http://www.w3.org/1999/html"></script>
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+{% endblock %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="listing.html">Картотека</a></li>
+                <li class="active" ><a href="listing.html">Новый клиент: Частник</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Ноый клиент</a></li></ul>
+                    <hr>
+                </div>
+                <div class="data_grid_medium">
+                            <div class="sheet_switch_menu">
+                                <ul>
+                                    <li><a href="#" class="active">Частник</a></li>
+                                    <li><a href="{% url 'company_create_firm' %}" >Фирма</a></li>
+                                </ul>
+                            </div>
+                    {# Форма объекта Company #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# ------------ Company form ------------#}
+                        {# Скрытые поля #}
+{#                        <input type="hidden" name="contact_exist" value="1">#}
+                        <input type="hidden" name="branch-name" value="Основной офис">
+                        <div class="form_row">
+                            <h2 class="blue">Основная информация</h2>
+                        </div>
+                        {# Name Input Text  #}
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>Наименование клиента<p>Присваивается автоматически, но может быть изменено</p></legend>
+                                <div class="input_block ">
+                                    <h1>{{ new_private_company_ID }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        {# Attraction Source Select  #}
+                        <div class="form_row">
+                           <div class="input_wrapper">
+                                <legend>Источник привлечения</legend>
+                                <div class="input_block  {% if forms.company.attr_source.errors %}error{% endif %}">
+                                     {{ forms.company.attr_source }}
+                                    {% for error in forms.company.attr_source.errors %}
+                                    <em>{{ error|escape }}</em>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {# Comment Input Text #}
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.company.comment.label }}<p>{{ forms.company.comment.help_text }}</p></legend>
+                                <div class="input_block {% if forms.company.comment.errors %}error{% endif %}">
+                                    {{ forms.company.comment }}
+                                    {% for error in forms.company.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {# --------- Person and Contact form --------- #}
+                        {# Contact switch #}
+                        <div class="form_row"><h2 class="blue">Контактное лицо</h2></div>
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.person.nick_name.label }}<p>{{ forms.person.nick_name.help_text }}</p></legend>
+                                <div class="input_block reuired {% if forms.person.nick_name.errors %}error{% endif %}">
+                                    {{ forms.person.nick_name }}{% for error in forms.person.nick_name.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.contact.role.label }}</legend>
+                                <div class="input_block  {% if forms.contact.role.errors %}error{% endif %}">
+                                    {{ forms.contact.role }}{% for error in forms.contact.role.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.contact.phonenumber.label }}</legend>
+                                <div class="input_block reuired {% if forms.contact.phonenumber.errors %}error{% endif %}">
+                                    {{ forms.contact.phonenumber }}{% for error in forms.contact.phonenumber.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                            <div class="input_wrapper">
+                                <legend>{{ forms.contact.comment.label }}</legend>
+                                <div class="input_block {% if forms.contact.comment.errors %}error{% endif %}">
+                                    {{ forms.contact.comment }}{% for error in forms.contact.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <legend>{{ forms.contact.email.label }}</legend>
+                                <div class="input_block {% if forms.contact.email.errors %}error{% endif %}">
+                                    {{ forms.contact.email }}{% for error in forms.contact.email.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {# Кнопки #}
+                        <div class="form_row"><span class="button_block"><a class="button"  onclick="$('form#new_object').submit();">Добавить клиента</a></span></div>
+                    </form>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
