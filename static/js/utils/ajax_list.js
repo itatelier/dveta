@@ -133,23 +133,23 @@ function ResetFormDefault(formname) {
     return false;
 }
 
-function input_autocomplite(input_name, url, model_name, field_name, filter_type){
-    var $input = $('input[name=' + input_name+ ']');
-    $input.autocomplete({
-        source: function(request, response){
-            $.ajax({ url: url, dataType: "json", data: { query: request.term, model: model_name, field: field_name, filter_type: filter_type}})
-                    .done(function(result)  {
-                        var suggestions = [];
-                        if (result.data && result.data.length > 0) {
-                            for ( var i = 0, data_len = result.data.length; i < data_len; i++ ) {
-                                suggestions.push(result.data[i][0]);
+    function input_autocomplite(input_name, url, model_name, field_name, filter_type){
+        var $input = $('input[name=' + input_name+ ']');
+        $input.autocomplete({
+            source: function(request, response){
+                $.ajax({ url: url, dataType: "json", data: { query: request.term, model: model_name, field: field_name, filter_type: filter_type}})
+                        .done(function(result)  {
+                            var suggestions = [];
+                            if (result.data && result.data.length > 0) {
+                                for ( var i = 0, data_len = result.data.length; i < data_len; i++ ) {
+                                    suggestions.push(result.data[i][0]);
+                                }
+                                response(suggestions);
                             }
-                            response(suggestions);
-                        }
-                    })
-        }
-    });
-}
+                        })
+            }
+        });
+    }
 
 function SortUpdate(el) {
     var $Thead = $( "table.listing_grid thead a.sortable" );    // Очищаем все ссылки в заголовках от отметки об активном фильтре
@@ -173,5 +173,14 @@ function SortUpdate(el) {
         $OrderParamInput.val(SortParam);
     }
     list_data_api();
+    return false;
+}
+
+function card($this) {
+    var $tr = $($this);
+    var id = $($this).date('id');
+    // var code = id.replace("linktr",""); //$'
+    var url = base_url + "/" + id + "/card/";
+    document.location.href = url;
     return false;
 }

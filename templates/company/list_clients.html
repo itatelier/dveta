@@ -12,11 +12,12 @@
 
 
 <script>
-{#    var base_url = '/company';#}
+    var base_url = '/company';
     var JsonDataUrl = "/company/api/clients/";
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
+        var start = new Date().getTime();
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
@@ -26,6 +27,16 @@
         {#      Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('id');
+            var url = base_url + "/" +id +"/card/";
+            document.location.href = url;
+        });
+
+        var end = new Date().getTime();
+        var time = end - start;
+        console.log('Ready time: ' + time + 'ms');
     });
 
         {#  постобработка результата AJAX запроса #}
@@ -44,7 +55,7 @@
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr onCLick="card_args(['/company/',{{ id }},'/card']);">
+    <tr data-id="{{ id }}">
         <td>{{ name }}</td>
         <td>{{ comment }}</td>
         <td>{{ org_type.val }}
@@ -79,6 +90,7 @@
                                 </div>
                             </div>
                         </div>
+                        {# Дата начиная с Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <legend>Начиная с даты</legend>
@@ -87,9 +99,10 @@
                                 </div>
                             </div>
                         </div>
+                        {# Статус Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Контактное лицо</legend>
+                                <legend>Статус</legend>
                                 <div class="input_block">
                                     <select name="status">
                                         <option value="">любой статус</option>
@@ -102,16 +115,29 @@
                                 </div>
                             </div>
                         </div>
+                        {# Тип клиента Radio filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <legend>Тип клиента</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="org_type" value=""><p>Любой тип</p></label>
+                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
                                     <label><input type="radio" name="org_type" value="1"><p>Частник</p></label>
                                     <label><input type="radio" name="org_type" value="2"><p>Фирма</p></label>
                                 </div>
                             </div>
                         </div>
+                        {# Частота вывоза Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Частота вывозов</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="client_options__request_freq" value="" checked><p>Любая</p></label>
+                                    <label><input type="radio" name="client_options__request_freq" value="1"><p>Разовые</p></label>
+                                    <label><input type="radio" name="client_options__request_freq" value="2"><p>Постоянные</p></label>
+                                </div>
+                            </div>
+                        </div>
+                        {# блок кнопок #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <div class="input_block">

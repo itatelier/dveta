@@ -55,7 +55,7 @@ class CompanyClientsFilters(django_filters.FilterSet):
 
     class Meta:
         model = Companies
-        fields = ['id', 'name', 'date_after', 'name_ac', 'status', 'org_type', 'client_options__pay_condition', 'client_options__pay_type', 'client_options__pay_form']
+        fields = ['id', 'name', 'date_after', 'name_ac', 'status', 'org_type', 'client_options__request_freq', 'client_options__pay_condition', 'client_options__pay_type', 'client_options__pay_form']
 
 
 
