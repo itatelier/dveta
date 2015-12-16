@@ -35,24 +35,17 @@ class AttrSourceSerializer(serializers.ModelSerializer):
 class ClientOptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientOptions
-        fields = ('pk', 'request_tickets', 'request_special_sign', 'request_freq', 'use_client_talons_only', 'pay_condition', 'pay_type', 'credit_limit')
+        fields = ('pk', 'request_tickets', 'request_special_sign', 'request_freq', 'use_client_talons_only', 'pay_condition', 'pay_type', 'pay_form', 'credit_limit')
 
 
 class CompanyClientsSerializer(serializers.ModelSerializer):
-    # pk = serializers.IntegerField(read_only=True)
-    # name = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    # description = serializers.CharField(required=False, allow_blank=True, max_length=255)
-    # www = serializers.CharField(required=False, allow_blank=True, max_length=250)
     org_type = OrgTypeSerializer(many=False, required=False)
     status = StatusSerializer(many=False, required=False)
     client_options = ClientOptionsSerializer(many=False, required=False)
-    # request_freq = ClientOptionsSerializer(many=False, read_only=True,)
-    # rel_type = serializers.BooleanField(required=True)
-    # date_add = serializers.DateTimeField(required=True)
 
     class Meta:
         model = Companies
-        fields = ('id', 'name', 'description', 'org_type', 'status', 'date_add', 'client_options',)
+        fields = ('id', 'name', 'description', 'comment', 'org_type', 'status', 'date_add', 'client_options')
 
 
 class CompanyClientsFilters(django_filters.FilterSet):
@@ -62,4 +55,8 @@ class CompanyClientsFilters(django_filters.FilterSet):
 
     class Meta:
         model = Companies
-        fields = ['id', 'name', 'date_after', 'name_ac', 'status', 'org_type', 'client_options']
+        fields = ['id', 'name', 'date_after', 'name_ac', 'status', 'org_type', 'client_options__pay_condition', 'client_options__pay_type', 'client_options__pay_form']
+
+
+
+

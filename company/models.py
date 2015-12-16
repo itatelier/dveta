@@ -45,6 +45,7 @@ class CompanyOrgTypes(models.Model):
 class CompanyStatus(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=255L, null=False, blank=False)
+    css_class = models.CharField(max_length=255L, null=False, blank=False)
 
     class Meta:
         db_table = 'company_status'
@@ -60,9 +61,11 @@ class ClientOptions(models.Model):
     request_special_sign = models.BooleanField(blank=True, default=False)
     request_freq = models.IntegerField(blank=True, null=True, default=1)
     use_client_talons_only = models.BooleanField(blank=True, default=False)
-    pay_condition = models.IntegerField(blank=True, null=True, default=1)
-    pay_type = models.IntegerField(blank=True, null=True, default=1)
+    pay_condition = models.IntegerField(blank=True, null=True, default=1) # Условия оплаты 1=по постановке, 2=по вывозу
+    pay_form = models.IntegerField(blank=True, null=True, default=1) # Форма оплаты 1=наличная, 2=безналичная
+    pay_type = models.IntegerField(blank=True, null=True, default=1) # Тип оплаты 1=предоплата, 2=по факту
     credit_limit = models.IntegerField(blank=True, null=True, default=0)
+
 
     class Meta:
         managed = False
@@ -78,6 +81,7 @@ class Companies(models.Model):
     www = models.CharField(max_length=255L, blank=True)
     org_type = models.ForeignKey('CompanyOrgTypes', null=False, blank=False)
     rel_type = models.ForeignKey('CompanyRelTypes', null=False, blank=False)
+    attr_source = models.ForeignKey('CompanyAttractionSource', null=False, blank=False)
     status = models.ForeignKey('CompanyStatus', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -168,7 +172,7 @@ class Addresses(models.Model):
         verbose_name_plural = 'Адреса'
 
     def __unicode__(self):
-        return u'[%s] %s, ул %s, дом %s %s' % (self.id, self.city, self.street, self.app, self.app_extra,)
+        return u'%s, ул %s, дом %s %s' % (self.city, self.street, self.app, self.app_extra,)
 
 #
 #

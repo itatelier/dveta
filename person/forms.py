@@ -21,7 +21,7 @@ class PersonEditForm(ModelForm):
 
 
 class PersonCompanyCreateForm(ModelForm):
-    nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}), help_text="Фамилия или имя, а лучше все сразу!")
+    nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 25, 'maxlength': 60}), help_text="Фамилия или имя, а лучше все сразу!")
     contact_switch = CharField(max_length=100, widget=HiddenInput, required=False)
     # contact_exist = ChoiceField(choices=CHOICES, widget=RadioSelect())
 

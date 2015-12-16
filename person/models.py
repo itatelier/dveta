@@ -34,8 +34,9 @@ class Contacts(models.Model):
     is_work = models.BooleanField(default=0, editable=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='company')
-    person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='person')
+    company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')
+    person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='contacts')
+    company_main = models.BooleanField(default=0, editable=False)
 
     class Meta:
         db_table = 'contacts'

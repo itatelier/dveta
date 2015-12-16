@@ -30,7 +30,7 @@ class CompanyClientList(LoginRequiredMixin, TemplateView):
 
 class CompanyClientsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-    queryset = Companies.objects.filter(rel_type=2).select_related('org_type', 'status', 'client_options')
+    queryset = Companies.objects.filter(rel_type=2).select_related('org_type', 'status', 'attr_source').prefetch_related('client_options')
     serializer_class = CompanyClientsSerializer
     filter_class = CompanyClientsFilters
     search_fields = ('name', 'description', 'comment')
@@ -151,11 +151,11 @@ class CompanyCreateFirmView(MultiFormCreate):
                 client_options.save()
                 company_object.client_options = client_options
                 company_object.save()
+                # Contact options
                 contact_object = contform.save(commit=False)
                 contact_object.is_work = True
-                # person_object = pform.save(commit=False)
+                contact_object.company_main = True
                 person_object = pform.save()
-                # person_object.save()
                 contact_object.person = person_object
                 contact_object.company = company_object
                 ''' Сохраняем объекты форм в БД '''
@@ -170,7 +170,10 @@ class CompanyCreateFirmView(MultiFormCreate):
                 address_object = aform.save(commit=False)
                 branch_object = bform.save(commit=False)
                 person_object = pform.save(commit=False)
+                # Contact options
                 contact_object = contform.save(commit=False)
+                contact_object.is_work = True
+                contact_object.company_main = True
                 company_object.save()
                 address_object.save()
                 ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
@@ -206,6 +209,24 @@ class CompanyCreateFirmView(MultiFormCreate):
             forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
+
+class CompanyClientCardView(LoginRequiredMixin, TemplateView):
+    template_name = "company/card_client.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CompanyClientCardView, self).get_context_data(*args, **kwargs)
+        object = Companies.objects.select_related('rel_type', 'org_type', 'status', 'client_options', 'attr_source').prefetch_related('contacts').get(pk=kwargs['pk'])
+        context_data.update({
+            'object': object,
+            'contacts': Contacts.objects.select_related('person').filter(company=object.pk),
+            # 'main_phone': GetObjectOrNone(Phones, **{'company__pk': object.pk, 'company_main': True}),
+            # 'main_address': GetObjectOrNone(Addresses, **{'company__pk': object.pk, 'company_main': True}),
+            'branches': Branches.objects.select_related('company', 'type', 'address').filter(company=object.pk),
+            # 'contragents': Contragents.objects.select_related('type').filter(company=object.pk)
+        })
+
+        return context_data
+
 #
 #
 # class main_edit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -219,21 +240,6 @@ class CompanyCreateFirmView(MultiFormCreate):
 #         return "/company/%s/card" % pk
 #
 #
-# class main_card(LoginRequiredMixin, TemplateView):
-#     template_name = "company/main_card.html"
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context_data = super(main_card, self).get_context_data(*args, **kwargs)
-#         object = Companies.objects.select_related('type').get(pk=kwargs['pk'])
-#         context_data.update({
-#             'object': object,
-#             'main_phone': GetObjectOrNone(Phones, **{'company__pk': object.pk, 'company_main': True}),
-#             'main_address': GetObjectOrNone(Addresses, **{'company__pk': object.pk, 'company_main': True}),
-#             'branches': Branches.objects.select_related('type', 'company', 'address', 'branch_phone', 'phones').filter(company=object.pk),
-#             'contragents': Contragents.objects.select_related('type').filter(company=object.pk)
-#         })
-#
-#         return context_data
 #
 #
 # class main_card_employees(LoginRequiredMixin, TemplateView):
