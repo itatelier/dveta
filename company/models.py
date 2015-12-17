@@ -162,7 +162,6 @@ class Addresses(models.Model):
     city = models.CharField(max_length=255L, null=False, blank=False)
     street = models.CharField(max_length=255L, null=False, blank=False)
     app = models.CharField(max_length=255L, null=True, blank=True)
-    app_extra = models.CharField(max_length=255L, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -172,7 +171,7 @@ class Addresses(models.Model):
         verbose_name_plural = 'Адреса'
 
     def __unicode__(self):
-        return u'%s, ул %s, дом %s %s' % (self.city, self.street, self.app, self.app_extra,)
+        return u'%s, ул %s, %s' % (self.city, self.street, self.app)
 
 #
 #

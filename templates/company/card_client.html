@@ -69,9 +69,7 @@
                         <h2>Контакты</h2>
                         <table class="sheet_simple">
                             {% for i in contacts %}
-                            <tr>
-                                <td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{{ i.role }}{% else %}без персоны{% endif %}</td><td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td>
-                            </tr>
+                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{{ i.role }}{% else %}без персоны{% endif %}</td><td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
                             {% endfor %}
                         </table>
                     </div>

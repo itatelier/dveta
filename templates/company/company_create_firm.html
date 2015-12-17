@@ -5,10 +5,21 @@
 <!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+<!-- Kladr JS       --><script type="text/javascript" src="{% static 'js/kladr/jquery.kladr.min.js' %}"></script>
+<!-- Kladr CSS      --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/kladr/jquery.kladr.min.css' %}'/>
+
 {% endblock %}
 {% block content %}
 <script>
     $(document).ready(function() {
+        {# Кладр #}
+        var $city = $('input[name=address-city]');
+        var $street = $('input[name=address-street]');
+        var $building  = $('input[name=address-app]');
+        $city.kladr({ token: 'token', key: 'key', type: $.kladr.type.city});
+        $street.kladr({ token: 'token', key: 'key', type: $.kladr.type.street, parentInput: $city });
+        $building.kladr({ token: 'token', key: 'key', type: $.kladr.type.building, parentInput: $street });
+
         {# Делаем видимой форму контакта, если был переключен contact_switch #}
         var branch_switch_val = "{{ forms.branch.branch_switch.value }}";
         if (branch_switch_val === "1") {
@@ -50,7 +61,7 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="listing.html">Картотека</a></li>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
                 <li class="active" ><a href="listing.html">Новый клиент: Фирма</a></li>
             </ul>
         </div>
@@ -141,7 +152,7 @@
                                 <div class="input_wrapper">
                                     <legend>{{ forms.address.city.label }}</legend>
                                     <div class="input_block required {% if forms.address.city.errors %}error{% endif %}">
-                                       {{ forms.address.city }}<a class="textlink" href="#">Москва?</a>{% for error in forms.address.city.errors %}<em>{{ error|escape }}</em>{% endfor %}
+                                       {{ forms.address.city }}<a class="textlink" href="#" onclick="$('input#input_city').val('Москва');return false;">Москва?</a>{% for error in forms.address.city.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="input_wrapper">
@@ -162,12 +173,6 @@
                                     <legend>{{ forms.address.app.label }}</legend>
                                     <div class="input_block required {% if forms.address.app.errors %}error{% endif %}">
                                         {{ forms.address.app }}{% for error in forms.address.app.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                    </div>
-                                </div>
-                                <div class="input_wrapper">
-                                    <legend>{{ forms.address.app_extra.label }}</legend>
-                                    <div class="input_block {% if forms.address.app_extra.errors %}error{% endif %}">
-                                        {{ forms.address.app_extra }}{% for error in forms.address.app_extra.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
                             </div>

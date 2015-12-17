@@ -12,7 +12,7 @@ log = logging.getLogger('django')
 
 class CompanyCreateForm(ModelForm):
     name = CharField(label="Наименование", required=True, help_text="Краткое наименование клента, простое, как \"Утюг\"")
-    description = CharField(label="Род деятельности", required=True, help_text="Перечень основных видов деятельности", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
+    description = CharField(label="Род деятельности", required=True, help_text="Описание деятельности компании", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
     attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label="Выбрать значение...",  help_text="От куда клиент узнал о нас?")
     # org_type = ModelChoiceField(queryset=CompanyOrgTypes.objects.all(), widget=HiddenInput())
@@ -33,6 +33,14 @@ class CompanyCreatePrivateForm(CompanyCreateForm):
         model = Companies
         required_css_class = 'required'
         fields = ('attr_source', 'comment')
+
+
+class CompanyUpdateForm(CompanyCreateForm):
+    description = CharField(label="Описание деятельности", required=False, help_text="Описание основных направлений деятельности", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
+
+    class Meta:
+        model = Companies
+        fields = ('name', 'attr_source', 'description', 'comment')
 
 
 class BranchEditForm(ModelForm):
@@ -57,14 +65,13 @@ class BranchCompanyCreateForm(ModelForm):
 
 
 class AddressEditForm(ModelForm):
-    city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25}))
+    city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25, 'id':'input_city', 'data-kladr-type':'city', 'data-kladr-id': '7700000000000'},))
     postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5}))
     street = CharField(label="Улица", required=True)
-    app = CharField(label="Дом", required=True, widget=TextInput(attrs={'size': 2}))
-    app_extra = CharField(label="Корпус / Строение", required=False, widget=TextInput(attrs={'size': 2}))
+    app = CharField(label="Дом, Корпус, Строение", required=True, widget=TextInput(attrs={'size': 2}))
     comment = CharField(label="Примечание к адресу", required=False)
     # exclude = ('company',)
 
     class Meta:
         model = Addresses
-        fields = ('postalcode', 'city', 'street', 'app', 'app_extra', 'comment')
+        fields = ('postalcode', 'city', 'street', 'app', 'comment')

@@ -231,7 +231,7 @@ class CompanyClientCardView(LoginRequiredMixin, TemplateView):
 class CompanyUpdateInfoView(LoginRequiredMixin, UpdateView):
     template_name = 'company/company_update_info.html'
     # permission_required = 'company.change_companies'
-    form_class = CompanyCreateForm
+    form_class = CompanyUpdateForm
     model = Companies
 
     def get_success_url(self, *args, **kwargs):
@@ -241,7 +241,7 @@ class CompanyUpdateInfoView(LoginRequiredMixin, UpdateView):
 
 class CompanyDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView):
     permission_required = 'company.delete_companies'
-    form_class = CompanyCreateForm
+    form_class = CompanyUpdateForm
     model = Companies
     success_url = '/company/list_clients'
     notice = 'Удаление объекта "Компания" приведет к удалению всех связанных объектов - отделений, адресов, контрагентов, объектов, заказов и т.п.!'
