@@ -96,7 +96,7 @@ class PermissionRequiredMixin(object):
 
 
 class DeleteNoticeView(DeleteView):
-    template_name = "confirm_delete_notice.html"
+    template_name = "confirm_delete_object.html"
     notice = False
 
     def get_context_data(self, *args, **kwargs):

@@ -1,0 +1,56 @@
+{% extends "main.html" %}
+{% block content %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="listing.html">Картотека</a></li>
+                <li class="active" ><a href="listing.html">Новый клиент: Частник</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "company/company_left_bar.html" with pk=object.pk sel=6 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Форма объекта #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        <input type="hidden" name="branch-name" value="Основной офис">
+                        <div class="form_row">
+                            <h2 class="blue">Основная информация</h2>
+                        </div>
+                        {% for field in form.visible_fields %}
+                        <div class="form_row">
+                           <div class="input_wrapper">
+                                <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
+                                <div class="input_block {% if field.field.required %}required{% endif %}{% if field.errors %} error{% endif %}">
+                                     {{ field }}
+                                    {% for error in field.errors %}
+                                    <em>{{ error|escape }}</em>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                {% if perms.company.delete_companies %}
+                                    <a href="{% url 'company_delete' object.pk %}" class="textlink red">Удалить</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

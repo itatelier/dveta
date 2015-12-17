@@ -19,21 +19,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                <div class="left_bar">
-                    <ul>
-                        <li><a href="#">Карточка компании</a></li>
-                        <li><a href="#">Контакты</a></li>
-                        <li><a href="#" class="active">Цены</a></li>
-                        <li><a href="#">Объекты</a></li>
-                        <li><a href="#">Движение денег</a></li>
-                    </ul>
-                    <hr><h3>Управление</h3>
-                    <ul>
-                        <li><a href="#">Информация</a></li>
-                        <li><a href="#">Условия работы</a></li>
-                        <li><a href="#">Сверки</a></li>
-                    </ul>
-                </div>
+                {%  include "company/company_left_bar.html" with pk=object.pk sel=1 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Заголовок информации о клиенте #}

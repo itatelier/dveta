@@ -1,6 +1,7 @@
 div.flex_row {
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
 
 div.flex_block {

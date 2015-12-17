@@ -45,6 +45,7 @@ a.button {
     border-radius: 2px;
     border: 1px #D3D3D3 solid;
     color: #595959;
+    cursor: pointer;
 }
 a.button:active { top: 1px;  }
 
@@ -58,6 +59,7 @@ a.textlink {
     margin: 0 0.5rem 0.4rem 0.5rem;
     border-bottom: 1px dotted #009DDA;
     color: #009DDA;
+    cursor: pointer;
 }
 a.textlink:active {  top: 1px; }
 
@@ -110,7 +112,7 @@ div.input_wrapper._half:not(:first-child) {
 div.input_wrapper._half > h2 {
     margin: 1rem 0;
 }
-div.input_block.reuired:before {
+div.input_block.required:before {
 content: "▪";
     color: #FE659C;
     position: absolute;
@@ -221,4 +223,14 @@ div.input_wrapper > ul > li > a {
 div.input_wrapper > ul > li:not(:first-child)  {
     border-left: 1px solid #cbcfc9;
     padding-left: 0.7rem;
+}
+
+div.notice {
+    background-color: #ffdada;
+    font-size: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border: 1px solid #d0d0d1;
+    text-align: center;
 }

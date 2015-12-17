@@ -1,0 +1,15 @@
+                <div class="left_bar">
+                    <ul>
+                        <li><a class="{% if sel == 1 %}active{% endif %}" href="{% url 'company_card_client' pk %}">Карточка клиента</a></li>
+                        <li><a class="{% if sel == 2 %}active{% endif %}" href="#">Контакты</a></li>
+                        <li><a class="{% if sel == 3 %}active{% endif %}" href="#" >Цены</a></li>
+                        <li><a class="{% if sel == 4 %}active{% endif %}" href="#">Объекты</a></li>
+                        <li><a class="{% if sel == 5 %}active{% endif %}" href="#">Движение денег</a></li>
+                    </ul>
+                    <hr><h3>Управление</h3>
+                    <ul>
+                        <li><a  class="{% if sel == 6 %}active{% endif %}" href="{% url 'company_update_info' pk %}">Информация</a></li>
+                        <li><a  class="{% if sel == 7 %}active{% endif %}" href="#">Условия работы</a></li>
+                        <li><a  class="{% if sel == 8 %}active{% endif %}" href="#">Сверки</a></li>
+                    </ul>
+                </div>

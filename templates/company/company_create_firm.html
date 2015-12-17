@@ -1,7 +1,6 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- Ajax listing   --><script type="text/javascript" src="{% static 'js/utils/ajax_list.js' %}" xmlns="http://www.w3.org/1999/html"></script>
 <!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
 <!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
@@ -65,12 +64,12 @@
                     <hr>
                 </div>
                 <div class="data_grid_medium">
-                            <div class="sheet_switch_menu">
-                                <ul>
-                                    <li><a href="{% url 'company_create_private' %}">Частник</a></li>
-                                    <li><a href="#" class="active">Фирма</a></li>
-                                </ul>
-                            </div>
+                    {# Меню переключения Частник/Фирма #}
+                    <div class="sheet_switch_menu">
+                        <ul><li><a href="{% url 'company_create_private' %}">Частник</a></li>
+                            <li><a href="#" class="active">Фирма</a></li>
+                        </ul>
+                    </div>
                     {# Форма объекта Company #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# ------------ Company form ------------#}
@@ -83,7 +82,7 @@
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.company.name.label }}<p>{{ forms.company.name.help_text }}</p></legend>
-                                <div class="input_block reuired  {% if forms.company.name.errors %}error{% endif %}">
+                                <div class="input_block required  {% if forms.company.name.errors %}error{% endif %}">
                                     {{ forms.company.name }}
                                     {% for error in forms.company.name.errors %}
                                     <em>{{ error|escape }}</em>
@@ -95,7 +94,7 @@
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.company.description.label }}<p>{{ forms.company.description.help_text }}</p></legend>
-                                <div class="input_block reuired  {% if forms.company.description.errors %}error{% endif %}">
+                                <div class="input_block required  {% if forms.company.description.errors %}error{% endif %}">
                                     {{ forms.company.description }}
                                     {% for error in forms.company.description.errors %}
                                     <em>{{ error|escape }}</em>
@@ -141,7 +140,7 @@
                             <div class="form_row">
                                 <div class="input_wrapper">
                                     <legend>{{ forms.address.city.label }}</legend>
-                                    <div class="input_block reuired {% if forms.address.city.errors %}error{% endif %}">
+                                    <div class="input_block required {% if forms.address.city.errors %}error{% endif %}">
                                        {{ forms.address.city }}<a class="textlink" href="#">Москва?</a>{% for error in forms.address.city.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
@@ -155,13 +154,13 @@
                             <div class="form_row">
                                 <div class="input_wrapper">
                                     <legend>{{ forms.address.street.label }}</legend>
-                                    <div class="input_block reuired {% if forms.address.street.errors %}error{% endif %}">
+                                    <div class="input_block required {% if forms.address.street.errors %}error{% endif %}">
                                         {{ forms.address.street }}{% for error in forms.address.street.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="input_wrapper">
                                     <legend>{{ forms.address.app.label }}</legend>
-                                    <div class="input_block reuired {% if forms.address.app.errors %}error{% endif %}">
+                                    <div class="input_block required {% if forms.address.app.errors %}error{% endif %}">
                                         {{ forms.address.app }}{% for error in forms.address.app.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
@@ -197,7 +196,7 @@
                             <div class="form_row">
                                 <div class="input_wrapper">
                                     <legend>{{ forms.person.nick_name.label }}<p>{{ forms.person.nick_name.help_text }}</p></legend>
-                                    <div class="input_block reuired {% if forms.person.nick_name.errors %}error{% endif %}">
+                                    <div class="input_block required {% if forms.person.nick_name.errors %}error{% endif %}">
                                         {{ forms.person.nick_name }}{% for error in forms.person.nick_name.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
@@ -213,7 +212,7 @@
                             <div class="form_row">
                                 <div class="input_wrapper">
                                     <legend>{{ forms.contact.phonenumber.label }}</legend>
-                                    <div class="input_block reuired {% if forms.contact.phonenumber.errors %}error{% endif %}">
+                                    <div class="input_block required {% if forms.contact.phonenumber.errors %}error{% endif %}">
                                         {{ forms.contact.phonenumber }}{% for error in forms.contact.phonenumber.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>

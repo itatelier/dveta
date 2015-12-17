@@ -12,6 +12,7 @@
 .clear::after {clear: both;content: ".";display: block;height: 1px;visibility: hidden;}
 .flex { display: flex;  }
 .flex_vcentered { align-items: center;}
+.flex_hcentered { justify-content: center;}
 html {
     height: 100%;
     font-size: 62.5%;
@@ -38,6 +39,7 @@ form { margin: 1rem;}
 .green_bg { background-color: #74BA12 !important; }
 .red_bg { background-color: #F7A3A3 !important; }
 .blue_bg { background-color: #009DDA !important; }
+.grey_bg { background-color: #ededed !important; border-color: #9ea19c;}
 .scroll { overflow:auto; }
 .fixedheigth {
     overflow: auto;
@@ -51,6 +53,7 @@ form { margin: 1rem;}
 }
 .margint10 { margin-top: 1rem; }
 .centertext { text-align: center !important;}
+
 
 div._white_bordered {
     background-color: #ffffff;

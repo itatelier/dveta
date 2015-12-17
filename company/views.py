@@ -227,17 +227,24 @@ class CompanyClientCardView(LoginRequiredMixin, TemplateView):
 
         return context_data
 
-#
-#
-# class main_edit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-#     template_name = 'company/main_edit.html'
-#     permission_required = 'company.change_companies'
-#     form_class = CompanyEditForm
-#     model = Companies
-#
-#     def get_success_url(self, *args, **kwargs):
-#         pk = self.kwargs.get('pk', None)
-#         return "/company/%s/card" % pk
+
+class CompanyUpdateInfoView(LoginRequiredMixin, UpdateView):
+    template_name = 'company/company_update_info.html'
+    # permission_required = 'company.change_companies'
+    form_class = CompanyCreateForm
+    model = Companies
+
+    def get_success_url(self, *args, **kwargs):
+        pk = self.kwargs.get('pk', None)
+        return "/company/%s/card" % pk
+
+
+class CompanyDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView):
+    permission_required = 'company.delete_companies'
+    form_class = CompanyCreateForm
+    model = Companies
+    success_url = '/company/list_clients'
+    notice = 'Удаление объекта "Компания" приведет к удалению всех связанных объектов - отделений, адресов, контрагентов, объектов, заказов и т.п.!'
 #
 #
 #

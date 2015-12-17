@@ -17,14 +17,13 @@
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
-        var start = new Date().getTime();
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
         input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains');
         {#    Виджет datepicker #}
         $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
-        {#      Сортировка по заголовкам столбцов   #}
+        {#    Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
         {#  Переход на карточу   #}
@@ -34,9 +33,6 @@
             document.location.href = url;
         });
 
-        var end = new Date().getTime();
-        var time = end - start;
-        console.log('Ready time: ' + time + 'ms');
     });
 
         {#  постобработка результата AJAX запроса #}

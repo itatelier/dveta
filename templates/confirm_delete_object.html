@@ -1,0 +1,31 @@
+{% extends "main.html" %}
+{% block content %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active"><a href="#">Запрос на удаление</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="flex_row flex_hcentered flex_vcentered">
+                    <div class="">
+                        <form method="POST" id="confirm" action=".">{% csrf_token %}
+                            <input type="hidden" value="yes">
+                        </form>
+                        <h1 class="centertext">Вы уверены, что хотите удалить этот объект?</h1>
+                        {% if notice %}<div class="notice">{{ notice }}</div>{% endif %}
+                        <span class="button_block centertext">
+                            <a class="button grey_bg"  onclick="history.back();return false;">Вернуться на предыдущую страницу</a>
+                            <a class="textlink red"  onclick="$('form#confirm').submit();">удалить</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
