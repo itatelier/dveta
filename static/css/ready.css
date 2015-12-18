@@ -11,6 +11,7 @@
 .clear {display: block;	}
 .clear::after {clear: both;content: ".";display: block;height: 1px;visibility: hidden;}
 .flex { display: flex;  }
+.flex_column { flex-direction: column;}
 .flex_vcentered { align-items: center;}
 .flex_hcentered { justify-content: center;}
 html {
@@ -223,13 +224,13 @@ header > div.sheet_row_headered > div.block_item > div.menu_item:hover > ul > li
 /*======================== Sheet blocks ========================== */
 
 div.sheet_row_headered { margin: 1rem 0 0 0;}
-div.sheet_row_headered > h2 { color: #009DDA; }
+div.sheet_row_headered > h2 { color: #333; }
 
 /*======================== Tables ========================== */
 
 table.sheet_simple { margin: 1.5rem 1rem; }
 table.sheet_simple > tbody > tr > td { padding: 0.5rem 1rem;}
-table.sheet_headered { margin: 1.5rem 1rem; }
+table.sheet_headered { margin: 1.5rem 1rem 0rem 1rem; }
 table.sheet_headered > thead > tr > th {
     text-align: left;
     padding: 0.5rem;

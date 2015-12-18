@@ -4,7 +4,8 @@
         <div class="breadcrumbs">
             <ul>
                 <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
-                <li class="active" ><a href="listing.html">Новый клиент: Частник</a></li>
+                <li><a href="{% url 'company_card_client' object.pk %}">Карточка клиента {{ object.name }}</a></li>
+                <li class="active" ><a href="#">Редактор информации о клиенте</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}

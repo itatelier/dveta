@@ -45,8 +45,8 @@ class CompanyUpdateForm(CompanyCreateForm):
 
 class BranchEditForm(ModelForm):
     name = CharField(label="Наименование отделения", required=True, help_text="Краткое наименование отделения")
-    type = ModelChoiceFieldNameLabel(queryset=BranchTypes.objects.all().exclude(pk=1), label_field='val', label="Тип отделения", empty_label=None, initial=1)
-    description = CharField(label="Описание отделения", required=False, widget=forms.Textarea(attrs={'cols': 60, 'rows':2}))
+    type = ModelChoiceFieldNameLabel(queryset=BranchTypes.objects.all(), label_field='val', label="Тип отделения", empty_label=None, initial=2)
+    description = CharField(label="Описание отделения", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 250}))
 
     class Meta:
         model = Branches
@@ -65,11 +65,11 @@ class BranchCompanyCreateForm(ModelForm):
 
 
 class AddressEditForm(ModelForm):
-    city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25, 'id':'input_city', 'data-kladr-type':'city', 'data-kladr-id': '7700000000000'},))
-    postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5}))
-    street = CharField(label="Улица", required=True)
-    app = CharField(label="Дом, Корпус, Строение", required=True, widget=TextInput(attrs={'size': 2}))
-    comment = CharField(label="Примечание к адресу", required=False)
+    city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25, 'id': 'input_city', 'data-kladr-type':'city', 'data-kladr-id': '7700000000000'},))
+    postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    street = CharField(label="Улица", required=True,  widget=TextInput(attrs={'size': 36, 'maxlength': 250}))
+    app = CharField(label="Дом, Корпус", required=True, widget=TextInput(attrs={'size': 3}))
+    comment = CharField(label="Примечание к адресу", required=False, widget=forms.Textarea(attrs={'cols': 38, 'rows':2, 'maxlength': 250}))
     # exclude = ('company',)
 
     class Meta:

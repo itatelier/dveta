@@ -22,17 +22,21 @@
             <div class="left_border"><span class="upblock"></span></div>
             {# Рабочий лист #}
             <div class="sheet">
+                {# Левый бар #}
                 <div class="left_bar">
                     <ul><li><a href="#" class="active">Ноый клиент</a></li></ul>
                     <hr>
                 </div>
+                {# - Левый бар #}
                 <div class="data_grid_medium">
-                            <div class="sheet_switch_menu">
-                                <ul>
-                                    <li><a href="#" class="active">Частник</a></li>
-                                    <li><a href="{% url 'company_create_firm' %}" >Фирма</a></li>
-                                </ul>
-                            </div>
+                    {# Меню переключения Частник/Фирма #}
+                    <div class="sheet_switch_menu">
+                        <ul>
+                            <li><a href="#" class="active">Частник</a></li>
+                            <li><a href="{% url 'company_create_firm' %}" >Фирма</a></li>
+                        </ul>
+                    </div>
+                    {# - Меню переключения Частник/Фирма #}
                     {# Форма объекта Company #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# ------------ Company form ------------#}

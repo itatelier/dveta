@@ -77,20 +77,22 @@
                     {# Информационный блок - отделения #}
                     <div class="sheet_row_headered">
                         <h2>Отделения</h2>
+                        {% if branches %}
                         <table class="sheet_headered">
                             <thead>
-                                <tr>
-                                    <th>Наименование</th>
-                                    <th>Адрес</th>
-                                    <th>Телефон</th>
-                                    <th>Персона</th>
-                                    <th>Примечание</th>
-                                </tr>
+                                <tr><th>Наименование</th><th>Адрес</th><th>Телефон</th><th>Персона</th><th>Примечание</th></tr>
                             </thead>
                             <tbody>
                                 {% for i in branches %}<tr><td>{{ i.name }}</td><td>{{ i.address }}</td><td></td><td></td><td>{{ i.description }}</td></tr>{% endfor %}
                             </tbody>
                         </table>
+                        <a class="textlink" href="{% url 'company_branch_create' pk %}">Добавить отделение</a>
+                        {% else %}
+                        <div class="empty_block">
+                            <p>Отеделения не добавлены</p>
+                            <a class="textlink" href="{% url 'company_branch_create' pk %}">Добавить отделение</a>
+                        </div>
+                        {% endif %}
                     </div>
                     {# - Информационный блок - контрагенты #}
                     {# Информационный блок - отделения #}

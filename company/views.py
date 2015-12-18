@@ -211,7 +211,7 @@ class CompanyCreateFirmView(MultiFormCreate):
 
 
 class CompanyClientCardView(LoginRequiredMixin, TemplateView):
-    template_name = "company/card_client.html"
+    template_name = "company/client_card.html"
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyClientCardView, self).get_context_data(*args, **kwargs)
@@ -245,6 +245,55 @@ class CompanyDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeVie
     model = Companies
     success_url = '/company/list_clients'
     notice = 'Удаление объекта "Компания" приведет к удалению всех связанных объектов - отделений, адресов, контрагентов, объектов, заказов и т.п.!'
+
+
+class BranchCardView(LoginRequiredMixin, TemplateView):
+    template_name = "company/branch_card.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BranchCardView, self).get_context_data(*args, **kwargs)
+        object = Branches.objects.select_related('address', 'company').get(pk=kwargs['pk'])
+        context_data.update({
+            'object': object,
+        })
+        return context_data
+
+class BranchCreateView(MultiFormCreate):
+    template_name = 'company/branch_create.html'
+    formconf = {
+        'branch': {'formclass': BranchEditForm},
+        'address': {'formclass': AddressEditForm}
+    }
+
+    def post(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        aform = forms['address']
+        bform = forms['branch']
+        if bform.is_valid() and aform.is_valid():
+            company_pk = kwargs.pop('company_pk', None)
+            company_object = Companies(pk=company_pk)
+            address_object = aform.save()
+            branch_object = bform.save(commit=False)
+            branch_object.company = company_object
+            branch_object.address = address_object
+            branch_object.save()
+            self.success_url = '/company/%s/card' % company_pk
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            forms = self.get_forms()
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BranchCreateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        context_data.update({'company': Companies.objects.get(pk=company_pk)})
+        return context_data
+
+    def get_success_url(self, *args, **kwargs):
+        pk = self.kwargs.get('company_pk', None)
+        return "/company/%s/card" % pk
+
+
 #
 #
 #

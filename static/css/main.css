@@ -3,6 +3,11 @@ div.flex_row {
     flex-direction: row;
     width: 100%;
 }
+div.flex_column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
 div.flex_block {
     flex: 1 0 auto;
@@ -125,4 +130,19 @@ ul.contents > li {
 
 ul.contents > li > a {
     padding: 0.5rem;
+}
+
+div.empty_block {
+    display: flex;
+    flex-direction: row;
+}
+div.empty_block > p {
+    flex: 0 0 auto;
+    padding: 5px 15px 5px 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #d3d3d3;
+    text-shadow: beige;
+    /* text-shadow: 0 1px 1px rgba(142, 142, 142, 0.1); */
+    text-transform: uppercase;
 }

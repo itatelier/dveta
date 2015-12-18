@@ -1,0 +1,126 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+{% endblock %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
+                <li class="active" ><a href="#">Карточка клиента {{ object.name }}</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "company/company_left_bar.html" with pk=object.pk sel=1 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Заголовок информации о клиенте #}
+                    <div class="flex_row">
+                        <div class="flex_block">
+                            <h1>{{ object.name }}</h1>
+                        </div>
+                        <div class="flex_block _zero customer_account_detales">
+                            <span><p>БАЛАНС</p><em>7500</em></span>
+                            <span><p>КРЕДИТ</p><em>7500</em></span>
+                            <span class="customer_status {{ object.status.css_class }}">{{ object.status.val }}</span>
+                        </div>
+                    </div>
+                    {# - Заголовок информации о клиенте #}
+                    {# Ключевые значения #}
+                    <div class="flex_row">
+                        <div class="values_block">
+                            <span><p>{{ object.org_type.val }}</p><em>тип клиента</em></span>
+                            <span><p>Группа I</p><em>рабочая группа</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{% if object.client_options.request_freq == 1 %}разовый{% elif object.client_options.request_freq == 2 %}постоянный{% endif %}</p><em>частота заказов</em></span>
+                            <span><p>{{ object.date_add }}</p><em>дата добавления</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{% if object.client_options.pay_condition == 1 %}по постановке{% elif object.client_options.pay_condition == 2 %}по вывозу{% endif %}</p><em>условия оплаты</em></span>
+                            <span><p>{% if object.client_options.pay_form == 1 %}наличная{% elif object.client_options.pay_form == 2 %}безналичная{% endif %}</p><em>форма оплаты</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span>
+                                <textarea maxlength="255" cols="50" rows="2">{{ object.comment }}</textarea>
+                                <em>примечание</em></span>
+                        </div>
+                    </div>
+                    {# - Ключевые значения #}
+                    {# Информационный блок - основная информация #}
+                    <div class="sheet_row_headered">
+                        <h2>Основная информация</h2>
+                        <table class="sheet_simple">
+                            <tr><td>Источник привлечения</td><td>{{ object.attr_source.val }}</td></tr>
+                            <tr><td>Описание</td><td>{{ object.description }}</td></tr>
+                        </table>
+                    </div>
+                    {# - Информационный блок - основная информация #}
+                    {# Информационный блок - контакты #}
+                    <div class="sheet_row_headered">
+                        <h2>Контакты</h2>
+                        <table class="sheet_simple">
+                            {% for i in contacts %}
+                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{{ i.role }}{% else %}без персоны{% endif %}</td><td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {# - Информационный блок - контакты #}
+                    {# Информационный блок - отделения #}
+                    <div class="sheet_row_headered">
+                        <h2>Отделения</h2>
+                        {% if branches %}
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Наименование</th><th>Адрес</th><th>Телефон</th><th>Персона</th><th>Примечание</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for i in branches %}
+                                    <tr><td><a href="{% url 'company_branch_card' object.pk i.pk %}"> {{ i.name }}</a></td><td>{{ i.address }}</td><td></td><td></td><td>{{ i.description }}</td></tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                        <a class="textlink" href="{% url 'company_branch_create' pk %}">Добавить отделение</a>
+                        {% else %}
+                        <div class="empty_block">
+                            <p>Отеделения не добавлены</p>
+                            <a class="textlink" href="{% url 'company_branch_create' pk %}">Добавить отделение</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {# - Информационный блок - контрагенты #}
+                    {# Информационный блок - отделения #}
+                    <div class="sheet_row_headered">
+                        <h2>Контрагенты</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr>
+                                    <th>Наименование</th>
+                                    <th>Тип</th>
+                                    <th>ИНН</th>
+                                    <th>Баланс счета</th>
+                                    <th>Примечание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ООО "АргоПромСтрой база"</td><td>юр.лицо</td><td>7719684579</td><td>5800</td><td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {# - Информационный блок - отделения #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
