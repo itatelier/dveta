@@ -96,7 +96,7 @@ class CompanyCreateFirmView(MultiFormCreate):
     formconf = {
         'company': {'formclass': CompanyCreateForm},
         'branch': {'formclass': BranchCompanyCreateForm},
-        'address': {'formclass': AddressEditForm},
+        'address': {'formclass': AddressUpdateForm},
         'person': {'formclass': PersonCompanyCreateForm},
         'contact': {'formclass': ContactFirmCreateForm},
     }
@@ -142,6 +142,7 @@ class CompanyCreateFirmView(MultiFormCreate):
                 ''' Создаем объекты от зависимой формы '''
                 branch_object.company = company_object
                 branch_object.address = address_object
+                branch_object.save()
                 ''' Возвращаем урл страницы успеха'''
                 return HttpResponseRedirect(self.get_success_url())
             elif not branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
@@ -261,8 +262,8 @@ class BranchCardView(LoginRequiredMixin, TemplateView):
 class BranchCreateView(MultiFormCreate):
     template_name = 'company/branch_create.html'
     formconf = {
-        'branch': {'formclass': BranchEditForm},
-        'address': {'formclass': AddressEditForm}
+        'branch': {'formclass': BranchUpdateForm},
+        'address': {'formclass': AddressUpdateForm}
     }
 
     def post(self, request, *args, **kwargs):
@@ -294,6 +295,47 @@ class BranchCreateView(MultiFormCreate):
         return "/company/%s/card" % pk
 
 
+class BranchUpdateView(MultiFormEdit):
+    template_name = 'company/branch_update.html'
+    formconf = {
+        'branch': {'formclass': BranchUpdateForm},
+        'address': {'formclass': AddressUpdateForm}
+    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BranchUpdateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        branch_pk = self.kwargs.get('pk', None)
+        context_data.update({
+            'company_pk': company_pk,
+            'branch_pk': branch_pk,
+            'company': Companies.objects.get(pk=company_pk)})
+        return context_data
+
+    def update_formconf(self, formconf, *args, **kwargs):
+        branch_pk = kwargs.pop('pk', None)
+        branch_object = Branches.objects.get(pk=branch_pk)
+        formconf['branch']['instance'] = branch_object
+        # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
+        formconf['address']['instance'] = branch_object.address
+        return formconf
+
+    def get_success_url(self, *args, **kwargs):
+        company_pk = self.kwargs.get('company_pk', None)
+        branch_pk = self.kwargs.get('pk', None)
+        return "/company/%s/branch/%s/card" % (company_pk, branch_pk)
+
+
+class BranchDelete(LoginRequiredMixin, DeleteNoticeView):
+    # permission_required = 'company.delete_branches'
+    form_class = BranchUpdateForm
+    model = Branches
+    notice = 'Удаление объекта "Отделение" приведет к удалению связанного адреса!'
+
+    def get_success_url(self, *args, **kwargs):
+        company_pk = self.kwargs.get('company_pk', None)
+        return "/company/%s/card" % company_pk
+
 #
 #
 #
@@ -310,102 +352,6 @@ class BranchCreateView(MultiFormCreate):
 #
 #         return context_data
 #
-# class main_delete(LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView):
-#     permission_required = 'company.delete_companies'
-#     form_class = CompanyEditForm
-#     model = Companies
-#     success_url = '/company/main_list'
-#     notice = 'Удаление объекта "Компания" приведет к удалению всех связанных объектов - отделений, адресов, контрагентов!'
-#
-#
-# class branch_list_index(LoginRequiredMixin, TemplateView):
-#     template_name = "company/branch_list_index.html"
-#
-#
-# class branch_list_json(LoginRequiredMixin, JsonListMixin):
-#     qs = Addresses.objects.select_related('branch', 'branch__type', 'company')
-#     relations = {'branch': {'relations': ('type',), 'fields': ('id', 'name', 'type')}, 'company': {'fields': ('name',)}}
-#
-#     params = {
-#         'page': {'required': 1, 'default': 1},
-#         'rows': {'required': 1, 'default': 25},
-#         'sort_col': {'required': 1, 'default': 'pk'},
-#         'sort_way': {'required': 1, 'default': "-"},
-#         'branch__is_active': {'type': 'bool', 'default': 'reset'},
-#         'branch__type': {'type': 'filter', 'default': 'reset'},
-#         'search_id': {'type': 'text', 'field': 'id', 'default': 'reset'},
-#         'search_name': {'type': 'text', 'field': 'name', 'filter_type': '__icontains', 'default': 'reset'},
-#         'search_company_name': {'type': 'text', 'field': 'company__name', 'filter_type': '__icontains', 'default': 'reset'},
-#         'search_address_street': {'type': 'text', 'field': 'address__street', 'filter_type': '__icontains', 'default': 'reset'},
-#     }
-#
-#
-# class branch_create(MultiFormCreate):
-#     template_name = 'company/branch_edit.html'
-#     success_url = '/company/branch_list/'
-#     formconf = {
-#         'branch': {'formclass': BranchEditForm},
-#         'address': {'formclass': AddressEditForm}
-#     }
-#
-#     def post(self, request, *args, **kwargs):
-#         forms = self.get_forms()
-#         aform = forms['address']
-#         bform = forms['branch']
-#         if bform.is_valid() and aform.is_valid():
-#             ''' получаем параметры из из URL, имя параметра в url.conf '''
-#             company_pk = kwargs.pop('company_pk', None)
-#             company_object = Companies(pk=company_pk)
-#             ''' Создаем объект модели для Foreign Key '''
-#             address_object = aform.save(commit=False)
-#             address_object.company = company_object
-#             ''' Сохраняем формы родительских объектов '''
-#             address_object.save()
-#             ''' Создаем объекты первичных форм, для которых добавим ключи'''
-#             branch_object = bform.save(commit=False)
-#             ''' Присваиваем полям зависимых форм сохраненные родительские объекты '''
-#             branch_object.company = company_object
-#             branch_object.address = address_object
-#             ''' Сохраняем зависимые формы '''
-#             branch_object.save()
-#             self.success_url = '/company/%s/card' % company_pk
-#             return HttpResponseRedirect(self.get_success_url())
-#         else:
-#             forms = self.get_forms()
-#             return self.render_to_response(self.get_context_data(forms=forms))
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context_data = super(branch_create, self).get_context_data(*args, **kwargs)
-#         company_pk = self.kwargs.get('company_pk', None)
-#         context_data.update({'company': Companies.objects.get(pk=company_pk) })
-#         return context_data
-#
-#
-# class branch_edit(MultiFormEdit):
-#     template_name = 'company/branch_edit.html'
-#     formconf = {
-#         'branch': {'formclass': BranchEditForm},
-#         'address': {'formclass': AddressEditForm}
-#     }
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context_data = super(branch_edit, self).get_context_data(*args, **kwargs)
-#         company_pk = self.kwargs.get('company_pk', None)
-#         context_data.update({'company': Companies.objects.get(pk=company_pk) })
-#         return context_data
-#
-#     def update_formconf(self, formconf, *args, **kwargs):
-#         branch_pk = kwargs.pop('pk', None)
-#         branch_object = Branches.objects.get(pk=branch_pk)
-#         formconf['branch']['instance'] = branch_object
-#         # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
-#         formconf['address']['instance'] = branch_object.address
-#         return formconf
-#
-#     def get_success_url(self, *args, **kwargs):
-#         company_pk = self.kwargs.get('company_pk', None)
-#         branch_pk = self.kwargs.get('pk', None)
-#         return "/company/%s/branch/%s/card" % (company_pk, branch_pk)
 #
 #
 # class branch_card(LoginRequiredMixin, TemplateView):
@@ -421,14 +367,6 @@ class BranchCreateView(MultiFormCreate):
 #             'phones': phones
 #         })
 #         return context_data
-#
-#
-# class branch_delete(LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView):
-#     permission_required = 'company.delete_branches'
-#     form_class = BranchEditForm
-#     model = Branches
-#     success_url = '/company/branch_list'
-#     notice = 'Удаление объекта "Отделение" приведет к удалению связанного адреса!'
 #
 #
 # class contragent_create(FormView):

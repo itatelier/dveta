@@ -30,8 +30,8 @@ urlpatterns = patterns('',
     # #
     url(r'^(?P<company_pk>\d+)/branch_create/$', BranchCreateView.as_view(), name='company_branch_create'),
     url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/card/$', BranchCardView.as_view(), name='company_branch_card'),
-    # url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/edit/$', branch_edit.as_view(), name=base_path + '_branch_edit'),
-    # url(r'^branch/(?P<pk>\d+)/delete/$', branch_delete.as_view(), name=base_path + '_branch_delete'),
+    url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/edit/$', BranchUpdateView.as_view(), name='company_branch_update'),
+    url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/delete/$', BranchDelete.as_view(), name='company_branch_delete'),
     # url(r'^branch_list/$', branch_list_index.as_view(), name=base_path + '_branch_list'),
     # url(r'^branch_list_json/$', branch_list_json.as_view(), name=base_path + '_branch_list_json'),
     # #

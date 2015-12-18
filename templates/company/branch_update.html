@@ -21,7 +21,8 @@
             <ul>
                 <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
                 <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
-                <li class="active" ><a href="#">Новое отделение</a></li>
+                <li><a href="{% url 'company_branch_card' company.pk branch_pk %}">Отделение {{ forms.branch.instance.name }}</a></li>
+                <li class="active" ><a href="#">Редактор информации об отделении</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -31,7 +32,11 @@
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
-                    <ul><li><a href="{% url 'company_branch_create' company.pk %}" {% if not branch_pk %}class="active"{%  endif %}>Новое отделение</a></li></ul><hr>
+                    <ul><li><a href="{% url 'company_card_client' company.pk %}">Карточка отделения</a></li></ul><hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li class="active"><a href="#" class="active">Информация</a></li>
+                    </ul>
                 </div>
                 {# - Левый бар #}
                 <div class="data_grid_medium">
@@ -77,6 +82,9 @@
                         <div class="form_row">
                             <span class="button_block">
                                 <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                {% if perms.company.delete_companies %}
+                                    <a href="{% url 'company_branch_delete' company.pk branch_pk %}" class="textlink red">Удалить</a>
+                                {% endif %}
                             </span>
                         </div>
                         {# - Кнопки #}

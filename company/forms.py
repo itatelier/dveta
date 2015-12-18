@@ -43,7 +43,7 @@ class CompanyUpdateForm(CompanyCreateForm):
         fields = ('name', 'attr_source', 'description', 'comment')
 
 
-class BranchEditForm(ModelForm):
+class BranchUpdateForm(ModelForm):
     name = CharField(label="Наименование отделения", required=True, help_text="Краткое наименование отделения")
     type = ModelChoiceFieldNameLabel(queryset=BranchTypes.objects.all(), label_field='val', label="Тип отделения", empty_label=None, initial=2)
     description = CharField(label="Описание отделения", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 250}))
@@ -64,7 +64,7 @@ class BranchCompanyCreateForm(ModelForm):
         fields = ('name', 'branch_switch')
 
 
-class AddressEditForm(ModelForm):
+class AddressUpdateForm(ModelForm):
     city = CharField(label="Населенный пункт", required=True, widget=TextInput(attrs={'size': 25, 'id': 'input_city', 'data-kladr-type':'city', 'data-kladr-id': '7700000000000'},))
     postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     street = CharField(label="Улица", required=True,  widget=TextInput(attrs={'size': 36, 'maxlength': 250}))

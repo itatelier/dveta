@@ -147,8 +147,8 @@ class Branches(models.Model):
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.name)
 
-    def main_phone(self):
-        return self.branch_phone.filter(branch_main=1)
+    # def main_phone(self):
+    #     return self.branch_phone.filter(branch_main=1)
 
 '''
 Addresses
