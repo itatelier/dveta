@@ -65,14 +65,21 @@
                     </div>
                     {# - Информационный блок - основная информация #}
                     {# Информационный блок - контакты #}
+                    {% if contacts %}
                     <div class="sheet_row_headered">
                         <h2>Контакты</h2>
                         <table class="sheet_simple">
                             {% for i in contacts %}
-                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{{ i.role }}{% else %}без персоны{% endif %}</td><td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
+                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a></td><td>{{ i.role }}</td>{% else %}без персоны</td><td></td>{% endif %}<td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
                             {% endfor %}
                         </table>
                     </div>
+                    {% else %}
+                        <div class="empty_block">
+                            <p>контакты не добавлены</p>
+                            <a class="textlink" href="{% url 'company_contacts' pk %}">Добавить контакты</a>
+                        </div>
+                    {% endif %}
                     {# - Информационный блок - контакты #}
                     {# Информационный блок - отделения #}
                     <div class="sheet_row_headered">
@@ -80,11 +87,11 @@
                         {% if branches %}
                         <table class="sheet_headered">
                             <thead>
-                                <tr><th>Наименование</th><th>Адрес</th><th>Телефон</th><th>Персона</th><th>Примечание</th></tr>
+                                <tr><th>Наименование</th><th>Адрес</th><th>Примечание</th></tr>
                             </thead>
                             <tbody>
                                 {% for i in branches %}
-                                    <tr><td><a href="{% url 'company_branch_card' object.pk i.pk %}"> {{ i.name }}</a></td><td>{{ i.address }}</td><td></td><td></td><td>{{ i.description }}</td></tr>
+                                    <tr><td><a href="{% url 'company_branch_card' object.pk i.pk %}"> {{ i.name }}</a></td><td>{{ i.address }}</td><td>{{ i.description }}</td></tr>
                                     {% endfor %}
                             </tbody>
                         </table>

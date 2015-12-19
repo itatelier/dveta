@@ -336,6 +336,75 @@ class BranchDelete(LoginRequiredMixin, DeleteNoticeView):
         company_pk = self.kwargs.get('company_pk', None)
         return "/company/%s/card" % company_pk
 
+
+class CompanyContactsView(MultiFormCreate):
+    template_name = 'company/company_contacts.html'
+    formconf = {
+        'person': {'formclass': PersonCompanyCreateForm},
+        'contact': {'formclass': CompanyContactsCreateForm}
+    }
+
+    def post(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        pform = forms['person']
+        contform = forms['contact']
+        if pform.is_valid() and contform.is_valid():
+            company_pk = kwargs.pop('pk', None)
+            company_object = Companies(pk=company_pk)
+            person_object = pform.save()
+            contact_object = contform.save(commit=False)
+            contact_object.is_work = True
+            contact_object.person = person_object
+            contact_object.company = company_object
+            contact_object.save()
+            self.success_url = '/company/%s/contacts' % company_pk
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            forms = self.get_forms()
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CompanyContactsView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('pk', None)
+        context_data.update({
+                'company': Companies.objects.get(pk=company_pk),
+                'contacts': Contacts.objects.select_related('person').filter(company=company_pk)
+        })
+        return context_data
+
+
+class CompanyContactUpdateView(MultiFormEdit):
+    template_name = 'company/company_contacts.html'
+    formconf = {
+        'contact': {'formclass': CompanyContactsCreateForm},
+        'person': {'formclass': PersonCompanyCreateForm}
+    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CompanyContactUpdateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        contact_pk = self.kwargs.get('pk', None)
+        context_data.update({
+            'update_view': True,
+            'company_pk': company_pk,
+            'contact_pk': contact_pk,
+            'company': Companies.objects.get(pk=company_pk),
+            'contacts': Contacts.objects.select_related('person').filter(company=company_pk)})
+        return context_data
+
+    def update_formconf(self, formconf, *args, **kwargs):
+        contact_pk = kwargs.pop('pk', None)
+        contact_object = Contacts.objects.get(pk=contact_pk)
+        formconf['contact']['instance'] = contact_object
+        # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
+        formconf['person']['instance'] = contact_object.person
+        return formconf
+
+    def get_success_url(self, *args, **kwargs):
+        company_pk = self.kwargs.get('company_pk', None)
+        return "/company/%s/contacts/" % company_pk
+
+
 #
 #
 #

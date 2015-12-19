@@ -37,6 +37,7 @@ class Contacts(models.Model):
     company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')
     person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='contacts')
     company_main = models.BooleanField(default=0, editable=False)
+    show_in_card = models.BooleanField(default=True, editable=True)
 
     class Meta:
         db_table = 'contacts'
@@ -44,3 +45,9 @@ class Contacts(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s %s' % (self.id, self.person.nick_name, self.company.name)
+
+
+# class CompanyContacts(models.Model):
+#     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+#     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True, related_name='contact')
+#     contact = models.ForeignKey('company.Contacts', null=False, blank=False, editable=True, related_name='contact')

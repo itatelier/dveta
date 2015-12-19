@@ -383,6 +383,7 @@ table.listing_grid > tbody > tr:hover {
 table.listing_grid > tbody > tr > td {
     padding: 0.5rem 0.5rem;
     border-bottom: 1px solid #eaeaea;
+    cursor: pointer;
 }
  /*======================== Table bottom bar ========================== */
 div.table_bottom_bar {

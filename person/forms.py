@@ -34,7 +34,7 @@ class ContactFirmCreateForm(ModelForm):
     role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
     email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
     comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
-    phonenumber = IntegerField(label="Номер телефона", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
+    phonenumber = IntegerField(label="Номер телефона", help_text="10 цифр, в формате 9991234567", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts
@@ -48,3 +48,11 @@ class ContactFirmCreateForm(ModelForm):
     #                 classes = self.fields[f_name].widget.attrs.get('class', '')
     #                 classes += ' error'
     #                 self.fields[f_name].widget.attrs['class'] = classes
+
+
+class CompanyContactsCreateForm(ContactFirmCreateForm):
+    show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
+
+    class Meta:
+        model = Contacts
+        fields = ('role', 'email', 'comment', 'phonenumber', 'show_in_card')
