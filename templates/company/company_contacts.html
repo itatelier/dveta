@@ -14,7 +14,7 @@
                 console.log("Value: " + this.value);
                 $.ajaxSetup({headers: { "X-CSRFToken": getCookie("csrftoken") }});
                 $.ajax({
-                    url:  '/persons/api/contact_get_by_num_json/',
+                    url:  '/persons/api/contacts_search_json/',
                     dataType: "json",
                     data: { 'contact__phonenumber': value}
                 })
@@ -24,7 +24,8 @@
                         var contact_id = result.results[0].contact.id;
                         var person_id = result.results[0].contact.person.id;
                         var comment = result.results[0].contact.comment;
-{#                        var company_id = result.results[0].company;#}
+                        var check_contact = check_contact_exist(company_id, contact_id);
+                        console.log("Check returned: " + check_contact);
                         var ErrorString = 'Номер уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
                         $('<em>' + ErrorString + '</em>').insertAfter($number_input);
                     }
@@ -34,6 +35,29 @@
         });
 
     });
+
+    function check_contact_exist(company_id, contact_id) {
+                console.log("Check func started");
+                var check = false;
+                $.ajax({
+                    url:  '/persons/api/contacts_search_json/',
+                    async: false,
+                    dataType: "json",
+                    data: { 'contact__id': contact_id, 'company_id': company_id }
+                })
+                .done(function(result){
+                    console.log("Contact check count results: " + result.count);
+                    if (parseInt(result.count) > 0) {
+                        console.log("result count > 0!");
+                        check = true;
+                    }
+                })
+                .fail(function(){
+                    check = true;
+                });
+                console.log("check result to return " + check);
+                return check;
+    }
 
     function add_contact(company_id, contact_id) {
         $.ajax({
@@ -49,7 +73,8 @@
             console.log("Result");
         });
         return false;
-    };
+};
+
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">

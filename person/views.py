@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*
 
 # App spcific
 from models import *
@@ -44,11 +45,20 @@ class CreateCompanyContactJsonView(JsonViewMix):
     login_required = True
 
     def prepare(self, *args, **kwargs):
-        company_contact_object = CompanyContacts.objects.create(
-            company_id=self.values['company_id'],
-            contact_id=self.values['contact_id']
-        )
-        company_contact_object.save()
-        self.values['Success'] = 'true'
-        log.info("New object saved")
+        find_filters = {
+            'company_id': self.values['company_id'],
+            'contact_id': self.values['contact_id']
+        }
+
+        company_contact_exist_object = CompanyContacts.objects.filter(**find_filters)
+        if company_contact_exist_object:
+            self.errors.append("Контакт уже связан с компанией!")
+        else:
+            company_contact_object = CompanyContacts.objects.create(
+                company_id=self.values['company_id'],
+                contact_id=self.values['contact_id']
+            )
+            company_contact_object.save()
+            self.values['Success'] = 'true'
+            log.info("New object saved")
         return

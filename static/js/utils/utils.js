@@ -50,3 +50,4 @@ function date_json2dt(str_date_json_format, offset_param) {
     // console.log('Date out:' + dt_out.toString('dd.MM.yyyy'));
     return dt_out;
 }
+

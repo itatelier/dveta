@@ -210,7 +210,7 @@ class CompanyCreateFirmView(MultiFormCreate):
                 for field in forms[form]:
                     for err in field.errors:
                         log.warn("Field %s Err: %s" % (field.name, err))
-            forms = self.get_forms()
+            # forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
 
@@ -262,6 +262,7 @@ class BranchCardView(LoginRequiredMixin, TemplateView):
         })
         return context_data
 
+
 class BranchCreateView(MultiFormCreate):
     template_name = 'company/branch_create.html'
     formconf = {
@@ -284,7 +285,7 @@ class BranchCreateView(MultiFormCreate):
             self.success_url = '/company/%s/card' % company_pk
             return HttpResponseRedirect(self.get_success_url())
         else:
-            forms = self.get_forms()
+            # forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
     def get_context_data(self, *args, **kwargs):
@@ -352,6 +353,7 @@ class CompanyContactsView(MultiFormCreate):
         forms = self.get_forms()
         pform = forms['person']
         contactform = forms['contact']
+        companycontact_form = forms['companycontact']
         if pform.is_valid() and contactform.is_valid():
             ''' последовательно создаем объекты Company -> Person -> Contact -> CompanyContact '''
             company_pk = kwargs.pop('pk', None)
@@ -361,12 +363,13 @@ class CompanyContactsView(MultiFormCreate):
             contact_object.is_work = True
             contact_object.person = person_object
             contact_object.save()
-            company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+            company_contact_object = companycontact_form.save(commit=False)
+            company_contact_object.contact = contact_object
+            company_contact_object.company = company_object
             company_contact_object.save()
             self.success_url = '/company/%s/contacts' % company_pk
             return HttpResponseRedirect(self.get_success_url())
         else:
-            forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
     def get_context_data(self, *args, **kwargs):
@@ -386,6 +389,22 @@ class CompanyContactUpdateView(MultiFormEdit):
         'person': {'formclass': PersonCompanyCreateForm},
         'companycontact': {'formclass': CompanyContactsCreateForm}
     }
+
+    # def post(self, request, *args, **kwargs):
+    #     forms = self.get_forms()
+    #     form_not_valid = None
+    #     for formclass, form in forms.items():
+    #         if not form.is_valid():
+    #             form_not_valid = 1
+    #             log.warn("Form " + formclass + "not valid!")
+    #     if form_not_valid is None:
+    #         for formclass in forms:
+    #             for field in forms[formclass]:
+    #                 log.info("Field: " + field)
+    #             forms[formclass].save()
+    #         return HttpResponseRedirect(self.get_success_url())
+    #     else:
+    #         return self.render_to_response(self.get_context_data(forms=forms))
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyContactUpdateView, self).get_context_data(*args, **kwargs)
