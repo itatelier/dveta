@@ -78,8 +78,9 @@ class CompanyCreatePrivateView(MultiFormCreate):
             contact_object.is_work = True
             person_object = pform.save()
             contact_object.person = person_object
-            contact_object.company = company_object
             contact_object.save()
+            company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+            company_contact_object.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             for form in forms:
@@ -158,9 +159,10 @@ class CompanyCreateFirmView(MultiFormCreate):
                 contact_object.company_main = True
                 person_object = pform.save()
                 contact_object.person = person_object
-                contact_object.company = company_object
                 ''' Сохраняем объекты форм в БД '''
                 contact_object.save()
+                company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+                company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
                 log.info("Branch exist, person exist!")
@@ -187,9 +189,10 @@ class CompanyCreateFirmView(MultiFormCreate):
                 person_object.save()
                 contact_object.is_work = True
                 contact_object.person = person_object
-                contact_object.company = company_object
                 ''' Сохраняем объекты форм в БД '''
                 contact_object.save()
+                company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+                company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             elif not branch_exist and not contact_exist:
                 ''' Создаем стартовый набор опций клиента '''
@@ -216,10 +219,10 @@ class CompanyClientCardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyClientCardView, self).get_context_data(*args, **kwargs)
-        object = Companies.objects.select_related('rel_type', 'org_type', 'status', 'client_options', 'attr_source').prefetch_related('contacts').get(pk=kwargs['pk'])
+        object = Companies.objects.select_related('rel_type', 'org_type', 'status', 'client_options', 'attr_source').prefetch_related('contact').get(pk=kwargs['pk'])
         context_data.update({
             'object': object,
-            'contacts': Contacts.objects.select_related('person').filter(company=object.pk),
+            'contacts': CompanyContacts.objects.select_related('company', 'contact').filter(company__pk=object.pk),
             # 'main_phone': GetObjectOrNone(Phones, **{'company__pk': object.pk, 'company_main': True}),
             # 'main_address': GetObjectOrNone(Addresses, **{'company__pk': object.pk, 'company_main': True}),
             'branches': Branches.objects.select_related('company', 'type', 'address').filter(company=object.pk),
@@ -341,22 +344,25 @@ class CompanyContactsView(MultiFormCreate):
     template_name = 'company/company_contacts.html'
     formconf = {
         'person': {'formclass': PersonCompanyCreateForm},
-        'contact': {'formclass': CompanyContactsCreateForm}
+        'companycontact': {'formclass': CompanyContactsCreateForm},
+        'contact': {'formclass': ContactsCreateForm}
     }
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
         pform = forms['person']
-        contform = forms['contact']
-        if pform.is_valid() and contform.is_valid():
+        contactform = forms['contact']
+        if pform.is_valid() and contactform.is_valid():
+            ''' последовательно создаем объекты Company -> Person -> Contact -> CompanyContact '''
             company_pk = kwargs.pop('pk', None)
             company_object = Companies(pk=company_pk)
             person_object = pform.save()
-            contact_object = contform.save(commit=False)
+            contact_object = contactform.save(commit=False)
             contact_object.is_work = True
             contact_object.person = person_object
-            contact_object.company = company_object
             contact_object.save()
+            company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+            company_contact_object.save()
             self.success_url = '/company/%s/contacts' % company_pk
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -368,7 +374,7 @@ class CompanyContactsView(MultiFormCreate):
         company_pk = self.kwargs.get('pk', None)
         context_data.update({
                 'company': Companies.objects.get(pk=company_pk),
-                'contacts': Contacts.objects.select_related('person').filter(company=company_pk)
+                'contacts': CompanyContacts.objects.select_related('contact').filter(company=company_pk)
         })
         return context_data
 
@@ -376,7 +382,7 @@ class CompanyContactsView(MultiFormCreate):
 class CompanyContactUpdateView(MultiFormEdit):
     template_name = 'company/company_contacts.html'
     formconf = {
-        'contact': {'formclass': CompanyContactsCreateForm},
+        'contact': {'formclass': ContactsCreateForm},
         'person': {'formclass': PersonCompanyCreateForm}
     }
 
@@ -389,7 +395,8 @@ class CompanyContactUpdateView(MultiFormEdit):
             'company_pk': company_pk,
             'contact_pk': contact_pk,
             'company': Companies.objects.get(pk=company_pk),
-            'contacts': Contacts.objects.select_related('person').filter(company=company_pk)})
+            'contacts': CompanyContacts.objects.select_related('contact').filter(company=company_pk)
+        })
         return context_data
 
     def update_formconf(self, formconf, *args, **kwargs):
@@ -403,6 +410,16 @@ class CompanyContactUpdateView(MultiFormEdit):
     def get_success_url(self, *args, **kwargs):
         company_pk = self.kwargs.get('company_pk', None)
         return "/company/%s/contacts/" % company_pk
+
+
+class CompanyContactsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = CompanyContacts.objects.filter(company__rel_type=2).select_related('company', 'contact', 'contact__person', 'company__status', 'company__org_type', 'company__client_options')
+    serializer_class = CompanyContactsSerializer
+    # filter_class = ContactsFilters
+    # search_fields = ('role', 'comment', 'email', 'phonenumber', 'company__name', 'person__nick_name')
+    # ordering_fields = ('id', 'role', 'company__name', 'company__org_type', 'company__status', 'person', 'date_add')
+
 
 
 #

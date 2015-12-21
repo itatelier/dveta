@@ -2,10 +2,11 @@
 
 from django.contrib.auth.models import User, Group
 from models import *
-from company.models import CompanyOrgTypes
+from company.models import *
 from rest_framework import serializers
 from rest_framework import viewsets, generics, filters
 import django_filters
+from person.serializers import ContactsSerializer
 
 
 class OrgTypeSerializer(serializers.ModelSerializer):
@@ -58,5 +59,10 @@ class CompanyClientsFilters(django_filters.FilterSet):
         fields = ['id', 'name', 'date_after', 'name_ac', 'status', 'org_type', 'client_options__request_freq', 'client_options__pay_condition', 'client_options__pay_type', 'client_options__pay_form']
 
 
+class CompanyContactsSerializer(serializers.ModelSerializer):
+    company = CompanyClientsSerializer(many=False, required=True)
+    contact = ContactsSerializer(many=False, required=True)
 
-
+    class Meta:
+        model = CompanyContacts
+        fields = ['id', 'company', 'contact']

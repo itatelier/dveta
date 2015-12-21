@@ -10,6 +10,7 @@ base_path = 'company'
 from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'clients', CompanyClientsViewSet)
+router.register(r'company_contacts', CompanyContactsViewSet)
 
 
 urlpatterns = patterns('',

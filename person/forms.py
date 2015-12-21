@@ -50,9 +50,16 @@ class ContactFirmCreateForm(ModelForm):
     #                 self.fields[f_name].widget.attrs['class'] = classes
 
 
-class CompanyContactsCreateForm(ContactFirmCreateForm):
+class ContactsCreateForm(ContactFirmCreateForm):
     show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
 
     class Meta:
         model = Contacts
         fields = ('role', 'email', 'comment', 'phonenumber', 'show_in_card')
+
+
+class CompanyContactsCreateForm(ContactFirmCreateForm):
+
+    class Meta:
+        model = CompanyContacts
+        fields = ('company', 'contact')

@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^forbidden/$', default.Forbidden.as_view(), name='forbidden'),
 
     # Ajax actions
-     url(r'^ac/$', default.ac.as_view(), name='ac'),
+     url(r'^ac/$', default.AutoCompliteJsonView.as_view(), name='ac'),
     # url(r'^acid/$', default.ac_with_id.as_view(), name='ac'),
 
     # Dummy Views

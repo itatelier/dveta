@@ -34,7 +34,7 @@ class Contacts(models.Model):
     is_work = models.BooleanField(default=0, editable=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')
+    # company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')
     person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='contacts')
     company_main = models.BooleanField(default=0, editable=False)
     show_in_card = models.BooleanField(default=True, editable=True)
@@ -44,10 +44,6 @@ class Contacts(models.Model):
         verbose_name_plural = 'Контакты'
 
     def __unicode__(self):
-        return u'[%s] %s %s' % (self.id, self.person.nick_name, self.company.name)
+        return u'[%s] %s' % (self.id, self.person.nick_name)
 
 
-# class CompanyContacts(models.Model):
-#     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True, related_name='contact')
-#     contact = models.ForeignKey('company.Contacts', null=False, blank=False, editable=True, related_name='contact')

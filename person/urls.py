@@ -9,7 +9,7 @@ base_path = 'company'
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-router.register(r'contacts', ContactsClientsViewSet)
+# router.register(r'contacts', ContactsClientsViewSet)
 
 
 urlpatterns = patterns('',
@@ -19,6 +19,10 @@ urlpatterns = patterns('',
     #
     # Persons
     url(r'^list_clients/$', PersonsContactClientsView.as_view(), name='persons_list_client_contacts'),
+    # url(r'^get_contact_json/$', GetContactByPhoneJsonView.as_view(), name='contact_get_by_num_json'),
+    url(r'^get_contact_json/$', GetContactViewSet.as_view({'get': 'list'}), name='contact_get_by_num_json'),
+    url(r'^create_company_contact_json/$', CreateCompanyContactJsonView.as_view(), name='company_contact_create_json'),
+
 
     # url(r'^/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
     # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),

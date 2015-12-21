@@ -173,6 +173,15 @@ class Addresses(models.Model):
     def __unicode__(self):
         return u'%s, ул %s, %s' % (self.city, self.street, self.app)
 
+
+class CompanyContacts(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True, related_name='contact')
+    contact = models.ForeignKey('person.Contacts', null=False, blank=False, editable=True, related_name='contact')
+
+    class Meta:
+        db_table = 'company_contacts'
+        verbose_name_plural = 'Контакты компании'
 #
 #
 # class ContragentTypes(models.Model):

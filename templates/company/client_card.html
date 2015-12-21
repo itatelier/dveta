@@ -1,11 +1,5 @@
 {% extends "main.html" %}
-{% load static from staticfiles %}
-{% block add_static %}
-{% endblock %}
 {% block content %}
-<script>
-
-</script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
@@ -70,7 +64,10 @@
                         <h2>Контакты</h2>
                         <table class="sheet_simple">
                             {% for i in contacts %}
-                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a></td><td>{{ i.role }}</td>{% else %}без персоны</td><td></td>{% endif %}<td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
+                            <tr>
+                                <td>{% if i.contact.person.id %}<a href="#" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.contact.role }}</td>{% else %}без персоны</td><td></td>{% endif %}
+                                <td>8 {{ i.contact.phonenumber }} </td>
+                                <td>{{ i.contact.comment }}</td></tr>
                             {% endfor %}
                         </table>
                     </div>

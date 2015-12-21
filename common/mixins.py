@@ -187,33 +187,6 @@ class DeleteNoticeView(DeleteView):
 #         return HttpResponse(self.to_json(self.json), mimetype='text/plain')
 #
 
-class JSONResponseMixin(object):
-    def render_to_response(self, context):
-        return self.get_json_response(self.convert_context_to_json(context))
-
-    def get_json_response(self, content, **httpresponse_kwargs):
-        httpresponse_kwargs['content_type'] = 'application/json'
-        httpresponse_kwargs['Pragma'] = 'no cache'
-        httpresponse_kwargs['Cache-Control'] = 'no-cache, must-revalidate'
-        return http.HttpResponse(content, **httpresponse_kwargs)
-
-    def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
-        # Note: This is *EXTREMELY* naive; in reality, you'll need
-        # to do much more complex handling to ensure that arbitrary
-        # objects -- such as Django model instances or querysets
-        # -- can be serialized as JSON.
-        return json.dumps(context)
-
-
-class ListJson(JSONResponseMixin, View):
-
-    def render_to_json(*args, **kwargs):
-        response = render_to_response(*args, **kwargs)
-        response['mimetype'] = "text/javascript"
-        response['Pragma'] = "no cache"
-        response['Cache-Control'] = "no-cache, must-revalidate"
-        return response
 
 
 class JsonListMixin(View):
@@ -329,6 +302,33 @@ class JsonListMixin(View):
         return jsondata
 
 
+class JSONResponseMixin(object):
+
+    def __init__(self, *args, **kwargs):
+        self.values = {}
+        self.errors = []
+        self.result = True
+        self.json = {}
+        self.get_params = {}
+
+    def render_to_response(self, context):
+        return self.get_json_response(self.convert_context_to_json(context))
+
+    def get_json_response(self, content, **httpresponse_kwargs):
+        httpresponse_kwargs['content_type'] = 'application/json'
+        httpresponse_kwargs['Pragma'] = 'no cache'
+        httpresponse_kwargs['Cache-Control'] = 'no-cache, must-revalidate'
+        return http.HttpResponse(content, **httpresponse_kwargs)
+
+    def convert_context_to_json(self, context):
+        "Convert the context dictionary into a JSON object"
+        # Note: This is *EXTREMELY* naive; in reality, you'll need
+        # to do much more complex handling to ensure that arbitrary
+        # objects -- such as Django model instances or querysets
+        # -- can be serialized as JSON.
+        return json.dumps(context)
+
+
 class JsonViewMix(View):
     param_names = []
     qs = False
@@ -343,12 +343,23 @@ class JsonViewMix(View):
         self.get_params = {}
         super(JsonViewMix, self).__init__(*args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        if self.login_required and not request.user.is_authenticated():
+            self.errors.append("Auth required, but not!")
+        return HttpResponse(self.to_json(), content_type='text/plain')
+
     def get(self, request, *args, **kwargs):
         if self.login_required and not request.user.is_authenticated():
             return redirect_to_login(request.path)
         if self.check(request):
             self.prepare()
         return HttpResponse(self.to_json(), content_type='text/plain')
+
+    def prepare(self, *args, **kwargs):
+        '''
+        Метод для подготовки в наследуемых классах
+        '''
+        return
 
     def check(self, request):
         self.get_params = request.GET
@@ -374,38 +385,4 @@ class JsonViewMix(View):
             self.json['values'] = self.values
         ret = json.dumps(self.json, indent=2)
         return ret
-
-
-class JsonResponseContext(object):
-    def __init__(self, request, *args, **kwargs):
-        self.get = request.GET
-        self.names = kwargs['names']
-        self.values = {}
-        self.errors = []
-        self.result = True
-        self.json = {}
-        self.qs = False
-        self.data = False
-        self.check()
-
-    def check(self):
-        for n in self.names:
-            if n in self.get and self.get[n] != '':
-                self.values[n] = self.get[n]
-            else:
-                self.errors.append("Request parameter \'%s\' not found!" % n)
-        if len(self.errors) > 0:
-            self.result = False
-        return self.result
-
-    def to_json(self):
-        if self.qs:
-            self.json['data'] = json.loads(serializers.serialize('json', self.qs, indent=4, ensure_ascii=True))
-        if len(self.errors) > 0:
-            self.json['result'] = 0
-            self.json['errors'] = self.errors
-        else:
-            self.json['result'] = 1
-            self.json['values'] = self.values
-        return json.dumps(self.json, indent=2)
 

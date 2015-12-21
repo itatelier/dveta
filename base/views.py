@@ -5,6 +5,7 @@ from common.mixins import JsonViewMix
 from django.http import HttpResponse
 from django.db.models import Count
 from django.apps import apps
+
 import logging
 # from company.models import *
 
@@ -38,7 +39,7 @@ class PlaygroundForms(TemplateView):
     template_name = "pg/forms.html"
 
 
-class ac(JsonViewMix):
+class AutoCompliteJsonView(JsonViewMix):
     param_names = ['model', 'field', 'query', 'filter_type']
 
     def prepare(self, *args, **kwargs):
@@ -57,4 +58,22 @@ class ac(JsonViewMix):
             filters = {sort_criteria: sort_value}
             qs = qs.filter(**filters).annotate(aggregate=Count(field))[:10]
         self.data = list(qs)
+
+
+class GetContactByPhoneJsonView(JsonViewMix):
+    param_names = ['number']
+    model_name = 'person.Contacts'
+
+    def prepare(self, *args, **kwargs):
+        try:
+            model = apps.get_model(self.model_name)
+        except LookupError:
+            self.errors.append("Model \'%s\' not found!" % self.model_name)
+            return
+        log.info("Model param value: %s model object: %s" % (self.model_name, model))
+        field = self.values['number']
+        filters = {'phonenumber': field}
+        qs = model.objects.filters(**filters).select_related('person').values_list()
+        self.data = list(qs)
+
 

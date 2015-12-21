@@ -5,6 +5,50 @@
 {% block content %}
 <script>
 
+    $(document).ready(function() {
+        var company_id = '{{ company.pk }}';
+        var $number_input = $('input[name=contact-phonenumber]');
+        $number_input.on('change', function(){
+            var value = this.value;
+            if (value.length == 10) {
+                console.log("Value: " + this.value);
+                $.ajaxSetup({headers: { "X-CSRFToken": getCookie("csrftoken") }});
+                $.ajax({
+                    url:  '/persons/get_contact_json/',
+                    dataType: "json",
+                    data: { 'phonenumber': value}
+                })
+                .done(function(result) {
+                    if (result.count > 0) {
+                        var name = result.results[0].person.nick_name;
+                        var contact_id = result.results[0].id;
+                        var person_id = result.results[0].person.id;
+                        var comment = result.results[0].comment;
+                        var ErrorString = 'Номер уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
+                        $('<em>' + ErrorString + '</em>').insertAfter($number_input);
+                    }
+                })
+                .fail(function(result) { console.log("Error! result: "+ result)});
+            }
+        });
+
+    });
+
+    function add_contact(company_id, contact_id) {
+        $.ajax({
+            type: 'GET',
+            url:  '/persons/create_company_contact_json/',
+            dataType: "json",
+            data: { 'company_id': company_id, 'contact_id': contact_id}
+        })
+        .done(function(result){
+            if (result.result == "1") {
+                location.reload()
+            }
+            console.log("Result");
+        });
+        return false;
+    };
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -27,19 +71,19 @@
                     {% if contacts %}
                     <div class="sheet_row_headered">
                         <h2>Контакты</h2>
-                        <table class="sheet_headered">
+                        <table class="sheet_headered" id="contacts_table">
                             <thead>
                                 <tr><th>Имя</th><th>Должность</th><th>Телефон</th><th>Примечание</th><th></th><th>Управление</th></tr>
                             </thead>
                             <tbody>
                                 {% for i in contacts %}
                                 <tr>
-                                    <td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{% else %}без персоны{% endif %}</td>
-                                    <td> {{ i.role }} </td>
-                                    <td>{{ i.phonenumber }} </td>
-                                    <td>{{ i.comment }}</td>
-                                    <td>{% if i.show_in_card %}<i class="icon " icon=""></i>{% endif %}</td>
-                                    <td><a href="{% url 'company_contacts_update' company.pk i.pk %}">Изм</a></td>
+                                    <td>{% if i.contact.person_id %}<a href="#" class="textlink">{{ i.contact.person.nick_name }}</a>{% else %}без персоны{% endif %}</td>
+                                    <td> {{ i.contact.role }} </td>
+                                    <td>{{ i.contact.phonenumber }} </td>
+                                    <td>{{ i.contact.comment }}</td>
+                                    <td>{% if i.contact.show_in_card %}<i class="icon " icon=""></i>{% endif %}</td>
+                                    <td><a href="{% url 'company_contacts_update' company.pk i.contact.pk %}">Изм</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
