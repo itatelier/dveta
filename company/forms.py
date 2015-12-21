@@ -75,3 +75,11 @@ class AddressUpdateForm(ModelForm):
     class Meta:
         model = Addresses
         fields = ('postalcode', 'city', 'street', 'app', 'comment')
+
+
+class CompanyContactsCreateForm(ModelForm):
+    show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
+
+    class Meta:
+        model = CompanyContacts
+        fields = ('show_in_card',)

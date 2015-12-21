@@ -383,7 +383,8 @@ class CompanyContactUpdateView(MultiFormEdit):
     template_name = 'company/company_contacts.html'
     formconf = {
         'contact': {'formclass': ContactsCreateForm},
-        'person': {'formclass': PersonCompanyCreateForm}
+        'person': {'formclass': PersonCompanyCreateForm},
+        'companycontact': {'formclass': CompanyContactsCreateForm}
     }
 
     def get_context_data(self, *args, **kwargs):
@@ -401,10 +402,12 @@ class CompanyContactUpdateView(MultiFormEdit):
 
     def update_formconf(self, formconf, *args, **kwargs):
         contact_pk = kwargs.pop('pk', None)
-        contact_object = Contacts.objects.get(pk=contact_pk)
-        formconf['contact']['instance'] = contact_object
+        company_pk = kwargs.pop('company_pk', None)
+        company_contact_object = CompanyContacts.objects.get(company_id=company_pk, contact_id=contact_pk)
+        formconf['contact']['instance'] = company_contact_object.contact
         # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
-        formconf['person']['instance'] = contact_object.person
+        formconf['person']['instance'] = company_contact_object.contact.person
+        formconf['companycontact']['instance'] = company_contact_object
         return formconf
 
     def get_success_url(self, *args, **kwargs):

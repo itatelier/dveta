@@ -51,15 +51,10 @@ class ContactFirmCreateForm(ModelForm):
 
 
 class ContactsCreateForm(ContactFirmCreateForm):
-    show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
 
     class Meta:
         model = Contacts
-        fields = ('role', 'email', 'comment', 'phonenumber', 'show_in_card')
+        fields = ('role', 'email', 'comment', 'phonenumber')
 
 
-class CompanyContactsCreateForm(ContactFirmCreateForm):
 
-    class Meta:
-        model = CompanyContacts
-        fields = ('company', 'contact')

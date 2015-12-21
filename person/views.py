@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 
 # API
 from serializers import *
+from company.serializers import *
 from rest_framework import viewsets, generics, filters
 
 import logging
@@ -33,9 +34,9 @@ class PersonsContactClientsView(LoginRequiredMixin, TemplateView):
 
 class GetContactViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
-    queryset = Contacts.objects.select_related('person')
-    serializer_class = ContactsSerializer
-    filter_class = ContactsFilters
+    queryset = CompanyContacts.objects.select_related('company', 'contact', 'contact__person')
+    serializer_class = CompanyContactsSerializer
+    filter_class = CompanyContactsFilters
 
 
 class CreateCompanyContactJsonView(JsonViewMix):

@@ -37,13 +37,9 @@ class Contacts(models.Model):
     # company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')
     person = models.ForeignKey('Persons', null=True, blank=True, editable=True, related_name='contacts')
     company_main = models.BooleanField(default=0, editable=False)
-    show_in_card = models.BooleanField(default=True, editable=True)
 
     class Meta:
         db_table = 'contacts'
         verbose_name_plural = 'Контакты'
-
-    def __unicode__(self):
-        return u'[%s] %s' % (self.id, self.person.nick_name)
 
 

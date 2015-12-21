@@ -178,10 +178,12 @@ class CompanyContacts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True, related_name='contact')
     contact = models.ForeignKey('person.Contacts', null=False, blank=False, editable=True, related_name='contact')
+    show_in_card = models.BooleanField(default=True, editable=True)
 
     class Meta:
         db_table = 'company_contacts'
         verbose_name_plural = 'Контакты компании'
+
 #
 #
 # class ContragentTypes(models.Model):

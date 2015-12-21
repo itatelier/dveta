@@ -41,3 +41,4 @@ class ContactsFilters(django_filters.FilterSet):
         model = Contacts
         fields = ['id', 'phonenumber', 'is_work']
 
+

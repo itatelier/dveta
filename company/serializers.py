@@ -60,9 +60,17 @@ class CompanyClientsFilters(django_filters.FilterSet):
 
 
 class CompanyContactsSerializer(serializers.ModelSerializer):
-    company = CompanyClientsSerializer(many=False, required=True)
-    contact = ContactsSerializer(many=False, required=True)
+    company = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    contact = ContactsSerializer(many=False,  read_only=True)
 
     class Meta:
         model = CompanyContacts
-        fields = ['id', 'company', 'contact']
+        depth = 3
+        fields = ['id', 'company', 'contact', 'show_in_card']
+
+
+class CompanyContactsFilters(django_filters.FilterSet):
+
+    class Meta:
+        model = CompanyContacts
+        fields = ['id', 'company', 'contact', 'show_in_card', 'contact__phonenumber']
