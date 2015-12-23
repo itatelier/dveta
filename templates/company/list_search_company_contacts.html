@@ -13,7 +13,7 @@
 
 
 <script>
-    var JsonDataUrl = "/persons/api/contacts/";
+    var JsonDataUrl = "/company/api/company_contacts/";
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
@@ -45,7 +45,7 @@
                 console.log('Search highlight time: ' + time + 'ms');
             }
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
-                result.results[i].date_add = date_json2hr(result.results[i].date_add);
+                result.results[i].contact.date_add = date_json2hr(result.results[i].contact.date_add);
             }
        };
 </script>
@@ -55,11 +55,11 @@
         <td>{{{ company.name }}}</td>
         <td>{{{ company.status.val }}}</td>
         <td>{{{ company.org_type.val }}}</td>
-        <td>{{{ phonenumber }}}</td>
-        <td>{{{ person.nick_name }}}</td>
-        <td>{{{ role }}}</td>
-        <td>{{{ comment }}}</td>
-        <td>{{{ date_add.date }}}</td>
+        <td>{{{ contact.phonenumber }}}</td>
+        <td>{{{ contact.person.nick_name }}}</td>
+        <td>{{{ contact.role }}}</td>
+        <td>{{{ contact.comment }}}</td>
+        <td>{{{ contact.date_add.date }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -141,10 +141,10 @@
                                 <th><a href="#" class="sortable" rel="company__status" >Статус</a></th>
                                 <th><a href="#" class="sortable" rel="company__org_type">Тип клиента</a></th>
                                 <th><a href="#" class="" rel="">Номер телефона</a></th>
-                                <th><a href="#" class="sortable" rel="person">Персона</a></th>
+                                <th><a href="#" class="sortable" rel="contact__person">Персона</a></th>
                                 <th><a href="#" class="" rel="">Должность</a></th>
                                 <th><a href="#" class="" rel="">Примечание конт.</a></th>
-                                <th><a href="#" class="sortable" rel="date_add">Контакт добавлен</a></th>
+                                <th><a href="#" class="sortable" rel="contact__date_add">Контакт добавлен</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

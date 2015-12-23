@@ -99,26 +99,36 @@
                         </div>
                         {% endif %}
                     </div>
-                    {# - Информационный блок - контрагенты #}
-                    {# Информационный блок - отделения #}
+                    {# - Информационный блок - отделения #}
+                    {# Информационный блок - контрагенты  #}
                     <div class="sheet_row_headered">
                         <h2>Контрагенты</h2>
+                        {% if contragents %}
                         <table class="sheet_headered">
-                            <thead>
-                                <tr>
+                            <thead><tr>
                                     <th>Наименование</th>
+                                    <th>Группа</th>
                                     <th>Тип</th>
                                     <th>ИНН</th>
                                     <th>Баланс счета</th>
                                     <th>Примечание</th>
+                                    <th>Опции</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for i in contragents %}
                                 <tr>
-                                    <td>ООО "АргоПромСтрой база"</td><td>юр.лицо</td><td>7719684579</td><td>5800</td><td></td>
+                                    <td>{{ i.name }}</td><td>{{ i.group.val }}</td><td>{{ i.type.val }}</td><td>{{ i.inn }}</td><td>баланс</td><td>{{ i.comment }}</td><td><a class="textlink _icon" icon="&#xf040;"></a></td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
+                        {% else %}
+                        <div class="empty_block">
+                            <p>Контрагенты не добавлены</p>
+                            <a class="textlink" href="{% url 'company_contragent_create_ul' pk %}">Добавить Юр.Лицо</a><a class="textlink" href="{% url 'company_contragent_create_ip' pk %}">Добавить ИП</a>
+                        </div>
+                        {% endif %}
                     </div>
                     {# - Информационный блок - отделения #}
                 </div>

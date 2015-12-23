@@ -60,7 +60,7 @@ class CompanyClientsFilters(django_filters.FilterSet):
 
 
 class CompanyContactsSerializer(serializers.ModelSerializer):
-    company = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    company = CompanyClientsSerializer(many=False, read_only=True)
     contact = ContactsSerializer(many=False,  read_only=True)
 
     class Meta:
@@ -69,8 +69,18 @@ class CompanyContactsSerializer(serializers.ModelSerializer):
         fields = ['id', 'company', 'contact', 'show_in_card']
 
 
-class CompanyContactsFilters(django_filters.FilterSet):
+class CompanyContactsSerializerShort(CompanyContactsSerializer):
+    company = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta:
         model = CompanyContacts
-        fields = ['id', 'company', 'contact', 'show_in_card', 'contact__phonenumber']
+        depth = 3
+        fields = ['id', 'company', 'contact', 'show_in_card']
+
+
+class CompanyContactsFilters(django_filters.FilterSet):
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="contact__date_add", lookup_type='gte')
+
+    class Meta:
+        model = CompanyContacts
+        fields = ['id', 'contact__phonenumber', 'contact__is_work', 'contact__date_add', 'company__name', 'company__org_type', 'company__status' ]

@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'dummyapp',
     'company',
+    'contragent',
     'person'
 )
 

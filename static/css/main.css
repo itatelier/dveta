@@ -133,6 +133,7 @@ ul.contents > li > a {
 }
 
 div.empty_block {
+    padding: 1rem 2rem;
     display: flex;
     flex-direction: row;
 }

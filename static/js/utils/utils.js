@@ -51,3 +51,54 @@ function date_json2dt(str_date_json_format, offset_param) {
     return dt_out;
 }
 
+function add_contact(company_id, contact_id) {
+    $.ajax({
+        type: 'GET',
+        url:  '/persons/create_company_contact_json/',
+        dataType: "json",
+        data: { 'company_id': company_id, 'contact_id': contact_id}
+    })
+    .done(function(result){
+        if (result.result == "1") {
+            location.reload()
+        }
+        console.log("Result");
+    });
+    return false;
+};
+
+function CheckPhoneInput(company_id, obj) {
+            var $input_object = $(obj);
+            var number = $input_object.val();
+            console.log(number);
+            if (number.length == 10) {
+                console.log("Value: " + this.value);
+                $.ajaxSetup({headers: { "X-CSRFToken": getCookie("csrftoken") }});
+                $.ajax({
+                    url:  '/persons/api/contacts_search_json/',
+                    dataType: "json",
+                    data: { 'contact__phonenumber': number}
+                })
+                .done(function(result) {
+                    if (result.count > 0) {
+                        var name = result.results[0].contact.person.nick_name;
+                        var contact_id = result.results[0].contact.id;
+                        var person_id = result.results[0].contact.person.id;
+                        var comment = result.results[0].contact.comment;
+                        var result_company_id = result.results[0].company;
+                        var ErrorString = "";
+                        if (company_id == result_company_id) {
+                            ErrorString = 'Контакт c номером '+ number +' уже привязан к клиенту!';
+                        } else {
+                            ErrorString = 'Номер '+number+' уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
+                        }
+                        $('<em>' + ErrorString + '</em>').insertAfter($input_object);
+                        $input_object.val('');
+                        $input_object.focus();
+                    } else {
+                        $input_object.addClass('lightgreen_bg');
+                    }
+                })
+                .fail(function(result) { console.log("Error! result: "+ result)});
+            }
+};

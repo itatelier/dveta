@@ -14,6 +14,8 @@
                     </ul>
                     <hr><h3>Новые объекты</h3>
                     <ul>
-                        <li><a href="{% url 'company_branch_create' pk %}">Новое отделение</a></li>
+                        <li><a  class="{% if sel == 9 %}active{% endif %}" href="{% url 'company_branch_create' pk %}">Новое отделение</a></li>
+                        <li><a  class="{% if sel == 10 %}active{% endif %}" href="{% url 'company_contragent_create_ul' pk %}">Контрагент Юр.Лицо</a></li>
+                        <li><a  class="{% if sel == 10 %}active{% endif %}" href="{% url 'company_contragent_create_ip' pk %}">Контрагент ИП</a></li>
                     </ul>
                 </div>

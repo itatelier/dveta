@@ -2,6 +2,7 @@
 
 from django.conf.urls import patterns, url, include
 from views import *
+from contragent.views import *
 # from phones.views import *
 
 base_path = 'company'
@@ -26,6 +27,8 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/contacts/$', CompanyContactsView.as_view(), name='company_contacts'),
     url(r'^(?P<company_pk>\d+)/contacts/(?P<pk>\d+)/update/$', CompanyContactUpdateView.as_view(), name='company_contacts_update'),
     url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
+    url(r'^search_contacts/$', CompanyContactSearchView.as_view(), name='company_search_contacts'),
+
     # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
     # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
     # #
@@ -40,7 +43,8 @@ urlpatterns = patterns('',
     # #
     # # Контрагенты
     # #
-    # url(r'^(?P<company_pk>\d+)/contragent_create/$', contragent_create.as_view(), name=base_path + '_contragent_create'),
+    url(r'^(?P<company_pk>\d+)/contragent_create_ul/$', ContragentCompanyCreateULView.as_view(), name='company_contragent_create_ul'),
+    url(r'^(?P<company_pk>\d+)/contragent_create_ip/$', ContragentCompanyCreateIPView.as_view(), name='company_contragent_create_ip'),
     # url(r'^(?P<company_pk>\d+)/contragent_ip_create/$', contragent_ip_create.as_view(), name=base_path + '_contragent_ip_create'),
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/card/$', contragent_card.as_view(), name=base_path + '_contragent_card'),
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/type/(?P<type>\d+)/edit/$', contragent_edit.as_view(), name=base_path + '_contragent_edit'),

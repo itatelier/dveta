@@ -38,6 +38,7 @@ form { margin: 1rem;}
 .red { color: #FE659C !important; }
 .blue { color: #009DDA !important; }
 .green_bg { background-color: #74BA12 !important; }
+.lightgreen_bg { background-color: #ECF7DE; }
 .red_bg { background-color: #F7A3A3 !important; }
 .blue_bg { background-color: #009DDA !important; }
 .grey_bg { background-color: #ededed !important; border-color: #9ea19c;}
@@ -238,7 +239,7 @@ table.sheet_headered > thead > tr > th {
     background-color: #DBE9EA;
 }
 
-table.sheet_headered > tbody > tr > td { padding: 0.2rem 1rem;}
+table.sheet_headered > tbody > tr > td { padding: 0.3rem 1rem 0.2rem 1rem;}
 table._bordered > tbody > tr > td {
     border-bottom: 1px solid #D3D3D3;
 }
@@ -335,7 +336,7 @@ footer {
 
 div.sheet div.data_grid_medium {
     flex: 1 0 auto;
-    padding: 0rem 1rem;
+    padding: 0rem 1rem 2rem 0;
     margin: 0 0 0 1rem;
 }
  /*======================== Listing greed ========================== */

@@ -15,9 +15,6 @@ class CompanyCreateForm(ModelForm):
     description = CharField(label="Род деятельности", required=True, help_text="Описание деятельности компании", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
     attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label="Выбрать значение...",  help_text="От куда клиент узнал о нас?")
-    # org_type = ModelChoiceField(queryset=CompanyOrgTypes.objects.all(), widget=HiddenInput())
-    # rel_type = ModelChoiceField(queryset=CompanyRelTypes.objects.all(), widget=HiddenInput())
-    # status = ModelChoiceField(queryset=CompanyStatus.objects.all())
 
     class Meta:
         model = Companies
@@ -56,8 +53,6 @@ class BranchUpdateForm(ModelForm):
 class BranchCompanyCreateForm(ModelForm):
     name = CharField(required=True, widget=HiddenInput(), initial="Основной офис")
     branch_switch = CharField(max_length=100, widget=HiddenInput, required=False)
-
-    # company_main = IntegerField(required=True, widget=HiddenInput())
 
     class Meta:
         model = Branches

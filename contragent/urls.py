@@ -9,7 +9,7 @@ base_path = 'company'
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-router.register(r'contacts_search_json', GetContactViewSet)
+# router.register(r'contacts_search_json', GetContactViewSet)
 
 
 urlpatterns = patterns('',
@@ -20,29 +20,8 @@ urlpatterns = patterns('',
     # Persons
     # url(r'^get_contact_json/$', GetContactByPhoneJsonView.as_view(), name='contact_get_by_num_json'),
     # url(r'^get_contact_json/$', GetContactViewSet.as_view({'get': 'list'}), name='contact_get_by_num_json'),
-    url(r'^create_company_contact_json/$', CreateCompanyContactJsonView.as_view(), name='company_contact_create_json'),
+    #url(r'^create_company_ul/$', ContragentCompanyCreateULView.as_view(), name='company_contragent_create_ul'),
 
-
-    # url(r'^/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
-    # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
-    # url(r'^(?P<pk>\d+)/card/$', main_card.as_view(), name=base_path + '_main_card'),
-    # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
-    # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),
-    # url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
-    # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
-    # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
-    # #
-    # # Отделения
-    # #
-    # url(r'^(?P<company_pk>\d+)/branch_create/$', branch_create.as_view(), name=base_path + '_branch_create'),
-    # url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/card/$', branch_card.as_view(), name=base_path + '_branch_card'),
-    # url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/edit/$', branch_edit.as_view(), name=base_path + '_branch_edit'),
-    # url(r'^branch/(?P<pk>\d+)/delete/$', branch_delete.as_view(), name=base_path + '_branch_delete'),
-    # url(r'^branch_list/$', branch_list_index.as_view(), name=base_path + '_branch_list'),
-    # url(r'^branch_list_json/$', branch_list_json.as_view(), name=base_path + '_branch_list_json'),
-    # #
-    # # Контрагенты
-    # #
     # url(r'^(?P<company_pk>\d+)/contragent_create/$', contragent_create.as_view(), name=base_path + '_contragent_create'),
     # url(r'^(?P<company_pk>\d+)/contragent_ip_create/$', contragent_ip_create.as_view(), name=base_path + '_contragent_ip_create'),
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/card/$', contragent_card.as_view(), name=base_path + '_contragent_card'),

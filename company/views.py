@@ -13,6 +13,7 @@ from models import *
 # from phones.models import *
 from person.forms import *
 from forms import *
+from contragent.models import *
 from rest_framework import viewsets, generics, filters
 
 from serializers import *
@@ -226,7 +227,7 @@ class CompanyClientCardView(LoginRequiredMixin, TemplateView):
             # 'main_phone': GetObjectOrNone(Phones, **{'company__pk': object.pk, 'company_main': True}),
             # 'main_address': GetObjectOrNone(Addresses, **{'company__pk': object.pk, 'company_main': True}),
             'branches': Branches.objects.select_related('company', 'type', 'address').filter(company=object.pk),
-            # 'contragents': Contragents.objects.select_related('type').filter(company=object.pk)
+            'contragents': Contragents.objects.select_related('type').filter(company=object.pk)
         })
 
         return context_data
@@ -434,13 +435,17 @@ class CompanyContactUpdateView(MultiFormEdit):
         return "/company/%s/contacts/" % company_pk
 
 
+class CompanyContactSearchView(LoginRequiredMixin, TemplateView):
+    template_name = "company/list_search_company_contacts.html"
+
+
 class CompanyContactsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = CompanyContacts.objects.filter(company__rel_type=2).select_related('company', 'contact', 'contact__person', 'company__status', 'company__org_type', 'company__client_options')
     serializer_class = CompanyContactsSerializer
-    # filter_class = ContactsFilters
-    # search_fields = ('role', 'comment', 'email', 'phonenumber', 'company__name', 'person__nick_name')
-    # ordering_fields = ('id', 'role', 'company__name', 'company__org_type', 'company__status', 'person', 'date_add')
+    filter_class = CompanyContactsFilters
+    search_fields = ('contact__role', 'contact__comment', 'contact__email', 'contact__phonenumber', 'company__name', 'contact__person__nick_name')
+    ordering_fields = ('id', 'contact__role', 'company__name', 'company__org_type', 'company__status', 'contact__person', 'contact__date_add')
 
 
 

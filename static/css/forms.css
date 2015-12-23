@@ -72,7 +72,7 @@ a.textlink._icon:before {
     margin-right: 0.5rem;
     font-family: 'FontAwesome';
     font-style: normal;
-    color: #D84D4D;
+    /*color: #D84D4D;*/
 }
 a.textlink.red {
     border-color: #D84D4D;

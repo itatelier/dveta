@@ -1,19 +1,9 @@
 {% extends "main.html" %}
-{% load static from staticfiles %}
-{% block add_static %}
-<!-- Kladr JS       --><script type="text/javascript" src="{% static 'js/kladr/jquery.kladr.min.js' %}"></script>
-<!-- Kladr CSS      --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/kladr/jquery.kladr.min.css' %}'/>
-{% endblock %}
 {% block content %}
 <script>
+
     $(document).ready(function() {
-        {# Кладр #}
-        var $city = $('input[name=address-city]');
-        var $street = $('input[name=address-street]');
-        var $building  = $('input[name=address-app]');
-        $city.kladr({ token: 'token', key: 'key', type: $.kladr.type.city});
-        $street.kladr({ token: 'token', key: 'key', type: $.kladr.type.street, parentInput: $city });
-        $building.kladr({ token: 'token', key: 'key', type: $.kladr.type.building, parentInput: $street });
+        var company_id = '{{ company.pk }}';
     });
 </script>
         {# Breadcrumbs #}
@@ -21,7 +11,7 @@
             <ul>
                 <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
                 <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
-                <li class="active" ><a href="#">Новое отделение</a></li>
+                <li class="active"><a href="#">Новый контрагент <b>{{ type_str }}</b></a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -31,36 +21,19 @@
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
-                    <ul><li><a href="#" class="active">Новое отделение</a></li></ul><hr>
+                    <ul><li><a href="#" class="active">Новый контрагент </a></li></ul><hr>
                 </div>
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Форма объекта #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# Скрытые поля #}
-                        {% for hidden in forms.branch.hidden_fields %}{{ hidden }}{% endfor %}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row">
-                            <h2 class="blue">Основная информация</h2>
+                            <h2>{% if update_view %}Редактор контрагента{% else %}Новый контрагент <b>{{ type_str }}</b>{% endif %}</h2>
                         </div>
                         {# Поля формы #}
-                        {% for field in forms.branch.visible_fields %}
-                        <div class="form_row">
-                           <div class="input_wrapper">
-                                <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
-                                <div class="input_block {% if field.field.required %}required{% endif %}{% if field.errors %} error{% endif %}">
-                                     {{ field }}
-                                    {% for error in field.errors %}
-                                    <em>{{ error|escape }}</em>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        <div class="form_row">
-                            <h2 class="blue">Адрес</h2>
-                        </div>
-                        {# Поля формы #}
-                        {% for field in forms.address.visible_fields %}
+                        {% for field in form.visible_fields %}
                         <div class="form_row">
                            <div class="input_wrapper">
                                 <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>

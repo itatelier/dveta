@@ -56,6 +56,12 @@
                 $('input[name=person-contact_switch]').val("");
                 $('#contact_form').fadeOut('fast'); }
         });
+
+        {# Проверки на номер телефона #}
+        var $number_input = $('input[name=contact-phonenumber]');
+        $number_input.on('change', function() {
+            CheckPhoneInput(false, this);
+        });
     });
 </script>
         {# Breadcrumbs #}
@@ -222,6 +228,8 @@
                                         {{ forms.contact.phonenumber }}{% for error in forms.contact.phonenumber.errors %}<em>{{ error|escape }}</em>{% endfor %}
                                     </div>
                                 </div>
+                            </div>
+                            <div class="form_row">
                                 <div class="input_wrapper">
                                     <legend>{{ forms.contact.comment.label }}</legend>
                                     <div class="input_block {% if  forms.contact.comment.error %}error{% endif %}">

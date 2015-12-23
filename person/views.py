@@ -20,23 +20,11 @@ from rest_framework import viewsets, generics, filters
 import logging
 log = logging.getLogger('django')
 
-# class ContactsClientsViewSet(viewsets.ModelViewSet):
-#     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-#     queryset = Contacts.objects.filter(company__rel_type=2).select_related('person', 'company', 'company__status', 'company__org_type', 'company__client_options')
-#     serializer_class = ContactsSerializer
-#     filter_class = ContactsFilters
-#     search_fields = ('role', 'comment', 'email', 'phonenumber', 'company__name', 'person__nick_name')
-#     ordering_fields = ('id', 'role', 'company__name', 'company__org_type', 'company__status', 'person', 'date_add')
-
-
-class PersonsContactClientsView(LoginRequiredMixin, TemplateView):
-    template_name = "persons/list_contacts.html"
-
 
 class GetContactViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     queryset = CompanyContacts.objects.select_related('company', 'contact', 'contact__person')
-    serializer_class = CompanyContactsSerializer
+    serializer_class = CompanyContactsSerializerShort
     filter_class = CompanyContactsFilters
 
 
