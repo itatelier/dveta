@@ -118,7 +118,7 @@
                             <tbody>
                                 {% for i in contragents %}
                                 <tr>
-                                    <td>{{ i.name }}</td><td>{{ i.group.val }}</td><td>{{ i.type.val }}</td><td>{{ i.inn }}</td><td>баланс</td><td>{{ i.comment }}</td><td><a class="textlink _icon" icon="&#xf040;"></a></td>
+                                    <td>{{ i.name }}</td><td>{{ i.group.val }}</td><td>{{ i.type.val }}</td><td>{{ i.inn }}</td><td>баланс</td><td>{{ i.comment }}</td><td><a href="{% url 'company_contragent_update' pk i.pk i.type.id %}" class="textlink _icon" icon="&#xf040;"></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

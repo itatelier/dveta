@@ -1,0 +1,173 @@
+ {% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+{% endblock %}
+{% block content %}
+
+
+<script>
+    var base_url = '/contragent';
+    var JsonDataUrl = "/company/api/clients/";
+    var req_preprocess_result = "0";
+
+    $(document).ready(function() {
+        list_data_api();
+
+        {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains');
+        {#    Виджет datepicker #}
+        $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
+        {#    Сортировка по заголовкам столбцов   #}
+        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
+
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('id');
+            var url = base_url + "/" +id +"/card/";
+            document.location.href = url;
+        });
+
+    });
+
+        {#  постобработка результата AJAX запроса #}
+{#        function preprocess_result(result) {#}
+{#            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {#}
+{#                result.results[i].date_add = date_json2hr(result.results[i].date_add);#}
+{#                if (result.results[i].client_options !== null) {#}
+{#                    if (result.results[i].client_options.request_freq == 2) {#}
+{#                        result.results[i].client_options.request_freq = "Постоянный"#}
+{#                    } else {#}
+{#                        result.results[i].client_options.request_freq = "Разовый"#}
+{#                    }#}
+{#                }#}
+{#            }#}
+{#        }#}
+</script>
+{# Шаблон основной таблицы #}
+<script type="text/template" id="tmpl_table">{% verbatim %}
+    <tr data-id="{{ id }}">
+        <td>{{ name }}</td>
+        <td>{{ comment }}</td>
+        <td>{{ org_type.val }}
+        <td>{{ status.val }}</td>
+        <td>{{ client_options.request_freq }}</td>
+        <td>{{ date_add.date }}</td>
+        <!-- replace -->
+    </tr>
+</script>{% endverbatim %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="left_bar">
+                    {# Форма сортировки данных #}
+                    <form method="post" name="params_form" id="params_form">
+                        {# скрытые фильтры #}
+                        <input type="hidden" name="ordering" value="id"/>
+                        <input type="hidden" name="offset" value="0"/>
+                        <input type="hidden" name="limit" value="20"/>
+                        {# отображенные фильтры #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Наименование</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15" class="loading" name="name_ac">
+                                </div>
+                            </div>
+                        </div>
+                        {# Дата начиная с Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Начиная с даты</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15" name="date_after">
+                                </div>
+                            </div>
+                        </div>
+                        {# Статус Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Статус</legend>
+                                <div class="input_block">
+                                    <select name="status">
+                                        <option value="">любой статус</option>
+                                        <option value="1">новый</option>
+                                        <option value="2">на оформлении</option>
+                                        <option value="3">в работе</option>
+                                        <option value="4">заблокирован</option>
+                                        <option value="5">архивный</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {# Тип клиента Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Тип клиента</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
+                                    <label><input type="radio" name="org_type" value="1"><p>Частник</p></label>
+                                    <label><input type="radio" name="org_type" value="2"><p>Фирма</p></label>
+                                </div>
+                            </div>
+                        </div>
+                        {# Частота вывоза Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Частота вывозов</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="client_options__request_freq" value="" checked><p>Любая</p></label>
+                                    <label><input type="radio" name="client_options__request_freq" value="1"><p>Разовые</p></label>
+                                    <label><input type="radio" name="client_options__request_freq" value="2"><p>Постоянные</p></label>
+                                </div>
+                            </div>
+                        </div>
+                        {# блок кнопок #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <div class="input_block">
+                                    <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
+                                    <a href="#" class="button" onclick="list_data_api();">Найти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {# - Форма сортировки данных #}
+                </div>
+                <div class="data_grid_medium">
+                    {# Основная таблица данных #}
+                    <table class="listing_grid">
+                        <thead class="">
+                            <tr>
+                                <th><a href="#" class="sortable active" rel="id">Наименование</a></th>
+                                <th><a href="#" rel="" >Комментарий</a></th>
+                                <th><a href="#" class="sortable" rel="org_type">Тип клиента</a></th>
+                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
+                                <th><a href="#" class="sortable" rel="client_options__request_freq">Частота заказа</a></th>
+                                <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
+                            </tr>
+                        </thead>
+                        <tbody id="datatable" class="">
+                        </tbody>
+                    </table>
+                    {# - Основная таблица данных #}
+                    {# Панель управления таблицей #}
+                    {% include 'listing_bottom_navbar.html' %}
+                    {# - Панель управления таблицей #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

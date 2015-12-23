@@ -9,7 +9,7 @@ base_path = 'company'
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-# router.register(r'contacts_search_json', GetContactViewSet)
+router.register(r'contragents_list', ContragentsViewSet)
 
 
 urlpatterns = patterns('',

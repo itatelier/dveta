@@ -78,7 +78,47 @@ class ContragentCompanyCreateIPView(ContragentCompanyCreateULView):
     contragent_group = 4
     type_str = 'Индивидуальный предприниматель'
 
-#
+
+class ContragentCompanyUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'contragent/contragent_create_ul.html'
+    # permission_required = 'company.change_companies'
+    model = Contragents
+
+    def get_form_class(self, *args, **kwargs):
+        type_id = self.kwargs.get('type', None)
+        form_class = None
+        ''' Если тип контрагента "ООО" - форма стандартная, если нет - ИП '''
+        if type_id == "2":
+            form_class = ContragentUlEditForm
+        elif type_id == "3":
+            form_class = ContragentIpEditForm
+        else:
+            form_class = ContragentFlEditForm
+        return form_class
+
+    def get_success_url(self, *args, **kwargs):
+        company_pk = self.kwargs.get('company_pk', None)
+        contragent_pk = self.kwargs.get('pk', None)
+        return "/company/%s/card" % company_pk
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ContragentCompanyUpdateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        context_data.update({
+            'company': Companies.objects.get(pk=company_pk),
+        })
+        return context_data
+
+
+class ContragentsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = Contragents.objects.filter(group=4).select_related('type', 'group',)
+    serializer_class = ContragentUlSerializer
+    filter_class = ContragentsFilters
+    search_fields = ('name', 'inn', 'comment', 'urraddress', )
+    ordering_fields = ('id', 'name', 'company', 'type', 'group', 'inn')
+
+
 # class GetContactViewSet(viewsets.ModelViewSet):
 #     filter_backends = (filters.DjangoFilterBackend,)
 #     queryset = CompanyContacts.objects.select_related('company', 'contact', 'contact__person')
