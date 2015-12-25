@@ -184,3 +184,18 @@ function card($this) {
     document.location.href = url;
     return false;
 }
+
+function highlight_search_results(jsondata, search_string) {
+    if (search_string !== undefined && search_string != "") {
+        var jresult = JSON.stringify(jsondata, function(k, val) {
+                          if (typeof val === 'string' && val != "") {
+                              var re = new RegExp(search_string, 'i');
+                              val =  val.replace(re, '<b class="search">' + search_string + '</b>');
+                          }
+                        return val;
+                    });
+        return JSON.parse(jresult);
+    } else {
+        return jsondata;
+    }
+}

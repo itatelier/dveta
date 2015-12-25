@@ -27,7 +27,7 @@ class ContragentUlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contragents
-        fields = ('pk', 'name', 'type', 'group', 'inn', 'kpp', 'ogrn', 'uraddress', 'date_add', 'date_update', 'comment')
+        fields = ('pk', 'company', 'name', 'type', 'group', 'inn', 'kpp', 'ogrn', 'uraddress', 'date_add', 'date_update', 'comment')
 
 
 class ContragentsFilters(django_filters.FilterSet):

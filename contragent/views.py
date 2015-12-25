@@ -110,12 +110,16 @@ class ContragentCompanyUpdateView(LoginRequiredMixin, UpdateView):
         return context_data
 
 
+class ContragentsList(LoginRequiredMixin, TemplateView):
+    template_name = "contragent/list_contragents.html"
+
+
 class ContragentsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = Contragents.objects.filter(group=4).select_related('type', 'group',)
     serializer_class = ContragentUlSerializer
     filter_class = ContragentsFilters
-    search_fields = ('name', 'inn', 'comment', 'urraddress', )
+    search_fields = ('name', 'inn', 'comment', 'uraddress', )
     ordering_fields = ('id', 'name', 'company', 'type', 'group', 'inn')
 
 

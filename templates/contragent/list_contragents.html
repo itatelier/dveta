@@ -13,14 +13,14 @@
 
 <script>
     var base_url = '/contragent';
-    var JsonDataUrl = "/company/api/clients/";
-    var req_preprocess_result = "0";
+    var JsonDataUrl = "/contragents/api/contragents_list/";
+    var req_preprocess_result = "1";
 
     $(document).ready(function() {
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
-        input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains');
+        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');
         {#    Виджет datepicker #}
         $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
         {#    Сортировка по заголовкам столбцов   #}
@@ -28,36 +28,33 @@
 
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('id');
-            var url = base_url + "/" +id +"/card/";
+            var id = $(this).data('company_id');
+            var url = "/company/" + id +"/card/";
             document.location.href = url;
         });
 
     });
 
         {#  постобработка результата AJAX запроса #}
-{#        function preprocess_result(result) {#}
-{#            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {#}
-{#                result.results[i].date_add = date_json2hr(result.results[i].date_add);#}
-{#                if (result.results[i].client_options !== null) {#}
-{#                    if (result.results[i].client_options.request_freq == 2) {#}
-{#                        result.results[i].client_options.request_freq = "Постоянный"#}
-{#                    } else {#}
-{#                        result.results[i].client_options.request_freq = "Разовый"#}
-{#                    }#}
-{#                }#}
-{#            }#}
-{#        }#}
+        function preprocess_result(result) {
+            {# подсветка фрагментов текста в соответствии с параметром поиска #}
+            var search_string = $('input[name=search]').val();
+            result.results = highlight_search_results(result.results, search_string);
+
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                result.results[i].date_add = date_json2hr(result.results[i].date_add);
+            }
+        }
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-id="{{ id }}">
-        <td>{{ name }}</td>
-        <td>{{ comment }}</td>
-        <td>{{ org_type.val }}
-        <td>{{ status.val }}</td>
-        <td>{{ client_options.request_freq }}</td>
-        <td>{{ date_add.date }}</td>
+    <tr data-company_id="{{ company }}">
+        <td>{{{ name }}}</td>
+        <td>{{{ type.val }}}</td>
+        <td>{{{ group.val }}}</td>
+        <td>{{{ inn }}}</td>
+        <td>{{{ comment }}}</td>
+        <td>{{{ date_add.date }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -80,9 +77,9 @@
                         {# отображенные фильтры #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Наименование</legend>
+                                <legend>Поиск</legend>
                                 <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" class="loading" name="name_ac">
+                                    <input type="text" size="15" class="loading" name="search">
                                 </div>
                             </div>
                         </div>
@@ -98,15 +95,14 @@
                         {# Статус Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Статус</legend>
+                                <legend>Группа</legend>
                                 <div class="input_block">
-                                    <select name="status">
-                                        <option value="">любой статус</option>
-                                        <option value="1">новый</option>
-                                        <option value="2">на оформлении</option>
-                                        <option value="3">в работе</option>
-                                        <option value="4">заблокирован</option>
-                                        <option value="5">архивный</option>
+                                    <select name="group">
+                                        <option value="">любая группа</option>
+                                        <option value="1">служебные</option>
+                                        <option value="2">сотрудники</option>
+                                        <option value="3">водители</option>
+                                        <option value="4" selected>клиенты</option>
                                     </select>
                                 </div>
                             </div>
@@ -114,22 +110,12 @@
                         {# Тип клиента Radio filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Тип клиента</legend>
+                                <legend>Тип контрагента</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
-                                    <label><input type="radio" name="org_type" value="1"><p>Частник</p></label>
-                                    <label><input type="radio" name="org_type" value="2"><p>Фирма</p></label>
-                                </div>
-                            </div>
-                        </div>
-                        {# Частота вывоза Radio filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Частота вывозов</legend>
-                                <div class="input_block">
-                                    <label><input type="radio" name="client_options__request_freq" value="" checked><p>Любая</p></label>
-                                    <label><input type="radio" name="client_options__request_freq" value="1"><p>Разовые</p></label>
-                                    <label><input type="radio" name="client_options__request_freq" value="2"><p>Постоянные</p></label>
+                                    <label><input type="radio" name="type" value=""  checked><p>Любой тип</p></label>
+                                    <label><input type="radio" name="type" value="2"><p>Юр. Лицо</p></label>
+                                    <label><input type="radio" name="type" value="3"><p>ИП</p></label>
+                                    <label><input type="radio" name="type" value="1"><p>Физик</p></label>
                                 </div>
                             </div>
                         </div>
@@ -150,11 +136,11 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable active" rel="id">Наименование</a></th>
-                                <th><a href="#" rel="" >Комментарий</a></th>
-                                <th><a href="#" class="sortable" rel="org_type">Тип клиента</a></th>
-                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
-                                <th><a href="#" class="sortable" rel="client_options__request_freq">Частота заказа</a></th>
+                                <th><a href="#" class="sortable active" rel="name">Наименование</a></th>
+                                <th><a href="#" class="sortable" rel="type" >Тип контрагента</a></th>
+                                <th><a href="#" class="sortable" rel="group">Группа</a></th>
+                                <th><a href="#" class="sortable" rel="inn">ИНН</a></th>
+                                <th><a href="#">Комментарий</a></th>
                                 <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
                             </tr>
                         </thead>
