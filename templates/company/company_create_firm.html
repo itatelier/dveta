@@ -112,7 +112,7 @@
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <legend>{{ forms.company.description.label }}<p>{{ forms.company.description.help_text }}</p></legend>
-                                <div class="input_block required  {% if forms.company.description.errors %}error{% endif %}">
+                                <div class="input_block  {% if forms.company.description.errors %}error{% endif %}">
                                     {{ forms.company.description }}
                                     {% for error in forms.company.description.errors %}
                                     <em>{{ error|escape }}</em>

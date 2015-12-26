@@ -13,7 +13,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                {%  include "company/company_left_bar.html" with pk=object.pk sel=1 %}
+                {%  include "company/company_left_bar.html" with pk=object.pk options_pk=object.client_options.pk sel=1 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Заголовок информации о клиенте #}
@@ -80,7 +80,7 @@
                     {# - Информационный блок - контакты #}
                     {# Информационный блок - отделения #}
                     <div class="sheet_row_headered">
-                        <h2>Отделения</h2>
+                        <h2>Офисы</h2>
                         {% if branches %}
                         <table class="sheet_headered">
                             <thead>
@@ -94,7 +94,7 @@
                         </table>
                         {% else %}
                         <div class="empty_block">
-                            <p>Отеделения не добавлены</p>
+                            <p>Офисы не добавлены</p>
                             <a class="textlink" href="{% url 'company_branch_create' pk %}">Добавить отделение</a>
                         </div>
                         {% endif %}

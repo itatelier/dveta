@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+{% endblock %}
+{% block content %}
+<script>
+
+    $(document).ready(function() {
+        var company_id = '{{ company.pk }}';
+
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
+                <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
+                <li class="active"><a href="#">Условия работы</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "company/company_left_bar.html" with pk=company.pk sel=7 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Форма объекта #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                        <div class="form_row">
+                            <h2>Условия работы с клиентом</h2>
+                        </div>
+                        {# Поля формы #}
+                        {% for field in form.visible_fields %}
+                        <div class="form_row">
+                           <div class="input_wrapper">
+                                <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
+                                <div class="input_block {% if field.field.required %}required{% endif %}{% if field.errors %} error{% endif %}">
+                                     {{ field }}
+                                    {% for error in field.errors %}
+                                    <em>{{ error|escape }}</em>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

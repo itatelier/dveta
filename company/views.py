@@ -391,22 +391,6 @@ class CompanyContactUpdateView(MultiFormEdit):
         'companycontact': {'formclass': CompanyContactsCreateForm}
     }
 
-    # def post(self, request, *args, **kwargs):
-    #     forms = self.get_forms()
-    #     form_not_valid = None
-    #     for formclass, form in forms.items():
-    #         if not form.is_valid():
-    #             form_not_valid = 1
-    #             log.warn("Form " + formclass + "not valid!")
-    #     if form_not_valid is None:
-    #         for formclass in forms:
-    #             for field in forms[formclass]:
-    #                 log.info("Field: " + field)
-    #             forms[formclass].save()
-    #         return HttpResponseRedirect(self.get_success_url())
-    #     else:
-    #         return self.render_to_response(self.get_context_data(forms=forms))
-
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyContactUpdateView, self).get_context_data(*args, **kwargs)
         company_pk = self.kwargs.get('company_pk', None)
@@ -448,6 +432,26 @@ class CompanyContactsViewSet(viewsets.ModelViewSet):
     ordering_fields = ('id', 'contact__role', 'company__name', 'company__org_type', 'company__status', 'contact__person', 'contact__date_add')
 
 
+class ClientOptionsUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'company/company_client_options.html'
+    # permission_required = 'company.change_companies'
+    model = ClientOptions
+
+    def get_form_class(self, *args, **kwargs):
+        form_class = CompanyClientOptionsForm
+        return form_class
+
+    def get_success_url(self, *args, **kwargs):
+        company_pk = self.kwargs.get('company_pk', None)
+        return "/company/%s/card" % company_pk
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ClientOptionsUpdateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        context_data.update({
+            'company': Companies.objects.get(pk=company_pk),
+        })
+        return context_data
 
 #
 #

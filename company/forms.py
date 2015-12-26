@@ -12,7 +12,7 @@ log = logging.getLogger('django')
 
 class CompanyCreateForm(ModelForm):
     name = CharField(label="Наименование", required=True, help_text="Краткое наименование клента, простое, как \"Утюг\"")
-    description = CharField(label="Род деятельности", required=True, help_text="Описание деятельности компании", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
+    description = CharField(label="Род деятельности", required=False, help_text="Описание деятельности компании", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
     attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label="Выбрать значение...",  help_text="От куда клиент узнал о нас?")
 
@@ -78,3 +78,20 @@ class CompanyContactsCreateForm(ModelForm):
     class Meta:
         model = CompanyContacts
         fields = ('show_in_card',)
+
+
+class CompanyClientOptionsForm(ModelForm):
+    pay_form_choices = [('1', 'Наличная'), ('2', 'Безналичная')]
+
+    request_tickets = BooleanField(widget=HiddenInput(), required=False, initial=True)
+    request_special_sign = BooleanField(widget=HiddenInput(), required=False, initial=True)
+    request_freq = IntegerField(label="Частота вывоза", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    use_client_talons_only = BooleanField(widget=HiddenInput(), required=False, initial=True)
+    pay_condition = IntegerField(label="Условия оплаты", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    pay_form = ChoiceField(label="Основная Форма оплаты", choices=pay_form_choices,  widget=RadioSelect())
+    pay_type = IntegerField(label="Тип оплаты", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    credit_limit = IntegerField(label="Кредитный лимит", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+
+    class Meta:
+        model = CompanyContacts
+        fields = ('request_tickets', 'request_special_sign', 'request_freq', 'use_client_talons_only', 'pay_condition', 'pay_form', 'pay_type', 'credit_limit',)
