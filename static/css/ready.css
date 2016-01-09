@@ -300,7 +300,7 @@ div.content > div.sheet_wrapper {
     flex-direction: row;
     width: 100%;
     min-height: 400px;
-    min-width: 1360px;
+    min-width: 1200px;
     padding: 0 0 20px 0;
 }
 div.content > div.sheet_wrapper > div.left_border {
@@ -317,7 +317,7 @@ div.content > div.sheet_wrapper > div.sheet {
     width: 100%;
     min-height: 400px;
     background-color: #F3F3F3;
-    padding: 1.2rem;
+    padding: 1.2rem 0.5rem;
     box-shadow:1px 1px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
 }
 div.content > div.sheet_wrapper span.upblock {
@@ -439,7 +439,7 @@ div.table_bottom_bar i {
 /*======================== Left bar ========================== */
 
 div.sheet > div.left_bar {
-    flex: 0 0 180px;
+    flex: 0 0 175px;
     flex-direction: column;
     padding: 0;
 }
