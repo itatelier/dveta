@@ -11,6 +11,8 @@ from django.views.generic.edit import FormMixin, ProcessFormView, ModelFormMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import force_text
 from django.http import HttpResponseRedirect
+from django.forms.widgets import RadioSelect
+from django.utils.safestring import mark_safe
 
 import logging
 log = logging.getLogger('django')
@@ -123,3 +125,7 @@ class RuDateWidget(DateTimeInput):
         kwargs['format'] = '%d.%m.%Y'
         super(RuDateWidget, self).__init__(*args, **kwargs)
 
+
+class RadioRendererSimple(RadioSelect.renderer):
+    def render(self):
+            return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))

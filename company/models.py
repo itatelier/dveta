@@ -85,7 +85,7 @@ class Companies(models.Model):
     status = models.ForeignKey('CompanyStatus', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    client_options = models.OneToOneField('ClientOptions', null=True, blank=True)
+    client_options = models.OneToOneField('ClientOptions', null=True, blank=True, related_name='company')
 
 
     # objects = models.Manager()

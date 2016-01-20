@@ -5,6 +5,7 @@ from django.views.generic.base import TemplateView
 from django.forms.models import modelform_factory
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView
 from common.utils import GetObjectOrNone
+from django.shortcuts import get_object_or_404
 
 from common.forms import *
 
@@ -433,9 +434,14 @@ class CompanyContactsViewSet(viewsets.ModelViewSet):
 
 
 class ClientOptionsUpdateView(LoginRequiredMixin, UpdateView):
+    # Опции клиента получаются по ID компании, по reverse запросу, related_name из модели Companies
+
     template_name = 'company/company_client_options.html'
     # permission_required = 'company.change_companies'
-    model = ClientOptions
+
+    def get_object(self):
+        company_pk = self.kwargs.get('company_pk', None)
+        return get_object_or_404(ClientOptions, company__pk=company_pk)
 
     def get_form_class(self, *args, **kwargs):
         form_class = CompanyClientOptionsForm

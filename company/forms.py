@@ -2,9 +2,14 @@
 
 from re import sub
 from django.forms import *
+from django.forms.widgets import ChoiceFieldRenderer, RendererMixin, RadioFieldRenderer, RadioChoiceInput
+from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.html import conditional_escape, format_html, html_safe
+
 from models import *
 from common.forms import *
 from common.formfields import *
+
 
 import logging
 log = logging.getLogger('django')
@@ -82,16 +87,19 @@ class CompanyContactsCreateForm(ModelForm):
 
 class CompanyClientOptionsForm(ModelForm):
     pay_form_choices = [('1', 'Наличная'), ('2', 'Безналичная')]
+    pay_type_choices = [('1', 'Предоплата'), ('2', 'По факту')]
+    request_freq_choices = [('1', 'Обычный клиент'), ('2', 'Постоянный клиент')]
+    pay_condition_choices = [('1', 'По постановке'), ('2', 'По вывозу')]
 
-    request_tickets = BooleanField(widget=HiddenInput(), required=False, initial=True)
-    request_special_sign = BooleanField(widget=HiddenInput(), required=False, initial=True)
-    request_freq = IntegerField(label="Частота вывоза", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    request_tickets = BooleanField(label="Предоставлять талоны с полигонов", required=False)
+    request_special_sign = BooleanField(label="Делать отметки на объектах", required=False, )
+    request_freq = ChoiceField(label="Частота вывоза", choices=request_freq_choices, required=False, widget=RadioSelect(renderer=RadioRendererSimple))
     use_client_talons_only = BooleanField(widget=HiddenInput(), required=False, initial=True)
-    pay_condition = IntegerField(label="Условия оплаты", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
-    pay_form = ChoiceField(label="Основная Форма оплаты", choices=pay_form_choices,  widget=RadioSelect())
-    pay_type = IntegerField(label="Тип оплаты", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    pay_condition = ChoiceField(label="Условия оплаты", choices=pay_condition_choices, required=False, widget=RadioSelect(renderer=RadioRendererSimple))
+    pay_form = ChoiceField(label="Основная Форма оплаты", choices=pay_form_choices,  widget=RadioSelect(renderer=RadioRendererSimple))
+    pay_type = ChoiceField(label="Тип оплаты", choices=pay_type_choices,  widget=RadioSelect(renderer=RadioRendererSimple))
     credit_limit = IntegerField(label="Кредитный лимит", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
     class Meta:
-        model = CompanyContacts
+        model = ClientOptions
         fields = ('request_tickets', 'request_special_sign', 'request_freq', 'use_client_talons_only', 'pay_condition', 'pay_form', 'pay_type', 'credit_limit',)

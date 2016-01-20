@@ -1,0 +1,14 @@
+{% if form.errors %}
+<div class="form-row">
+    <h2 class="red">Форма содержит ошибки!</h2>
+    <br>
+    {% for field in form %}
+        {% if field.errors %}
+            {{ field.label }}
+            {% for error in field.errors %}
+            <em class="red">{{ error|escape }}</em>
+            {% endfor %}<br>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}

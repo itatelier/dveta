@@ -32,22 +32,29 @@
                         {# Скрытые поля #}
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row">
-                            <h2>Условия работы с клиентом</h2>
+                            <h1>Условия работы с клиентом</h1>
                         </div>
                         {# Поля формы #}
-                        {% for field in form.visible_fields %}
+                        <div class="form_row"><h2 class="blue">Частота вывозов</h2></div>
+                        <div class="form_row">{% include "form_snippets/radio.html" with field=form.request_freq %}</div>
+                        <div class="form_row"><h2 class="blue">Специальные требование клиента</h2></div>
+                        <div class="form_row">{% include "form_snippets/checkbox.html" with field=form.request_special_sign %}</div>
+                        <div class="form_row">{% include "form_snippets/checkbox.html" with field=form.request_tickets %}</div>
+                        <div class="form_row"><h2 class="blue">Условия оплаты</h2></div>
+                        <div class="form_row">{% include "form_snippets/radio.html" with field=form.pay_condition %}</div>
+                        <div class="form_row"><h2 class="blue">Основная форма оплаты</h2></div>
+                        <div class="form_row">{% include "form_snippets/radio.html" with field=form.pay_form %}</div>
+                        <div class="form_row"><h2 class="blue">Финансовые лимиты</h2></div>
                         <div class="form_row">
-                           <div class="input_wrapper">
-                                <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
-                                <div class="input_block {% if field.field.required %}required{% endif %}{% if field.errors %} error{% endif %}">
-                                     {{ field }}
-                                    {% for error in field.errors %}
-                                    <em>{{ error|escape }}</em>
-                                    {% endfor %}
-                                </div>
+                            <div class="input_block _inline">
+                                {{ form.credit_limit.label }}{{ form.credit_limit }}
+                                {% for error in form.credit_limit.errors %}
+                                <em>{{ error|escape }}</em>
+                                {% endfor %}
                             </div>
                         </div>
-                        {% endfor %}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
                         {# Кнопки #}
                         <div class="form_row">
                             <span class="button_block">

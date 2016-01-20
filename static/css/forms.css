@@ -166,6 +166,9 @@ div.input_block._inline > label > p {
     padding: 0.5rem 1.5rem 0 0.5rem;
     cursor: pointer;
 }
+div.input_block._inline > input[type=text] {
+    margin-left: 10px;
+}
 div.input_block._icon:after {
     width: 1.8rem;
     display: inline-block;

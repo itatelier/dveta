@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^(?P<company_pk>\d+)/contacts/(?P<pk>\d+)/update/$', CompanyContactUpdateView.as_view(), name='company_contacts_update'),
     url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
     url(r'^search_contacts/$', CompanyContactSearchView.as_view(), name='company_search_contacts'),
-    url(r'^(?P<company_pk>\d+)/client_options/(?P<pk>\d+)$', ClientOptionsUpdateView.as_view(), name='company_client_options'),
+    url(r'^(?P<company_pk>\d+)/client_options', ClientOptionsUpdateView.as_view(), name='company_client_options'),
 
     # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
     # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
