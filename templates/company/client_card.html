@@ -23,7 +23,7 @@
                         </div>
                         <div class="flex_block _zero customer_account_detales">
                             <span><p>БАЛАНС</p><em>7500</em></span>
-                            <span><p>КРЕДИТ</p><em>7500</em></span>
+                            <span><p>КРЕДИТ</p><em>{{ object.client_options.credit_limit }}</em></span>
                             <span class="customer_status {{ object.status.css_class }}">{{ object.status.val }}</span>
                         </div>
                     </div>

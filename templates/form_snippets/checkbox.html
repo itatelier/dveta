@@ -1,5 +1,7 @@
 <div class="input_block _inline">
-    {{ field }}{{ field.label }}
+    <label>
+        {{ field }}{{ field.label }}
+    </label>
     {% for error in field.errors %}
     <em>{{ error|escape }}</em>
     {% endfor %}

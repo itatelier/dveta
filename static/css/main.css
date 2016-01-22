@@ -1,3 +1,7 @@
+div.card_content_padding {
+    padding: 1rem 4rem !important;
+}
+
 div.flex_row {
     display: flex;
     flex-direction: row;
@@ -146,4 +150,13 @@ div.empty_block > p {
     text-shadow: beige;
     /* text-shadow: 0 1px 1px rgba(142, 142, 142, 0.1); */
     text-transform: uppercase;
+}
+
+span.errorbox {
+    /*display: flex;*/
+    padding: 1rem 2rem;
+    background-color: #FDDEDE;
+    border: 1px solid;
+    border-radius: 6px;
+    border-color: #D0BDBD;
 }

@@ -28,12 +28,10 @@
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Форма объекта #}
+                    <h1>Условия работы с клиентом</h1>
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# Скрытые поля #}
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
-                        <div class="form_row">
-                            <h1>Условия работы с клиентом</h1>
-                        </div>
                         {# Поля формы #}
                         <div class="form_row"><h2 class="blue">Частота вывозов</h2></div>
                         <div class="form_row">{% include "form_snippets/radio.html" with field=form.request_freq %}</div>
@@ -44,6 +42,8 @@
                         <div class="form_row">{% include "form_snippets/radio.html" with field=form.pay_condition %}</div>
                         <div class="form_row"><h2 class="blue">Основная форма оплаты</h2></div>
                         <div class="form_row">{% include "form_snippets/radio.html" with field=form.pay_form %}</div>
+                        <div class="form_row"><h2 class="blue">Тип условия оплаты</h2></div>
+                        <div class="form_row">{% include "form_snippets/radio.html" with field=form.pay_type %}</div>
                         <div class="form_row"><h2 class="blue">Финансовые лимиты</h2></div>
                         <div class="form_row">
                             <div class="input_block _inline">
