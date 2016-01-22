@@ -160,3 +160,20 @@ span.errorbox {
     border-radius: 6px;
     border-color: #D0BDBD;
 }
+
+p.comment {
+    font-weight: normal !important;
+    font-size: inherit !important;
+    font-style: italic;
+}
+
+p.comment:before {
+    font-weight: bold;
+    font-size: 1.4rem;
+    content: "\"";
+}
+p.comment:after {
+    font-weight: bold;
+    font-size: 1.4rem;
+    content: "\"";
+}
