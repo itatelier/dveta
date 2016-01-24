@@ -21,6 +21,21 @@ import logging
 log = logging.getLogger('django')
 
 
+class PersonCardView(LoginRequiredMixin, TemplateView):
+    template_name = "person/person_card.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(PersonCardView, self).get_context_data(*args, **kwargs)
+        person_pk = kwargs['pk']
+        object = Persons.objects.get(pk=person_pk)
+        context_data.update({
+            'object': object,
+            'client_contacts': CompanyContacts.objects.select_related('company', 'contact', 'contact__person').filter(contact__person__pk=person_pk),
+            'contacts': Contacts.objects.select_related('person').filter(person__pk=person_pk)
+        })
+        return context_data
+
+
 class GetContactViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     queryset = CompanyContacts.objects.select_related('company', 'contact', 'contact__person')

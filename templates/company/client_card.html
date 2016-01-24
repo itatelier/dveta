@@ -65,7 +65,7 @@
                         <table class="sheet_simple">
                             {% for i in contacts %}
                             <tr>
-                                <td>{% if i.contact.person.id %}<a href="#" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.contact.role }}</td>{% else %}без персоны</td><td></td>{% endif %}
+                                <td>{% if i.contact.person.id %}<a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.contact.role }}</td>{% else %}без персоны</td><td></td>{% endif %}
                                 <td>8 {{ i.contact.phonenumber }} </td>
                                 <td>{{ i.contact.comment }}</td></tr>
                             {% endfor %}

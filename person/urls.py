@@ -25,7 +25,7 @@ urlpatterns = patterns('',
 
     # url(r'^/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
     # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
-    # url(r'^(?P<pk>\d+)/card/$', main_card.as_view(), name=base_path + '_main_card'),
+    url(r'^(?P<pk>\d+)/card/$', PersonCardView.as_view(), name='person_card'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),
     # url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),

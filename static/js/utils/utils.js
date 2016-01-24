@@ -68,11 +68,13 @@ function add_contact(company_id, contact_id) {
 };
 
 function CheckPhoneInput(company_id, obj) {
+            /* Поиск контактов по номеру.
+             Если хотя бы один контакт найден - сообщаем что кнтакт есть, или
+             Еслли есть и номер и компания соответствует запрашиваемой - сообщаем, что контакт уже присвоен компании */
             var $input_object = $(obj);
             var number = $input_object.val();
-            console.log(number);
+            console.log("Поиск номера в базе контактов: " + number);
             if (number.length == 10) {
-                console.log("Value: " + this.value);
                 $.ajaxSetup({headers: { "X-CSRFToken": getCookie("csrftoken") }});
                 $.ajax({
                     url:  '/persons/api/contacts_search_json/',
@@ -81,22 +83,31 @@ function CheckPhoneInput(company_id, obj) {
                 })
                 .done(function(result) {
                     if (result.count > 0) {
-                        var name = result.results[0].contact.person.nick_name;
-                        var contact_id = result.results[0].contact.id;
-                        var person_id = result.results[0].contact.person.id;
-                        var comment = result.results[0].contact.comment;
-                        var result_company_id = result.results[0].company;
                         var ErrorString = "";
-                        if (company_id == result_company_id) {
-                            ErrorString = 'Контакт c номером '+ number +' уже привязан к клиенту!';
-                        } else {
+                        var ContactExist = false;
+                        for ( var i = 0, len = result.count; i < len; i++ ) {
+                            if (result.results[i].company == company_id) {
+                                ErrorString = 'Контакт c номером '+ number +' уже привязан к клиенту!';
+                                ContactExist = true;
+                                console.log(ErrorString);
+                            }
+                        }
+                        if (ContactExist === false) {
+                            var name = result.results[0].contact.person.nick_name;
+                            var contact_id = result.results[0].contact.id;
+                            var person_id = result.results[0].contact.person.id;
+                            var comment = result.results[0].contact.comment;
+                            var result_company_id = result.results[0].company;
                             ErrorString = 'Номер '+number+' уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
+                            console.log(ErrorString);
                         }
                         $('<em>' + ErrorString + '</em>').insertAfter($input_object);
-                        $input_object.val('');
-                        $input_object.focus();
+                        $('em', $input_object.parent()).remove();  // удаляем предыдущие ошибки
+                        $input_object.val('').removeClass('lightgreen_bg').focus();
                     } else {
                         $input_object.addClass('lightgreen_bg');
+                        console.log("Phone check: OK, number not found");
+                        $('em', $input_object.parent()).remove(); // удаляем предыдущие ошибки
                     }
                 })
                 .fail(function(result) { console.log("Error! result: "+ result)});

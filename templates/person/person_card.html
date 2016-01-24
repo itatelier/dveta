@@ -1,0 +1,74 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Картотека</a></li>
+                <li class="active" ><a href="#">Персона {{ object.nick_name }}</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Карточка персоны</a></li></ul><hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="" href="#">Информация</a></li>
+                    </ul>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium ">
+                    {# Информационный блок - основная информация #}
+                    <h1><i class="icon inherit" icon="">{{ object.nick_name }}</i></h1>
+                    {# Информационный блок - контакты #}
+                    {% if contacts %}
+                    <div class="sheet_row_headered">
+                        <h2>Контактные данные</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Номер телефона</th><th>Примечание</th><th>Электронная почта</th></tr>
+                            </thead>
+                            {% for i in contacts %}
+                            <tr>
+                                <td>+7 {{ i.phonenumber }} </td>
+                                <td>{{ i.comment }}</td>
+                                <td>{{ i.email }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - контакты #}
+                    {# Информационный блок - контакты в клиентах#}
+                    {% if client_contacts %}
+                    <div class="sheet_row_headered">
+                        <h2>Контакты в клиентах</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Компания</th><th>Должность</th><th>Номер телефона</th><th>Примечание</th></tr>
+                            </thead>
+                            {% for i in client_contacts %}
+                            <tr>
+                                <td><a href="/company/{{ i.company.pk }}/card" class="textlink">{{ i.company.name }}</a></td>
+                                <td>{{ i.contact.role }}</td>
+                                <td>+7 {{ i.contact.phonenumber }} </td>
+                                <td>{{ i.comment }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - контакты в клиентах#}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

@@ -337,7 +337,7 @@ footer {
 
 div.sheet div.data_grid_medium {
     flex: 1 0 auto;
-    padding: 0rem 1rem 1rem 4rem;
+    padding: 1rem 1rem 1rem 4rem;
     margin: 0 0 0 1rem;
 }
 div.sheet div.data_grid_listing {
@@ -499,6 +499,9 @@ i.icon::before {
 }
 i.icon.gold::before {
     color: gold;
+}
+i.icon.inherit::before {
+    font-size: inherit;
 }
 /*======================== Customer details ========================== */
 

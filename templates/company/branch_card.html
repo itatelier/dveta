@@ -55,6 +55,7 @@
                     {% endif %}
                     {# - Информационный блок - основная информация #}
                     {# Информационный блок - контакты #}
+                    {% if contacts %}
                     <div class="sheet_row_headered">
                         <h2>Контакты</h2>
                         <table class="sheet_simple">
@@ -63,6 +64,7 @@
                             {% endfor %}
                         </table>
                     </div>
+                    {% endif %}
                     {# - Информационный блок - контакты #}
                 </div>
             </div>
