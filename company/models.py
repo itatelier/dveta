@@ -179,6 +179,10 @@ class CompanyContacts(models.Model):
     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True, related_name='contact')
     contact = models.ForeignKey('person.Contacts', null=False, blank=False, editable=True, related_name='contact')
     show_in_card = models.BooleanField(default=True, editable=True)
+    company_main = models.BooleanField(default=0, editable=False)
+    email = models.CharField(max_length=255L, blank=True, null=True)
+    comment = models.CharField(max_length=255L, blank=True, null=True)
+    role = models.CharField(max_length=255L, blank=True, null=True)
 
     class Meta:
         db_table = 'company_contacts'

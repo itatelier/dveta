@@ -30,15 +30,25 @@ class PersonCompanyCreateForm(ModelForm):
         fields = ('nick_name', 'contact_switch')
 
 
-class ContactFirmCreateForm(ModelForm):
+class CompanyContactCreateForm(ModelForm):
     role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
     email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
     comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
+
+    class Meta:
+        model = CompanyContacts
+        fields = ('role', 'email', 'comment')
+
+
+class ContactCreateForm(ModelForm):
+    # role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
+    # email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
+    # comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
     phonenumber = IntegerField(label="Номер телефона", help_text="10 цифр, в формате 9991234567", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts
-        fields = ('role', 'email', 'comment', 'phonenumber')
+        fields = ('phonenumber',)
 
     # def __init__(self, *args, **kwargs):
     #     super(ContactFirmCreateForm, self).__init__(*args, **kwargs)
@@ -50,11 +60,11 @@ class ContactFirmCreateForm(ModelForm):
     #                 self.fields[f_name].widget.attrs['class'] = classes
 
 
-class ContactsCreateForm(ContactFirmCreateForm):
-
-    class Meta:
-        model = Contacts
-        fields = ('role', 'email', 'comment', 'phonenumber')
+# class ContactsCreateForm(ContactFirmCreateForm):
+#
+#     class Meta:
+#         model = Contacts
+#         fields = ('role', 'email', 'comment', 'phonenumber')
 
 
 

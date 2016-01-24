@@ -75,7 +75,7 @@ class CompanyContactsSerializerShort(CompanyContactsSerializer):
     class Meta:
         model = CompanyContacts
         depth = 3
-        fields = ['id', 'company', 'contact', 'show_in_card']
+        fields = ['id', 'company', 'contact', 'show_in_card', 'role', 'comment', 'email']
 
 
 class CompanyContactsFilters(django_filters.FilterSet):
@@ -83,4 +83,4 @@ class CompanyContactsFilters(django_filters.FilterSet):
 
     class Meta:
         model = CompanyContacts
-        fields = ['id', 'contact__phonenumber', 'contact__is_work', 'contact__date_add', 'company__name', 'company__org_type', 'company__status' ]
+        fields = ['id', 'contact__phonenumber', 'contact__is_work', 'role', 'comment', 'email', 'contact__date_add', 'company__name', 'company__org_type', 'company__status' ]

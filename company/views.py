@@ -45,7 +45,7 @@ class CompanyCreatePrivateView(MultiFormCreate):
     formconf = {
         'company': {'formclass': CompanyCreatePrivateForm},
         'person': {'formclass': PersonCompanyCreateForm},
-        'contact': {'formclass': ContactFirmCreateForm}
+        'contact': {'formclass': ContactCreateForm}
         }
 
     def get_context_data(self, *args, **kwargs):
@@ -101,7 +101,8 @@ class CompanyCreateFirmView(MultiFormCreate):
         'branch': {'formclass': BranchCompanyCreateForm},
         'address': {'formclass': AddressUpdateForm},
         'person': {'formclass': PersonCompanyCreateForm},
-        'contact': {'formclass': ContactFirmCreateForm},
+        'contact': {'formclass': ContactCreateForm},
+        'company_contact': {'formclass': CompanyContactCreateForm},
     }
 
     def post(self, request, *args, **kwargs):
@@ -120,6 +121,7 @@ class CompanyCreateFirmView(MultiFormCreate):
         bform = forms['branch']
         pform = forms['person']
         contform = forms['contact']
+        company_contactform = forms['company_contact']
         if cform.is_valid():
             log.info("cform valid!")
             ''' Создаем объекты форм (не сохраняя в бд)'''
@@ -157,13 +159,15 @@ class CompanyCreateFirmView(MultiFormCreate):
                 company_object.save()
                 # Contact options
                 contact_object = contform.save(commit=False)
-                contact_object.is_work = True
-                contact_object.company_main = True
                 person_object = pform.save()
                 contact_object.person = person_object
                 ''' Сохраняем объекты форм в БД '''
                 contact_object.save()
-                company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+                company_contact_object = company_contactform.save(commit=False)
+                company_contact_object.company=company_object
+                company_contact_object.contact=contact_object
+                company_contact_object.is_work=True
+                company_contact_object.company_main=True
                 company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
@@ -175,10 +179,6 @@ class CompanyCreateFirmView(MultiFormCreate):
                 address_object = aform.save(commit=False)
                 branch_object = bform.save(commit=False)
                 person_object = pform.save(commit=False)
-                # Contact options
-                contact_object = contform.save(commit=False)
-                contact_object.is_work = True
-                contact_object.company_main = True
                 company_object.save()
                 address_object.save()
                 ''' Назначаем исключенные поля из созданных объектов на зависимый объект '''
@@ -189,11 +189,16 @@ class CompanyCreateFirmView(MultiFormCreate):
                 branch_object.address = address_object
                 branch_object.save()
                 person_object.save()
-                contact_object.is_work = True
+                contact_object = contform.save(commit=False)
+                person_object = pform.save()
                 contact_object.person = person_object
                 ''' Сохраняем объекты форм в БД '''
                 contact_object.save()
-                company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+                company_contact_object = company_contactform.save(commit=False)
+                company_contact_object.company=company_object
+                company_contact_object.contact=contact_object
+                company_contact_object.is_work=True
+                company_contact_object.company_main=True
                 company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url())
             elif not branch_exist and not contact_exist:
@@ -348,7 +353,7 @@ class CompanyContactsView(MultiFormCreate):
     formconf = {
         'person': {'formclass': PersonCompanyCreateForm},
         'companycontact': {'formclass': CompanyContactsCreateForm},
-        'contact': {'formclass': ContactsCreateForm}
+        'contact': {'formclass': ContactCreateForm}
     }
 
     def post(self, request, *args, **kwargs):
@@ -387,7 +392,7 @@ class CompanyContactsView(MultiFormCreate):
 class CompanyContactUpdateView(MultiFormEdit):
     template_name = 'company/company_contacts.html'
     formconf = {
-        'contact': {'formclass': ContactsCreateForm},
+        'contact': {'formclass': ContactCreateForm},
         'person': {'formclass': PersonCompanyCreateForm},
         'companycontact': {'formclass': CompanyContactsCreateForm}
     }

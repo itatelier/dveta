@@ -19,7 +19,7 @@ class CompanyCreateForm(ModelForm):
     name = CharField(label="Наименование", required=True, help_text="Краткое наименование клента, простое, как \"Утюг\"")
     description = CharField(label="Род деятельности", required=False, help_text="Описание деятельности компании", widget=TextInput(attrs={'placeholder': "Строительство, Юридические услуги", 'size': 50}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
-    attr_source = ModelChoiceFieldNameLabel(queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label="Выбрать значение...",  help_text="От куда клиент узнал о нас?")
+    attr_source = ModelChoiceFieldNameLabel(label="Источник привлечения", queryset=CompanyAttractionSource.objects.all(), label_field='val', empty_label="Выбрать значение...",  help_text="От куда клиент узнал о нас?")
 
     class Meta:
         model = Companies

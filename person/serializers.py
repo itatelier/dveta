@@ -32,7 +32,7 @@ class ContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacts
         # fields = ['id', 'role']
-        fields = ['id', 'role', 'email', 'phonenumber', 'comment', 'is_work', 'person', 'date_add']
+        fields = ['id', 'comment', 'is_work', 'person', 'date_add']
 
 
 class ContactsFilters(django_filters.FilterSet):
