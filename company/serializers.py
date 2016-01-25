@@ -66,7 +66,7 @@ class CompanyContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyContacts
         depth = 3
-        fields = ['id', 'company', 'contact', 'show_in_card']
+        fields = ['id', 'company', 'contact', 'show_in_card', 'role', 'email', 'comment']
 
 
 class CompanyContactsSerializerShort(CompanyContactsSerializer):

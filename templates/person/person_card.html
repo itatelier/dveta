@@ -6,7 +6,7 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="#">Картотека</a></li>
+                <li><a href="#">Картотека персон</a></li>
                 <li class="active" ><a href="#">Персона {{ object.nick_name }}</a></li>
             </ul>
         </div>
@@ -33,13 +33,12 @@
                         <h2>Контактные данные</h2>
                         <table class="sheet_headered">
                             <thead>
-                                <tr><th>Номер телефона</th><th>Примечание</th><th>Электронная почта</th></tr>
+                                <tr><th>Номер телефона</th><th>Статус</th></tr>
                             </thead>
                             {% for i in contacts %}
                             <tr>
                                 <td>+7 {{ i.phonenumber }} </td>
-                                <td>{{ i.comment }}</td>
-                                <td>{{ i.email }}</td>
+                                <td>{% if i.is_work %}рабочий{% else %}персональный{% endif %}</td>
                             </tr>
                             {% endfor %}
                         </table>
@@ -52,14 +51,15 @@
                         <h2>Контакты в клиентах</h2>
                         <table class="sheet_headered">
                             <thead>
-                                <tr><th>Компания</th><th>Должность</th><th>Номер телефона</th><th>Примечание</th></tr>
+                                <tr><th>Компания</th><th>Должность</th><th>Номер телефона</th><th>Примечание</th><th>Электронная почта</th></tr>
                             </thead>
                             {% for i in client_contacts %}
                             <tr>
                                 <td><a href="/company/{{ i.company.pk }}/card" class="textlink">{{ i.company.name }}</a></td>
-                                <td>{{ i.contact.role }}</td>
+                                <td>{{ i.role }}</td>
                                 <td>+7 {{ i.contact.phonenumber }} </td>
                                 <td>{{ i.comment }}</td>
+                                <td><a class="textlink" href="mailto:{{ i.email }}">{{ i.email }}</a></td>
                             </tr>
                             {% endfor %}
                         </table>

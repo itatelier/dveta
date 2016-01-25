@@ -45,7 +45,8 @@ class CompanyCreatePrivateView(MultiFormCreate):
     formconf = {
         'company': {'formclass': CompanyCreatePrivateForm},
         'person': {'formclass': PersonCompanyCreateForm},
-        'contact': {'formclass': ContactCreateForm}
+        'contact': {'formclass': ContactCreateForm},
+        'company_contact': {'formclass': CompanyContactForm},
         }
 
     def get_context_data(self, *args, **kwargs):
@@ -63,6 +64,7 @@ class CompanyCreatePrivateView(MultiFormCreate):
         cform = forms['company']
         pform = forms['person']
         contform = forms['contact']
+        company_contactform = forms['company_contact']
         if cform.is_valid() and pform.is_valid() and contform.is_valid():
             company_object = cform.save(commit=False)
             ''' Создаем стартовый набор опций клиента '''
@@ -81,7 +83,11 @@ class CompanyCreatePrivateView(MultiFormCreate):
             person_object = pform.save()
             contact_object.person = person_object
             contact_object.save()
-            company_contact_object = CompanyContacts.objects.create(company=company_object, contact=contact_object)
+            company_contact_object = company_contactform.save(commit=False)
+            company_contact_object.company=company_object
+            company_contact_object.contact=contact_object
+            company_contact_object.is_work=True
+            company_contact_object.company_main=True
             company_contact_object.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -102,7 +108,7 @@ class CompanyCreateFirmView(MultiFormCreate):
         'address': {'formclass': AddressUpdateForm},
         'person': {'formclass': PersonCompanyCreateForm},
         'contact': {'formclass': ContactCreateForm},
-        'company_contact': {'formclass': CompanyContactCreateForm},
+        'company_contact': {'formclass': CompanyContactForm},
     }
 
     def post(self, request, *args, **kwargs):
@@ -352,7 +358,7 @@ class CompanyContactsView(MultiFormCreate):
     template_name = 'company/company_contacts.html'
     formconf = {
         'person': {'formclass': PersonCompanyCreateForm},
-        'companycontact': {'formclass': CompanyContactsCreateForm},
+        'companycontact': {'formclass': CompanyContactForm},
         'contact': {'formclass': ContactCreateForm}
     }
 
@@ -394,7 +400,7 @@ class CompanyContactUpdateView(MultiFormEdit):
     formconf = {
         'contact': {'formclass': ContactCreateForm},
         'person': {'formclass': PersonCompanyCreateForm},
-        'companycontact': {'formclass': CompanyContactsCreateForm}
+        'companycontact': {'formclass': CompanyContactForm}
     }
 
     def get_context_data(self, *args, **kwargs):
@@ -434,8 +440,8 @@ class CompanyContactsViewSet(viewsets.ModelViewSet):
     queryset = CompanyContacts.objects.filter(company__rel_type=2).select_related('company', 'contact', 'contact__person', 'company__status', 'company__org_type', 'company__client_options')
     serializer_class = CompanyContactsSerializer
     filter_class = CompanyContactsFilters
-    search_fields = ('contact__role', 'contact__comment', 'contact__email', 'contact__phonenumber', 'company__name', 'contact__person__nick_name')
-    ordering_fields = ('id', 'contact__role', 'company__name', 'company__org_type', 'company__status', 'contact__person', 'contact__date_add')
+    search_fields = ('role', 'comment', 'email', 'contact__phonenumber', 'company__name', 'contact__person__nick_name')
+    ordering_fields = ('id', 'role', 'company__name', 'company__org_type', 'company__status', 'contact__person', 'contact__date_add')
 
 
 class ClientOptionsUpdateView(LoginRequiredMixin, UpdateView):

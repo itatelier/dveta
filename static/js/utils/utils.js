@@ -101,8 +101,8 @@ function CheckPhoneInput(company_id, obj) {
                             ErrorString = 'Номер '+number+' уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
                             console.log(ErrorString);
                         }
-                        $('<em>' + ErrorString + '</em>').insertAfter($input_object);
                         $('em', $input_object.parent()).remove();  // удаляем предыдущие ошибки
+                        $('<em>' + ErrorString + '</em>').insertAfter($input_object);
                         $input_object.val('').removeClass('lightgreen_bg').focus();
                     } else {
                         $input_object.addClass('lightgreen_bg');

@@ -38,17 +38,18 @@
                         <h2>Контакты</h2>
                         <table class="sheet_headered" id="contacts_table">
                             <thead>
-                                <tr><th>Имя</th><th>Должность</th><th>Телефон</th><th>Примечание</th><th></th><th>Управление</th></tr>
+                                <tr><th>Имя</th><th>Должность</th><th>Телефон</th><th>Примечание</th><th>Электронная почта</th><th></th><th>Управление</th></tr>
                             </thead>
                             <tbody>
                                 {% for i in contacts %}
                                 <tr>
-                                    <td>{% if i.contact.person_id %}<a href="#" class="textlink">{{ i.contact.person.nick_name }}</a>{% else %}без персоны{% endif %}</td>
-                                    <td> {{ i.contact.role }} </td>
+                                    <td>{% if i.contact.person_id %}<a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a>{% else %}без персоны{% endif %}</td>
+                                    <td> {{ i.role }} </td>
                                     <td>{{ i.contact.phonenumber }} </td>
-                                    <td>{{ i.contact.comment }}</td>
+                                    <td>{{ i.comment }}</td>
+                                    <td>{{ i.email }}</td>
                                     <td>{% if i.show_in_card %}<i class="icon " icon=""></i>{% endif %}</td>
-                                    <td><a href="{% url 'company_contacts_update' company.pk i.contact.pk %}">Изм</a></td>
+                                    <td><a href="{% url 'company_contacts_update' company.pk i.contact.pk %}" class="textlink _icon" icon=""></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -67,7 +68,7 @@
                         <div class="form_row">
                             <h2>{% if update_view %}Редактор контакта{% else %}Новый контакт{% endif %}</h2>
                         </div>
-                        {# Поля формы #}
+                        {# Форма person: nick_name #}
                         {% for field in forms.person.visible_fields %}
                         <div class="form_row">
                            <div class="input_wrapper">
@@ -81,7 +82,7 @@
                             </div>
                         </div>
                         {% endfor %}
-                        {# Поля формы #}
+                        {# Форма contact: phonenumber #}
                         {% for field in forms.contact.visible_fields %}
                         <div class="form_row">
                            <div class="input_wrapper">
@@ -95,6 +96,10 @@
                             </div>
                         </div>
                         {% endfor %}
+                        {# Форма companycontact: role, comment, email, show_in_card #}
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.companycontact.role %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.companycontact.comment %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.companycontact.email %}</div>
                         <div class="form_row">
                             <div class="input_wrapper">
                                 <div class="input_block _inline">

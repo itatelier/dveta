@@ -54,7 +54,7 @@
                         <h2>Основная информация</h2>
                         <table class="sheet_simple">
                             <tr><td>Источник привлечения</td><td>{{ object.attr_source.val }}</td></tr>
-                            <tr><td>Описание</td><td>{{ object.description }}</td></tr>
+                            <tr><td>Описание</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
                         </table>
                     </div>
                     {# - Информационный блок - основная информация #}
@@ -65,9 +65,11 @@
                         <table class="sheet_simple">
                             {% for i in contacts %}
                             <tr>
-                                <td>{% if i.contact.person.id %}<a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.contact.role }}</td>{% else %}без персоны</td><td></td>{% endif %}
-                                <td>8 {{ i.contact.phonenumber }} </td>
-                                <td>{{ i.contact.comment }}</td></tr>
+                                <td>{% if i.contact.person.id %}<a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.role|default_if_none:"" }}</td>{% else %}без персоны</td><td></td>{% endif %}
+                                <td>+7 {{ i.contact.phonenumber }} </td>
+                                <td>{{ i.comment }}</td>
+                                <td><a class="textlink" href="mailto:{{ i.email }}">{{ i.email }}</a></td>
+                            </tr>
                             {% endfor %}
                         </table>
                     </div>

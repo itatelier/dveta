@@ -123,9 +123,7 @@
                                 {% include "form_snippets/textinput.html" with field=forms.address.street  %}
                                 {% include "form_snippets/textinput.html" with field=forms.address.app  %}
                             </div>
-                            <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=forms.address.comment  %}
-                            </div>
+                            <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.address.comment  %}</div>
                         </div>
                         {# --------- Person and Contact form --------- #}
                         {# Contact switch #}

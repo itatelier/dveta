@@ -29,15 +29,29 @@ class PersonCompanyCreateForm(ModelForm):
         model = Persons
         fields = ('nick_name', 'contact_switch')
 
+    def __init__(self, *args, **kwargs):
+        super(PersonCompanyCreateForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['nick_name'].widget.attrs['disabled'] = True
 
-class CompanyContactCreateForm(ModelForm):
+    def clean_nick_name(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.nick_name
+        else:
+            return self.cleaned_data['nick_name']
+
+
+class CompanyContactForm(ModelForm):
     role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
     email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
     comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
+    show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
 
     class Meta:
         model = CompanyContacts
-        fields = ('role', 'email', 'comment')
+        fields = ('role', 'email', 'comment', 'show_in_card')
 
 
 class ContactCreateForm(ModelForm):

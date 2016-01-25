@@ -55,69 +55,16 @@
                                 </div>
                             </div>
                         </div>
-                        {# Attraction Source Select  #}
-                        <div class="form_row">
-                           <div class="input_wrapper">
-                                <legend>Источник привлечения</legend>
-                                <div class="input_block  {% if forms.company.attr_source.errors %}error{% endif %}">
-                                     {{ forms.company.attr_source }}
-                                    {% for error in forms.company.attr_source.errors %}
-                                    <em>{{ error|escape }}</em>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {# Comment Input Text #}
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <legend>{{ forms.company.comment.label }}<p>{{ forms.company.comment.help_text }}</p></legend>
-                                <div class="input_block {% if forms.company.comment.errors %}error{% endif %}">
-                                    {{ forms.company.comment }}
-                                    {% for error in forms.company.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company.attr_source  %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company.comment  %}</div>
                         {# --------- Person and Contact form --------- #}
                         {# Contact switch #}
                         <div class="form_row"><h2 class="blue">Контактное лицо</h2></div>
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <legend>{{ forms.person.nick_name.label }}<p>{{ forms.person.nick_name.help_text }}</p></legend>
-                                <div class="input_block required {% if forms.person.nick_name.errors %}error{% endif %}">
-                                    {{ forms.person.nick_name }}{% for error in forms.person.nick_name.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <legend>{{ forms.contact.role.label }}</legend>
-                                <div class="input_block  {% if forms.contact.role.errors %}error{% endif %}">
-                                    {{ forms.contact.role }}{% for error in forms.contact.role.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <legend>{{ forms.contact.phonenumber.label }}</legend>
-                                <div class="input_block required {% if forms.contact.phonenumber.errors %}error{% endif %}">
-                                    {{ forms.contact.phonenumber }}{% for error in forms.contact.phonenumber.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="input_wrapper">
-                                <legend>{{ forms.contact.comment.label }}</legend>
-                                <div class="input_block {% if forms.contact.comment.errors %}error{% endif %}">
-                                    {{ forms.contact.comment }}{% for error in forms.contact.comment.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <legend>{{ forms.contact.email.label }}</legend>
-                                <div class="input_block {% if forms.contact.email.errors %}error{% endif %}">
-                                    {{ forms.contact.email }}{% for error in forms.contact.email.errors %}<em>{{ error|escape }}</em>{% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.person.nick_name %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.role %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.contact.phonenumber %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.comment %}</div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.email %}</div>
                         {# Кнопки #}
                         <div class="form_row"><span class="button_block"><a class="button"  onclick="$('form#new_object').submit();">Добавить клиента</a></span></div>
                     </form>
