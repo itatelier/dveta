@@ -51,7 +51,7 @@ function date_json2dt(str_date_json_format, offset_param) {
     return dt_out;
 }
 
-function add_contact(company_id, contact_id) {
+function create_company_contact(company_id, contact_id) {
     $.ajax({
         type: 'GET',
         url:  '/persons/create_company_contact_json/',
@@ -66,6 +66,16 @@ function add_contact(company_id, contact_id) {
     });
     return false;
 };
+
+function submit_exist_contact(contact_id, name, number) {
+    $('input[name=person-nick_name]').val(name).prop('readonly', true).addClass('lightgreen_bg');
+    $('input[name=contact-phonenumber]').val(number).prop('readonly', true).addClass('lightgreen_bg');
+    $('input[name=add_exist_contact]').val(contact_id);
+    $phone_imput = $('input[name=contact-phonenumber]');
+    $('em', $phone_imput.parent()).remove();
+    return false;
+}
+
 
 function CheckPhoneInput(company_id, obj) {
             /* Поиск контактов по номеру.
@@ -98,7 +108,16 @@ function CheckPhoneInput(company_id, obj) {
                             var person_id = result.results[0].contact.person.id;
                             var comment = result.results[0].contact.comment;
                             var result_company_id = result.results[0].company;
-                            ErrorString = 'Номер '+number+' уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="add_contact('+company_id+', '+contact_id+');">Да</a>';
+                            var add_contact_onclick_action = '';
+                            if (company_id != false) {
+                                console.log('Company_id exist:' + company_id);
+                                add_contact_onclick_action = 'create_company_contact('+company_id+', '+contact_id+');';
+                            } else {
+                                console.log('Company_id not found!');
+                                add_contact_onclick_action = 'submit_exist_contact('+contact_id+', \''+name+'\', \''+number+'\');';
+                                //add_contact_onclick_action = 'console.log("")';
+                            }
+                            ErrorString = 'Номер '+number+' уже есть в контакте <a href="/persons/'+ person_id +'/card/">'+name+'</a>, добавить контакт вместо нового? <a href="#" onClick="'+add_contact_onclick_action+'">Да</a>';
                             console.log(ErrorString);
                         }
                         $('em', $input_object.parent()).remove();  // удаляем предыдущие ошибки

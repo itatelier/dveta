@@ -8,7 +8,14 @@
 {% endblock %}
 {% block content %}
 <script>
+    $(document).ready(function() {
 
+        {# Проверки на номер телефона #}
+        var $number_input = $('input[name=contact-phonenumber]');
+        $number_input.on('change', function() {
+            CheckPhoneInput(false, this);
+        });
+    });
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -43,6 +50,7 @@
                         {# Скрытые поля #}
 {#                        <input type="hidden" name="contact_exist" value="1">#}
                         <input type="hidden" name="branch-name" value="Основной офис">
+                        <input type="hidden" name="add_exist_contact" value="">
                         <div class="form_row">
                             <h2 class="blue">Основная информация</h2>
                         </div>
@@ -59,10 +67,10 @@
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company.comment  %}</div>
                         {# --------- Person and Contact form --------- #}
                         {# Contact switch #}
-                        <div class="form_row"><h2 class="blue">Контактное лицо</h2></div>
+                        <div class="form_row"><h2 class="blue">Контактная информация</h2></div>
+                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.contact.phonenumber %}</div>
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.person.nick_name %}</div>
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.role %}</div>
-                        <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.contact.phonenumber %}</div>
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.comment %}</div>
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.email %}</div>
                         {# Кнопки #}

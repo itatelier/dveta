@@ -60,11 +60,8 @@ class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
         return kwargs
 
     def get_forms(self):
-        # for classname, params in self.formconf.items():
-            # log.info("classname: %s, Params: %s" % (classname, params))
         return dict(
             [(classname, params['formclass'](**self.get_form_kwargs(classname))) for classname, params in self.formconf.items()])
-            # ''' { classname: SomeCreateForm(**kwargs), } '''
 
     def get(self, request, *args, **kwargs):
         forms = self.get_forms()

@@ -33,7 +33,7 @@ class PersonCompanyCreateForm(ModelForm):
         super(PersonCompanyCreateForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            self.fields['nick_name'].widget.attrs['disabled'] = True
+            self.fields['nick_name'].widget.attrs['readonly'] = True
 
     def clean_nick_name(self):
         instance = getattr(self, 'instance', None)

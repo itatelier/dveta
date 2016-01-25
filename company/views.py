@@ -41,13 +41,20 @@ class CompanyClientsViewSet(viewsets.ModelViewSet):
 
 class CompanyCreatePrivateView(MultiFormCreate):
     template_name = 'company/company_create_private.html'
-    success_url = '/'
     formconf = {
         'company': {'formclass': CompanyCreatePrivateForm},
         'person': {'formclass': PersonCompanyCreateForm},
         'contact': {'formclass': ContactCreateForm},
         'company_contact': {'formclass': CompanyContactForm},
         }
+
+    def get_success_url(self, company_id):
+        if company_id:
+            url = reverse('company_card_client', args=[company_id])
+        else:
+            raise ImproperlyConfigured(
+                "No URL to redirect to. Provide a success_url.")
+        return url
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyCreatePrivateView, self).get_context_data(*args, **kwargs)
@@ -78,18 +85,23 @@ class CompanyCreatePrivateView(MultiFormCreate):
             company_object.org_type = CompanyOrgTypes(pk=1)
             company_object.status = CompanyStatus(pk=1)
             company_object.save()
-            contact_object = contform.save(commit=False)
-            contact_object.is_work = True
-            person_object = pform.save()
-            contact_object.person = person_object
-            contact_object.save()
+            ''' Определяем, не найден ли и привязан контакт по номеру'''
+            add_exist_contact = request.POST.get('add_exist_contact', None)
+            if add_exist_contact:
+                contact_object = Contacts.objects.get(pk=add_exist_contact)
+            else:
+                contact_object = contform.save(commit=False)
+                contact_object.is_work = True
+                person_object = pform.save()
+                contact_object.person = person_object
+                contact_object.save()
             company_contact_object = company_contactform.save(commit=False)
             company_contact_object.company=company_object
             company_contact_object.contact=contact_object
             company_contact_object.is_work=True
             company_contact_object.company_main=True
             company_contact_object.save()
-            return HttpResponseRedirect(self.get_success_url())
+            return HttpResponseRedirect(self.get_success_url(company_object.id))
         else:
             for form in forms:
                 for field in forms[form]:
@@ -101,7 +113,6 @@ class CompanyCreatePrivateView(MultiFormCreate):
 
 class CompanyCreateFirmView(MultiFormCreate):
     template_name = 'company/company_create_firm.html'
-    success_url = '/'
     formconf = {
         'company': {'formclass': CompanyCreateForm},
         'branch': {'formclass': BranchCompanyCreateForm},
@@ -110,6 +121,14 @@ class CompanyCreateFirmView(MultiFormCreate):
         'contact': {'formclass': ContactCreateForm},
         'company_contact': {'formclass': CompanyContactForm},
     }
+
+    def get_success_url(self, company_id):
+        if company_id:
+            url = reverse('company_card_client', args=[company_id])
+        else:
+            raise ImproperlyConfigured(
+                "No URL to redirect to. Provide a success_url.")
+        return url
 
     def post(self, request, *args, **kwargs):
         '''
@@ -129,6 +148,8 @@ class CompanyCreateFirmView(MultiFormCreate):
         contform = forms['contact']
         company_contactform = forms['company_contact']
         if cform.is_valid():
+            ''' Определяем, не найден ли и привязан контакт по номеру'''
+            add_exist_contact = request.POST.get('add_exist_contact', None)
             log.info("cform valid!")
             ''' Создаем объекты форм (не сохраняя в бд)'''
             company_object = cform.save(commit=False)
@@ -155,7 +176,7 @@ class CompanyCreateFirmView(MultiFormCreate):
                 branch_object.address = address_object
                 branch_object.save()
                 ''' Возвращаем урл страницы успеха'''
-                return HttpResponseRedirect(self.get_success_url())
+                return HttpResponseRedirect(self.get_success_url(company_object.id))
             elif not branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
                 log.info("Branch exist, person exist!")
                 ''' Создаем стартовый набор опций клиента '''
@@ -164,18 +185,22 @@ class CompanyCreateFirmView(MultiFormCreate):
                 company_object.client_options = client_options
                 company_object.save()
                 # Contact options
-                contact_object = contform.save(commit=False)
-                person_object = pform.save()
-                contact_object.person = person_object
-                ''' Сохраняем объекты форм в БД '''
-                contact_object.save()
+                ''' Если контак найден и привязан по номеру '''
+                if add_exist_contact:
+                    contact_object = Contacts.objects.get(pk=add_exist_contact)
+                else:
+                    ''' контакт создан из формы '''
+                    person_object = pform.save()
+                    contact_object = contform.save(commit=False)
+                    contact_object.person = person_object
+                    contact_object.is_work=True
+                    contact_object.save()
                 company_contact_object = company_contactform.save(commit=False)
                 company_contact_object.company=company_object
                 company_contact_object.contact=contact_object
-                company_contact_object.is_work=True
                 company_contact_object.company_main=True
                 company_contact_object.save()
-                return HttpResponseRedirect(self.get_success_url())
+                return HttpResponseRedirect(self.get_success_url(company_object.id))
             elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
                 log.info("Branch exist, person exist!")
                 ''' Создаем стартовый набор опций клиента '''
@@ -195,25 +220,29 @@ class CompanyCreateFirmView(MultiFormCreate):
                 branch_object.address = address_object
                 branch_object.save()
                 person_object.save()
-                contact_object = contform.save(commit=False)
-                person_object = pform.save()
-                contact_object.person = person_object
-                ''' Сохраняем объекты форм в БД '''
-                contact_object.save()
+                ''' Если контак найден и привязан по номеру '''
+                if add_exist_contact:
+                    contact_object = Contacts.objects.get(pk=add_exist_contact)
+                else:
+                    ''' контакт создан из формы '''
+                    person_object = pform.save()
+                    contact_object = contform.save(commit=False)
+                    contact_object.person = person_object
+                    contact_object.is_work=True
+                    contact_object.save()
                 company_contact_object = company_contactform.save(commit=False)
                 company_contact_object.company=company_object
                 company_contact_object.contact=contact_object
-                company_contact_object.is_work=True
                 company_contact_object.company_main=True
                 company_contact_object.save()
-                return HttpResponseRedirect(self.get_success_url())
+                return HttpResponseRedirect(self.get_success_url(company_object.id))
             elif not branch_exist and not contact_exist:
                 ''' Создаем стартовый набор опций клиента '''
                 client_options = ClientOptions(pay_type=1, request_freq=1)
                 client_options.save()
                 company_object.client_options = client_options
                 company_object.save()
-                return HttpResponseRedirect(self.get_success_url())
+                return HttpResponseRedirect(self.get_success_url(company_object.id))
             else:
                 log.info("Some errors!")
                 forms = self.get_forms()
@@ -223,7 +252,6 @@ class CompanyCreateFirmView(MultiFormCreate):
                 for field in forms[form]:
                     for err in field.errors:
                         log.warn("Field %s Err: %s" % (field.name, err))
-            # forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms))
 
 
