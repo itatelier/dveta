@@ -263,7 +263,7 @@ class CompanyClientCardView(LoginRequiredMixin, TemplateView):
         object = Companies.objects.select_related('rel_type', 'org_type', 'status', 'client_options', 'attr_source').prefetch_related('contact').get(pk=kwargs['pk'])
         context_data.update({
             'object': object,
-            'contacts': CompanyContacts.objects.select_related('company', 'contact').filter(company__pk=object.pk),
+            'contacts': CompanyContacts.objects.select_related('company', 'contact').filter(company__pk=object.pk, show_in_card=True),
             # 'main_phone': GetObjectOrNone(Phones, **{'company__pk': object.pk, 'company_main': True}),
             # 'main_address': GetObjectOrNone(Addresses, **{'company__pk': object.pk, 'company_main': True}),
             'branches': Branches.objects.select_related('company', 'type', 'address').filter(company=object.pk),

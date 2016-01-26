@@ -24,7 +24,14 @@
         {#      Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this); return false; });
 
-    });
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('id');
+            var url ="/persons/" +id +"/card/";
+            document.location.href = url;
+        });
+
+});
 
         {#  постобработка результата AJAX запроса #}
         function preprocess_result(result) {
@@ -41,7 +48,7 @@
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr onCLick="card_args(['/company/',{{ id }},'/card']);">
+    <tr data-id="{{ contact.person.id }}">
         <td>{{{ company.name }}}</td>
         <td>{{{ company.status.val }}}</td>
         <td>{{{ company.org_type.val }}}</td>
