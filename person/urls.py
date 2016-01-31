@@ -21,11 +21,11 @@ urlpatterns = patterns('',
     # url(r'^get_contact_json/$', GetContactByPhoneJsonView.as_view(), name='contact_get_by_num_json'),
     # url(r'^get_contact_json/$', GetContactViewSet.as_view({'get': 'list'}), name='contact_get_by_num_json'),
     url(r'^create_company_contact_json/$', CreateCompanyContactJsonView.as_view(), name='company_contact_create_json'),
-
-
-    # url(r'^/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
-    # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
     url(r'^(?P<pk>\d+)/card/$', PersonCardView.as_view(), name='person_card'),
+
+    # Employies
+    url(r'^employee_create/$', EmployeeCreateView.as_view(), name='employee_create'),
+    # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),
     # url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),

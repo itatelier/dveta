@@ -3,10 +3,12 @@
 # App spcific
 from models import *
 from company.models import *
+from forms import *
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.apps import apps
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
@@ -65,3 +67,29 @@ class CreateCompanyContactJsonView(JsonViewMix):
             self.values['Success'] = 'true'
             log.info("New object saved")
         return
+
+
+class EmployeeCreateView(MultiFormCreate):
+    template_name = 'person/employee_create.html'
+    formconf = {
+        'person': {'formclass': PersonEmployeeCreateForm},
+        'employee': {'formclass': EmployeeEditForm},
+        }
+
+    def post(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        pform = forms['person']
+        eform = forms['employee']
+        if pform.is_valid() and eform.is_valid():
+            person_object = pform.save()
+            employee_object = eform.save(commit=False)
+            employee_object.person = person_object
+            employee_object.save()
+            self.success_url = '/persons/%s/card' % person_object.pk
+            return HttpResponseRedirect(self.success_url)
+        else:
+            for form in forms:
+                for field in forms[form]:
+                    for err in field.errors:
+                        log.warn("Field %s Err: %s" % (field.name, err))
+            return self.render_to_response(self.get_context_data(forms=forms))

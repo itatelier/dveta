@@ -39,3 +39,41 @@ class Contacts(models.Model):
         verbose_name_plural = 'Контакты'
 
 
+class EmployeeTypes(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'employee_types'
+        verbose_name_plural = 'Сотрудники / Типы'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
+class EmployeeRoles(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'employee_roles'
+        verbose_name_plural = 'Сотрудники / Роли'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
+class Employies(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    person = models.ForeignKey('Persons', null=False, blank=False)
+    type = models.ForeignKey('EmployeeTypes', null=False, blank=False)
+    role = models.ForeignKey('EmployeeRoles', null=False, blank=False)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'employies'
+        verbose_name_plural = 'Сотрудники'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.role)
