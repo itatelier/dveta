@@ -70,6 +70,7 @@ class Employies(models.Model):
     role = models.ForeignKey('EmployeeRoles', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
+    comment = models.CharField(max_length=250L, null=True, blank=True)
 
     class Meta:
         db_table = 'employies'

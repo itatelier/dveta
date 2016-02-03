@@ -10,6 +10,7 @@ base_path = 'company'
 from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'contacts_search_json', GetContactViewSet)
+router.register(r'employies_rest', EployiesViewSet)
 
 
 urlpatterns = patterns('',
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
 
     # Employies
     url(r'^employee_create/$', EmployeeCreateView.as_view(), name='employee_create'),
+    url(r'^employies_list/$', EmployiesListView.as_view(), name='employies_list'),
     # url(r'^company_create_private/$', CompanyCreatePrivateView.as_view(), name='company_create_private'),
     # url(r'^(?P<pk>\d+)/edit/$', main_edit.as_view(), name=base_path + '_main_edit'),
     # url(r'^(?P<pk>\d+)/delete/$', main_delete.as_view(), name=base_path + '_main_delete'),

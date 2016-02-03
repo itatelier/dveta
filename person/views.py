@@ -93,3 +93,17 @@ class EmployeeCreateView(MultiFormCreate):
                     for err in field.errors:
                         log.warn("Field %s Err: %s" % (field.name, err))
             return self.render_to_response(self.get_context_data(forms=forms))
+
+
+class EmployiesListView(LoginRequiredMixin, TemplateView):
+    template_name = "person/list_employies.html"
+
+
+class EployiesViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = Employies.objects.filter().select_related('type', 'role', 'person')
+    serializer_class = EmployiesSerializer
+    # filter_class = ContragentsFilters
+    search_fields = ('person__given_name', 'person__family_name', 'person__nick_name', 'comment' )
+    ordering_fields = ('id', 'type', 'role', 'date_add')
+

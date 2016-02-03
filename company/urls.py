@@ -16,7 +16,7 @@ router.register(r'company_contacts', CompanyContactsViewSet)
 
 urlpatterns = patterns('',
     #
-    # REST API
+    # #  REST API
     url(r'^api/', include(router.urls)),
     #
     url(r'^company_create/$', CompanyCreateFirmView.as_view(), name='company_create_firm'),
@@ -29,9 +29,6 @@ urlpatterns = patterns('',
     url(r'^list_clients/$', CompanyClientList.as_view(), name='company_list_clients'),
     url(r'^search_contacts/$', CompanyContactSearchView.as_view(), name='company_search_contacts'),
     url(r'^(?P<company_pk>\d+)/client_options', ClientOptionsUpdateView.as_view(), name='company_client_options'),
-
-    # url(r'^main_list_json/$', main_list_json.as_view(), name=base_path + '_main_list_json'),
-    # url(r'^(?P<pk>\d+)/card/employees$', main_card_employees.as_view(), name=base_path + '_main_card_employees'),
     # #
     # # Отделения
     # #
@@ -39,8 +36,6 @@ urlpatterns = patterns('',
     url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/card/$', BranchCardView.as_view(), name='company_branch_card'),
     url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/edit/$', BranchUpdateView.as_view(), name='company_branch_update'),
     url(r'^(?P<company_pk>\d+)/branch/(?P<pk>\d+)/delete/$', BranchDelete.as_view(), name='company_branch_delete'),
-    # url(r'^branch_list/$', branch_list_index.as_view(), name=base_path + '_branch_list'),
-    # url(r'^branch_list_json/$', branch_list_json.as_view(), name=base_path + '_branch_list_json'),
     # #
     # # Контрагенты
     # #
@@ -57,11 +52,5 @@ urlpatterns = patterns('',
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<contragent_pk>\d+)/bank/(?P<pk>\d+)/card', contragent_bank_card.as_view(), name=base_path + '_contragent_bank_card'),
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<contragent_pk>\d+)/bank/(?P<pk>\d+)/edit', contragent_bank_edit.as_view(), name=base_path + '_contragent_bank_edit'),
     # url(r'^bank_acc/(?P<pk>\d+)/delete', contragent_bank_delete.as_view(), name=base_path + '_contragent_bank_delete'),
-    # #
-    # # Телефоны
-    # #
-    # url(r'^phones_list/$', phones_list_index.as_view(), name=base_path + '_phones_list'),
-    # url(r'^phones/', phones_list_json.as_view(), name=base_path + '_phones_list_json'),
-    # url(r'^(?P<company_pk>\d+)/branch/(?P<branch_pk>\d+)/phones/edit$', branch_phones_manage.as_view(), name=base_path + '_branch_phones_manage'),
 )
 

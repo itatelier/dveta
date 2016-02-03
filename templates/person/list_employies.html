@@ -1,0 +1,151 @@
+ {% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+{% endblock %}
+{% block content %}
+
+
+<script>
+    var JsonDataUrl = "/persons/api/employies_rest/";
+    var req_preprocess_result = "1";
+
+    $(document).ready(function() {
+        list_data_api();
+
+        {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');
+        {#    Виджет datepicker #}
+        $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
+        {#    Сортировка по заголовкам столбцов   #}
+        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
+
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('person_id');
+            var url = "/persons/" + id +"/card/";
+            document.location.href = url;
+        });
+
+    });
+
+        {#  постобработка результата AJAX запроса #}
+        function preprocess_result(result) {
+            {# подсветка фрагментов текста в соответствии с параметром поиска #}
+            var search_string = $('input[name=search]').val();
+            result.results = highlight_search_results(result.results, search_string);
+
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                result.results[i].date_add = date_json2hr(result.results[i].date_add);
+            }
+        }
+</script>
+{# Шаблон основной таблицы #}
+<script type="text/template" id="tmpl_table">{% verbatim %}
+    <tr data-person_id="{{ person.id }}">
+        <td>{{{ person.nick_name }}}</td>
+        <td>{{{ person.given_name }}} {{{ person.family_name }}}</td>
+        <td>{{{ role.val }}}</td>
+        <td>{{{ type.val }}}</td>
+        <td>{{{ comment }}}</td>
+        <td>{{{ date_add.date }}}</td>
+        <!-- replace -->
+    </tr>
+</script>{% endverbatim %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="left_bar">
+                    {# Форма сортировки данных #}
+                    <form method="post" name="params_form" id="params_form">
+                        {# скрытые фильтры #}
+                        <input type="hidden" name="ordering" value="id"/>
+                        <input type="hidden" name="offset" value="0"/>
+                        <input type="hidden" name="limit" value="20"/>
+                        {# отображенные фильтры #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Поиск</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15" class="loading" name="search">
+                                </div>
+                            </div>
+                        </div>
+                        {# Должность Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Должность</legend>
+                                <div class="input_block">
+                                    <select name="role">
+                                        <option value="">любая</option>
+                                        <option value="1">диспетчер</option>
+                                        <option value="2">водитель</option>
+                                        <option value="3">механик</option>
+                                        <option value="4">менеджер</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {# Должность Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Тип найма</legend>
+                                <div class="input_block">
+                                    <select name="type">
+                                        <option value="">любой</option>
+                                        <option value="1">аутсорсинг</option>
+                                        <option value="2">штатный</option>
+                                        <option value="3">временный</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {# блок кнопок #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <div class="input_block">
+                                    <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
+                                    <a href="#" class="button" onclick="list_data_api();">Найти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {# - Форма сортировки данных #}
+                </div>
+                <div class="data_grid_listing">
+                    {# Основная таблица данных #}
+                    <table class="listing_grid">
+                        <thead class="">
+                            <tr>
+                                <th><a href="#" class="sortable active" rel="name">Ник сотрудника</a></th>
+                                <th><a href="#" class="sortable" rel="type" >Имя Фамилия</a></th>
+                                <th><a href="#" class="sortable" rel="role">Должность</a></th>
+                                <th><a href="#" class="sortable" rel="inn">Тип найма</a></th>
+                                <th><a href="#">Примечание</a></th>
+                                <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
+                            </tr>
+                        </thead>
+                        <tbody id="datatable" class="">
+                        </tbody>
+                    </table>
+                    {# - Основная таблица данных #}
+                    {# Панель управления таблицей #}
+                    {% include 'listing_bottom_navbar.html' %}
+                    {# - Панель управления таблицей #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
