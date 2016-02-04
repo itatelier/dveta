@@ -33,7 +33,8 @@ class PersonCardView(LoginRequiredMixin, TemplateView):
         context_data.update({
             'object': object,
             'client_contacts': CompanyContacts.objects.select_related('company', 'contact', 'contact__person').filter(contact__person__pk=person_pk),
-            'contacts': Contacts.objects.select_related('person').filter(person__pk=person_pk)
+            'contacts': Contacts.objects.select_related('person').filter(person__pk=person_pk),
+            'positions': Employies.objects.select_related('person').filter(person__pk=person_pk)
         })
         return context_data
 
@@ -107,3 +108,12 @@ class EployiesViewSet(viewsets.ModelViewSet):
     search_fields = ('person__given_name', 'person__family_name', 'person__nick_name', 'comment' )
     ordering_fields = ('id', 'type', 'role', 'date_add')
 
+
+class PersonUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'person/person_update_info.html'
+    form_class = PersonUpdateForm
+    model = Persons
+
+    def get_success_url(self, *args, **kwargs):
+        pk = self.kwargs.get('pk', None)
+        return "/persons/%s/card" % pk

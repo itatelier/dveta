@@ -118,8 +118,8 @@ class DecimalFieldMix(DecimalField):
 
 class RuDateWidget(DateTimeInput):
     def __init__(self, *args, **kwargs):
-        kwargs['attrs'] = {'pattern': '\d{2}.\d{2}.\d{4}', 'size': 16, 'maxlength': 16}
-        kwargs['format'] = '%d.%m.%Y'
+        kwargs['attrs'] = {'pattern': '\d{2}-\d{2}-\d{4}', 'size': 16, 'maxlength': 16}
+        kwargs['format'] = '%d-%m-%Y'
         super(RuDateWidget, self).__init__(*args, **kwargs)
 
 

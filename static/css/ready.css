@@ -32,9 +32,9 @@ a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
 a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
 
-h2 { font-size: 1.6rem; }
+h2 {  }
 table { border-spacing: 0;}
-form { margin: 2rem;}
+form { margin: 0.5rem 2rem;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
 .blue { color: #009DDA !important; }

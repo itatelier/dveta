@@ -7,7 +7,7 @@
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Картотека персон</a></li>
-                <li class="active" ><a href="#">Персона {{ object.nick_name }}</a></li>
+                <li class="active" ><a href="#"><b>{{ object.nick_name }}</b> <i>{{ object.given_name }} {{ object.family_name}}</i></a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -20,13 +20,31 @@
                     <ul><li><a href="#" class="active">Карточка персоны</a></li></ul><hr>
                     <h3>Управление</h3>
                     <ul>
-                        <li><a class="" href="#">Информация</a></li>
+                        <li><a class="" href="{% url 'person_update' pk=object.pk %}">Информация</a></li>
                     </ul>
                 </div>
                 {# - Левый бар #}
-                <div class="data_grid_medium ">
+                <div class="data_grid_medium">
                     {# Информационный блок - основная информация #}
-                    <h1><i class="icon inherit" icon="">{{ object.nick_name }}</i></h1>
+                    <h1><i class="icon inherit" icon="">{{ object.nick_name }} {{ object.given_name }} {{ object.family_name }}</i></h1>
+                    {# Информационный блок - должности #}
+                    {% if positions %}
+                    <div class="sheet_row_headered">
+                        <h2>Занимаемые должности</h2>
+                        <table class="sheet_headered">
+                            <thead><tr><th>Должность</th><th>Тип найма</th><th>Примечание</th><th>Дата добавления</th></tr></thead>
+                            {% for i in positions %}
+                            <tr>
+                                <td>{{ i.role.val }} </td>
+                                <td>{{ i.type.val }}</td>
+                                <td>{{ i.comment }}</td>
+                                <td>{{ i.date_add }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - должности #}
                     {# Информационный блок - контакты #}
                     {% if contacts %}
                     <div class="sheet_row_headered">

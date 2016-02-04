@@ -8,12 +8,12 @@ from common.formfields import *
 from django.forms.utils import ErrorList
 
 
-class PersonEditForm(ModelForm):
+class PersonUpdateForm(ModelForm):
     family_name = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
     given_name = CharField(label="Имя", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
     middle_name = CharField(label="Отчество", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
     nick_name = CharField(label="Прозвище / Nick", required=False, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}))
-    date_ofbirth = DateField(label="Дата рождения", required=False, widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10}))
+    date_ofbirth = DateField(label="Дата рождения", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10}))
 
     class Meta:
         model = Persons
