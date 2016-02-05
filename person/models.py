@@ -63,6 +63,18 @@ class EmployeeRoles(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
+class EmployeeStatuses(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'employee_statuses'
+        verbose_name_plural = 'Сотрудники / Статусы'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
 class Employies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     person = models.ForeignKey('Persons', null=False, blank=False)
@@ -71,6 +83,7 @@ class Employies(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     comment = models.CharField(max_length=250L, null=True, blank=True)
+    status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
 
     class Meta:
         db_table = 'employies'

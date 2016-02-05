@@ -32,11 +32,12 @@
                     <div class="sheet_row_headered">
                         <h2>Занимаемые должности</h2>
                         <table class="sheet_headered">
-                            <thead><tr><th>Должность</th><th>Тип найма</th><th>Примечание</th><th>Дата добавления</th></tr></thead>
+                            <thead><tr><th>Должность</th><th>Тип найма</th><th>Статус</th><th>Примечание</th><th>Дата добавления</th></tr></thead>
                             {% for i in positions %}
                             <tr>
                                 <td>{{ i.role.val }} </td>
                                 <td>{{ i.type.val }}</td>
+                                <td>{{ i.status.val }}</td>
                                 <td>{{ i.comment }}</td>
                                 <td>{{ i.date_add }}</td>
                             </tr>

@@ -85,6 +85,7 @@ class EmployeeCreateView(MultiFormCreate):
             person_object = pform.save()
             employee_object = eform.save(commit=False)
             employee_object.person = person_object
+            employee_object.status = EmployeeStatuses.objects.get(pk=1)
             employee_object.save()
             self.success_url = '/persons/%s/card' % person_object.pk
             return HttpResponseRedirect(self.success_url)
@@ -99,14 +100,20 @@ class EmployeeCreateView(MultiFormCreate):
 class EmployiesListView(LoginRequiredMixin, TemplateView):
     template_name = "person/list_employies.html"
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(EmployiesListView, self).get_context_data(*args, **kwargs)
+        context_data.update({
+            'status_options': EmployeeStatuses.objects.all()
+        })
+        return context_data
 
 class EployiesViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-    queryset = Employies.objects.filter().select_related('type', 'role', 'person')
+    queryset = Employies.objects.filter().select_related('type', 'role', 'person', 'status')
     serializer_class = EmployiesSerializer
-    # filter_class = ContragentsFilters
-    search_fields = ('person__given_name', 'person__family_name', 'person__nick_name', 'comment' )
-    ordering_fields = ('id', 'type', 'role', 'date_add')
+    filter_class = EmployiesFilters
+    search_fields = ('person__given_name', 'person__family_name', 'person__nick_name', 'comment')
+    ordering_fields = ('id', 'type', 'role', 'date_add', 'status', 'person__nick_name', 'person__family_name')
 
 
 class PersonUpdateView(LoginRequiredMixin, UpdateView):

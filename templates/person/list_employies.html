@@ -52,6 +52,7 @@
         <td>{{{ person.given_name }}} {{{ person.family_name }}}</td>
         <td>{{{ role.val }}}</td>
         <td>{{{ type.val }}}</td>
+        <td>{{{ status.val }}}</td>
         <td>{{{ comment }}}</td>
         <td>{{{ date_add.date }}}</td>
         <!-- replace -->
@@ -111,6 +112,20 @@
                                 </div>
                             </div>
                         </div>
+                        {# Статус Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Статус</legend>
+                                <div class="input_block">
+                                    <select name="status">
+                                        <option value="">любой</option>
+                                        {% for i in status_options %}
+                                            <option value="{{ i.id }}">{{ i.val }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         {# блок кнопок #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
@@ -128,10 +143,11 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable active" rel="name">Ник сотрудника</a></th>
-                                <th><a href="#" class="sortable" rel="type" >Имя Фамилия</a></th>
+                                <th><a href="#" class="sortable active" rel="person__nick_name">Ник сотрудника</a></th>
+                                <th><a href="#" class="sortable" rel="person__family_name" >Имя Фамилия</a></th>
                                 <th><a href="#" class="sortable" rel="role">Должность</a></th>
-                                <th><a href="#" class="sortable" rel="inn">Тип найма</a></th>
+                                <th><a href="#" class="sortable" rel="type">Тип найма</a></th>
+                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
                                 <th><a href="#">Примечание</a></th>
                                 <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
                             </tr>

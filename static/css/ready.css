@@ -33,7 +33,7 @@ a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
 
 h2 {  }
-table { border-spacing: 0;}
+/*table { border-spacing: 0;}*/
 form { margin: 0.5rem 2rem;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
@@ -74,7 +74,7 @@ header {
 	width: 100%;
 }
 header > nav {
-    padding: 0rem 0rem 0rem 4rem;
+    padding: 0 0 0 4rem;
     flex: 1 0 57%;
     /*z-index: 700;*/
 }
@@ -237,8 +237,8 @@ table.sheet_headered { margin: 1.5rem 1rem 0rem 1rem; }
 table.sheet_headered > thead > tr > th {
     text-align: left;
     padding: 0.5rem;
-    border-bottom: 1px #D3D3D3 solid;
-    background-color: #DBE9EA;
+    /*border-bottom: 1px #D3D3D3 solid;*/
+    background-color: #D9E4EC;
 }
 
 table.sheet_headered > tbody > tr > td { padding: 0.3rem 1rem 0.2rem 1rem;}
