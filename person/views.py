@@ -107,6 +107,7 @@ class EmployiesListView(LoginRequiredMixin, TemplateView):
         })
         return context_data
 
+
 class EployiesViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = Employies.objects.filter().select_related('type', 'role', 'person', 'status')
@@ -124,3 +125,36 @@ class PersonUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self, *args, **kwargs):
         pk = self.kwargs.get('pk', None)
         return "/persons/%s/card" % pk
+
+
+class PersonContactsUpdateView(LoginRequiredMixin, CreateView):
+    template_name = 'person/person_contacts_update.html'
+    form_class = ContactCreateForm
+    success_url = ''
+    queryset = Contacts.objects.all()
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(PersonContactsUpdateView, self).get_context_data(*args, **kwargs)
+        person_pk = self.kwargs.get('pk', None)
+        context_data.update({
+            'object': Persons.objects.get(pk=person_pk),
+            'contacts': Contacts.objects.select_related('person').filter(person__pk=person_pk),
+        })
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        person_pk = self.kwargs.get('pk', None)
+        form = self.get_form()
+        if form.is_valid():
+            person_object = Persons.objects.get(pk=person_pk)
+            contact_object = form.save(commit=False)
+            contact_object.person = person_object
+            contact_object.save()
+            self.success_url = '/persons/%s/contacts' % person_pk
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = form.instance
+            for field in form:
+                for err in field.errors:
+                    log.warn("Field %s Err: %s" % (field.name, err))
+            return self.render_to_response(self.get_context_data(form=form))

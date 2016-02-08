@@ -26,7 +26,7 @@
             <ul>
                 <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
                 <li><a href="{% url 'person_card' object.pk %}"><b>{{ object.nick_name }}</b> <i>{{ object.given_name }} {{ object.family_name}}</i></a></li>
-                <li class="active"><a href="#">Редактор информации</a></li>
+                <li class="active"><a href="#">Контакты</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -39,18 +39,36 @@
                     <ul><li><a href="{% url 'person_card' pk=object.pk %}" class="">Карточка персоны</a></li></ul><hr>
                     <h3>Управление</h3>
                     <ul>
-                        <li><a href="#" class="active">Информация</a></li>
-                        <li><a href="{% url 'person_contacts_update' pk=object.pk %}" class="">Контакты</a></li>
+                        <li><a href="{% url 'person_update' pk=object.pk %}" class="">Информация</a></li>
+                        <li><a href="#" class="active">Контакты</a></li>
                     </ul><hr>
                 </div>
                 {# - Левый бар #}
                 <div class="data_grid_medium">
+                    {# Информационный блок - контакты #}
+                    {% if contacts %}
+                    <div class="sheet_row_headered">
+                        <h2>Контактные данные</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Номер телефона</th><th>Статус</th></tr>
+                            </thead>
+                            {% for i in contacts %}
+                            <tr>
+                                <td>+7 {{ i.phonenumber }} </td>
+                                <td>{% if i.is_work %}рабочий{% else %}персональный{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - контакты #}
                     {# Форма объекта #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         {# Скрытые поля #}
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row">
-                            <h2>Основная информация</h2>
+                            <h2>Новый контактный номер</h2>
                         </div>
                         {% include "form_snippets/formfields_as_row.html" with forms=form %}
                         {# Кнопки #}

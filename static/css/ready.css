@@ -236,9 +236,11 @@ table.sheet_simple > tbody > tr > td { padding: 0.3rem 1rem;}
 table.sheet_headered { margin: 1.5rem 1rem 0rem 1rem; }
 table.sheet_headered > thead > tr > th {
     text-align: left;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     /*border-bottom: 1px #D3D3D3 solid;*/
     background-color: #D9E4EC;
+    color: #495D69;
+    font-weight: normal;
 }
 
 table.sheet_headered > tbody > tr > td { padding: 0.3rem 1rem 0.2rem 1rem;}
@@ -526,7 +528,7 @@ div.values_block {
 div.values_block:not(:last-child) { border-right: 1px #D3D3D3 solid;}
 div.values_block > span { display: inline-block; padding: 0.5rem 0; color: #666666; }
 div.values_block > span > p { font-weight: bold; font-size: 2.0rem; line-height: 1.1rem;  }
-div.values_block > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; }
+div.values_block > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; color: #9CAEB9;}
 div.values_block > span > textarea { display: block; margin-top: 5px;  }
 
 

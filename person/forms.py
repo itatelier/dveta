@@ -6,7 +6,13 @@ from company.models import *
 from common.forms import *
 from common.formfields import *
 from django.forms.utils import ErrorList
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
+
+def validate_phone(value):
+    if value % 2 != 0:
+        raise ValidationError('%s is not an even number' % value)
 
 class PersonUpdateForm(ModelForm):
     family_name = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
@@ -65,7 +71,17 @@ class CompanyContactForm(ModelForm):
 
 
 class ContactCreateForm(ModelForm):
-    phonenumber = IntegerField(label="Номер телефона", help_text="10 цифр, в формате 9991234567", required=True, widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
+    phonenumber = CharField(
+        label="Номер телефона",
+        help_text="10 цифр, в формате 9991234567",
+        validators=[
+            RegexValidator(
+                regex='^[0-9]{10}$',
+                message='Номер должен состоять из 10 цифр!',
+                code='invalid_input'
+            )],
+        required=True,
+        widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts
