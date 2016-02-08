@@ -38,7 +38,12 @@
                             <tr>
                                 <td>{{ i.role.val }} </td>
                                 <td>{{ i.type.val }}</td>
-                                <td>{{ i.status.val }}</td>
+                                <td
+                                        {% if i.status.id == 1 %}class="green"
+                                        {% elif i.status.id == 2%}class="blue"
+                                        {% elif i.status.id == 3%}class="red"
+                                        {% endif %}
+                                >{{ i.status.val }}</td>
                                 <td>{{ i.comment }}</td>
                                 <td>{{ i.date_add }}</td>
                             </tr>

@@ -1,0 +1,79 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Автомобили</a></li>
+                <li class="active" ><a href="#"><b>{{ object.nick_name }}</b> <i>[{{ object.reg_num }}]</i></a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Карточка автомобиля</a></li></ul><hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="" href="#">Информация</a></li>
+                    </ul>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Ключевые значения #}
+                    <div class="flex_row">
+                        <div class="values_block">
+                            <span><p>{{ object.nick_name }}</p><em>ник авто</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.reg_num }}</p><em>гос номер</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.model.val }}</p><em>модель авто</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.unit_group.description }}</p><em>группа</em></span>
+                        </div>
+                    </div>
+                    {# - Ключевые значения #}
+                    {# Информационный блок - основная информация #}
+                    <div class="sheet_row_headered">
+                        <h2>Основная информация</h2>
+                        <table class="sheet_simple">
+                            <tr><td>Бункеры на машине</td><td>{{ object.fff|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Доступные бункеры</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
+                            <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Норма расхода</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                        </table>
+                    </div>
+                    {# - Информационный блок - основная информация #}
+                    {# Информационный блок - контакты #}
+                    {% if contacts %}
+                    <div class="sheet_row_headered">
+                        <h2>Контактные данные</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Номер телефона</th><th>Статус</th></tr>
+                            </thead>
+                            {% for i in contacts %}
+                            <tr>
+                                <td>+7 {{ i.phonenumber }} </td>
+                                <td>{% if i.is_work %}рабочий{% else %}персональный{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - контакты #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

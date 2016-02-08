@@ -41,18 +41,29 @@
             result.results = highlight_search_results(result.results, search_string);
 
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                {# изменение формата даты #}
                 result.results[i].date_add = date_json2hr(result.results[i].date_add);
+
+                console.log("i=" + i + " Status value=" + result.results[i].status.pk);
+                {# добавление параметра цвета для поля статус #}
+                if (result.results[i].status.pk == 1) {
+                    result.results[i].status_color = "green";
+                } else if (result.results[i].status.pk == 2) {
+                    result.results[i].status_color = "blue";
+                } else if (result.results[i].status.pk == 3){
+                    result.results[i].status_color = "red";
+                }
             }
         }
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-person_id="{{ person.id }}">
-        <td>{{{ person.nick_name }}}</td>
         <td>{{{ person.given_name }}} {{{ person.family_name }}}</td>
+        <td>{{{ person.nick_name }}}</td>
         <td>{{{ role.val }}}</td>
         <td>{{{ type.val }}}</td>
-        <td>{{{ status.val }}}</td>
+        <td class="{{ status_color }}">{{{ status.val }}}</td>
         <td>{{{ comment }}}</td>
         <td>{{{ date_add.date }}}</td>
         <!-- replace -->
@@ -143,8 +154,8 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable active" rel="person__nick_name">Ник сотрудника</a></th>
                                 <th><a href="#" class="sortable" rel="person__family_name" >Имя Фамилия</a></th>
+                                <th><a href="#" class="sortable active" rel="person__nick_name">Ник сотрудника</a></th>
                                 <th><a href="#" class="sortable" rel="role">Должность</a></th>
                                 <th><a href="#" class="sortable" rel="type">Тип найма</a></th>
                                 <th><a href="#" class="sortable" rel="status">Статус</a></th>

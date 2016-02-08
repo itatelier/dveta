@@ -1,0 +1,48 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+        var company_id = '{{ company.pk }}';
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Автомобили</a></li>
+                <li class="active"><a href="#">Новый автомбиль</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Новый автомбиль</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Форма объекта #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                        <div class="form_row">
+                            <h2>{% if update_view %}Основная инфомрация{% else %}Новый автомобиль{% endif %}</h2>
+                        </div>
+                        {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

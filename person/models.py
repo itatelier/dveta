@@ -75,6 +75,16 @@ class EmployeeStatuses(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
+class EmployeeDriversManager(models.Manager):
+    def get_queryset(self):
+        return super(EmployeeDriversManager, self).get_queryset().select_related('person').filter(role__pk=2)
+
+
+class EmployeeMechanicsManager(models.Manager):
+    def get_queryset(self):
+        return super(EmployeeMechanicsManager, self).get_queryset().select_related('person').filter(role__pk=3)
+
+
 class Employies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     person = models.ForeignKey('Persons', null=False, blank=False)
@@ -84,6 +94,9 @@ class Employies(models.Model):
     date_update = models.DateTimeField(auto_now=True)
     comment = models.CharField(max_length=250L, null=True, blank=True)
     status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
+    objects = models.Manager()
+    drivers = EmployeeDriversManager()
+    mechanics = EmployeeMechanicsManager()
 
     class Meta:
         db_table = 'employies'
@@ -91,3 +104,16 @@ class Employies(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.role)
+
+
+class UnitGroups(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+    description = models.CharField(max_length=250L, null=True, blank=True)
+
+    class Meta:
+        db_table = 'unit_groups'
+        verbose_name_plural = 'Сотрудники / Группы'
+
+    def __unicode__(self):
+        return u'%s' % self.description

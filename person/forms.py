@@ -14,6 +14,7 @@ def validate_phone(value):
     if value % 2 != 0:
         raise ValidationError('%s is not an even number' % value)
 
+
 class PersonUpdateForm(ModelForm):
     family_name = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
     given_name = CharField(label="Имя", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))

@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^company/', include('company.urls')),
     url(r'^contragents/', include('contragent.urls')),
     url(r'^persons/', include('person.urls')),
+    url(r'^cars/', include('car.urls')),
 
     # Admin
     # url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS

@@ -53,7 +53,8 @@ INSTALLED_APPS = (
     'dummyapp',
     'company',
     'contragent',
-    'person'
+    'person',
+    'car'
 )
 
 MIDDLEWARE_CLASSES = (
