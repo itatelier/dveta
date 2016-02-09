@@ -54,7 +54,9 @@ INSTALLED_APPS = (
     'company',
     'contragent',
     'person',
-    'car'
+    'car',
+    'object',
+    'bunker'
 )
 
 MIDDLEWARE_CLASSES = (

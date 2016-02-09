@@ -100,6 +100,7 @@ class CompanyCreatePrivateView(MultiFormCreate):
             company_contact_object.contact=contact_object
             company_contact_object.is_work=True
             company_contact_object.company_main=True
+            company_contact_object.show_in_card=True
             company_contact_object.save()
             return HttpResponseRedirect(self.get_success_url(company_object.id))
         else:
@@ -199,6 +200,7 @@ class CompanyCreateFirmView(MultiFormCreate):
                 company_contact_object.company=company_object
                 company_contact_object.contact=contact_object
                 company_contact_object.company_main=True
+                company_contact_object.show_in_card=True
                 company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url(company_object.id))
             elif branch_exist and contact_exist and bform.is_valid() and contform.is_valid():
@@ -234,6 +236,7 @@ class CompanyCreateFirmView(MultiFormCreate):
                 company_contact_object.company=company_object
                 company_contact_object.contact=contact_object
                 company_contact_object.company_main=True
+                company_contact_object.show_in_card=True
                 company_contact_object.save()
                 return HttpResponseRedirect(self.get_success_url(company_object.id))
             elif not branch_exist and not contact_exist:
