@@ -7,7 +7,7 @@
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Автомобили</a></li>
-                <li class="active" ><a href="#"><b>{{ object.nick_name }}</b> <i>[{{ object.reg_num }}]</i></a></li>
+                <li class="active" ><a href="#"><b>{{ object.nick_name }}</b> <i> {{ object.reg_num }}</i></a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -16,13 +16,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                <div class="left_bar">
-                    <ul><li><a href="#" class="active">Карточка автомобиля</a></li></ul><hr>
-                    <h3>Управление</h3>
-                    <ul>
-                        <li><a class="" href="#">Информация</a></li>
-                    </ul>
-                </div>
+                {%  include "car/car_left_bar.html" with pk=object.pk sel=1 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Ключевые значения #}
@@ -40,16 +34,19 @@
                             <span><p>{{ object.unit_group.description }}</p><em>группа</em></span>
                         </div>
                     </div>
+                    <div class="form-row">
+                        Механик <a href="/persons/{{ object.mechanic.person_id }}/card" class="textlink"><b>{{ object.mechanic.person.family_name }} {{ object.mechanic.person.given_name }}</b></a>
+                    </div>
                     {# - Ключевые значения #}
                     {# Информационный блок - основная информация #}
                     <div class="sheet_row_headered">
                         <h2>Основная информация</h2>
                         <table class="sheet_simple">
-                            <tr><td>Бункеры на машине</td><td>{{ object.fff|default_if_none:"не указано" }}</td></tr>
-                            <tr><td>Доступные бункеры</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Бункеры на машине</td><td><b>{{ bunkers_onboard.qty__sum|default_if_none:"нет"}}</b></td></tr>
+                            <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
                             <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
                             <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
-                            <tr><td>Норма расхода</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Норма расхода</td><td>{{ object.fuel_norm}}</td></tr>
                         </table>
                     </div>
                     {# - Информационный блок - основная информация #}

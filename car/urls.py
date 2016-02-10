@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # Persons
     url(r'^create/$', CarCreateView.as_view(), name='car_create'),
     url(r'^(?P<pk>\d+)/card/$', CarCardView.as_view(), name='car_card'),
-    # url(r'^(?P<pk>\d+)/update/$', PersonUpdateView.as_view(), name='person_update'),
+    url(r'^(?P<pk>\d+)/update/$', CarUpdateView.as_view(), name='car_update'),
     # url(r'^(?P<pk>\d+)/contacts/$', PersonContactsUpdateView.as_view(), name='person_contacts_update'),
 )
 

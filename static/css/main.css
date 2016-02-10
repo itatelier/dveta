@@ -138,10 +138,11 @@ ul.contents > li > a {
 
 div.empty_block {
     padding: 1rem 2rem;
-    display: flex;
+    /*display: flex;*/
     flex-direction: row;
 }
 div.empty_block > p {
+    display: inline-block;
     flex: 0 0 auto;
     padding: 5px 15px 5px 10px;
     font-size: 1.2em;

@@ -80,7 +80,7 @@
                             </thead>
                             {% for i in client_contacts %}
                             <tr>
-                                <td><a href="/company/{{ i.company.pk }}/card" class="textlink">{{ i.company.name }}</a></td>
+                                <td><a href="/company/{{ i.company.pk }}/card" class="textlink"><b>{{ i.company.name }}</b></a></td>
                                 <td>{{ i.role }}</td>
                                 <td>+7 {{ i.contact.phonenumber }} </td>
                                 <td>{{ i.comment }}</td>

@@ -25,7 +25,7 @@ log = logging.getLogger('django')
 
 
 class ContragentCompanyCreateULView(FormView):
-    template_name = 'contragent/contragent_create_ul.html'
+    template_name = 'contragent/contragent_create_update.html'
     form_class = ContragentUlEditForm
     contragent_type = 2
     contragent_group = 4
@@ -72,7 +72,7 @@ class ContragentCompanyCreateULView(FormView):
 
 
 class ContragentCompanyCreateIPView(ContragentCompanyCreateULView):
-    template_name = 'contragent/contragent_create_ul.html'
+    template_name = 'contragent/contragent_create_update.html'
     form_class = ContragentIpEditForm
     contragent_type = 3
     contragent_group = 4
@@ -80,7 +80,7 @@ class ContragentCompanyCreateIPView(ContragentCompanyCreateULView):
 
 
 class ContragentCompanyUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'contragent/contragent_create_ul.html'
+    template_name = 'contragent/contragent_create_update.html'
     # permission_required = 'company.change_companies'
     model = Contragents
 

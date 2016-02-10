@@ -1,0 +1,12 @@
+                <div class="left_bar">
+                    <ul>
+                        <li>
+                            <a href="{% url 'car_card' pk %}" class="{% if sel == 1 %}active{% endif %}">Карточка автомобиля</a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="{% if sel == 2 %}active{% endif %}" href="{% url 'car_update' pk %}">Информация</a></li>
+                    </ul>
+                </div>

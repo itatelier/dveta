@@ -22,6 +22,8 @@ class Objects(models.Model):
     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True)
     lat = models.FloatField(null=True, blank=True,)
     lng = models.FloatField(null=True, blank=True,)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'objects'

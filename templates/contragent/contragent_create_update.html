@@ -8,8 +8,13 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="#">Автомобили</a></li>
-                <li class="active"><a href="#">Новый автомбиль</a></li>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
+                <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
+                {% if form.instance.id %}
+                <li class="active"><a href="#">Редактор контрагента<b>{{ type_str }}</b></a></li>
+                {% else %}
+                <li class="active"><a href="#">Новый контрагент <b>{{ type_str }}</b></a></li>
+                {% endif %}
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -19,7 +24,7 @@
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
-                    <ul><li><a href="#" class="active">Новый автомбиль</a></li></ul><hr>
+                    <ul><li><a href="#" class="active">{% if form.instance.id %}Основная информация{% else %}Новый контрагент{% endif %}</a></li></ul><hr>
                 </div>
                 {# - Левый бар #}
                 <div class="data_grid_medium">
@@ -28,9 +33,9 @@
                         {# Скрытые поля #}
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row">
-                            <h2>{% if update_view %}Основная инфомрация{% else %}Новый автомобиль{% endif %}</h2>
+                            <h2>{% if form.instance.id %}Редактор контрагента{% else %}Новый контрагент <b>{{ type_str }}</b>{% endif %}</h2>
                         </div>
-                        {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {% include "form_snippets/formfields_as_row.html" with forms=form %}
                         {# Кнопки #}
                         <div class="form_row">
                             <span class="button_block">

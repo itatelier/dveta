@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from object.models import Objects
 
 
 class CarBrands(models.Model):
@@ -52,6 +53,9 @@ class Cars(models.Model):
     unit_group = models.ForeignKey('person.UnitGroups', null=False, blank=False, editable=True)
     fuel_norm = models.IntegerField(blank=True, null=True, default=0)
     trailer_attached = models.IntegerField(blank=True, null=True, default=0)
+    car_object = models.ForeignKey('object.Objects', null=False, blank=False, editable=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'cars'
