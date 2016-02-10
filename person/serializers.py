@@ -9,6 +9,12 @@ import django_filters
 from company.serializers import *
 
 
+class UnitGroupsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitGroups
+        fields = ('pk', 'val', 'description')
+
+
 class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:

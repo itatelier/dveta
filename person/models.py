@@ -85,6 +85,11 @@ class EmployeeMechanicsManager(models.Manager):
         return super(EmployeeMechanicsManager, self).get_queryset().select_related('person').filter(role__pk=3)
 
 
+class EmployeeAllDefaultManager(models.Manager):
+    def get_queryset(self):
+        return super(EmployeeAllDefaultManager, self).get_queryset().select_related('person', 'role', 'type', 'status')
+
+
 class Employies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     person = models.ForeignKey('Persons', null=False, blank=False)
@@ -94,7 +99,7 @@ class Employies(models.Model):
     date_update = models.DateTimeField(auto_now=True)
     comment = models.CharField(max_length=250L, null=True, blank=True)
     status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
-    objects = models.Manager()
+    objects = EmployeeAllDefaultManager()
     drivers = EmployeeDriversManager()
     mechanics = EmployeeMechanicsManager()
 

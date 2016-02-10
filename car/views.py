@@ -13,8 +13,12 @@ from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNot
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import DetailView
-
 from django.db.models import Sum
+
+# API
+from serializers import *
+from person.serializers import *
+from rest_framework import viewsets, generics, filters
 
 
 class CarCreateView(LoginRequiredMixin, CreateView):
@@ -60,3 +64,12 @@ class CarUpdateView(LoginRequiredMixin, UpdateView):
 
         def get_success_url(self):
             return reverse('car_update', args=(self.object.id,))
+
+
+class CarsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status')
+    serializer_class = CarsSerizlizer
+    filter_class = CarFilters
+    search_fields = ('pk', 'model', 'reg_num', 'nick_name', )
+    ordering_fields = ('model', 'fuel_type', 'mechanic', 'unit_group', 'reg_num', 'nick_name', 'trailer_attached', 'date_add')
