@@ -49,7 +49,7 @@ class CarCreateView(LoginRequiredMixin, CreateView):
 class CarCardView(LoginRequiredMixin, DetailView):
     template_name = "car/car_card.html"
     model = Cars
-    queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person')
+    # queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'driver')
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarCardView, self).get_context_data(*args, **kwargs)
@@ -63,13 +63,44 @@ class CarUpdateView(LoginRequiredMixin, UpdateView):
         form_class = CarCreateForm
 
         def get_success_url(self):
-            return reverse('car_update', args=(self.object.id,))
+            return reverse('car_card', args=(self.object.id,))
 
 
 class CarsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-    queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status')
+    # queryset = Cars.objects.all()
+    queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'status', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status')
+    # queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object',
+    #                                                 'status', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status',
+    #                                                 'driver', 'driver__person')
     serializer_class = CarsSerizlizer
     filter_class = CarFilters
-    search_fields = ('pk', 'model', 'reg_num', 'nick_name', )
-    ordering_fields = ('model', 'fuel_type', 'mechanic', 'unit_group', 'reg_num', 'nick_name', 'trailer_attached', 'date_add')
+    search_fields = ('reg_num', 'nick_name', 'comment', )
+    ordering_fields = ('model', 'fuel_type', 'mechanic', 'unit_group', 'reg_num', 'nick_name', 'trailer_attached', 'date_add', 'status')
+
+
+class CarListView(LoginRequiredMixin, TemplateView):
+    template_name = "car/list_cars.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CarListView, self).get_context_data(*args, **kwargs)
+        context_data['mechanics'] = Employies.mechanics.select_related('person')
+        return context_data
+
+
+class CarDriverView(LoginRequiredMixin, UpdateView):
+    template_name = "car/car_driver.html"
+    model = Cars
+    form_class = CarDriverUpdateForm
+
+    def get_success_url(self):
+        return reverse('car_card', args=(self.object.id,))
+
+
+class CarDocsView(LoginRequiredMixin, UpdateView):
+    template_name = "car/car_docs.html"
+    model = Cars
+    form_class = CarDocsForm
+
+    def get_success_url(self):
+        return reverse('car_card', args=(self.object.id,))

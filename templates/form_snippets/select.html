@@ -1,0 +1,10 @@
+<div class="input_wrapper">
+    <legend>{{ field.label }}</legend>
+    <div class="input_block {% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
+        {{ field }}
+        {% for error in field.errors %}
+        <em>{{ error|escape }}</em>
+        {% endfor %}
+    </div>
+</div>
+

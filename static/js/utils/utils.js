@@ -22,19 +22,24 @@ function getCookie(c_name)
 /* Переводим даты из формата 2013-03-29T07:18:00Z  => year, month, date[, hours, minutes, seconds, ms]*/
 function date_json2hr(str_date_json_format) {
 
-    var date_split = str_date_json_format.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
-    var dt_object = new Date(date_split[1], date_split[2]-1, date_split[3], date_split[4], date_split[5]);
-    var return_obj = {};
-    var date_str = zeroPad(dt_object.getDate(),2);
-    var month_str = zeroPad(dt_object.getMonth() + 1,2);
-    var year_str = zeroPad(dt_object.getYear() - 100+2000,2);
-    var hours_str = zeroPad(dt_object.getHours(),2);
-    var minutes_str = zeroPad(dt_object.getMinutes(),2);
-    var date = date_str + "-" + month_str + "-" + year_str;
-    var time = hours_str + ":" + minutes_str;
-    return_obj.date = date;
-    return_obj.time = time;
-    return return_obj;
+    var date_split = "";
+    if (str_date_json_format != null) {
+       date_split = str_date_json_format.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
+        var dt_object = new Date(date_split[1], date_split[2]-1, date_split[3], date_split[4], date_split[5]);
+        var return_obj = {};
+        var date_str = zeroPad(dt_object.getDate(),2);
+        var month_str = zeroPad(dt_object.getMonth() + 1,2);
+        var year_str = zeroPad(dt_object.getYear() - 100+2000,2);
+        var hours_str = zeroPad(dt_object.getHours(),2);
+        var minutes_str = zeroPad(dt_object.getMinutes(),2);
+        var date = date_str + "-" + month_str + "-" + year_str;
+        var time = hours_str + ":" + minutes_str;
+        return_obj.date = date;
+        return_obj.time = time;
+        return return_obj;
+    } else {
+        return "";
+    }
 }
 
 function date_json2dt(str_date_json_format, offset_param) {

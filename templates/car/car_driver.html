@@ -16,7 +16,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                {%  include "car/car_left_bar.html" with pk=object.pk sel=1 %}
+                {%  include "car/car_left_bar.html" with pk=object.pk sel=3 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Ключевые значения #}
@@ -46,40 +46,27 @@
                          {% if object.driver.pk %}
                                      <span class="m10">Водитель <a href="/persons/{{ object.driver.person_id }}/card" class="textlink"><b>{{ object.driver.person.nick_name }} </b>{{ object.driver.person.family_name }} {{ object.driver.person.given_name }}</a></span>
                                  {% else %}
-                                    <span class="m10">Водитель <a href="{% url 'car_driver' object.pk %}" class="textlink red">не назначен</a></span>
+                                    <span class="m10">Водитель <a href="#" class="textlink red">не назначен</a></span>
                                  {%  endif %}
                     </div>
                     {# - Ключевые значения #}
-                    {# Информационный блок - основная информация #}
-                    <div class="sheet_row_headered">
-                        <h2>Основная информация</h2>
-                        <table class="sheet_simple">
-                            <tr><td>Бункеры на машине</td><td><b>{{ bunkers_onboard.qty__sum|default_if_none:"нет"}}</b></td></tr>
-                            <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
-                            <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
-                            <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
-                            <tr><td>Норма расхода</td><td>{{ object.fuel_norm}}</td></tr>
-                        </table>
+                    {# Форма объекта #}
+                    <div class="form_row">
+                        <h2>Назначение водителя</h2>
                     </div>
-                    {# - Информационный блок - основная информация #}
-                    {# Информационный блок - контакты #}
-                    {% if contacts %}
-                    <div class="sheet_row_headered">
-                        <h2>Контактные данные</h2>
-                        <table class="sheet_headered">
-                            <thead>
-                                <tr><th>Номер телефона</th><th>Статус</th></tr>
-                            </thead>
-                            {% for i in contacts %}
-                            <tr>
-                                <td>+7 {{ i.phonenumber }} </td>
-                                <td>{% if i.is_work %}рабочий{% else %}персональный{% endif %}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                    {% endif %}
-                    {# - Информационный блок - контакты #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
                 </div>
             </div>
             {# - Рабочий лист #}

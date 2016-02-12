@@ -44,6 +44,8 @@
                             <h2>{% if form.instance.id %} Основная инфомрация{% else %}Новый автомобиль{% endif %}</h2>
                         </div>
                         {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
                         {# Кнопки #}
                         <div class="form_row">
                             <span class="button_block">
