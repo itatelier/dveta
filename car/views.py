@@ -118,3 +118,9 @@ class CarDocsView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         company_pk = self.kwargs.get('pk', None)
         return reverse('car_card', args=(company_pk,))
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(CarDocsView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('pk', None)
+        context_data['object'] = Cars.objects.get(pk=company_pk)
+        return context_data

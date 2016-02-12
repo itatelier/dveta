@@ -68,7 +68,7 @@
                         <table class="sheet_simple">
                             <tr><td>Владелец</td><td><b>{{ object.docs.owner.val|default_if_none:"не указан" }}</b></td></tr>
                             <tr><td>Страховка</td>
-                                <td>{% if  object.docs.ins_date_end %}до {{ object.docs.ins_date_end }} цена {{ object.docs.ins_price }}р.
+                                <td>{% if  object.docs.ins_date_end and object.docs.ins_price%}до {{ object.docs.ins_date_end }} цена {{ object.docs.ins_price }}р.
                                     {% else %}<i>данные не заполнены</i>
                                     {% endif %}
                                 </td></tr>
