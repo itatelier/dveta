@@ -6,6 +6,7 @@ from company.models import *
 from bunker.models import BunkerFlow
 from object.models import ObjectTypes
 from forms import *
+from common.utils import DateTimeNowToSql
 
 
 # Base Views
@@ -14,6 +15,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import DetailView
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
+
 
 # API
 from serializers import *
@@ -36,8 +39,13 @@ class CarCreateView(LoginRequiredMixin, CreateView):
             car_nick_name = u'Авто %s' % form.cleaned_data.get("nick_name")
             object_type_object = ObjectTypes.objects.get(pk=2)
             car_object = Objects.objects.create(name=car_nick_name, type=object_type_object)
+            # Создаем пустую запись в Car Documents
+            docs_object = CarDocs(date_update=DateTimeNowToSql())
+            docs_object.save()
             create_object = form.save(commit=False)
             create_object.car_object = car_object
+            create_object.docs = docs_object
+            create_object.status = CarStatuses(pk=1)
             create_object.save()
             self.success_url = '/cars/%s/card' % create_object.id
             return HttpResponseRedirect(self.success_url)
@@ -99,8 +107,14 @@ class CarDriverView(LoginRequiredMixin, UpdateView):
 
 class CarDocsView(LoginRequiredMixin, UpdateView):
     template_name = "car/car_docs.html"
-    model = Cars
+    model = CarDocs
     form_class = CarDocsForm
+    # queryset = CarDocs.objects.filter()
+
+    def get_object(self):
+        company_pk = self.kwargs.get('pk', None)
+        return get_object_or_404(CarDocs, car__pk=company_pk)
 
     def get_success_url(self):
-        return reverse('car_card', args=(self.object.id,))
+        company_pk = self.kwargs.get('pk', None)
+        return reverse('car_card', args=(company_pk,))

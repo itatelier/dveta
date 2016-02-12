@@ -71,6 +71,7 @@ class Cars(models.Model):
     date_update = models.DateTimeField(auto_now=True)
     status = models.ForeignKey('CarStatuses', null=False, blank=False, editable=True)
     driver = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, related_name="cardriver")
+    docs = models.ForeignKey('CarDocs', null=True, blank=False, editable=True, related_name="car")
 
     class Meta:
         db_table = 'cars'
@@ -94,15 +95,16 @@ class CarOwners(models.Model):
 
 
 class CarDocs(models.Model):
-    owner = models.ForeignKey('CarOwners', null=False, blank=False, editable=False)
+    owner = models.ForeignKey('CarOwners', null=True, blank=False)
     ins_date_register = models.DateTimeField(blank=True, null=True)
     ins_number = models.CharField(max_length=255, blank=True, null=True)
     ins_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     ins_date_end = models.DateTimeField(blank=True, null=True)
     ins_comment = models.CharField(max_length=255, blank=True, null=True)
-    to_number = models.IntegerField(blank=True, null=True)
+    to_number = models.CharField(max_length=255, blank=True, null=True)
     to_date_end = models.DateTimeField(blank=True, null=True)
     rent_date_end = models.DateTimeField(blank=True, null=True)
+    date_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         managed = False

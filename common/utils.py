@@ -2,9 +2,18 @@
 
 from django.core import serializers
 #import simplejson as json
+from types import NoneType
+from django.db.models.manager import Manager
+from django.db.models import Model
+import datetime
 
 import logging
 log = logging.getLogger('django')
+
+
+def DateTimeNowToSql():
+    now = datetime.datetime.now()
+    return now.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def GetObjectOrNone(model, **kwargs):
@@ -65,11 +74,6 @@ class JsonResponseContext(object):
             self.json['values'] = self.values
         return json.dumps(self.json, indent=2)
 
-
-from types import NoneType
-from django.db.models.manager import Manager
-from django.db.models import Model
-import datetime
 
 
 def GetInstanceValues(instance, go_into={}, exclude=(), extra=()):
