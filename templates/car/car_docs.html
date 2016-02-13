@@ -1,7 +1,22 @@
 {% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+{% endblock %}
+
 {% block content %}
 <script>
+    $(document).ready(function() {
 
+        {#    Виджет datepicker #}
+        $('input[name=ins_date_register]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
+        $('input[name=ins_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
+        $('input[name=to_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
+        $('input[name=rent_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
+    });
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">

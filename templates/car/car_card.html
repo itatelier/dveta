@@ -68,13 +68,15 @@
                         <table class="sheet_simple">
                             <tr><td>Владелец</td><td><b>{{ object.docs.owner.val|default_if_none:"не указан" }}</b></td></tr>
                             <tr><td>Страховка</td>
-                                <td>{% if  object.docs.ins_date_end and object.docs.ins_price%}до {{ object.docs.ins_date_end }} цена {{ object.docs.ins_price }}р.
+                                <td>{% if  object.docs.ins_date_end and object.docs.ins_price%}до {{ object.docs.ins_date_end|date:"d-m-Y"  }} цена {{ object.docs.ins_price }}р.
                                     {% else %}<i>данные не заполнены</i>
                                     {% endif %}
                                 </td></tr>
-                            <tr><td>Тех осмотр</td><td>{% if object.docs.to_date_end %}до {{ object.docs.to_date_end }}{% else %}данные не заполнены{% endif %}</td></tr>
-                            <tr><td>Договор аренды</td><td>{% if object.docs.rent_date_end %}до {{ object.docs.rent_date_end }}{% else %}данные не заполнены{% endif %}</td></tr>
+                            <tr><td>Тех осмотр</td><td>{% if object.docs.to_date_end %}до {{ object.docs.to_date_end|date:"d-m-Y" }}{% else %}данные не заполнены{% endif %}</td></tr>
+                            <tr><td>Договор аренды</td><td>{% if object.docs.rent_date_end %}до {{ object.docs.rent_date_end|date:"d-m-Y" }}{% else %}данные не заполнены{% endif %}</td></tr>
                         </table>
+                    {% if  object.docs.to_date_end < now %}   > NOW {% else %} ELSE {% endif %}
+
                     </div>
                     {# - Информационный блок - Документы #}
                     {# Информационный блок - контакты #}
