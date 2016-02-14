@@ -11,6 +11,18 @@ import logging
 log = logging.getLogger('django')
 
 
+def dney_str(days):
+    y = days % 10
+    x = days / 10 % 10
+    if x and x == 1:
+        return "дней"
+    if y == 1:
+        return "день"
+    if y in [2, 3, 4]:
+        return "дня"
+    return "дней"
+
+
 def DateTimeNowToSql():
     now = datetime.datetime.now()
     return now.strftime('%Y-%m-%d %H:%M:%S')

@@ -75,8 +75,8 @@ a.textlink._icon:before {
     /*color: #D84D4D;*/
 }
 a.textlink.red {
-    border-color: #D84D4D;
-    color: #D84D4D !important;
+    border-color: #FE659C;
+    /*color: #D84D4D !important;*/
 }
 div.form_row { display: flex; padding: 0.5rem 0; }
 

@@ -38,6 +38,7 @@ form { margin: 0.5rem 2rem;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
 .blue { color: #009DDA !important; }
+.alert { color: #FF0E0E;}
 .green_bg { background-color: #74BA12 !important; }
 .lightgreen_bg { background-color: #ECF7DE; }
 .red_bg { background-color: #F7A3A3 !important; }
