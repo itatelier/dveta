@@ -30,11 +30,22 @@ class BunkerOperationTypes(models.Model):
 class BunkerFlow(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
-    object = models.ForeignKey('object.Objects', null=False, blank=False, editable=True)
-    operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
-    bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
+    object_in = models.ForeignKey('object.Objects', null=False, blank=False, editable=True)
+    object_in_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True)
+    object_out = models.ForeignKey('object.Objects', null=False, blank=False, editable=True)
+    object_out_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True)
     qty = models.IntegerField(null=False, blank=False, editable=True)
-    qty_out = models.IntegerField(null=False, blank=False, editable=True)
+    bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
+    operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
+
+    # id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    # date = models.DateTimeField(auto_now_add=True)
+    # object = models.ForeignKey('object.Objects', null=False, blank=False, editable=True)
+    # operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
+    # bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
+    # qty = models.IntegerField(null=False, blank=False, editable=True)
+    # qty_out = models.IntegerField(null=False, blank=False, editable=True)
+
 
     class Meta:
         db_table = 'bunker_flow'
