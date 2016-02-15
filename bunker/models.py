@@ -34,6 +34,7 @@ class BunkerFlow(models.Model):
     operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
     qty = models.IntegerField(null=False, blank=False, editable=True)
+    qty_out = models.IntegerField(null=False, blank=False, editable=True)
 
     class Meta:
         db_table = 'bunker_flow'
