@@ -23,6 +23,5 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/docs/$', CarDocsView.as_view(), name='car_docs'),
     url(r'^(?P<pk>\d+)/update/$', CarUpdateView.as_view(), name='car_update'),
     url(r'^list/$', CarListView.as_view(), name='car_list'),
-
 )
 

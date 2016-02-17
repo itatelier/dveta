@@ -22,7 +22,10 @@ from django.shortcuts import get_object_or_404
 from serializers import *
 from person.serializers import *
 from rest_framework import viewsets, generics, filters
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from rest_framework import status
 
 class CarCreateView(LoginRequiredMixin, CreateView):
     template_name = 'car/car_create_update.html'
@@ -57,11 +60,12 @@ class CarCreateView(LoginRequiredMixin, CreateView):
 class CarCardView(LoginRequiredMixin, DetailView):
     template_name = "car/car_card.html"
     model = Cars
-    # queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'driver')
+    queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'driver')
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarCardView, self).get_context_data(*args, **kwargs)
-        context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
+        context_data['dt'] = BunkerFlow.remains.by_object_type()
+        # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
         return context_data
 
 

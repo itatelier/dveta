@@ -55,12 +55,15 @@
                     <div class="sheet_row_headered">
                         <h2>Основная информация</h2>
                         <table class="sheet_simple">
-                            <tr><td>Бункеры на машине</td><td><b>{{ bunkers_onboard.qty__sum|default_if_none:"нет"}}</b></td></tr>
+                            <tr><td>Бункеры на машине</td><td><b></b></td></tr>
                             <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
                             <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
                             <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
                             <tr><td>Норма расхода</td><td>{{ object.fuel_norm}}</td></tr>
                         </table>
+                        {% for row in dt %}
+                            {{ row.object_id }} : {{ row.sum_qty }}
+                        {% endfor %}
                     </div>
                     {# - Информационный блок - основная информация #}
                     {# Информационный блок - Документы #}
