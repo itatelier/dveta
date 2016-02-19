@@ -29,7 +29,6 @@ class BunkerOperationTypes(models.Model):
 
 
 class BunkerRemainsManager(models.Manager):
-
     @staticmethod
     def by_object_id(object_id):
         query = """SELECT
@@ -46,7 +45,7 @@ class BunkerRemainsManager(models.Manager):
         return result[0]
 
     @staticmethod
-    def by_object_type(object_id):
+    def by_object_type():
         query = """SELECT object_id, SUM(qty) AS sum_qty
             FROM (
             SELECT
@@ -58,7 +57,7 @@ class BunkerRemainsManager(models.Manager):
                 FROM bunker_flow
             ) AS flow
             GROUP BY object_id"""
-        remains = fetch_sql_allintuple(query, [object_id])
+        remains = fetch_sql_allintuple(query)
         return remains
 
 
