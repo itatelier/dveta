@@ -16,10 +16,15 @@ def namedtuplefetchall(cursor):
     return [nt_result(*row) for row in cursor.fetchall()]
 
 
-def fetch_sql_allintuple(query):
+def fetch_sql_allintuple(query, params):
     cursor = connection.cursor()
-    cursor.execute(query)
+    cursor.execute(query, params)
     return namedtuplefetchall(cursor)
 
 
+def fetch_sql_row(query, params):
+    cursor = connection.cursor()
+    cursor.execute(query, params)
+    row = cursor.fetchone()
+    return row
 

@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*
 
 from django.db import models
-from common.dbtools import fetch_sql_allintuple
+from common.dbtools import fetch_sql_allintuple, fetch_sql_row
 
 
 class BunkerTypes(models.Model):
@@ -30,7 +30,23 @@ class BunkerOperationTypes(models.Model):
 
 class BunkerRemainsManager(models.Manager):
 
-    def by_object_type(self):
+    @staticmethod
+    def by_object_id(object_id):
+        query = """SELECT
+                    SUM(
+                        CASE
+                            WHEN object_out_id = %s THEN qty * (-1)
+                            WHEN object_in_id = %s THEN qty
+                            ELSE 0
+                        END
+                        ) AS summ
+                    FROM bunker_flow"""
+        params = (object_id, object_id, )
+        result = fetch_sql_row(query, params)
+        return result[0]
+
+    @staticmethod
+    def by_object_type(object_id):
         query = """SELECT object_id, SUM(qty) AS sum_qty
             FROM (
             SELECT
@@ -42,7 +58,7 @@ class BunkerRemainsManager(models.Manager):
                 FROM bunker_flow
             ) AS flow
             GROUP BY object_id"""
-        remains = fetch_sql_allintuple(query)
+        remains = fetch_sql_allintuple(query, [object_id])
         return remains
 
 
