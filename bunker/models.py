@@ -61,17 +61,23 @@ class BunkerRemainsManager(models.Manager):
         return remains
 
 
+class BunkerAllDefaultManager(models.Manager):
+    def get_queryset(self):
+        return super(BunkerAllDefaultManager, self).get_queryset().select_related('bunker_type', 'operation_type', 'object_in', 'object_in_type', 'object_out', 'object_out_type')
+
+
 class BunkerFlow(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
-    object_in = models.ForeignKey('object.Objects', null=False, blank=False, editable=True, related_name="object_in")
+    object_in = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, related_name="object_in")
     object_in_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True, related_name="object_in_type")
-    object_out = models.ForeignKey('object.Objects', null=False, blank=False, editable=True, related_name="object_out")
+    object_out = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, related_name="object_out")
     object_out_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True, related_name="object_out_type")
     qty = models.IntegerField(null=False, blank=False, editable=True)
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
     operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
     remains = BunkerRemainsManager()
+    objects = BunkerAllDefaultManager()
 
     class Meta:
         db_table = 'bunker_flow'

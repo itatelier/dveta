@@ -12,15 +12,14 @@
 
 
 <script>
-    var JsonDataUrl = "/cars/api/cars_rest/";
+    var JsonDataUrl = "/bunkers/api/bunker_flow_rest/";
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
         list_data_api();
 
-        {#    Автоподсказка для поля сортировки #}
-        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');
-
+        {#    Виджет datepicker #}
+        $('input[data-action=datepicker]').datepicker({'dateFormat':'dd-mm-yy'});
         {#    Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
@@ -41,34 +40,40 @@
 
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                 {# изменение формата даты #}
-                result.results[i].date_add = date_json2hr(result.results[i].date_add);
-
-                console.log("i=" + i + " Status value=" + result.results[i].status.pk);
-                {# добавление параметра цвета для поля статус #}
-                if (result.results[i].status.pk == 1) {
-                    result.results[i].status_color = "green";
-                } else if (result.results[i].status.pk == 2) {
-                    result.results[i].status_color = "red";
-                } else if (result.results[i].status.pk == 3){
-                    result.results[i].status_color = "blue";
+                result.results[i].date_add = date_json2hr(result.results[i].date);
+                switch (result.results[i].object_in_type) {
+                    case 1: result.results[i].object_in_type_icon = ''; break;
+                    case 2: result.results[i].object_in_type_icon = ''; break;
+                    case 3: result.results[i].object_in_type_icon = ''; break;
+                    default: result.results[i].object_in_type_icon = ''; break;
                 }
+                switch (result.results[i].object_out_type) {
+                    case 1: result.results[i].object_out_type_icon = ''; break;
+                    case 2: result.results[i].object_out_type_icon = ''; break;
+                    case 3: result.results[i].object_out_type_icon = ''; break;
+                    default: result.results[i].object_out_type_icon = ''; break;
+                }
+                console.log("TYpe IN: " + result.results[i].object_in_type + " Icon out: " + result.results[i].object_out_type_icon + " Icon IN: " + result.results[i].object_in_type_icon);
             }
         }
 </script>
 {# Шаблон основной таблицы #}
-<script type="text/template" id="tmpl_table">{% verbatim %}
+    {% verbatim %}
+<script type="text/template" id="tmpl_table">
     <tr data-car_id="{{ pk }}">
-        <td>{{{ nick_name }}}</td>
-        <td>{{{ reg_num }}}</td>
-        <td>{{{ model.brand.val }}} {{{ model.val }}}</td>
-        <td>{{#driver.pk}} {{ driver.person.nick_name }} {{ driver.person.family_name }} {{ driver.person.given_name }}{{/ driver.pk }}{{^ driver.pk}}Не назначен{{/ driver.pk }}</td>
-        <td>{{{ mechanic.person.nick_name }}} {{{ mechanic.person.family_name }}} {{{ mechanic.person.given_name }}}</td>
-        <td>{{{ unit_group.description }}}</td>
-        <td class="{{ status_color }}">{{{ status.val }}}</td>
-        <td>{{{ comment }}}</td>
+        <td>{{ date_add.date }}</td>
+        <td><i class="icon" icon="{{ object_out_type_icon }}"></i></td>
+        {{# object_out.pk }}<td>{{{ object_out.name }}}{{/ object_out.pk }}{{^ object_out.pk }}<td class="blue">не определен {{/ object_out.pk }}</td>
+        <td><i class="icon" icon="{{ object_in_type_icon }}"></i></td>
+        <td>{{# object_in.pk }}{{{ object_in.name }}}{{/ object_in.pk }}{{^ object_in.pk }}не определен {{/ object_in.pk }}</td>
+        <td>{{{ object_in.company.name }}}</td>
+        <td>{{{ bunker_type.val }}}</td>
+        <td>{{{ qty }}}</td>
+        <td>{{{ operation_type.val }}}</td>
         <!-- replace -->
     </tr>
-</script>{% endverbatim %}
+</script>
+{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
@@ -97,12 +102,13 @@
                         {# Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Статус</legend>
+                                <legend>Тип бункера</legend>
                                 <div class="input_block">
-                                    <select name="status">
+                                    <select name="bunker_type">
                                         <option value="">любой</option>
-                                        <option value="1">Работает</option>
-                                        <option value="2">Ремонт</option>
+                                        {% for opt in bunker_type %}
+                                            <option value="{{ opt.id }}">{{ opt.val }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -110,14 +116,32 @@
                         {# Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Механик</legend>
+                                <legend>Операция</legend>
                                 <div class="input_block">
-                                    <select name="mechanic">
+                                    <select name="operation_type">
                                         <option value="">любой</option>
-                                        {% for opt in mechanics %}
-                                            <option value="{{ opt.id }}">{{ opt.person.family_name }} {{ opt.person.given_name }}</option>
+                                        {% for opt in operation_type %}
+                                            <option value="{{ opt.id }}">{{ opt.val }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        {# Дата начиная с Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Начиная с даты</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text"  data-action="datepicker" size="15" name="date_after">
+                                </div>
+                            </div>
+                        </div>
+                        {# Дата заканчивая с Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Заканчивая датой</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" data-action="datepicker" size="15" name="date_before">
                                 </div>
                             </div>
                         </div>
@@ -138,14 +162,15 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="" rel="" >Ник</a></th>
-                                <th><a href="#" class="" rel="">Гос. номер</a></th>
-                                <th><a href="#" class="" rel="">Модель</a></th>
-                                <th><a href="#" class="" rel="">Водитель</a></th>
-                                <th><a href="#" class="" rel="">Механик</a></th>
-                                <th><a href="#" class="sortable" rel="unit_group">Группа</a></th>
-                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
-                                <th><a href="#">Примечание</a></th>
+                                <th width="90"><a href="#" class="sortable" rel="date" >Дата</a></th>
+                                <th width="30"><a href="#" class="sortable" rel="object_out_type">Тип</a></th>
+                                <th><a href="#" class="" rel="">Объект исходный</a></th>
+                                <th width="30"><a href="#" class="sortable" rel="object_in_type">Тип</a></th>
+                                <th><a href="#" class="" rel="">Объект назначения</a></th>
+                                <th><a href="#" class="sortable" rel="object_in__company">Компания</a></th>
+                                <th><a href="#" class="sortable" rel="bunker_type">Тип бункера</a></th>
+                                <th><a href="#" class="sortable" rel="qty">Количество</a></th>
+                                <th><a href="#" class="sortable" rel="operation_type">Операция</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

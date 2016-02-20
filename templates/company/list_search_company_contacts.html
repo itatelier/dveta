@@ -20,7 +20,7 @@
         list_data_api();
 
         {#    Виджет datepicker #}
-        $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
+        $('input[data-action="datepicker"]').datepicker({'dateFormat':'dd-mm-yy'});
         {#      Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this); return false; });
 
@@ -89,7 +89,7 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Начиная с даты</legend>
                                 <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" name="date_after">
+                                    <input type="text"  data-action="datepicker" size="15" name="date_after">
                                 </div>
                             </div>
                         </div>
