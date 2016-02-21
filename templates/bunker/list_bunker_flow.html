@@ -41,19 +41,39 @@
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                 {# изменение формата даты #}
                 result.results[i].date_add = date_json2hr(result.results[i].date);
-                switch (result.results[i].object_in_type) {
-                    case 1: result.results[i].object_in_type_icon = ''; break;
-                    case 2: result.results[i].object_in_type_icon = ''; break;
-                    case 3: result.results[i].object_in_type_icon = ''; break;
-                    default: result.results[i].object_in_type_icon = ''; break;
+                {# console.log("Object IN: " + result.results[i].object_in + " object OUT: " + result.results[i].object_out);#}
+                if (result.results[i].object_in != null) {
+                    switch (result.results[i].object_in.type) {
+                        case 1:
+                            result.results[i].object_in_type_icon = '';
+                            break;
+                        case 2:
+                            result.results[i].object_in_type_icon = '';
+                            break;
+                        case 3:
+                            result.results[i].object_in_type_icon = '';
+                            break;
+                        default:
+                            result.results[i].object_in_type_icon = '';
+                            break;
+                    }
                 }
-                switch (result.results[i].object_out_type) {
-                    case 1: result.results[i].object_out_type_icon = ''; break;
-                    case 2: result.results[i].object_out_type_icon = ''; break;
-                    case 3: result.results[i].object_out_type_icon = ''; break;
-                    default: result.results[i].object_out_type_icon = ''; break;
+                if (result.results[i].object_out != null) {
+                    switch (result.results[i].object_out.type) {
+                        case 1:
+                            result.results[i].object_out_type_icon = '';
+                            break;
+                        case 2:
+                            result.results[i].object_out_type_icon = '';
+                            break;
+                        case 3:
+                            result.results[i].object_out_type_icon = '';
+                            break;
+                        default:
+                            result.results[i].object_out_type_icon = '';
+                            break;
+                    }
                 }
-                console.log("TYpe IN: " + result.results[i].object_in_type + " Icon out: " + result.results[i].object_out_type_icon + " Icon IN: " + result.results[i].object_in_type_icon);
             }
         }
 </script>

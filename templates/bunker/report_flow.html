@@ -1,0 +1,59 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active" ><a href="#">Расстановка бункеров</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "bunker/bunker_left_bar.html" with sel=1 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Информационный блок #}
+                    <div class="sheet_row_headered">
+                        <h2>Расстановка по типу объектов</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Тип объекта</th><th>Остаток бункеров</th></tr>
+                            </thead>
+                            {% for row in result_by_object_type %}
+                            <tr>
+                                <td>{{ row.type_name }}</td>
+                                <td>{{ row.summ }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {# - Информационный блок #}
+                    {# Информационный блок #}
+                    <div class="sheet_row_headered">
+                        <h2>Расстановка по клиентам</h2>
+                        <table class="sheet_headered">
+                            <thead>
+                                <tr><th>Статус клиента</th><th>Остаток бункеров</th></tr>
+                            </thead>
+                            {% for row in result_by_status %}
+                            <tr>
+                                <td>{{ row.status_name }}</td>
+                                <td>{{ row.summ }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {# - Информационный блок #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

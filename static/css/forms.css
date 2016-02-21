@@ -35,19 +35,21 @@ span.button_block {
     padding: 0.5rem;
 }
 a.button {
+    border-bottom: 3px solid #B1D085;
+    border-radius: 3px;
     position: relative;
     display: inline-block;
     text-decoration: none;
-    padding: 4px 10px;
+    padding: 4px 15px;
     margin: 1px 5px;
     /*background-color: #ffffd7;*/
     background-color: rgb(208, 236, 169);
-    border-radius: 2px;
-    border: 1px #D3D3D3 solid;
     color: #595959;
     cursor: pointer;
 }
-a.button:active { top: 1px;  }
+a.button:active { top: 1px;
+    border-bottom-width: 2px;
+}
 
 a.button.red_bg {border-color: #9C9292;}
 

@@ -27,6 +27,7 @@ from django.shortcuts import get_object_or_404
 
 
 class BunkerRemainsJSON(APIView):
+    # REST View с выводом из RAW SQL хранимым в менеджере моделей
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAdminUser,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -36,6 +37,16 @@ class BunkerRemainsJSON(APIView):
         return Response(remains)
 
 
+class BunkerFlowRemainsReportView(LoginRequiredMixin, TemplateView):
+    template_name = "bunker/report_flow.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BunkerFlowRemainsReportView, self).get_context_data(*args, **kwargs)
+        context_data['result_by_status'] = BunkerFlow.remains.by_company_status()
+        context_data['result_by_object_type'] = BunkerFlow.remains.by_object_type()
+        return context_data
+
+
 class BunkerFlowViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     # queryset = BunkerFlow.objects.all()
@@ -43,8 +54,7 @@ class BunkerFlowViewSet(viewsets.ModelViewSet):
                                                  'operation_type',
                                                  'object_in',
                                                  # 'object_out',
-                                                 'object_in__type',
-                                                 'object_out__type',
+                                                 'object_out',
                                                  # 'object_in__company',
                                                  # 'object_in__company__status',
                                                  # 'object_out__company',
@@ -61,7 +71,7 @@ class BunkerFlowViewSet(viewsets.ModelViewSet):
     serializer_class = BunkerFlowSerializer
     search_fields = ('object_in__name', 'object_out__name', 'object_in__company__name')
     filter_class = BunkerFlowFilters
-    ordering_fields = ('bunker_type', 'operation_type', 'object_in', 'object_in_type', 'object_out', 'object_out_type', 'qty', 'date', 'object_in__company', 'operation_type' )
+    ordering_fields = ('bunker_type', 'operation_type', 'object_in', 'object_in__object__type', 'object_out', 'object_out__object__type', 'qty', 'date', 'object_in__company', 'operation_type' )
 
 
 class BunkerFlowView(LoginRequiredMixin, TemplateView):

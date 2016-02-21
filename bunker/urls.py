@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     #
     url(r'^api/bunker_remains/$', BunkerRemainsJSON.as_view(), name='bunker_remains'),
     url(r'^/bunker_flow/$', BunkerFlowView.as_view(), name='bunker_flow'),
+    url(r'^/remains_report/$', BunkerFlowRemainsReportView.as_view(), name='bunker_remains_report'),
 
 )
 
