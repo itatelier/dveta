@@ -7,14 +7,28 @@
 {% block content %}
 <script>
     $(document).ready(function() {
+        console.log("Started.");
         {# Кладр #}
         var $city = $('input[name=address-city]');
         var $street = $('input[name=address-street]');
         var $building  = $('input[name=address-app]');
         $city.kladr({ token: 'token', key: 'key', type: $.kladr.type.city});
-        $street.kladr({ token: 'token', key: 'key', type: $.kladr.type.street, parentInput: $city });
+        $street.kladr({ token: 'token', key: 'key', type: $.kladr.type.street, parentInput: $city,
+        		verify: true,
+				select: function (obj) {
+                    $input = $(this);
+					setLabel($input, obj.type);
+                    $input.val(obj.typeShort + " " + obj.name);
+				}
+        });
         $building.kladr({ token: 'token', key: 'key', type: $.kladr.type.building, parentInput: $street });
     });
+
+
+    function setLabel($input, text) {
+        text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+        $input.parent().parent().find('legend').text(text);
+    }
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
