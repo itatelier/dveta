@@ -6,7 +6,6 @@ from django.forms.models import modelform_factory
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView
 from common.utils import GetObjectOrNone
 from django.shortcuts import get_object_or_404
-
 from common.forms import *
 
 
@@ -16,11 +15,10 @@ from person.forms import *
 from forms import *
 from contragent.models import *
 from rest_framework import viewsets, generics, filters
-
+from django.http import HttpResponseRedirect
 from serializers import *
 
 
-from django.http import HttpResponseRedirect
 
 import logging
 log = logging.getLogger('django')

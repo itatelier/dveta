@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     # REST API
     url(r'^api/', include(router.urls)),
     #
-    # url(r'^api/bunker_remains/$', BunkerRemainsJSON.as_view(), name='bunker_remains'),
+    url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
 
 )
 

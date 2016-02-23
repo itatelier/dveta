@@ -42,9 +42,6 @@ urlpatterns = patterns('',
     url(r'^(?P<company_pk>\d+)/contragent_create_ul/$', ContragentCompanyCreateULView.as_view(), name='company_contragent_create_ul'),
     url(r'^(?P<company_pk>\d+)/contragent_create_ip/$', ContragentCompanyCreateIPView.as_view(), name='company_contragent_create_ip'),
     url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/type/(?P<type>\d+)/edit/$', ContragentCompanyUpdateView.as_view(), name='company_contragent_update'),
-    # url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/delete/$', contragent_delete.as_view(), name=base_path + '_contragent_delete'),
-    # url(r'^contragent_list/$', contragent_list_index.as_view(), name=base_path + '_contragent_list'),
-    # url(r'^contragent_list_json/$', contragent_list_json.as_view(), name=base_path + '_contragent_list_json'),
     # #
     # # Банковские счета
     # #
