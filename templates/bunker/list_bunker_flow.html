@@ -96,7 +96,10 @@
 {% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
+            <ul>
+                <li class="active" ><a href="{% url 'bunker_flow' %}">Движение бункеров</a></li>
+                <li class=""><a href="{% url 'bunker_flow_add_op' %}"><b class="green">+ </b>Новая операция</a></li>
+            </ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -107,7 +110,7 @@
                     {# Форма сортировки данных #}
                     <form method="post" name="params_form" id="params_form">
                         {# скрытые фильтры #}
-                        <input type="hidden" name="ordering" value="id"/>
+                        <input type="hidden" name="ordering" value="pk"/>
                         <input type="hidden" name="offset" value="0"/>
                         <input type="hidden" name="limit" value="20"/>
                         {# отображенные фильтры #}
@@ -183,9 +186,9 @@
                         <thead class="">
                             <tr>
                                 <th width="90"><a href="#" class="sortable" rel="date" >Дата</a></th>
-                                <th width="30"><a href="#" class="sortable" rel="object_out_type">Тип</a></th>
+                                <th width="30"><a href="#" class="sortable" rel="object_out__type">Тип</a></th>
                                 <th><a href="#" class="" rel="">Объект исходный</a></th>
-                                <th width="30"><a href="#" class="sortable" rel="object_in_type">Тип</a></th>
+                                <th width="30"><a href="#" class="sortable" rel="object_in__type">Тип</a></th>
                                 <th><a href="#" class="" rel="">Объект назначения</a></th>
                                 <th><a href="#" class="sortable" rel="object_in__company">Компания</a></th>
                                 <th><a href="#" class="sortable" rel="bunker_type">Тип бункера</a></th>

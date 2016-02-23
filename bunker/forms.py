@@ -4,11 +4,47 @@ from django.forms import *
 from models import *
 from company.models import *
 from person.models import *
+from object.models import Objects
 from common.forms import *
 from common.formfields import *
 from django.forms.utils import ErrorList
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+
+import logging
+log = logging.getLogger('django')
+
+
+class BunkerFlowForm(ModelForm):
+    object_out = ModelChoiceFieldNoOpt(
+        queryset=Objects.objects.all(),
+        label="Исходный объект",
+        help_text="объект, с которого переходит бункер",
+        label_field="name",
+        required=True,
+        widget=Select(attrs={
+            'size': 10,
+            'class': "select2_powered"
+        }))
+    object_in = ModelChoiceFieldNoOpt(
+        queryset=Objects.objects.all(),
+        label="Объект назначения",
+        help_text="объект на который переходит бункер",
+        label_field="name",
+        required=True,
+        widget=Select(attrs={
+            'size': 10,
+            'class': "select2_powered",
+        }))
+    qty = DecimalField(label="Количество", max_digits=10, decimal_places=0, required=False, widget=forms.TextInput(attrs={'size': 6, 'maxlength': 6}))
+    bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label_field="val", label="Тип бункера", empty_label=None)
+    operation_type = ModelChoiceFieldNameLabel(queryset=BunkerOperationTypes.objects.all(), label_field="val",label="Операция", empty_label=None)
+
+    class Meta:
+        model = BunkerFlow
+        fields = ('object_in', 'object_out', 'qty', 'bunker_type', 'operation_type')
+
+
 
 #
 # def validate_phone(value):

@@ -71,7 +71,7 @@ class BunkerFlowViewSet(viewsets.ModelViewSet):
     serializer_class = BunkerFlowSerializer
     search_fields = ('object_in__name', 'object_out__name', 'object_in__company__name')
     filter_class = BunkerFlowFilters
-    ordering_fields = ('bunker_type', 'operation_type', 'object_in', 'object_in__object__type', 'object_out', 'object_out__object__type', 'qty', 'date', 'object_in__company', 'operation_type' )
+    ordering_fields = ('pk', 'bunker_type', 'operation_type', 'object_in', 'object_in__type', 'object_out', 'object_out__type', 'qty', 'date', 'object_in__company', 'operation_type' )
 
 
 class BunkerFlowView(LoginRequiredMixin, TemplateView):
@@ -84,3 +84,10 @@ class BunkerFlowView(LoginRequiredMixin, TemplateView):
         return context_data
 
 
+class BunkerOperationCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'bunker/bunker_flow_add_operation.html'
+    form_class = BunkerFlowForm
+    model = BunkerFlow
+
+    def get_success_url(self):
+        return reverse('bunker_flow')

@@ -20,8 +20,7 @@ class Objects(models.Model):
     name = models.CharField(max_length=200L, null=False, blank=False)
     type = models.ForeignKey('ObjectTypes', null=False, blank=False, editable=True)
     company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True)
-    lat = models.FloatField(null=True, blank=True,)
-    lng = models.FloatField(null=True, blank=True,)
+    address = models.ForeignKey('company.Addresses', null=False, blank=False, editable=True)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
 

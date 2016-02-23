@@ -44,3 +44,18 @@ class AMarkField(forms.Field):
     def validate(self, value):
         if value != 'A':
             raise ValidationError(self.error_messages['not_an_a'])
+
+
+class ModelChoiceFieldNoOpt(ModelChoiceField):
+    # Возвращаем для текста в Option значение поля label_field вместо __unicode__
+    def __init__(self, label_field, *args, **kwargs):
+        super(ModelChoiceFieldNoOpt, self).__init__(*args, **kwargs)
+        self.label_field = label_field
+
+    def label_from_instance(self, obj ):
+        if self.label_field is not None:
+            return getattr(obj, self.label_field)
+
+    def _get_choices(self):
+        return None
+

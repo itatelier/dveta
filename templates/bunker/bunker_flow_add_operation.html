@@ -1,0 +1,126 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
+{% endblock %}
+{% block content %}
+{% load date_compare %}
+<script>
+        $(document).ready(function() {
+
+            $('select.select2_powered').select2({
+                language: "ru",
+                placeholder: "объект не указан",
+                allowClear: true,
+                ajax: {
+                    url: "/objects/api/objects_rest/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data) {
+                        console.log("Count: " +data.count);
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.pk,
+                                    company_name: item.company.name,
+                                    addres: item.address.city + ", " + item.address.street + " " + item.address.app
+                                }
+                            })
+                        };
+                    },
+                },
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResults, // omitted for brevity, see the source of this page
+{#                templateSelection: formatRepoSelection // omitted for brevity, see the source of this page#}
+            });
+        });
+
+    function formatResults (result) {
+        if (result.loading) return result.text;
+        var markup = "<div class='select2_result_wrapper'> \
+                        <legend>" + result.text + "</legend> \
+                        <span><b>" +result.company_name+ "</b></span><span><i class='icon' icon=''></i>"+ result.addres +"</span> \
+                      </div>";
+        return markup;
+    }
+    function formatRepoSelection (results) {
+        return results.name || results.text;
+    }
+</script>
+<style>
+select.select2_powered {
+    width: 350px;
+}
+div.select2_result_wrapper {
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+div.select2_result_wrapper > span {
+{#    display: block;#}
+    padding: 0 5px 0 0 ;
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.3rem;
+}
+div.select2_result_wrapper > span > i {
+    padding-left: 0px;
+    font-size: 1.1rem;
+    font-style: normal;
+    color: lightgrey;
+}
+</style>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active" ><a href="#">Операции с бункерами</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "bunker/bunker_left_bar.html" with sel=1 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="form_row">
+                        <h2>Новая операция перемещения бункеров</h2>
+                    </div>
+                    {# Форма объекта #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        <div class="form_row">
+                            {% include "form_snippets/textinput.html" with field=form.object_out  %}
+                            {% include "form_snippets/textinput.html" with field=form.object_in  %}
+                        </div>
+                        <div class="form_row">
+                            {% include "form_snippets/textinput.html" with field=form.operation_type  %}
+                            {% include "form_snippets/textinput.html" with field=form.bunker_type  %}
+                            {% include "form_snippets/textinput.html" with field=form.qty  %}
+                        </div>
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

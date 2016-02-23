@@ -9,6 +9,12 @@ import django_filters
 from person.serializers import ContactsSerializer
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Addresses
+        fields = ('pk', 'postalcode', 'city', 'street', 'app', 'comment', 'date_add', 'date_update', 'lat', 'lng' )
+
+
 class OrgTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyOrgTypes

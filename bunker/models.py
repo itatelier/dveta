@@ -63,7 +63,7 @@ class BunkerRemainsManager(models.Manager):
                             LEFT JOIN objects AS o ON o.id = object_in_id
                     ) AS flow
                     LEFT JOIN object_types as t ON t.id = type_id
-                    WHERE type_id != 'Null'
+                    WHERE type_id IS NOT NULL
                     GROUP BY type_id"""
         result = fetch_sql_allintuple(query, params=None)
         return result
@@ -74,9 +74,9 @@ class BunkerRemainsManager(models.Manager):
                     FROM (
                     SELECT
                         f1.qty as qty
-                            ,f1.object_in_id as object_id
+                        ,f1.object_in_id as object_id
                         ,o1.type_id as object_type_id
-                            ,c1.status_id as company_status_id
+                        ,c1.status_id as company_status_id
                     FROM bunker_flow AS f1
                     LEFT JOIN objects AS o1 ON f1.object_in_id = o1.id
                     LEFT JOIN companies AS c1 on o1.company_id = c1.id
@@ -107,9 +107,7 @@ class BunkerFlow(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
     object_in = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, related_name="object_in")
-    # object_in_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True, related_name="object_in_type")
     object_out = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, related_name="object_out")
-    # object_out_type = models.ForeignKey('object.ObjectTypes', null=False, blank=False, editable=True, related_name="object_out_type")
     qty = models.IntegerField(null=False, blank=False, editable=True)
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
     operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
