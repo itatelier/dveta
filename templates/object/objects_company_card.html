@@ -1,0 +1,74 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
+                <li><a href="{% url 'company_card_client' object.company.pk %}">Карточка клиента {{ object.company.name }}</a></li>
+                <li class="active" ><a href="#">Отделение {{ object.name }}</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Карточка отделения</a></li></ul><hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="" href="{% url 'company_branch_update' object.company.pk object.pk %}">Информация</a></li>
+                    </ul>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium ">
+                    {# Ключевые значения #}
+                    <div class="flex_row">
+                        <div class="values_block">
+                            <span><p>{{ object.name }}</p><em>наименование</em></span>
+                            <span><p>{{ object.type.val }}</p><em>тип отделения</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.address }}</p><em>адрес</em></span>
+                            {% if object.address.comment %}<span><p>{{ object.address.comment }}</p><em>примечание к адресу</em></span>{% endif %}
+                        </div>
+                        {% if object.comment %}
+                        <div class="values_block">
+                            {% if object.comment %}<span><p>{{ object.comment }}</p><em>условия оплаты</em></span>{% endif %}
+{#                            <span><p></p><em>Основной контакт</em></span>#}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {# - Ключевые значения #}
+                    {# Информационный блок - основная информация #}
+                    {%  if object.description %}
+                    <div class="sheet_row_headered">
+                        <h2>Дополнительная информация</h2>
+                        <table class="sheet_simple">
+                            <tr><td>Описание</td><td><i>{{ object.description }}</i></td></tr>
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - основная информация #}
+                    {# Информационный блок - контакты #}
+                    {% if contacts %}
+                    <div class="sheet_row_headered">
+                        <h2>Контакты</h2>
+                        <table class="sheet_simple">
+                            {% for i in contacts %}
+                            <tr><td>{% if i.person_id %}<a href="#" class="textlink">{{ i.person.nick_name }}</a>{{ i.role }}{% else %}без персоны{% endif %}</td><td>8 {{ i.phonenumber }} </td><td>{{ i.comment }}</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    {# - Информационный блок - контакты #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

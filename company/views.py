@@ -47,12 +47,7 @@ class CompanyCreatePrivateView(MultiFormCreate):
         }
 
     def get_success_url(self, company_id):
-        if company_id:
-            url = reverse('company_card_client', args=[company_id])
-        else:
-            raise ImproperlyConfigured(
-                "No URL to redirect to. Provide a success_url.")
-        return url
+        return reverse('company_card_client', args=(company_id,))
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CompanyCreatePrivateView, self).get_context_data(*args, **kwargs)

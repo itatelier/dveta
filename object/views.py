@@ -3,7 +3,7 @@
 # App spcific
 from models import *
 from forms import *
-from company.forms import AddressUpdateForm
+from company.forms import AddressUpdateForm, AddressNoPostalForm
 
 # API
 from serializers import *
@@ -37,21 +37,22 @@ class ObjectCreateView(MultiFormCreate):
     template_name = 'object/object_create.html'
     formconf = {
         'object': {'formclass': ObjectForm},
-        'address': {'formclass': AddressUpdateForm}
+        'address': {'formclass': AddressNoPostalForm}
     }
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
         aform = forms['address']
-        bform = forms['branch']
-        if bform.is_valid() and aform.is_valid():
+        oform = forms['object']
+        if oform.is_valid() and aform.is_valid():
             company_pk = kwargs.pop('company_pk', None)
             company_object = Companies(pk=company_pk)
             address_object = aform.save()
-            branch_object = bform.save(commit=False)
-            branch_object.company = company_object
-            branch_object.address = address_object
-            branch_object.save()
+            object_object = oform.save(commit=False)
+            object_object.company = company_object
+            object_object.address = address_object
+            object_object.type = ObjectTypes(pk=3)
+            object_object.save()
             self.success_url = '/company/%s/card' % company_pk
             return HttpResponseRedirect(self.get_success_url())
         else:

@@ -77,6 +77,14 @@ class AddressUpdateForm(ModelForm):
         fields = ('postalcode', 'city', 'street', 'app', 'comment')
 
 
+class AddressNoPostalForm(AddressUpdateForm):
+    postalcode = None
+
+    def __init__(self, *args, **kwargs):
+        super(AddressNoPostalForm, self).__init__(*args, **kwargs)
+        del self.fields['postalcode']
+
+
 class CompanyContactsCreateForm(ModelForm):
     show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
 

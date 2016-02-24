@@ -30,10 +30,17 @@
 
     $(document).ready(function() {
 
-        {# Кладр #}
         var $city = $('input[name=address-city]');
         var $street = $('input[name=address-street]');
         var $building  = $('input[name=address-app]');
+
+        function addressUpdate() {
+            // получить точный адрес из КЛАДР var address = $.kladr.getAddress($('#new_object'));
+            var address = '';
+            address = $street.val() + " " + $building.val();
+            $('#id_object-name').val(address);
+        }
+        {# Кладр #}
         $()
             .add($city)
             .add($street)
@@ -130,17 +137,23 @@
                 });
 
                 var position = res.geoObjects.get(0).geometry.getCoordinates(),
-                        placemark = new ymaps.Placemark(position, {}, {});
+                        placemark = new ymaps.Placemark(position, {}, {
+                                        // Опции.
+                                        // Необходимо указать данный тип макета.
+                                        iconLayout: 'default#image',
+                                        // Своё изображение иконки метки.
+                                        iconImageHref: '{% static 'img/marker32.gif' %}',
+                                        // Размеры метки.
+                                        iconImageSize: [32, 52],
+                                        // Смещение левого верхнего угла иконки относительно
+                                        // её "ножки" (точки привязки).
+                                        iconImageOffset: [-16, -55]
+                        });
 
                 yMap.geoObjects.add(placemark);
                 yMap.setCenter(position, zoom);
             });
         }
-    }
-    function addressUpdate() {
-        var address = $.kladr.getAddress($('#new_object'));
-        console.log("Kladr address: " + address);
-        $('#id_object-name').val(address);
     }
 </script>
 <style>
