@@ -3,7 +3,7 @@
                         <li><a class="{% if sel == 1 %}active{% endif %}" href="{% url 'company_card_client' pk %}">Карточка клиента</a></li>
                         <li><a class="{% if sel == 2 %}active{% endif %}" href="{% url 'company_contacts' pk %}">Контакты</a></li>
                         <li><a class="{% if sel == 3 %}active{% endif %}" href="#" >Цены</a></li>
-                        <li><a class="{% if sel == 4 %}active{% endif %}" href="#">Объекты</a></li>
+                        <li><a class="{% if sel == 4 %}active{% endif %}" href="{% url 'company_objects' pk %}">Объекты</a></li>
                         <li><a class="{% if sel == 5 %}active{% endif %}" href="#">Движение денег</a></li>
                     </ul>
                     <hr><h3>Управление</h3>

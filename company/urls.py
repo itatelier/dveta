@@ -3,6 +3,7 @@
 from django.conf.urls import patterns, url, include
 from views import *
 from contragent.views import *
+from object.views import ClientObjectsView
 # from phones.views import *
 
 base_path = 'company'
@@ -42,6 +43,10 @@ urlpatterns = patterns('',
     url(r'^(?P<company_pk>\d+)/contragent_create_ul/$', ContragentCompanyCreateULView.as_view(), name='company_contragent_create_ul'),
     url(r'^(?P<company_pk>\d+)/contragent_create_ip/$', ContragentCompanyCreateIPView.as_view(), name='company_contragent_create_ip'),
     url(r'^(?P<company_pk>\d+)/contragent/(?P<pk>\d+)/type/(?P<type>\d+)/edit/$', ContragentCompanyUpdateView.as_view(), name='company_contragent_update'),
+    # #
+    # # Объекты
+    # #
+    url(r'^(?P<company_pk>\d+)/objects/$', ClientObjectsView.as_view(), name='company_objects'),
     # #
     # # Банковские счета
     # #

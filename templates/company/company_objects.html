@@ -1,0 +1,60 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+{% endblock %}
+{% block content %}
+<script>
+
+    $(document).ready(function() {
+        var company_id = '{{ company.pk }}';
+
+        {# Проверки на номер телефона #}
+        var $number_input = $('input[name=contact-phonenumber]');
+        $number_input.on('change', function() {
+            CheckPhoneInput(company_id, this);
+        });
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Картотека</a></li>
+                <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
+                <li class="active"><a href="#">Контакты</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "company/company_left_bar.html" with pk=company.pk sel=4 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Информационный блок - объекты #}
+                    <div class="sheet_row_headered">
+                        <h2>Объекты клиента</h2>
+                        <table class="sheet_headered" id="contacts_table">
+                            <thead>
+                                <tr><th>Наименование объекта</th><th>Адрес</th><th>Наличие бункера</th>
+                            </thead>
+                            <tbody>
+                                {% for i in objects_and_remains %}
+                                <tr>
+                                    <td> {{ i.name }} </td>
+                                    <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>
+                                    <td>{% if i.summ %}{{ i.summ}}{% else %}<i class="blue">нет</i>{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {# - Информационный блок - объекты #}
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
