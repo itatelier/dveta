@@ -2,7 +2,10 @@
 
 from django.db import models
 from common.dbtools import fetch_sql_allintuple, fetch_sql_row
+from django.db import connection
 
+import logging
+log = logging.getLogger('django')
 
 class BunkerTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
@@ -28,7 +31,20 @@ class BunkerOperationTypes(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
-class BunkerRemainsManager(models.Manager):
+class BunkerFlowManager(models.Manager):
+    def get_queryset(self):
+        return super(BunkerFlowManager, self).get_queryset().select_related('bunker_type', 'operation_type', 'object_in', 'object_out')
+
+    @staticmethod
+    def move_bunker_between_objects(operation_type, object_out_id, object_in_id, bunker_type, qty):
+        log.info("1: %s 2: %s 3: %s 4: %s 5: %s" % (operation_type, object_out_id, object_in_id, bunker_type, qty))
+
+        cursor = connection.cursor()
+        ret = cursor.callproc("move_bunker_between_objects", (operation_type, object_out_id, object_in_id, bunker_type, qty))
+        row = cursor.fetchone()
+        cursor.close()
+        return row
+
     @staticmethod
     def by_object_id(object_id):
         query = """SELECT
@@ -97,10 +113,27 @@ class BunkerRemainsManager(models.Manager):
         result = fetch_sql_allintuple(query, params=None)
         return result
 
-
-class BunkerAllDefaultManager(models.Manager):
-    def get_queryset(self):
-        return super(BunkerAllDefaultManager, self).get_queryset().select_related('bunker_type', 'operation_type', 'object_in', 'object_out')
+    @staticmethod
+    def list_flow():
+        query = """SELECT
+                            o.transaction_id as id
+                            ,ABS(o.qty) as QTY_o
+                          ,o.object_id as object_id_o
+                          ,i.object_id as object_id_i
+                            ,ob.name
+                    FROM
+                            dummy_flow AS o
+                    LEFT JOIN dummy_flow AS i ON i.transaction_id = o.transaction_id AND i.object_id != o.object_id
+                    LEFT JOIN objects AS ob ON ob.id = o.object_id
+                    WHERE
+                            (i.id IS NOT NULL AND i.qty > 0) OR i.id IS NULL
+                    ORDER BY id DESC
+                    LIMIT %s
+                    """
+        limit = 10
+        params = (limit, )
+        result = fetch_sql_allintuple(query, params=params)
+        return result
 
 
 class BunkerFlow(models.Model):
@@ -111,8 +144,7 @@ class BunkerFlow(models.Model):
     qty = models.IntegerField(null=False, blank=False, editable=True)
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
     operation_type = models.ForeignKey('bunker.BunkerOperationTypes', null=False, blank=False, editable=True)
-    remains = BunkerRemainsManager()
-    objects = BunkerAllDefaultManager()
+    objects = BunkerFlowManager()
 
     class Meta:
         db_table = 'bunker_flow'
@@ -122,3 +154,21 @@ class BunkerFlow(models.Model):
         return u'[%s] %s %s' % (self.id, self.date, self.qty)
 
 
+class BunkerRemainsManager(models.Manager):
+    def get_queryset(self):
+        return super(BunkerRemainsManager, self).get_queryset().select_related('type')
+
+
+class BunkerObjectRemains(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    object = models.ForeignKey('object.Objects', null=False, blank=False, editable=True, related_name="bunker_remain")
+    type = models.ForeignKey('bunker.BunkerTypes', null=False, blank=False, editable=True)
+    qty = models.IntegerField(null=False, blank=False, editable=True)
+    objects = BunkerRemainsManager()
+
+    class Meta:
+        db_table = 'bunker_objects_remains'
+        verbose_name_plural = 'Бункеры / Остатки на объектах'
+
+    def __unicode__(self):
+        return u'[%s] %s %s' % (self.object, self.type, self.qty)

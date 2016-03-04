@@ -17,7 +17,7 @@
 .flex_hcentered { justify-content: center;}
 html {
     height: 100%;
-    font-size: 62.5%;
+    font-size: 70.0%;
 }
 body {
     display: block; padding: 0; margin:0;
@@ -25,7 +25,7 @@ body {
     font-family: 'Roboto', sans-serif;
     color: #333333;
     height: auto !important;height: 100%;min-height: 100%;
-    background-color: #F2F5F7;
+    /*background-color: #F2F5F7;*/
 }
 a { color: #009DDA; }
 a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
@@ -241,6 +241,7 @@ table.sheet_headered > thead > tr > th {
     /*border-bottom: 1px #D3D3D3 solid;*/
     background-color: #D9E4EC;
     color: #495D69;
+    text-shadow: rgb(242, 242, 242) 1px 1px;
     font-weight: normal;
 }
 
@@ -284,7 +285,7 @@ div.content > div.breadcrumbs > ul > li {
 div.content > div.breadcrumbs > ul > li.active {
     z-index: 100;
     box-shadow:-1px -2px 1px rgba(0, 0, 0, 0.1); }
-div.content > div.breadcrumbs > ul > li.active > a { background-color: #F3F3F3; }
+div.content > div.breadcrumbs > ul > li.active > a { background-color: #F6F5F3; }
 
 div.content > div.breadcrumbs > ul > li > a {
     color: #4D4D4D;
@@ -321,7 +322,8 @@ div.content > div.sheet_wrapper > div.sheet {
     display: flex;
     width: 100%;
     min-height: 400px;
-    background-color: #F3F3F3;
+    /*background-color: #F3F3F3;*/
+    background-color: #F6F5F3;
     padding: 1.2rem 0.5rem;
     box-shadow:1px 1px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
 }

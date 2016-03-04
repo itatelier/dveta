@@ -35,6 +35,10 @@ class CarCreateForm(ModelForm):
         fields = ('reg_num', 'nick_name', 'model', 'fuel_type', 'mechanic', 'unit_group', 'comment')
 
 
+class CarCreateWithoutComment(CarCreateForm):
+    comment = CharField(label="Примечание", required=False, widget=HiddenInput())
+
+
 class CarDriverUpdateForm(ModelForm):
     driver = EmployeeChoiceField(queryset=Employies.drivers.select_related('person').filter(status__pk=1), required=False, label="Водитель", help_text="Выбор из списка работающих водителей", empty_label="Не назначен")
 

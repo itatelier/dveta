@@ -340,3 +340,7 @@ def model_todict(obj, exclude=['AutoField', 'OneToOneField']):
     print "Tree: %s" % tree
     return tree
 
+
+def get_attr_or_null(cls, val):
+   val = getattr(cls, val, False)
+   return val

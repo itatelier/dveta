@@ -36,3 +36,14 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = DummyCompanies
         fields = ('url', 'id', 'name', 'description', 'www', 'org_type', 'rel_type', 'status', 'date_add',)
+
+
+class DummyFlowSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    object_id_o = serializers.IntegerField(read_only=True)
+    object_id_i = serializers.IntegerField(read_only=True)
+    qty_o = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = DummyFlow
+        fields = ('id', 'object_id_o')

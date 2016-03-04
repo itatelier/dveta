@@ -159,13 +159,16 @@ div.empty_block > p {
 
 span.errorbox {
     /*display: flex;*/
-    padding: 1rem 2rem;
+    margin: 1rem;
+    padding: 0 1rem 1rem 1rem;
     background-color: #FDDEDE;
     border: 1px solid;
     border-radius: 6px;
     border-color: #D0BDBD;
 }
-
+span.errorbox ul {
+    list-style: none;
+}
 p.comment {
     font-weight: normal !important;
     font-size: inherit !important;
@@ -182,3 +185,32 @@ p.comment:after {
     font-size: 1.4rem;
     content: "\"";
 }
+
+div.bunker {
+    display: inline-block;
+}
+
+div.bunker > div.type {
+    display: inline-block;
+    border-top: 1px solid #9CAEB9;
+    border-left: 1px solid #9CAEB9;
+    border-bottom: 1px solid #9CAEB9;
+    border-radius: 6px;
+    padding: 3px 15px 3px 7px;
+    background-color: #EEE;
+}
+
+div.bunker > div.qty {
+    display: inline-block;
+    border-top: 1px solid #9CAEB9;
+    border-right: 1px solid #9CAEB9;
+    border-bottom: 1px solid #9CAEB9;
+    border-radius: 6px;
+    padding: 3px 7px 3px 7px;
+    background-color: #FFC;
+    margin-left: -10px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+

@@ -8,7 +8,7 @@ from views import *
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-router.register(r'bunker_flow_rest', BunkerFlowViewSet)
+router.register(r'bunker_flow_rest', BunkerFlowViewSet,)
 
 
 urlpatterns = patterns('',
