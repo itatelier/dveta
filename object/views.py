@@ -27,6 +27,8 @@ from common.forms import *
 class ObjectsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = Objects.objects.select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+    # queryset = Objects.objects.select_related('type', 'company',)
+    #queryset = Objects.objects.all()
     serializer_class = ObjectsSerializer
     search_fields = ('name', 'company__name', 'address__street')
     filter_class = ObjectFilters

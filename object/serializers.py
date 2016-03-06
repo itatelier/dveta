@@ -18,11 +18,12 @@ class ObjectTypesSerializer(serializers.ModelSerializer):
 
 class ObjectsSerializer(serializers.ModelSerializer):
     type = ObjectTypesSerializer(many=False, read_only=True)
-    company = CompanyClientsSerializer(many=False, read_only=True)
-    address = AddressSerializer(many=False, read_only=True)
+    company = CompanyClientsSerializer(many=False, read_only=True, allow_null=True, required=False)
+    address = AddressSerializer(many=False, read_only=True,  allow_null=True, required=False)
 
     class Meta:
         model = Objects
+        # fields = ('pk', 'name', 'company', 'type', 'address', 'date_add', 'date_update',)
         fields = ('pk', 'name', 'company', 'type', 'address', 'date_add', 'date_update',)
 
 

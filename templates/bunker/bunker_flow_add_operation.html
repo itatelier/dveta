@@ -24,14 +24,26 @@
                         };
                     },
                     processResults: function (data) {
-                        console.log("Count: " +data.count);
+                        {# console.log("Count: " +data.count);#}
+                        for (item in data.results) {
+                            console.log("Count: " + data.count);
+
+                            var object_address = "";
+                            if (!item.address.city) {
+                                object_address = "мобильный объект"
+                            } else {
+                                object_address = item.address.city + ", " + item.address.street + " " + item.address.app
+                            }
+                            ;
+                        };
                         return {
                             results: $.map(data.results, function (item) {
+                                console.log("-- city: " + item.address.city);
                                 return {
                                     text: item.name,
                                     id: item.pk,
                                     company_name: item.company.name,
-                                    addres: item.address.city + ", " + item.address.street + " " + item.address.app
+                                    addres: object_address
                                 }
                             })
                         };
