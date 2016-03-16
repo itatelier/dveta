@@ -18,6 +18,6 @@ urlpatterns = patterns('',
     #
     url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
     url(r'^company/(?P<company_pk>\d+)/object_create_update/$', ObjectCreateUpdate.as_view(), name='object_create_update'),
-
+    url(r'^objects_list/$', ObjectListView.as_view(), name='objects_list'),
 )
 

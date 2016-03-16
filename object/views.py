@@ -35,6 +35,10 @@ class ObjectsViewSet(viewsets.ModelViewSet):
     ordering_fields = ('type',)
 
 
+class ObjectsListingViewSet(ObjectsViewSet):
+    queryset = Objects.objects.filter(type=1).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+
+
 class ObjectCreateView(MultiFormCreate):
     template_name = 'object/object_create.html'
     formconf = {
@@ -89,3 +93,7 @@ class ClientObjectsView(LoginRequiredMixin, TemplateView):
         context_data['objects_and_remains'] = Objects.objects.list_bunker_remains(company_pk)
         context_data['company'] = Companies.objects.get(pk=company_pk)
         return context_data
+
+
+class ObjectListView(LoginRequiredMixin, TemplateView):
+    template_name = "object/list_objects.html"
