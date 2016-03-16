@@ -51,8 +51,8 @@ class BunkerFlowRemainsReportView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(BunkerFlowRemainsReportView, self).get_context_data(*args, **kwargs)
-        context_data['result_by_status'] = BunkerFlow.remains.by_company_status()
-        context_data['result_by_object_type'] = BunkerFlow.remains.by_object_type()
+        context_data['result_by_status'] = BunkerFlow.objects.by_company_status()
+        context_data['result_by_object_type'] = BunkerFlow.objects.by_object_type()
         return context_data
 
 

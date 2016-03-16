@@ -1,0 +1,214 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Kladr JS       --><script type="text/javascript" src="{% static 'js/kladr/jquery.kladr.min.js' %}"></script>
+<!-- Kladr CSS      --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/kladr/jquery.kladr.min.css' %}'/>
+<! -- Yandex Map    --><script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+<script>
+	var map_created = false;
+
+    ymaps.ready(init);
+    var yMap;
+
+    function init(){
+        if (map_created) return;
+			map_created = true;
+        yMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 9,
+            controls: []
+        });
+        yMap.controls.add('zoomControl', {
+            position: {
+                right: 10,
+                top: 10
+            }
+        });
+    }
+
+    $(document).ready(function() {
+
+        var $city = $('input[name=address-city]');
+        var $street = $('input[name=address-street]');
+        var $building  = $('input[name=address-app]');
+
+        function addressUpdate() {
+            // получить точный адрес из КЛАДР var address = $.kladr.getAddress($('#new_object'));
+            var address = '';
+            address = $street.val() + " " + $building.val();
+            $('#id_object-name').val(address);
+        }
+        {# Кладр #}
+        $()
+            .add($city)
+            .add($street)
+            .add($building)
+            .kladr({ token: 'token', key: 'key',
+        		verify: true,
+				select: function (obj) {
+                    $input = $(this);
+					setLabel($input, obj.type);
+                    $input.val(obj.typeShort + " " + obj.name);
+				},
+				change: function (obj) {
+					if (obj) {
+						setLabel($(this), obj.type);
+					}
+					addressUpdate();
+					mapUpdate();
+                },
+                checkBefore: function () {
+					var $input = $(this);
+					if (!$.trim($input.val())) {
+						addressUpdate();
+						// mapUpdate();
+						return false;
+					}
+				}
+        });
+        $city.kladr({ type: $.kladr.type.city, });
+        $street.kladr({ type: $.kladr.type.street, parentInput: $city });
+        $building.kladr({ type: $.kladr.type.building, parentInput: $street });
+
+        // Отключаем проверку введённых данных для строений
+		$building.kladr('verify', false);
+    });
+
+
+    function setLabel($input, text) {
+        text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+        $input.parent().parent().find('legend').text(text);
+    }
+    function mapUpdate() {
+        var zoom = 4;
+
+        var address = $.kladr.getAddress('#new_object', function (objs) {
+            var result = '';
+            console.log("First take address: "+ address);
+
+            $.each(objs, function (i, obj) {
+                var name = '', type = '';
+
+                if ($.type(obj) === 'object') {
+                    name = obj.name;
+                    type = ' ' + obj.type;
+{#                    console.log("Object name: " + name + ' Type: ' + type + " OBJ.contentType: " + obj.contentType);#}
+                    switch (obj.contentType) {
+                        case $.kladr.type.region:
+                            zoom = 4;
+                            break;
+
+                        case $.kladr.type.district:
+                            zoom = 7;
+                            break;
+
+                        case $.kladr.type.city:
+                            zoom = 10;
+                            break;
+
+                        case $.kladr.type.street:
+                            zoom = 13;
+                            break;
+
+                        case $.kladr.type.building:
+                            zoom = 16;
+                            break;
+                    }
+                }
+                else {
+                    name = obj;
+                }
+
+                if (result) result += ', ';
+                result += type + name;
+            });
+
+            return result;
+        });
+
+        if (address && map_created) {
+            var geocode = ymaps.geocode(address);
+{#            console.log("Address: " + address + " geokoded: " + geocode);#}
+            geocode.then(function (res) {
+                yMap.geoObjects.each(function (geoObject) {
+                    yMap.geoObjects.remove(geoObject);
+                });
+
+                var position = res.geoObjects.get(0).geometry.getCoordinates(),
+                        placemark = new ymaps.Placemark(position, {}, {
+                                        // Опции.
+                                        // Необходимо указать данный тип макета.
+                                        iconLayout: 'default#image',
+                                        // Своё изображение иконки метки.
+                                        iconImageHref: '{% static 'img/marker32.gif' %}',
+                                        // Размеры метки.
+                                        iconImageSize: [32, 52],
+                                        // Смещение левого верхнего угла иконки относительно
+                                        // её "ножки" (точки привязки).
+                                        iconImageOffset: [-16, -55]
+                        });
+
+                yMap.geoObjects.add(placemark);
+                yMap.setCenter(position, zoom);
+            });
+        }
+    }
+</script>
+<style>
+div.form_wrapper {
+    flex: 0 0 auto;
+}
+div.map_wrapper {
+    flex: 1 0 auto;
+    padding: 5px;
+    background-color: #FFFFFF;
+}
+div#map {
+    width: 100%;
+    height: 550px;
+}
+</style>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="">Объекты</a></li>
+                <li class="active" ><a href="#">Новый объект</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Новый объект</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium flex">
+                    <div class="form_wrapper">
+                        {# Форма объекта #}
+                        <form action="" method="POST" id="new_object">{% csrf_token %}
+                            <div class="form_row"><h2 class="blue">Адрес объекта</h2></div>
+                            {% include "form_snippets/formfields_as_row.html" with form=forms.address %}
+                            <div class="form_row"><h2 class="blue">Характеристики</h2></div>
+                            {% include "form_snippets/formfields_as_row.html" with form=forms.object %}
+                            <div class="form_row">
+                                <span class="button_block">
+                                    <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                </span>
+                            </div>
+                        </form>
+                        {# - Форма объекта #}
+                    </div>
+                    <div class="map_wrapper">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

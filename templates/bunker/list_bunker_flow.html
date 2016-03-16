@@ -83,9 +83,9 @@
     <tr data-car_id="{{ pk }}">
         <td>{{ date_add.date }}</td>
         <td><i class="icon" icon="{{ object_out_type_icon }}"></i></td>
-        {{# object_out.pk }}<td>{{{ object_out.name }}}{{/ object_out.pk }}{{^ object_out.pk }}<td class="blue">не определен {{/ object_out.pk }}</td>
+        {{# object_out.pk }}<td>{{{ object_out.name }}}{{/ object_out.pk }}{{^ object_out.pk }}<td class="gray">нет{{/ object_out.pk }}</td>
         <td><i class="icon" icon="{{ object_in_type_icon }}"></i></td>
-        <td>{{# object_in.pk }}{{{ object_in.name }}}{{/ object_in.pk }}{{^ object_in.pk }}не определен {{/ object_in.pk }}</td>
+        {{# object_in.pk }}<td>{{{ object_in.name }}}{{/ object_in.pk }}{{^ object_in.pk }}<td class="gray">нет{{/ object_in.pk }}</td>
         <td>{{{ object_in.company.name }}}</td>
         <td>{{{ bunker_type.val }}}</td>
         <td>{{{ qty }}}</td>
@@ -190,7 +190,7 @@
                                 <th><a href="#" class="" rel="">Объект исходный</a></th>
                                 <th width="30"><a href="#" class="sortable" rel="object_in__type">Тип</a></th>
                                 <th><a href="#" class="" rel="">Объект назначения</a></th>
-                                <th><a href="#" class="sortable" rel="object_in__company">Компания</a></th>
+                                <th><a href="#" class="sortable" rel="object_in__company">Компания назначения</a></th>
                                 <th><a href="#" class="sortable" rel="bunker_type">Тип бункера</a></th>
                                 <th><a href="#" class="sortable" rel="qty">Количество</a></th>
                                 <th><a href="#" class="sortable" rel="operation_type">Операция</a></th>

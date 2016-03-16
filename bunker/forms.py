@@ -10,6 +10,7 @@ from common.formfields import *
 from django.forms.utils import ErrorList
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.core.exceptions import ObjectDoesNotExist
 
 import logging
 log = logging.getLogger('django')
@@ -60,20 +61,29 @@ class BunkerFlowForm(ModelForm):
         qty = cleaned_data.get("qty")
         object_out = cleaned_data['object_out']
         object_in = cleaned_data['object_in']
-        bunker_type = cleaned_data['bunker_type']
-        operation_type = cleaned_data['operation_type']
+        bunker_type = self.data['bunker_type']
+        operation_type = int(self.data['operation_type'])
+
+        log.info("--- operation_type: %s" % operation_type)
+
 
         if object_out is None and object_in is None:
             raise forms.ValidationError("Не указаны объекты перемещения.")
         if object_out == object_in:
             raise forms.ValidationError("Исходный объект и объект назначения не могут быть одинаковыми")
-        if operation_type in (2, 3, 4, 5) and object_out is None:
+        if operation_type in [2, 3, 4, 5] and object_out is None:
             raise forms.ValidationError("Исходный объект для данной операции должен быть указан")
-        if operation_type in (1, 2, 3, 4) and object_in is None:
+        if operation_type in [1, 2, 3, 4] and object_in is None:
             raise forms.ValidationError("Объект назначения для данной операции должен быть указан")
 
         # проверка остатков на исходном объекте
-        remains = Objects.objects.get(pk=object_out.pk).bunker_remain.get(type=bunker_type).qty
-        if operation_type in (2, 3, 4, 5) and remains < qty:
-            raise forms.ValidationError("Остаток на объекте меньше указанного количества для перемещения")
-        return cleaned_data
+        if operation_type in [2, 3, 4, 5]:
+            remains = 0
+            try:
+                log.info("--- Verified remains: %s Object out: %s bunker type: %s" % (remains, object_out.pk, bunker_type))
+                remains = Objects.objects.get(pk=object_out.pk).bunker_remain.get(type=bunker_type).qty
+            except ObjectDoesNotExist:
+                remains = 0
+            if remains < qty:
+                raise forms.ValidationError("Остаток на объекте меньше указанного количества для перемещения")
+            return cleaned_data

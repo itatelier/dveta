@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
     #
     url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
+    url(r'^company/(?P<company_pk>\d+)/object_create_update/$', ObjectCreateUpdate.as_view(), name='object_create_update'),
 
 )
 

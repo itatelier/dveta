@@ -24,12 +24,25 @@
                         <h2>Расстановка по типу объектов</h2>
                         <table class="sheet_headered">
                             <thead>
-                                <tr><th>Тип объекта</th><th>Остаток бункеров</th></tr>
+                                <tr>
+                                    <th>Тип объекта</th>
+                                    <th>8m³</th>
+                                    <th>20m³</th>
+                                    <th>27m³</th>
+                                    <th>32m³</th>
+                                    <th>0.8m³</th>
+                                    <th>1.1m³</th>
+                                </tr>
                             </thead>
                             {% for row in result_by_object_type %}
                             <tr>
                                 <td>{{ row.type_name }}</td>
-                                <td>{{ row.summ }}</td>
+                                <td>{{ row.summ1|default_if_none:"0"}}</td>
+                                <td>{{ row.summ2|default_if_none:"0"}}</td>
+                                <td>{{ row.summ3|default_if_none:"0"}}</td>
+                                <td>{{ row.summ4|default_if_none:"0"}}</td>
+                                <td>{{ row.summ5|default_if_none:"0"}}</td>
+                                <td>{{ row.summ6|default_if_none:"0"}}</td>
                             </tr>
                             {% endfor %}
                         </table>

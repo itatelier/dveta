@@ -72,6 +72,14 @@ class ObjectCreateView(MultiFormCreate):
         return "/company/%s/card" % pk
 
 
+class ObjectCreateUpdate(MultiFormCreate):
+    template_name = 'object/object_create_update.html'
+    formconf = {
+        'object': {'formclass': ObjectForm},
+        'address': {'formclass': AddressNoPostalForm}
+    }
+
+
 class ClientObjectsView(LoginRequiredMixin, TemplateView):
     template_name = 'company/company_objects.html'
 

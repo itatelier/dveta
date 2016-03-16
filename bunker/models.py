@@ -62,54 +62,33 @@ class BunkerFlowManager(models.Manager):
 
     @staticmethod
     def by_object_type():
-        query = """SELECT t.val as type_name, type_id, SUM(qty) AS summ
-                    FROM (
-                            SELECT
-                                    o.type_id as type_id
-                                    ,object_out_id as object_id
-                                    ,-1 * qty as qty
-                          FROM bunker_flow AS f1
-                            LEFT JOIN objects AS o ON o.id = object_out_id
-                            UNION ALL
-                            SELECT
-                                    o.type_id as type_id
-                                    ,object_in_id as object_id
-                                    ,qty
-                          FROM bunker_flow AS f1
-                            LEFT JOIN objects AS o ON o.id = object_in_id
-                    ) AS flow
-                    LEFT JOIN object_types as t ON t.id = type_id
-                    WHERE type_id IS NOT NULL
-                    GROUP BY type_id"""
+        query = """SELECT
+                            ot.val as type_name
+                            ,SUM(IF (r.type_id = 1, qty, NULL)) as summ1
+                            ,SUM(IF (r.type_id = 2, qty, NULL)) as summ2
+                            ,SUM(IF (r.type_id = 3, qty, NULL)) as summ3
+                            ,SUM(IF (r.type_id = 4, qty, NULL)) as summ4
+                            ,SUM(IF (r.type_id = 5, qty, NULL)) as summ5
+                            ,SUM(IF (r.type_id = 6, qty, NULL)) as summ6
+                    FROM bunker_objects_remains AS r
+                    JOIN objects AS o ON o.id = r.object_id
+                    JOIN object_types AS ot ON ot.id = o.type_id
+                    GROUP BY o.type_id"""
         result = fetch_sql_allintuple(query, params=None)
         return result
 
     @staticmethod
     def by_company_status():
-        query = """SELECT s1.val as status_name, company_status_id, SUM(qty) as summ
-                    FROM (
-                    SELECT
-                        f1.qty as qty
-                        ,f1.object_in_id as object_id
-                        ,o1.type_id as object_type_id
-                        ,c1.status_id as company_status_id
-                    FROM bunker_flow AS f1
-                    LEFT JOIN objects AS o1 ON f1.object_in_id = o1.id
-                    LEFT JOIN companies AS c1 on o1.company_id = c1.id
-                    WHERE o1.type_id = 3
-                    UNION ALL
-                    SELECT
-                        -1* f1.qty as qty
-                            ,f1.object_out_id as object_id
-                        ,o1.type_id as object_type_id
-                            ,c1.status_id as company_status_id
-                    FROM bunker_flow AS f1
-                    LEFT JOIN objects AS o1 ON f1.object_out_id = o1.id
-                    LEFT JOIN companies AS c1 on o1.company_id = c1.id
-                    WHERE o1.type_id = 3
-                    ) as flow
-                    LEFT JOIN company_status AS s1 ON company_status_id = s1.id
-                    GROUP BY company_status_id"""
+        query = """SELECT
+                        cs.val as status_name
+                        ,cs.id as company_status_id
+                        ,SUM(qty) as summ
+                    FROM bunker_objects_remains AS r
+                    LEFT JOIN objects AS o ON o.id = r.object_id
+                    LEFT JOIN companies AS co ON co.id = o.company_id
+                    LEFT JOIN company_status AS cs ON cs.id = co.status_id
+                    WHERE o.company_id IS NOT NULL
+                    GROUP BY cs.id"""
         result = fetch_sql_allintuple(query, params=None)
         return result
 
