@@ -36,7 +36,7 @@ class ObjectsViewSet(viewsets.ModelViewSet):
 
 
 class ObjectsListingViewSet(ObjectsViewSet):
-    queryset = Objects.objects.filter(type=1).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+    queryset = Objects.objects.filter(type__in=(1,3)).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
 
 
 class ObjectCreateView(MultiFormCreate):
