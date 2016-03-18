@@ -36,7 +36,7 @@ class ObjectsViewSet(viewsets.ModelViewSet):
 
 
 class ObjectsListingViewSet(ObjectsViewSet):
-    queryset = Objects.objects.filter(type__in=(1,3)).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+    queryset = Objects.objects.filter(type__in=(1, 3)).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
 
 
 class ObjectCreateView(MultiFormCreate):
@@ -76,14 +76,6 @@ class ObjectCreateView(MultiFormCreate):
         return "/company/%s/card" % pk
 
 
-class ObjectCreateUpdate(MultiFormCreate):
-    template_name = 'object/object_create_update.html'
-    formconf = {
-        'object': {'formclass': ObjectForm},
-        'address': {'formclass': AddressNoPostalForm}
-    }
-
-
 class ClientObjectsView(LoginRequiredMixin, TemplateView):
     template_name = 'company/company_objects.html'
 
@@ -97,3 +89,45 @@ class ClientObjectsView(LoginRequiredMixin, TemplateView):
 
 class ObjectListView(LoginRequiredMixin, TemplateView):
     template_name = "object/list_objects.html"
+
+
+class ObjectCardView(LoginRequiredMixin, DetailView):
+    template_name = "object/object_card.html"
+    model = Objects
+    queryset = Objects.objects.select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ObjectCardView, self).get_context_data(*args, **kwargs)
+        context_data['bunkers_onboard'] = self.object.bunker_remain.all()
+        # context_data['bunkers_onboard'] = BunkerFlow.remains.by_object_id(self.object.car_object_id)
+        # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
+        return context_data
+
+
+class ObjectUpdateView(MultiFormEdit):
+    template_name = "object/object_create_update.html"
+    formconf = {
+        'object': {'formclass': ObjectForm},
+        'address': {'formclass': AddressNoPostalForm}
+    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ObjectUpdateView, self).get_context_data(*args, **kwargs)
+        company_pk = self.kwargs.get('company_pk', None)
+        object_pk = self.kwargs.get('pk', None)
+        context_data.update({
+            'company_pk': company_pk,
+            'object_pk': object_pk,
+        })
+        return context_data
+
+    def update_formconf(self, formconf, *args, **kwargs):
+        object_pk = kwargs.pop('pk', None)
+        info_object = Objects.objects.get(pk=object_pk)
+        formconf['object']['instance'] = info_object
+        # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
+        formconf['address']['instance'] = info_object.address
+        return formconf
+
+    def get_success_url(self, *args, **kwargs):
+        return "/objects/%s/card" % self.kwargs.get('pk', None)

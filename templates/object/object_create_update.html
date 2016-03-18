@@ -13,11 +13,14 @@
     var yMap;
 
     function init(){
+        var lat = $('input[name="geo_lat"]').val();
+        var lng = $('input[name="geo_lng"]').val();
+
         if (map_created) return;
 			map_created = true;
         yMap = new ymaps.Map("map", {
-            center: [55.76, 37.64],
-            zoom: 9,
+            center: [lat, lng],
+            zoom: 12,
             controls: []
         });
         yMap.controls.add('zoomControl', {
@@ -26,9 +29,13 @@
                 top: 10
             }
         });
+        add_main_marker(lat, lng);
     }
 
     $(document).ready(function() {
+
+{#        add_main_marker();#}
+
 
         var $city = $('input[name=address-city]');
         var $street = $('input[name=address-street]');
@@ -51,6 +58,7 @@
                     $input = $(this);
 					setLabel($input, obj.type);
                     $input.val(obj.typeShort + " " + obj.name);
+                    $input.val(obj.name);
 				},
 				change: function (obj) {
 					if (obj) {
@@ -68,9 +76,9 @@
 					}
 				}
         });
-        $city.kladr({ type: $.kladr.type.city, });
+        $city.kladr({ type: $.kladr.type.city });
         $street.kladr({ type: $.kladr.type.street, parentInput: $city });
-        $building.kladr({ type: $.kladr.type.building, parentInput: $street });
+        $building.kladr({ type: $.kladr.type.building, parentInput: $street, parentType: 'street', parentId: 'id_address-street'});
 
         // Отключаем проверку введённых данных для строений
 		$building.kladr('verify', false);
@@ -81,37 +89,46 @@
         text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
         $input.parent().parent().find('legend').text(text);
     }
+    function add_main_marker(lat, lng) {
+        var Marker = new ymaps.GeoObject({
+            geometry: {
+                type: "Point",
+                coordinates: [lat, lng]
+            },
+            properties: { }
+        }, {
+            iconLayout: 'default#image',
+            iconImageHref: '{% static 'img/marker32.gif' %}',
+            iconImageSize: [32, 52],
+            iconImageOffset: [-16, -55],
+            draggable: false
+        });
+        yMap.geoObjects.add(Marker);
+        // yMap.setCenter([lat, lng], 14);
+    }
+
     function mapUpdate() {
         var zoom = 4;
-
         var address = $.kladr.getAddress('#new_object', function (objs) {
             var result = '';
-            console.log("First take address: "+ address);
-
             $.each(objs, function (i, obj) {
                 var name = '', type = '';
-
                 if ($.type(obj) === 'object') {
                     name = obj.name;
                     type = ' ' + obj.type;
-{#                    console.log("Object name: " + name + ' Type: ' + type + " OBJ.contentType: " + obj.contentType);#}
                     switch (obj.contentType) {
                         case $.kladr.type.region:
                             zoom = 4;
                             break;
-
                         case $.kladr.type.district:
                             zoom = 7;
                             break;
-
                         case $.kladr.type.city:
                             zoom = 10;
                             break;
-
                         case $.kladr.type.street:
                             zoom = 13;
                             break;
-
                         case $.kladr.type.building:
                             zoom = 16;
                             break;
@@ -122,21 +139,18 @@
                 }
 
                 if (result) result += ', ';
-                result += type + name;
+                result += type + ' ' + name;
             });
-
             return result;
         });
 
         if (address && map_created) {
             var geocode = ymaps.geocode(address);
-{#            console.log("Address: " + address + " geokoded: " + geocode);#}
             geocode.then(function (res) {
                 yMap.geoObjects.each(function (geoObject) {
                     yMap.geoObjects.remove(geoObject);
                 });
-
-                var position = res.geoObjects.get(0).geometry.getCoordinates(),
+                var position = res.geoObjects.get(0).geometry.getCoordinates();
                         placemark = new ymaps.Placemark(position, {}, {
                                         // Опции.
                                         // Необходимо указать данный тип макета.
@@ -152,6 +166,7 @@
 
                 yMap.geoObjects.add(placemark);
                 yMap.setCenter(position, zoom);
+                console.log("Address: " + address + " position: " + position + " LAT: " + position[0] + " LNG: " + position[1]);
             });
         }
     }
@@ -191,6 +206,9 @@ div#map {
                     <div class="form_wrapper">
                         {# Форма объекта #}
                         <form action="" method="POST" id="new_object">{% csrf_token %}
+                            <input type="hidden" name="compbined_address" value="{{ forms.address.instance.city }}, {{ forms.address.instance.street }} {{ forms.address.instance.app }} ">
+                            <input type="hidden" name="geo_lat" value="55.672691">
+                            <input type="hidden" name="geo_lng" value="37.542222">
                             <div class="form_row"><h2 class="blue">Адрес объекта</h2></div>
                             {% include "form_snippets/formfields_as_row.html" with form=forms.address %}
                             <div class="form_row"><h2 class="blue">Характеристики</h2></div>

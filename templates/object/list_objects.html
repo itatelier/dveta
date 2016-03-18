@@ -26,8 +26,8 @@
 
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('car_id');
-            var url = "/cars/" + id +"/card/";
+            var id = $(this).data('object_id');
+            var url = "/objects/" + id +"/card/";
             document.location.href = url;
         });
 
@@ -47,15 +47,11 @@
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-car_id="{{ pk }}">
+    <tr data-object_id="{{ pk }}">
         <td>{{{ name }}}</td>
-        <td>{{{ address.city }}}, {{{ address.street }}} {{{ address.app }}}</td>
-        <td>{{{ company.name }}}</td>
-        <td>{{#driver.pk}} {{ driver.person.nick_name }} {{ driver.person.family_name }} {{ driver.person.given_name }}{{/ driver.pk }}{{^ driver.pk}}Не назначен{{/ driver.pk }}</td>
-        <td>{{{ mechanic.person.nick_name }}} {{{ mechanic.person.family_name }}} {{{ mechanic.person.given_name }}}</td>
-        <td>{{{ unit_group.description }}}</td>
-        <td class="{{ status_color }}">{{{ status.val }}}</td>
         <td>{{{ comment }}}</td>
+        <td>{{{ company.name }}}</td>
+        <td>{{{ address.city }}}, {{{ address.street }}} {{{ address.app }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -84,33 +80,6 @@
                                 </div>
                             </div>
                         </div>
-                        {# Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Статус</legend>
-                                <div class="input_block">
-                                    <select name="status">
-                                        <option value="">любой</option>
-                                        <option value="1">Работает</option>
-                                        <option value="2">Ремонт</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        {# Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Механик</legend>
-                                <div class="input_block">
-                                    <select name="mechanic">
-                                        <option value="">любой</option>
-                                        {% for opt in mechanics %}
-                                            <option value="{{ opt.id }}">{{ opt.person.family_name }} {{ opt.person.given_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         {# блок кнопок #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
@@ -128,14 +97,10 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="" rel="" >Ник</a></th>
-                                <th><a href="#" class="" rel="">Гос. номер</a></th>
-                                <th><a href="#" class="" rel="">Модель</a></th>
-                                <th><a href="#" class="" rel="">Водитель</a></th>
-                                <th><a href="#" class="" rel="">Механик</a></th>
-                                <th><a href="#" class="sortable" rel="unit_group">Группа</a></th>
-                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
-                                <th><a href="#">Примечание</a></th>
+                                <th><a href="#" class="" rel="">Наименование</a></th>
+                                <th><a href="#" class="" rel="">Примечание</a></th>
+                                <th><a href="#" class="" rel="">Клиент</a></th>
+                                <th><a href="#" class="" rel="">Адрес</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

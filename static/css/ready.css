@@ -32,7 +32,10 @@ a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
 a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
 
-h2 {  }
+h2 {
+    color: rgba(0,0,0,.4) !important;
+    font-weight: normal;
+}
 /*table { border-spacing: 0;}*/
 form { margin: 0.5rem 2rem;}
 .green { color: #74BA12 !important; }
@@ -58,6 +61,7 @@ form { margin: 0.5rem 2rem;}
 }
 .margint10 { margin-top: 1rem; }
 .m10 {margin: 10px;}
+.m20 {margin: 20px;}
 .centertext { text-align: center !important;}
 
 

@@ -1,0 +1,10 @@
+                <div class="left_bar">
+                    <ul>
+                        <li><a href="{% url 'object_card' pk %}" class="{% if sel == 1 %}active{% endif %}">Карточка объекта</a></li>
+                    </ul>
+                    <hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="{% if sel == 2 %}active{% endif %}" href="{% url 'object_update' pk %}">Информация</a></li>
+                    </ul>
+                </div>

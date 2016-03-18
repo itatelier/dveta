@@ -3,6 +3,7 @@
 from django.db import models
 from common.dbtools import fetch_sql_allintuple, fetch_sql_row
 
+
 class ObjectTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=200L, null=False, blank=False)
@@ -67,6 +68,7 @@ class Objects(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     objects = ObjectsManagerPlus()
+    name = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'objects'

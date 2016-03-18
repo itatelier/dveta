@@ -58,11 +58,16 @@
                             <tr><td>Бункеры на машине</td>
                                 <td>{% if bunkers_onboard %}
                                     {% for b in bunkers_onboard %}
-                                    <div class="bunker">
-                                        <div class="type">{{ b.type.val }}</div><div class="qty">{{ b.qty }}</div>
-                                    </div>
+                                        {% if b.qty > 0 %}
+                                            <div class="bunker">
+                                                <div class="type">{{ b.type.val }}</div><div class="qty">{{ b.qty }}</div>
+                                            </div>
+                                        {% else %}
+                                            нет
+                                        {% endif %}
                                     {% endfor %}
-                                {% else %}нет{%  endif %}</td></tr>
+                                {% else %}нет{%  endif %}
+                                </td></tr>
                             <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
                             <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
                             <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
