@@ -40,7 +40,7 @@ class ObjectsListingViewSet(ObjectsViewSet):
 
 
 class ObjectCreateView(MultiFormCreate):
-    template_name = 'object/object_create.html'
+    template_name = 'object/object_create_update.html'
     formconf = {
         'object': {'formclass': ObjectForm},
         'address': {'formclass': AddressNoPostalForm}

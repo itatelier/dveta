@@ -13,8 +13,8 @@
     var yMap;
 
     function init(){
-        var lat = $('input[name="geo_lat"]').val();
-        var lng = $('input[name="geo_lng"]').val();
+        var lat = $('input[name="address-lat"]').val();
+        var lng = $('input[name="address-lng"]').val();
 
         if (map_created) return;
 			map_created = true;
@@ -163,10 +163,14 @@
                                         // её "ножки" (точки привязки).
                                         iconImageOffset: [-16, -55]
                         });
-
                 yMap.geoObjects.add(placemark);
                 yMap.setCenter(position, zoom);
-                console.log("Address: " + address + " position: " + position + " LAT: " + position[0] + " LNG: " + position[1]);
+                /* обновляем значение координат в инпутах */
+                var $lat = $('input[name="address-lat"]');
+                var $lng = $('input[name="address-lng"]');
+                $lat.val(position[0]);
+                $lng.val(position[1]);
+                //console.log("Address: " + address + " position: " + position + " LAT: " + position[0] + " LNG: " + position[1]);
             });
         }
     }
@@ -207,8 +211,8 @@ div#map {
                         {# Форма объекта #}
                         <form action="" method="POST" id="new_object">{% csrf_token %}
                             <input type="hidden" name="compbined_address" value="{{ forms.address.instance.city }}, {{ forms.address.instance.street }} {{ forms.address.instance.app }} ">
-                            <input type="hidden" name="geo_lat" value="55.672691">
-                            <input type="hidden" name="geo_lng" value="37.542222">
+                            <input type="hidden" name="address-lat" value="">
+                            <input type="hidden" name="address-lng" value="">
                             <div class="form_row"><h2 class="blue">Адрес объекта</h2></div>
                             {% include "form_snippets/formfields_as_row.html" with form=forms.address %}
                             <div class="form_row"><h2 class="blue">Характеристики</h2></div>
@@ -220,6 +224,10 @@ div#map {
                             </div>
                         </form>
                         {# - Форма объекта #}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=forms.address %}
+                        {% include "form_snippets/form_errors.html" with form=forms.object %}
+
                     </div>
                     <div class="map_wrapper">
                         <div id="map"></div>
