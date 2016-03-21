@@ -17,7 +17,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                {%  include "object/object_left_bar.html" with pk=object.pk sel=1 %}
+                {%  include "object/object_left_bar.html" with pk=object.pk company_pk=object.company.pk sel=1 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Ключевые значения #}
@@ -61,6 +61,24 @@
                         </table>
                     </div>
                     {# - Информационный блок - основная информация #}
+                    {# Информационный блок - контакты на объекте #}
+                        <h2>Контакты на объекте</h2>
+                    {% if object_contacts %}
+                    <div class="sheet_row_headered">
+                        <table class="sheet_simple">
+                            {% for oc in object_contacts %}
+                            <tr>
+                                <td>{% if oc.company_contact.contact.person.id %}<a href="/persons/{{ oc.company_contact.contact.person_id }}/card" class="textlink">{{ oc.company_contact.contact.person.nick_name }}</a></td><td>{{ oc.company_contact.role|default_if_none:"" }}</td>{% else %}без персоны</td><td></td>{% endif %}
+                                <td>+7 {{ oc.company_contact.contact.phonenumber }} </td>
+                                <td>{{ oc.company_contact.comment }}</td>
+                                <td><a class="textlink" href="mailto:{{ oc.company_contact.email }}">{{ oc.company_contact.email }}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% else %}
+                        <div class="m10">Контакты для объекта не выбраны</div>
+                    {% endif %}
                 </div>
             </div>
             {# - Рабочий лист #}

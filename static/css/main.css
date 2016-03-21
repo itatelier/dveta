@@ -25,6 +25,11 @@ div.flex_row > div.top_header { flex: 1 0 auto; }
 div.flex_block._zero {
     flex: 0 0 auto;
 }
+
+div.flex_block.bordered {
+    border-left: 1px solid grey;
+    padding-left: 30px;
+}
 div.sheet_block_mini {
     flex:  1 0 300px;
     padding: 1rem;

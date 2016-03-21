@@ -37,7 +37,7 @@ h2 {
     font-weight: normal;
 }
 /*table { border-spacing: 0;}*/
-form { margin: 0.5rem 2rem;}
+form { margin: 0.5rem 2rem; width: 100%;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
 .blue { color: #009DDA !important; }

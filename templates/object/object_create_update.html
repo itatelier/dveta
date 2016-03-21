@@ -13,14 +13,24 @@
     var yMap;
 
     function init(){
-        var lat = $('input[name="address-lat"]').val();
-        var lng = $('input[name="address-lng"]').val();
-
+        {% if forms.address.instance.lat and forms.address.instance.lng %}
+            var lat = $('input[name="address-lat"]').val();
+            var lng = $('input[name="address-lng"]').val();
+        {% else %}
+            lat = 55.75396;
+            lng = 37.620393;
+        {% endif %}
+        var zoom = 12;
+        console.log("---got Lat: " + lat + ", " + lng);
+        if (lat == 'None' || lng == 'None') {
+            lat = 55.75396;
+            lng = 37.620393;
+        }
         if (map_created) return;
 			map_created = true;
         yMap = new ymaps.Map("map", {
             center: [lat, lng],
-            zoom: 12,
+            zoom: zoom,
             controls: []
         });
         yMap.controls.add('zoomControl', {
@@ -29,14 +39,14 @@
                 top: 10
             }
         });
-        add_main_marker(lat, lng);
+        {% if forms.address.instance.lat and forms.address.instance.lng %}
+            console.log("-- form instance found!");
+            add_main_marker(lat, lng);
+            yMap.setCenter([lat, lng], 14);
+        {% endif %}
     }
 
     $(document).ready(function() {
-
-{#        add_main_marker();#}
-
-
         var $city = $('input[name=address-city]');
         var $street = $('input[name=address-street]');
         var $building  = $('input[name=address-app]');
@@ -104,7 +114,7 @@
             draggable: false
         });
         yMap.geoObjects.add(Marker);
-        // yMap.setCenter([lat, lng], 14);
+        yMap.setCenter([lat, lng], 14);
     }
 
     function mapUpdate() {
@@ -176,9 +186,9 @@
     }
 </script>
 <style>
-div.form_wrapper {
-    flex: 0 0 auto;
-}
+{#div.form_wrapper {#}
+{#    flex: 0 0 auto;#}
+{#}#}
 div.map_wrapper {
     flex: 1 0 auto;
     padding: 5px;
@@ -186,13 +196,14 @@ div.map_wrapper {
 }
 div#map {
     width: 100%;
-    height: 550px;
+    height: 350px;
 }
 </style>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="">Объекты</a></li>
+                <li><a href="{% url 'company_list_clients' %}">Картотека клиентов</a></li>
+                <li><a href="{% url 'company_card_client' company.pk %}">Карточка клиента {{ company.name }}</a></li>
                 <li class="active" ><a href="#">Новый объект</a></li>
             </ul>
         </div>
@@ -203,36 +214,75 @@ div#map {
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
-                    <ul><li><a href="#" class="active">Новый объект</a></li></ul><hr>
+                    <ul><li><a href="#" class="active">
+                            {% if forms.address.instance %}Основная информация
+                            {% else %}Новый объект
+                            {% endif %}
+                            </a></li></ul><hr>
                 </div>
                 {# - Левый бар #}
-                <div class="data_grid_medium flex">
-                    <div class="form_wrapper">
                         {# Форма объекта #}
-                        <form action="" method="POST" id="new_object">{% csrf_token %}
+                <form action="" method="POST" id="new_object">{% csrf_token %}
+                    <div class="data_grid_medium">
                             <input type="hidden" name="compbined_address" value="{{ forms.address.instance.city }}, {{ forms.address.instance.street }} {{ forms.address.instance.app }} ">
-                            <input type="hidden" name="address-lat" value="">
-                            <input type="hidden" name="address-lng" value="">
+                            <input type="hidden" name="address-lat" value="{{ forms.address.instance.lat }}">
+                            <input type="hidden" name="address-lng" value="{{ forms.address.instance.lng }}">
                             <div class="form_row"><h2 class="blue">Адрес объекта</h2></div>
-                            {% include "form_snippets/formfields_as_row.html" with form=forms.address %}
-                            <div class="form_row"><h2 class="blue">Характеристики</h2></div>
-                            {% include "form_snippets/formfields_as_row.html" with form=forms.object %}
+                            {# Поля формы Адреса #}
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=forms.address.city %}
+                                {% include "form_snippets/textinput.html" with field=forms.address.street %}
+                                {% include "form_snippets/textinput.html" with field=forms.address.app %}
+                            </div>
+                            <div class="form_row">
+                                <div class="map_wrapper">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=forms.address.comment %}
+                            </div>
+                            <div class="flex_row">
+                                <div class="flex_block _zero">
+                                    <div class="form_row"><h2 class="blue">Параметры объекта</h2></div>
+                                    {% include "form_snippets/formfields_as_row.html" with form=forms.object %}
+                                </div>
+                                <div class="flex_block bordered">
+                                    <div class="form_row"><h2 class="blue">Контакты</h2></div>
+                                    <table class="sheet_simple">
+                                        {% for i in company_contacts %}
+                                        <tr>
+                                            <td>
+                                               <input type="checkbox" name="company_contact_id"
+                                            {% for oc in object_contacts %}
+                                                {% if oc.company_contact.id == i.id %}
+                                                    value="{{ i.id }}" checked
+                                                {% endif %}
+                                            {% endfor %}
+                                            value="{{ i.id }}" >
+                                            {% if i.contact.person.id %}
+                                                <a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.role|default_if_none:"" }}</td>
+                                            {% else %}
+                                                без персоны</td>
+                                            {% endif %}
+                                            <td>+7 {{ i.contact.phonenumber }} </td>
+                                            <td>{{ i.comment }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
                             <div class="form_row">
                                 <span class="button_block">
                                     <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
                                 </span>
                             </div>
-                        </form>
                         {# - Форма объекта #}
                         {# ошибки формы #}
                         {% include "form_snippets/form_errors.html" with form=forms.address %}
                         {% include "form_snippets/form_errors.html" with form=forms.object %}
-
                     </div>
-                    <div class="map_wrapper">
-                        <div id="map"></div>
-                    </div>
-                </div>
+                </form>
             </div>
             {# - Рабочий лист #}
             <div class="right_border"><span class="upblock"></span></div>

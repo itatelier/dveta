@@ -78,3 +78,14 @@ class Objects(models.Model):
         return u'[%s] %s' % (self.id, self.name)
 
 
+class ObjectContacts(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    object = models.ForeignKey('object.Objects', null=False, blank=False, editable=True, related_name='contact')
+    company_contact = models.ForeignKey('company.CompanyContacts', null=False, blank=False, editable=True, related_name='object_contact')
+
+    class Meta:
+        db_table = 'object_contacts'
+        verbose_name_plural = 'Объекты / Контакты на объектах'
+
+    def __unicode__(self):
+        return u'%s' % self.id

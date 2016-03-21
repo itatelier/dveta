@@ -17,9 +17,9 @@ urlpatterns = patterns('',
     # REST API
     url(r'^api/', include(router.urls)),
     #
-    url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
     url(r'^objects_list/$', ObjectListView.as_view(), name='objects_list'),
     url(r'^(?P<pk>\d+)/card/$', ObjectCardView.as_view(), name='object_card'),
-    url(r'^(?P<pk>\d+)/update/$', ObjectUpdateView.as_view(), name='object_update'),
+    url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
+    url(r'^company/(?P<company_pk>\d+)/(?P<pk>\d+)/update/$', ObjectUpdateView.as_view(), name='object_update'),
 )
 

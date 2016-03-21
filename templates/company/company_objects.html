@@ -42,7 +42,7 @@
                             <tbody>
                                 {% for i in objects_and_remains %}
                                 <tr>
-                                    <td> {{ i.name }} </td>
+                                    <td><a href="{% url 'object_card' i.id %}" class="textlink">{{ i.name }}</a></td>
                                     <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>
                                     <td>{% if i.summ %}{{ i.summ}}{% else %}<i class="blue">нет</i>{% endif %}</td>
                                 </tr>

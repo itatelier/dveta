@@ -16,7 +16,7 @@ log = logging.getLogger('django')
 
 
 class ObjectForm(ModelForm):
-    name = CharField(label="Наименование", help_text="Наименование объекта", required=True, widget=forms.TextInput(attrs={'size': 30, 'maxlength': 10}))
+    name = CharField(label="Наименование", help_text="Наименование объекта", required=True, widget=forms.TextInput(attrs={'size': 40, 'maxlength': 200}))
 
     class Meta:
         model = Objects

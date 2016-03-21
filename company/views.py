@@ -357,7 +357,6 @@ class BranchUpdateView(MultiFormEdit):
         branch_pk = kwargs.pop('pk', None)
         branch_object = Branches.objects.get(pk=branch_pk)
         formconf['branch']['instance'] = branch_object
-        # formconf['address']['instance'] = branch_object.addresses.get(branch__pk=branch_pk)
         formconf['address']['instance'] = branch_object.address
         return formconf
 

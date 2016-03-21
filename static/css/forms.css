@@ -57,7 +57,7 @@ a.textlink {
     position: relative;
     display: inline-block;
     text-decoration: none;
-    padding: 0.5rem 0.2rem 0 0.2rem;
+    padding: 0 0.2rem 0 0.2rem;
     /*margin: 0 0.5rem 0.4rem 0.5rem;*/
     border-bottom: 1px dotted #009DDA;
     color: #009DDA;
