@@ -93,6 +93,27 @@ class BunkerFlowManager(models.Manager):
         return result
 
     @staticmethod
+    def by_company_id(company_id):
+        query = """SELECT
+            o.id as object_id
+            ,o.name as object_name
+            ,ot.id as type_id
+            ,ot.val as type_name
+            ,SUM(IF (r.type_id = 1, qty, NULL)) as type1_summ
+            ,SUM(IF (r.type_id = 2, qty, NULL)) as type2_summ
+            ,SUM(IF (r.type_id = 3, qty, NULL)) as type3_summ
+            ,SUM(IF (r.type_id = 4, qty, NULL)) as type4_summ
+            ,SUM(IF (r.type_id = 5, qty, NULL)) as type5_summ
+            ,SUM(IF (r.type_id = 6, qty, NULL)) as type6_summ
+        FROM bunker_objects_remains AS r
+        JOIN objects AS o ON o.id = r.object_id
+        JOIN object_types AS ot ON ot.id = o.type_id
+        WHERE o.company_id = %s
+        GROUP BY o.id"""
+        result = fetch_sql_allintuple(query, params=(company_id,))
+        return result
+
+    @staticmethod
     def list_flow():
         query = """SELECT
                             o.transaction_id as id

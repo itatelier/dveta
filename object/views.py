@@ -4,6 +4,7 @@
 from models import *
 from forms import *
 from company.forms import AddressUpdateForm, AddressNoPostalForm
+from bunker.models import BunkerFlow
 
 # API
 from serializers import *
@@ -34,16 +35,22 @@ class ObjectsViewSet(viewsets.ModelViewSet):
 
 
 class ObjectsListingViewSet(ObjectsViewSet):
-    queryset = Objects.objects.filter(type__in=(1, 3)).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
+    queryset = Objects.objects.filter(type__pk=3).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
 
 
 class ClientObjectsView(LoginRequiredMixin, TemplateView):
     template_name = 'company/company_objects.html'
 
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(ClientObjectsView, self).get_context_data(*args, **kwargs)
+    #     company_pk = self.kwargs.get('company_pk', None)
+    #     context_data['objects_and_remains'] = Objects.objects.list_bunker_remains(company_pk)
+    #     return context_data
     def get_context_data(self, *args, **kwargs):
         context_data = super(ClientObjectsView, self).get_context_data(*args, **kwargs)
         company_pk = self.kwargs.get('company_pk', None)
-        context_data['objects_and_remains'] = Objects.objects.list_bunker_remains(company_pk)
+        log.info("--- company_pk: %s" % company_pk)
+        context_data['objects'] = BunkerFlow.objects.by_company_id(company_pk)
         context_data['company'] = Companies.objects.get(pk=company_pk)
         return context_data
 

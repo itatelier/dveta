@@ -40,10 +40,10 @@
                                 <tr><th>Наименование объекта</th><th>Адрес</th><th>Наличие бункера</th>
                             </thead>
                             <tbody>
-                                {% for i in objects_and_remains %}
+                                {% for i in objects %}
                                 <tr>
-                                    <td><a href="{% url 'object_card' i.id %}" class="textlink">{{ i.name }}</a></td>
-                                    <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>
+                                    <td><a href="{% url 'object_card' i.object_id %}" class="textlink">{{ i.object_name }}</a></td>
+{#                                    <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>#}
                                     <td>{% if i.summ %}{{ i.summ}}{% else %}<i class="blue">нет</i>{% endif %}</td>
                                 </tr>
                                 {% endfor %}
