@@ -146,6 +146,12 @@
                             <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.comment %}</div>
                             <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.email %}</div>
                         </div>
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=forms.company %}
+                        {% include "form_snippets/form_errors.html" with form=forms.address %}
+                        {% include "form_snippets/form_errors.html" with form=forms.contact %}
+                        {% include "form_snippets/form_errors.html" with form=forms.person %}
+                        {% include "form_snippets/form_errors.html" with form=forms.company_contact %}
                         {# Кнопки #}
                         <div class="form_row"><span class="button_block"><a class="button"  onclick="$('form#new_object').submit();">Добавить клиента</a></span></div>
                     </form>

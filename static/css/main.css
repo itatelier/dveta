@@ -203,6 +203,7 @@ div.bunker > div.type {
     border-radius: 6px;
     padding: 3px 15px 3px 7px;
     background-color: #EEE;
+    color: #999;
 }
 
 div.bunker > div.qty {
@@ -216,6 +217,8 @@ div.bunker > div.qty {
     margin-left: -10px;
     border-bottom-left-radius: 0px;
     border-top-left-radius: 0px;
+    text-shadow: 0 1px 1px #aaa;
+    font-weight: bold;
 }
 
 

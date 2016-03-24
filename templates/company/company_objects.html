@@ -37,14 +37,21 @@
                         <h2>Объекты клиента</h2>
                         <table class="sheet_headered" id="contacts_table">
                             <thead>
-                                <tr><th>Наименование объекта</th><th>Адрес</th><th>Наличие бункера</th>
+                                <tr><th>Наименование объекта</th><th>Наличие бункера</th>
                             </thead>
                             <tbody>
                                 {% for i in objects %}
                                 <tr>
                                     <td><a href="{% url 'object_card' i.object_id %}" class="textlink">{{ i.object_name }}</a></td>
 {#                                    <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>#}
-                                    <td>{% if i.summ %}{{ i.summ}}{% else %}<i class="blue">нет</i>{% endif %}</td>
+                                    <td>
+                                        {% if i.type1_summ %}<div class="bunker"><div class="type">8m³</div><div class="qty">{{ i.type1_summ }}</div></div>{% endif %}
+                                        {% if i.type2_summ %}<div class="bunker"><div class="type">20m³</div><div class="qty">{{ i.type2_summ }}</div></div>{% endif %}
+                                        {% if i.type3_summ %}<div class="bunker"><div class="type">27m³</div><div class="qty">{{ i.type3_summ }}</div></div>{% endif %}
+                                        {% if i.type4_summ %}<div class="bunker"><div class="type">32m³</div><div class="qty">{{ i.type4_summ }}</div></div>{% endif %}
+                                        {% if i.type5_summ %}<div class="bunker"><div class="type">0.8m³</div><div class="qty">{{ i.type5_summ }}</div></div>{% endif %}
+                                        {% if i.type6_summ %}<div class="bunker"><div class="type">1.1m³</div><div class="qty">{{ i.type6_summ }}</div></div>{% endif %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

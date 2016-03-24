@@ -52,6 +52,7 @@ class ClientObjectsView(LoginRequiredMixin, TemplateView):
         log.info("--- company_pk: %s" % company_pk)
         context_data['objects'] = BunkerFlow.objects.by_company_id(company_pk)
         context_data['company'] = Companies.objects.get(pk=company_pk)
+        context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
         return context_data
 
 
