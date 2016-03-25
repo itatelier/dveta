@@ -94,7 +94,7 @@ class BunkerFlowManager(models.Manager):
 
     @staticmethod
     def by_company_id(company_id):
-        query = """SELECT
+        query ="""SELECT
             o.id as object_id
             ,o.name as object_name
             ,ot.id as type_id
@@ -105,9 +105,9 @@ class BunkerFlowManager(models.Manager):
             ,SUM(IF (r.type_id = 4, qty, NULL)) as type4_summ
             ,SUM(IF (r.type_id = 5, qty, NULL)) as type5_summ
             ,SUM(IF (r.type_id = 6, qty, NULL)) as type6_summ
-        FROM bunker_objects_remains AS r
-        JOIN objects AS o ON o.id = r.object_id
+        FROM objects AS o
         JOIN object_types AS ot ON ot.id = o.type_id
+        LEFT JOIN bunker_objects_remains AS r ON o.id = r.object_id
         WHERE o.company_id = %s
         GROUP BY o.id"""
         result = fetch_sql_allintuple(query, params=(company_id,))

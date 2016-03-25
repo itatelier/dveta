@@ -114,7 +114,7 @@ class ObjectCreateView(MultiFormCreate):
         company_pk = self.kwargs.get('company_pk', None)
         context_data.update({
             'company': Companies.objects.get(pk=company_pk),
-            'contacts': CompanyContacts.objects.select_related('contact').filter(company=company_pk)
+            'company_contacts': CompanyContacts.objects.select_related('contact').filter(company=company_pk)
         })
         return context_data
 

@@ -70,8 +70,8 @@ class AddressUpdateForm(ModelForm):
     street = CharField(label="Улица", required=True,  widget=TextInput(attrs={'size': 36, 'maxlength': 250}))
     app = CharField(label="Дом, Корпус", required=True, widget=TextInput(attrs={'size': 3}))
     comment = CharField(label="Примечание к адресу", required=False, widget=forms.Textarea(attrs={'cols': 60, 'rows':1, 'maxlength': 250}))
-    lat = FloatField(required=True, widget=HiddenInput())
-    lng = FloatField(required=True, widget=HiddenInput())
+    lat = FloatField(required=False, widget=HiddenInput())
+    lng = FloatField(required=False, widget=HiddenInput())
     # exclude = ('company',)
 
     class Meta:

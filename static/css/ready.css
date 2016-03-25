@@ -251,6 +251,12 @@ table.sheet_headered > thead > tr > th {
 }
 
 table.sheet_headered > tbody > tr > td { padding: 0.3rem 1rem 0.2rem 1rem;}
+
+table.sheet_headered.dotted > tbody > tr > td {
+    border-bottom: 1px dotted lightgray;
+    padding: 8px 0 8px;
+}
+
 table._bordered > tbody > tr > td {
     border-bottom: 1px solid #D3D3D3;
 }

@@ -80,6 +80,11 @@ a.textlink.red {
     border-color: #FE659C;
     /*color: #D84D4D !important;*/
 }
+
+a.hidden {
+    display: inline-block;
+    text-decoration: none;
+}
 div.form_row { display: flex; padding: 0.5rem 0; }
 
 div.form_row legend {

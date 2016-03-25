@@ -90,7 +90,7 @@
                             </thead>
                             <tbody>
                                 {% for i in branches %}
-                                    <tr><td><a href="{% url 'company_branch_card' object.pk i.pk %}"> {{ i.name }}</a></td><td>{{ i.address }}</td><td>{{ i.description }}</td></tr>
+                                    <tr><td><a href="{% url 'company_branch_card' object.pk i.pk %}"> {{ i.name }}</a></td><td>{{ i.address }}</td><td>{{ i.description|default_if_none:"" }}</td></tr>
                                     {% endfor %}
                             </tbody>
                         </table>

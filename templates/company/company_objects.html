@@ -35,14 +35,14 @@
                     {# Информационный блок - объекты #}
                     <div class="sheet_row_headered">
                         <h2>Объекты клиента</h2>
-                        <table class="sheet_headered" id="contacts_table">
+                        <table class="sheet_headered dotted" id="contacts_table">
                             <thead>
                                 <tr><th>Наименование объекта</th><th>Наличие бункера</th>
                             </thead>
                             <tbody>
                                 {% for i in objects %}
                                 <tr>
-                                    <td><a href="{% url 'object_card' i.object_id %}" class="textlink">{{ i.object_name }}</a></td>
+                                    <td><a href="{% url 'object_card' i.object_id %}" class="hidden">{{ i.object_name }}</a></td>
 {#                                    <td>{% if i.street  %}{{ i.city }}, {{ i.street }} {{ i.app }}  {% endif %}</td>#}
                                     <td>
                                         {% if i.type1_summ %}<div class="bunker"><div class="type">8m³</div><div class="qty">{{ i.type1_summ }}</div></div>{% endif %}
