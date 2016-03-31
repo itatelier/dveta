@@ -165,8 +165,8 @@ class Addresses(models.Model):
     comment = models.TextField(blank=True, null=True)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    lat = models.FloatField(null=True, blank=True,)
-    lng = models.FloatField(null=True, blank=True,)
+    lat = models.CharField(max_length=11,null=True, blank=True,)
+    lng = models.CharField(max_length=11,null=True, blank=True,)
 
     class Meta:
         db_table = 'addresses'

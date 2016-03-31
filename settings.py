@@ -58,7 +58,9 @@ INSTALLED_APPS = (
     'person',
     'car',
     'object',
-    'bunker'
+    'bunker',
+    'dump',
+    'race',
 )
 
 MIDDLEWARE_CLASSES = (
