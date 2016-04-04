@@ -14,7 +14,6 @@ from django.core.validators import RegexValidator
 
 
 class RaceCreateForm(ModelForm):
-
     car = ModelChoiceFieldNameLabel(queryset=Cars.objects.all(), label="Модель авто", empty_label=None)
     driver = ModelChoiceFieldNameLabel(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None)
 
@@ -36,15 +35,13 @@ class RaceCreateForm(ModelForm):
     bunker_type = ModelChoiceFieldNameLabel(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None)
     bunker_qty = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
-    dump = ModelChoiceFieldNameLabel(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None)
-    dump_pay_type = models.BooleanField()
+    dump = ModelChoiceFieldNameLabel(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None, label_field='name')
+    dump_pay_type = BooleanField()
     cash = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     cash_extra = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
-
-
-
-
     class Meta:
-        model = Persons
-        fields = ('family_name', 'given_name', 'middle_name', 'nick_name', 'date_ofbirth')
+        model = Races
+        fields = ('company', 'contragent', 'race_type', 'cargo_type', 'object', 'price', 'summ', 'pay_way_choices',
+                  'pay_way', 'hodkis', 'bunker_type', 'bunker_qty', 'dump', 'dump_pay_type', 'cash', 'cash_extra')
+

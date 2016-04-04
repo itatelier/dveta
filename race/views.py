@@ -19,21 +19,31 @@ from django.http import HttpResponseRedirect
 from serializers import *
 
 
-class CompanyCreateFirmView(MultiFormCreate):
-    template_name = 'company/company_create_firm.html'
-    formconf = {
-        'company': {'formclass': CompanyCreateForm},
-        'branch': {'formclass': BranchCompanyCreateForm},
-        'address': {'formclass': AddressUpdateForm},
-        'person': {'formclass': PersonCompanyCreateForm},
-        'contact': {'formclass': ContactCreateForm},
-        'company_contact': {'formclass': CompanyContactForm},
-    }
+class RaceCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'car/car_create_update.html'
+    form_class = CarCreateWithoutComment
+    model = Cars
 
-    def get_success_url(self, company_id):
-        if company_id:
-            url = reverse('company_card_client', args=[company_id])
+    def get_success_url(self):
+        return reverse('car_card', args=(self.object.id,))
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            # Создаем клон авто в "Объектах"
+            car_nick_name = u'Авто %s' % form.cleaned_data.get("nick_name")
+            object_type_object = ObjectTypes.objects.get(pk=2)
+            car_object = Objects.objects.create(name=car_nick_name, type=object_type_object)
+            # Создаем пустую запись в Car Documents
+            docs_object = CarDocs(date_update=DateTimeNowToSql())
+            docs_object.save()
+            create_object = form.save(commit=False)
+            create_object.car_object = car_object
+            create_object.docs = docs_object
+            create_object.status = CarStatuses(pk=1)
+            create_object.save()
+            self.success_url = '/cars/%s/card' % create_object.id
+            return HttpResponseRedirect(self.success_url)
         else:
-            raise ImproperlyConfigured(
-                "No URL to redirect to. Provide a success_url.")
-        return url
+            self.object = form.instance
+            return self.render_to_response(self.get_context_data(form=form))

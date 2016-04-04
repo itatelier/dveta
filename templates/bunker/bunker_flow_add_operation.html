@@ -2,15 +2,16 @@
 {% load static from staticfiles %}
 {% block add_static %}
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
 {% endblock %}
 {% block content %}
 {% load date_compare %}
 <script>
         $(document).ready(function() {
-
             $('select.select2_powered').select2({
-                language: "ru",
+                //   "language": { "noResults": function(){ return "No Resultsrr Found <a href='#' class='btn btn-danger'>Use it anyway</a>"; }},
+                "language": "ru",
                 placeholder: "объект не указан",
                 allowClear: true,
                 ajax: {

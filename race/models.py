@@ -51,7 +51,7 @@ class Races(models.Model):
     bunker_qty = models.IntegerField(null=False, blank=False, editable=True)
 
     dump = models.ForeignKey('dump.Dumps', null=True, blank=True, editable=True, )
-    dump_pay_type = models.BooleanField(null=True, blank=True, editable=True,)
+    dump_pay_type = models.BooleanField()
     cash = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
 

@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'rest_framework',
     'common',
-    'dummyapp',
+    # 'dummyapp',
     'company',
     'contragent',
     'person',

@@ -23,7 +23,7 @@ urlpatterns = [
     # url(r'^acid/$', default.ac_with_id.as_view(), name='ac'),
 
     # Dummy Views
-    url(r'^dummy/', include('dummyapp.urls')),
+    # url(r'^dummy/', include('dummyapp.urls')),
 
     # Apps
     url(r'^company/', include('company.urls')),
