@@ -25,26 +25,27 @@ empty_choices = [('empty_value', 'empty_label'), ]
 class RaceCreateForm(ModelForm):
 
     company = ModelChoiceFieldNoOpt(
-        # choices=empty_choices,
         queryset=Companies.objects.all(),
-        empty_choices = empty_choices,
         label="Наименование",
         help_text="наименование клиента",
         # label_field="name",
         required=True,
-        # widget=Select(attrs={
-        #     # 'size': 10,
-        #     # 'width': 40,
-        #     'class': "select2_client",
-        # }))
-    )
+        widget=Select(attrs={
+            'size': 2,
+            'class': "select2_powered",
+            'id': "select2_client"
+            })
+        )
+
     contragent = ChoiceField(
         choices=empty_choices,
         label="Наименование",
         help_text="наименование контрагента",
         required=True,
         widget=Select(attrs={
-            'class': "select2_contragent"
+            'size': 2,
+            'class': "select2_powered",
+            'id': "select2_contragent"
         }))
 
     race_type = ModelChoiceFieldNameLabel(queryset=RaceTypes.objects.all(), label="Вид работ", empty_label=None, label_field='val')

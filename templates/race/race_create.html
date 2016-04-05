@@ -1,20 +1,20 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- Kladr JS       --><script type="text/javascript" src="{% static 'js/kladr/jquery.kladr.min.js' %}"></script>
-<!-- Kladr CSS      --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/kladr/jquery.kladr.min.css' %}'/>
-<! -- Yandex Map    --><script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
+<!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
 {% endblock %}
 {% block content %}
 <script>
         $(document).ready(function() {
-            $('select.select2_powered22').select2({
+            $('select#select2_client').select2({
                 //   "language": { "noResults": function(){ return "No Resultsrr Found <a href='#' class='btn btn-danger'>Use it anyway</a>"; }},
                 "language": "ru",
                 placeholder: "объект не указан",
                 allowClear: true,
                 ajax: {
-                    url: "/objects/api/objects_rest/",
+                    url: "/company/api/clients/",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -27,18 +27,11 @@
                         return {
                             results: $.map(data.results, function (item) {
                                 {# console.log("Obj: " + item.name + " Type: " + item.type.pk);#}
-                                var object_address = "";
-                                var company_name = "";
-                                if (item.type.pk == '3') {
-                                    object_address = item.address.city + ", " + item.address.street + " " + item.address.app;
-                                    company_name = item.company.name;
-                                };
                                 return {
                                     text: item.name,
                                     id: item.pk,
-                                    company_name: company_name,
-                                    addres: object_address,
-                                    type: item.type.pk
+                                    type: item.org_type.pk,
+                                    comment: item.comment
                                 }
                             })
                         };
@@ -54,19 +47,19 @@
     function formatResults (result) {
         if (result.loading) return result.text;
         var markup;
-        if (result.type == '3') {
-            markup = "<div class='select2_result_wrapper'> \
-                        <legend>" + result.text + "</legend><span><b>" + result.company_name + "</b></span><span><i class='icon' icon=''></i>" + result.addres + "</span> \
-                      </div>";
+        var icon_image = '';
+        if (result.type == '1') {
+            icon_image = '';
         } else if (result.type == '2') {
+            icon_image = '';
+        }
+        var comment = "<span>" + result.comment + "</span>";
+        if (result.comment == '') {
+            comment = '';
+        }
+
             markup = "<div class='select2_result_wrapper'> \
-                        <legend>" + result.text + "</legend><span><i class='icon' icon=''></i>мобильный объект</span> \
-                      </div>";
-        } else {
-            markup = "<div class='select2_result_wrapper'> \
-                        <legend>" + result.text + "</legend><span><i class='icon' icon=''></i>база</span> \
-                      </div>";
-        };
+                        <legend><i class='icon' icon='"+ icon_image + "'></i>" + result.text + "</legend>" + comment + "</div>";
         return markup;
     }
     function formatRepoSelection (results) {
@@ -74,6 +67,28 @@
     }
 
 </script>
+<style>
+select.select2_powered {
+    width: 300px;
+}
+div.select2_result_wrapper {
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+div.select2_result_wrapper > span {
+{#    display: block;#}
+    padding: 0 5px 0 0 ;
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.3rem;
+}
+div.select2_result_wrapper > span > i {
+    padding-left: 0px;
+    font-size: 1.1rem;
+    font-style: normal;
+    color: lightgrey;
+}
+</style>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>

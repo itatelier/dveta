@@ -25,31 +25,20 @@ empty_choices = [('empty_value', ''), ]
 
 
 class BunkerFlowForm(ModelForm):
-    object_out = ChoiceField(
-        choices=empty_choices,
+    object_out = ModelChoiceFieldNoOpt(
+        queryset=Objects.objects.all(),
         label="Исходный объект",
         help_text="объект, с которого переходит бункер",
         required=False,
         widget=Select(attrs={
+            'size': 10,
             'class': "select2_powered"
         }))
-
-    # object_out = ModelChoiceFieldNoOpt(
-    #     queryset=Objects.objects.all(),
-    #     label="Исходный объект",
-    #     help_text="объект, с которого переходит бункер",
-    #     label_field="name",
-    #     required=False,
-    #     widget=Select(attrs={
-    #         'size': 10,
-    #         'class': "select2_powered"
-    #     }))
 
     object_in = ModelChoiceFieldNoOpt(
         queryset=Objects.objects.all(),
         label="Объект назначения",
         help_text="объект на который переходит бункер",
-        label_field="name",
         required=False,
         widget=Select(attrs={
             'size': 10,
