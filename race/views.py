@@ -16,13 +16,12 @@ from forms import *
 from contragent.models import *
 from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
-from serializers import *
 
 
 class RaceCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'car/car_create_update.html'
-    form_class = CarCreateWithoutComment
-    model = Cars
+    template_name = 'race/race_create.html'
+    form_class = RaceCreateForm
+    model = Races
 
     def get_success_url(self):
         return reverse('car_card', args=(self.object.id,))
@@ -30,19 +29,9 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
-            # Создаем клон авто в "Объектах"
-            car_nick_name = u'Авто %s' % form.cleaned_data.get("nick_name")
-            object_type_object = ObjectTypes.objects.get(pk=2)
-            car_object = Objects.objects.create(name=car_nick_name, type=object_type_object)
-            # Создаем пустую запись в Car Documents
-            docs_object = CarDocs(date_update=DateTimeNowToSql())
-            docs_object.save()
-            create_object = form.save(commit=False)
-            create_object.car_object = car_object
-            create_object.docs = docs_object
-            create_object.status = CarStatuses(pk=1)
-            create_object.save()
-            self.success_url = '/cars/%s/card' % create_object.id
+            race_object = form.save(commit=False)
+            race_object.save()
+            self.success_url = '/races/%s/card' % race_object.id
             return HttpResponseRedirect(self.success_url)
         else:
             self.object = form.instance

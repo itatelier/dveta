@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^cars/', include('car.urls')),
     url(r'^objects/', include('object.urls')),
     url(r'^bunkers/', include('bunker.urls')),
+    url(r'^races/', include('race.urls')),
 
     # Admin
     # url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS

@@ -39,7 +39,7 @@ class Races(models.Model):
     cargo_type = models.ForeignKey('RaceCargoTypes', null=True, blank=True, editable=True, )
     object = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, )
 
-    date_complite = models.DateTimeField(auto_now_add=True)
+    date_race = models.DateTimeField()
     price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     summ = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     pay_way = models.BooleanField()
@@ -54,6 +54,10 @@ class Races(models.Model):
     dump_pay_type = models.BooleanField()
     cash = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
+    dump_cash_comment = models.CharField(max_length=200L, null=True, blank=True)
+    dump_comment = models.CharField(max_length=200L, null=True, blank=True)
+
+    date_add = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'bunker_flow'

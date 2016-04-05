@@ -7,10 +7,71 @@
 {% endblock %}
 {% block content %}
 <script>
+        $(document).ready(function() {
+            $('select.select2_powered22').select2({
+                //   "language": { "noResults": function(){ return "No Resultsrr Found <a href='#' class='btn btn-danger'>Use it anyway</a>"; }},
+                "language": "ru",
+                placeholder: "объект не указан",
+                allowClear: true,
+                ajax: {
+                    url: "/objects/api/objects_rest/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                {# console.log("Obj: " + item.name + " Type: " + item.type.pk);#}
+                                var object_address = "";
+                                var company_name = "";
+                                if (item.type.pk == '3') {
+                                    object_address = item.address.city + ", " + item.address.street + " " + item.address.app;
+                                    company_name = item.company.name;
+                                };
+                                return {
+                                    text: item.name,
+                                    id: item.pk,
+                                    company_name: company_name,
+                                    addres: object_address,
+                                    type: item.type.pk
+                                }
+                            })
+                        };
+                    },
+                },
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResults, // omitted for brevity, see the source of this page
+{#                templateSelection: formatRepoSelection // omitted for brevity, see the source of this page#}
+            });
+        });
 
-    $(document).ready(function() {
-    });
-
+    function formatResults (result) {
+        if (result.loading) return result.text;
+        var markup;
+        if (result.type == '3') {
+            markup = "<div class='select2_result_wrapper'> \
+                        <legend>" + result.text + "</legend><span><b>" + result.company_name + "</b></span><span><i class='icon' icon=''></i>" + result.addres + "</span> \
+                      </div>";
+        } else if (result.type == '2') {
+            markup = "<div class='select2_result_wrapper'> \
+                        <legend>" + result.text + "</legend><span><i class='icon' icon=''></i>мобильный объект</span> \
+                      </div>";
+        } else {
+            markup = "<div class='select2_result_wrapper'> \
+                        <legend>" + result.text + "</legend><span><i class='icon' icon=''></i>база</span> \
+                      </div>";
+        };
+        return markup;
+    }
+    function formatRepoSelection (results) {
+        return results.name || results.text;
+    }
 
 </script>
         {# Breadcrumbs #}
@@ -37,52 +98,14 @@
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <div class="data_grid_medium">
-                            <input type="hidden" name="compbined_address" value="{{ forms.address.instance.city }}, {{ forms.address.instance.street }} {{ forms.address.instance.app }} ">
-                            <input type="hidden" name="address-lat" value="{{ forms.address.instance.lat }}">
-                            <input type="hidden" name="address-lng" value="{{ forms.address.instance.lng }}">
-                            <div class="form_row"><h2 class="blue">Адрес объекта</h2></div>
-                            {# Поля формы Адреса #}
-                            <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=forms.address.city %}
-                                {% include "form_snippets/textinput.html" with field=forms.address.street %}
-                                {% include "form_snippets/textinput.html" with field=forms.address.app %}
-                            </div>
-                            <div class="form_row">
-                                <div class="map_wrapper">
-                                    <div id="map"></div>
-                                </div>
-                            </div>
-                            <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=forms.address.comment %}
-                            </div>
                             <div class="flex_row">
                                 <div class="flex_block _zero">
-                                    <div class="form_row"><h2 class="blue">Параметры объекта</h2></div>
-                                    {% include "form_snippets/formfields_as_row.html" with form=forms.object %}
+                                    <div class="form_row"><h2 class="blue">Клиент</h2></div>
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
                                 </div>
                                 <div class="flex_block bordered">
-                                    <div class="form_row"><h2 class="blue">Контакты</h2></div>
-                                    <table class="sheet_simple">
-                                        {% for i in company_contacts %}
-                                        <tr>
-                                            <td>
-                                               <input type="checkbox" name="company_contact_id"
-                                            {% for oc in object_contacts %}
-                                                {% if oc.company_contact.id == i.id %}
-                                                    value="{{ i.id }}" checked
-                                                {% endif %}
-                                            {% endfor %}
-                                            value="{{ i.id }}" >
-                                            {% if i.contact.person.id %}
-                                                <a href="/persons/{{ i.contact.person_id }}/card" class="textlink">{{ i.contact.person.nick_name }}</a></td><td>{{ i.role|default_if_none:"" }}</td>
-                                            {% else %}
-                                                без персоны</td>
-                                            {% endif %}
-                                            <td>+7 {{ i.contact.phonenumber }} </td>
-                                            <td>{{ i.comment }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </table>
+                                    <div class="form_row"><h2 class="blue">Контрагент</h2></div>
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
                                 </div>
                             </div>
                             <div class="form_row">
