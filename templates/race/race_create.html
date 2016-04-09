@@ -8,10 +8,11 @@
 {% block content %}
 <script>
         $(document).ready(function() {
+            var selected_company, selected_contragent;
+
             $('select#select2_client').select2({
-                //   "language": { "noResults": function(){ return "No Resultsrr Found <a href='#' class='btn btn-danger'>Use it anyway</a>"; }},
                 "language": "ru",
-                placeholder: "объект не указан",
+                placeholder: "клиент не выбран",
                 allowClear: true,
                 ajax: {
                     url: "/company/api/clients/",
@@ -26,46 +27,97 @@
                     processResults: function (data) {
                         return {
                             results: $.map(data.results, function (item) {
-                                {# console.log("Obj: " + item.name + " Type: " + item.type.pk);#}
                                 return {
                                     text: item.name,
-                                    id: item.pk,
-                                    type: item.org_type.pk,
-                                    comment: item.comment
-                                }
-                            })
+                                    id: item.id,
+                                    comment: item.comment,
+                                    type: item.org_type.pk
+                                }})};}},
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 2,
+            }).on("change", function(e) {
+                /* изменение */
+                var $this = $(this);
+                var selected_id = $this.val();
+                if (selected_id) {
+                    /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
+                    selected_company = selected_id;
+                    /* "включить" селект контрагента */
+                    $('select#select2_contragent').prop('disabled', false);
+                    /* "включить" селект объекта */
+                    $('select#select2_object').prop('disabled', false);
+                } else {
+                    selected_company = null;
+                    $('select#select2_contragent').prop('disabled', true).select2("val", "");
+                    $('select#select2_object').prop('disabled', true).select2("val", "");
+                }
+            });
+
+            $('select#select2_contragent')
+                .prop('disabled', true)
+                .select2({
+                "language": {
+                           "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}
+                           },
+                placeholder: "контрагент не выбран",
+                allowClear: true,
+                ajax: {
+                    url: "/contragents/api/contragents_list/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page,
+                            company: selected_company
                         };
                     },
-                },
-                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-                minimumInputLength: 1,
-                templateResult: formatResults, // omitted for brevity, see the source of this page
-{#                templateSelection: formatRepoSelection // omitted for brevity, see the source of this page#}
-            });
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.pk
+                                }})};}},
+                minimumInputLength: 0,
+                escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+
+            $('select#select2_object')
+                .prop('disabled', true)
+                .select2({
+                "language": {
+                           "noResults": function(){ return "объекты для клиента не найдены. <a href='/objects/company/"+ selected_company +"/object_create/' class='textlink'>добавить?</a>";}
+                           },
+                placeholder: "объект не выбран",
+                allowClear: true,
+                ajax: {
+                    url: "/objects/api/objects_rest/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page,
+                            company: selected_company
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.pk
+                                }})};}},
+                minimumInputLength: 0,
+                escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+
         });
-
-    function formatResults (result) {
-        if (result.loading) return result.text;
-        var markup;
-        var icon_image = '';
-        if (result.type == '1') {
-            icon_image = '';
-        } else if (result.type == '2') {
-            icon_image = '';
-        }
-        var comment = "<span>" + result.comment + "</span>";
-        if (result.comment == '') {
-            comment = '';
-        }
-
-            markup = "<div class='select2_result_wrapper'> \
-                        <legend><i class='icon' icon='"+ icon_image + "'></i>" + result.text + "</legend>" + comment + "</div>";
-        return markup;
-    }
-    function formatRepoSelection (results) {
-        return results.name || results.text;
-    }
-
 </script>
 <style>
 select.select2_powered {
@@ -117,11 +169,23 @@ div.select2_result_wrapper > span > i {
                                 <div class="flex_block _zero">
                                     <div class="form_row"><h2 class="blue">Клиент</h2></div>
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
+                                    {#  информация о клиение #}
+                                    <!--
+                                    <div class="form_row">
+                                        <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
+                                    </div> -->
                                 </div>
                                 <div class="flex_block bordered">
                                     <div class="form_row"><h2 class="blue">Контрагент</h2></div>
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
                                 </div>
+                            </div>
+                            <div class="flex_row">
+                                <div class="flex_block">
+                                    <div class="form_row"><h2 class="blue">Объект</h2></div>
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.object  %}</div>
+                                </div>
+                                <div class="flex_block"></div>
                             </div>
                             <div class="form_row">
                                 <span class="button_block">

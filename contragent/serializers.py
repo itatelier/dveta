@@ -36,7 +36,7 @@ class ContragentsFilters(django_filters.FilterSet):
 
     class Meta:
         model = Contragents
-        fields = ['id', 'name', 'type', 'group', 'inn', 'comment']
+        fields = ['id', 'name', 'company', 'type', 'group', 'inn', 'comment']
 
 
 

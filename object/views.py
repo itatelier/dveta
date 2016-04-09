@@ -38,6 +38,13 @@ class ObjectsListingViewSet(ObjectsViewSet):
     queryset = Objects.objects.filter(type__pk=3).select_related('type', 'company', 'address', 'company__client_options', 'company__status', 'company__org_type', 'company__rel_type')
 
 
+class ObjectsContactsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, )
+    queryset = ObjectContacts.objects.all()
+    serializer_class = ObjectContactsSerializer
+    filter_class = ObjectContactsFilters
+
+
 class ClientObjectsView(LoginRequiredMixin, TemplateView):
     template_name = 'company/company_objects.html'
 

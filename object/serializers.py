@@ -43,4 +43,19 @@ class ObjectFilters(django_filters.FilterSet):
 
     class Meta:
         model = Objects
-        fields = ['name', 'name_ac', 'type', 'company__name', 'address__street']
+        fields = ['name', 'name_ac', 'type', 'company__name', 'address__street', 'company' ]
+
+
+class ObjectContactsSerializer(serializers.ModelSerializer):
+    object = ObjectsSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = ObjectContacts
+        fields = ['company_contact', 'object']
+
+
+class ObjectContactsFilters(django_filters.FilterSet):
+
+    class Meta:
+        model = ObjectContacts
+        fields = ['object',]
