@@ -4,6 +4,8 @@
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+
 {% endblock %}
 {% block content %}
 <script>
@@ -115,10 +117,45 @@
                 escapeMarkup: function (markup) {
                         return markup;
                     }
+                }).on("change", function(e) {
+                    /* изменение */
+                    var $this = $(this);
+                    var selected_id = $this.val();
+                    console.log("Object selected id=" + selected_id);
+                    /* выводим перечень контактов для объекта*/
+                    if (selected_id) {
+                        $.ajax({
+                            tape: 'POST',
+                            url:  '/objects/api/objects_contacts_rest/',
+                            dataType: 'json',
+                            data: { 'object': selected_id }
+                        })
+                        .done(function(result) {
+                             if (result.results && result.results.length > 0) {
+                                 for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                                     var el = result.results[i];
+                                     var tr = Mustache.to_html($('#tmpl_contacts_table').html(), el);
+                                     $('#object_contacts_table').append(tr);
+                                     console.log("Res " + el.company_contact.id);
+                                 }
+                             }
+
+                        });
+                    }
+
                 });
 
         });
 </script>
+{# Шаблон таблицы контактов#}
+<script type="text/template" id="tmpl_contacts_table">{% verbatim %}
+<tr data-id="{{ company_contact.id }}">
+    <td></td>
+    <td><input type="checkbox" name="object_contact" value="{{ company_contact.id }}" checked=checked>{{ company_contact.contact.person.nick_name }}</td>{% endif %}
+    <td>+7 {{ company_contact.contact.phonenumber }} </td>
+    <td>{{ company_contact.comment }}</td>
+</tr>
+</script>{% endverbatim %}
 <style>
 select.select2_powered {
     width: 300px;
@@ -166,8 +203,11 @@ div.select2_result_wrapper > span > i {
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <div class="data_grid_medium">
                             <div class="flex_row">
-                                <div class="flex_block _zero">
+                                <div class="flex_block _zero m10">
                                     <div class="form_row"><h2 class="blue">Клиент</h2></div>
+                                    <!-- display -->
+                                    {{ qs }}
+                                    <!-- display -->
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
                                     {#  информация о клиение #}
                                     <!--
@@ -175,17 +215,26 @@ div.select2_result_wrapper > span > i {
                                         <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
                                     </div> -->
                                 </div>
-                                <div class="flex_block bordered">
+                                <div class="flex_block bordered m10">
                                     <div class="form_row"><h2 class="blue">Контрагент</h2></div>
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
                                 </div>
                             </div>
                             <div class="flex_row">
-                                <div class="flex_block">
+                                <div class="flex_block _zero m10">
                                     <div class="form_row"><h2 class="blue">Объект</h2></div>
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.object  %}</div>
                                 </div>
-                                <div class="flex_block"></div>
+                                <div class="flex_block bordered m10">
+                                    <div class="form_row"><h2 class="blue">Контакты на объекте</h2></div>
+                                    <div class="form_row">
+                                        <table class="sheet_simple">
+                                            <tbody id="object_contacts_table">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form_row">
                                 <span class="button_block">

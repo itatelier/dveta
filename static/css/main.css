@@ -27,7 +27,7 @@ div.flex_block._zero {
 }
 
 div.flex_block.bordered {
-    border-left: 1px solid grey;
+    border-left: 1px solid #ccc;
     padding-left: 30px;
 }
 div.sheet_block_mini {

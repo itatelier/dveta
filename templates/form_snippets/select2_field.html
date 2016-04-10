@@ -1,7 +1,20 @@
 <div class="input_wrapper">
     <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
     <div class="input_block {% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
-        {{ field }}
+        <select name="{{ field.name }}" class="select2_powered" id="select2_client">
+            <option value="">аааа</option>
+        </select>
+        {% for choice in field.choices %}
+            {{ choice.0 }}0={{ choice.1 }}1=
+        {% endfor %}<br>
+        data: {{ field.data }}
+        0.1    {{field.choices.0.1}}
+
+
+        0.0    {{field.choices.0.1}}
+1.1    {{field.choices.1.1}}
+
+        1.0    {{field.choices.1.1}}
         {% for error in field.errors %}
         <em>{{ error|escape }}</em>
         {% endfor %}

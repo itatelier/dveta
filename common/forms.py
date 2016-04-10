@@ -126,3 +126,24 @@ class RuDateWidget(DateTimeInput):
 class RadioRendererSimple(RadioSelect.renderer):
     def render(self):
             return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+
+def replace_modelchoicesfields_data(form, fields):
+    '''
+    Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
+    вместо QuerySet добавляем Choices с единичной записью
+    '''
+    for field in fields:
+        form.fields[field].queryset = form.fields[field].queryset.none()
+        field_data_object = form.cleaned_data[field]
+        form.fields[field].choices = [(field_data_object.id, field_data_object.name), ]
+    return form
+
+
+def none_modelchoicesfields_querysets(form, fields):
+    '''
+    Для перечисленных полей устанавливаем queryset None
+    '''
+    for field in fields:
+        form.base_fields[field].queryset = form.base_fields[field].queryset.none()
+    return form

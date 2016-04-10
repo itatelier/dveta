@@ -23,16 +23,30 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
     form_class = RaceCreateForm
     model = Races
 
+    def get_form_class(self):
+        form = none_modelchoicesfields_querysets(self.form_class, ('company',))
+        return form
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RaceCreateView, self).get_context_data(*args, **kwargs)
+        form = self.form_class
+        context_data.update({
+            'formdict': "hz"
+        })
+        return context_data
+
     def get_success_url(self):
         return reverse('car_card', args=(self.object.id,))
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+        form.fields["company"].queryset = Companies.objects.all()
         if form.is_valid():
             race_object = form.save(commit=False)
             race_object.save()
             self.success_url = '/races/%s/card' % race_object.id
             return HttpResponseRedirect(self.success_url)
         else:
+            form = replace_modelchoicesfields_data(form, ('company', ))
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form))

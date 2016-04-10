@@ -3,7 +3,7 @@
 from django.contrib.auth.models import User, Group
 from models import *
 from company.models import *
-from company.serializers import CompanyClientsSerializer, AddressSerializer
+from company.serializers import *
 from person.models import Employies
 from rest_framework import serializers
 from rest_framework import viewsets, generics, filters
@@ -47,7 +47,8 @@ class ObjectFilters(django_filters.FilterSet):
 
 
 class ObjectContactsSerializer(serializers.ModelSerializer):
-    object = ObjectsSerializer(many=False, read_only=True)
+    # object = ObjectsSerializer(many=False, read_only=True)
+    company_contact = CompanyContactsSerializer(many=False, read_only=True)
 
     class Meta:
         model = ObjectContacts

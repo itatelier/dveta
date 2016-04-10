@@ -19,13 +19,14 @@ from django.core.validators import RegexValidator
 
 
 pay_way_choices = [('1', 'Наличная'), ('2', 'Безналичная')]
-empty_choices = [('empty_value', 'empty_label'), ]
+# empty_choices = [('empty_value', 'empty_label'), ]
 
 
 class RaceCreateForm(ModelForm):
-
-    company = ModelChoiceFieldNoOpt(
+# ModelChoiceFieldNameLabel
+    company = ModelChoiceFieldNameLabel(
         queryset=Companies.objects.all(),
+        label_field='name',
         label="Наименование",
         help_text="наименование клиента",
         # label_field="name",
