@@ -23,9 +23,11 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
     form_class = RaceCreateForm
     model = Races
 
-    def get_form_class(self):
-        form = none_modelchoicesfields_querysets(self.form_class, ('company',))
-        return form
+    def get(self, *args, **kwargs):
+        # form = self.form_class
+        self.object = None
+        form = none_modelchoicesfields_querysets(self.form_class, ('company', 'contragent', 'place'))
+        return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RaceCreateView, self).get_context_data(*args, **kwargs)
@@ -41,12 +43,14 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         form.fields["company"].queryset = Companies.objects.all()
+        form.fields["contragent"].queryset = Contragents.objects.all()
+        form.fields["place"].queryset = Objects.objects.all()
         if form.is_valid():
             race_object = form.save(commit=False)
             race_object.save()
             self.success_url = '/races/%s/card' % race_object.id
             return HttpResponseRedirect(self.success_url)
         else:
-            form = replace_modelchoicesfields_data(form, ('company', ))
+            form = replace_modelchoicesfields_data(form, ('company', 'contragent', 'place'))
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form))

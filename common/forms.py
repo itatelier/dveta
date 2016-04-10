@@ -129,21 +129,21 @@ class RadioRendererSimple(RadioSelect.renderer):
 
 
 def replace_modelchoicesfields_data(form, fields):
-    '''
-    Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
-    вместо QuerySet добавляем Choices с единичной записью
-    '''
+    # Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
+    # вместо QuerySet добавляем Choices с единичной записью
     for field in fields:
         form.fields[field].queryset = form.fields[field].queryset.none()
-        field_data_object = form.cleaned_data[field]
-        form.fields[field].choices = [(field_data_object.id, field_data_object.name), ]
+        field_data_object = form.cleaned_data.get(str(field), None)
+        if field_data_object:
+            field_data_object = form.cleaned_data[field]
+            form.fields[field].choices = [(field_data_object.id, field_data_object.name), ]
+        else:
+            form.fields[field].choices = [('', ''), ]
     return form
 
 
 def none_modelchoicesfields_querysets(form, fields):
-    '''
-    Для перечисленных полей устанавливаем queryset None
-    '''
+    # Для перечисленных полей устанавливаем queryset None
     for field in fields:
         form.base_fields[field].queryset = form.base_fields[field].queryset.none()
     return form

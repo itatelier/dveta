@@ -26,10 +26,10 @@ class RaceCreateForm(ModelForm):
 # ModelChoiceFieldNameLabel
     company = ModelChoiceFieldNameLabel(
         queryset=Companies.objects.all(),
+        empty_label=None,
         label_field='name',
         label="Наименование",
         help_text="наименование клиента",
-        # label_field="name",
         required=True,
         widget=Select(attrs={
             'size': 2,
@@ -38,8 +38,10 @@ class RaceCreateForm(ModelForm):
             })
         )
 
-    contragent = ModelChoiceFieldNoOpt(
+    contragent = ModelChoiceFieldNameLabel(
         queryset=Contragents.objects.all(),
+        label_field='name',
+        empty_label=None,
         label="Наименование",
         help_text="наименование контрагента",
         required=True,
@@ -49,8 +51,10 @@ class RaceCreateForm(ModelForm):
             'id': "select2_contragent"
         }))
 
-    object = ModelChoiceFieldNoOpt(
-        queryset=Contragents.objects.all(),
+    place = ModelChoiceFieldNameLabel(
+        queryset=Objects.objects.all(),
+        label_field='name',
+        empty_label=None,
         label="Наименование объекта",
         required=True,
         widget=Select(attrs={
@@ -60,8 +64,8 @@ class RaceCreateForm(ModelForm):
         }))
 
 
-    race_type = ModelChoiceFieldNameLabel(queryset=RaceTypes.objects.all(), label="Вид работ", empty_label=None, label_field='val')
     cargo_type = ModelChoiceFieldNameLabel(queryset=RaceCargoTypes.objects.all(), label="Тип груза", empty_label=None, label_field='val')
+    race_type = ModelChoiceFieldNameLabel(queryset=RaceTypes.objects.all(), label="Вид работ", empty_label=None, label_field='val')
 
     price = IntegerField(label="Цена", help_text="цена вывза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())

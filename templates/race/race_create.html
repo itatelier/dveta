@@ -10,7 +10,12 @@
 {% block content %}
 <script>
         $(document).ready(function() {
-            var selected_company, selected_contragent;
+            var selected_company = '{{ form.company.value }}';
+            var selected_contragent;
+
+            if (!$('select#select2_client').val()) {
+                $('select#select2_contragent').prop('disabled', true)
+            }
 
             $('select#select2_client').select2({
                 "language": "ru",
@@ -56,7 +61,6 @@
             });
 
             $('select#select2_contragent')
-                .prop('disabled', true)
                 .select2({
                 "language": {
                            "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}
@@ -88,7 +92,6 @@
                 });
 
             $('select#select2_object')
-                .prop('disabled', true)
                 .select2({
                 "language": {
                            "noResults": function(){ return "объекты для клиента не найдены. <a href='/objects/company/"+ selected_company +"/object_create/' class='textlink'>добавить?</a>";}
@@ -202,12 +205,10 @@ div.select2_result_wrapper > span > i {
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <div class="data_grid_medium">
+                            {# ----------------- КЛИЕНТ ------------------ #}
                             <div class="flex_row">
                                 <div class="flex_block _zero m10">
                                     <div class="form_row"><h2 class="blue">Клиент</h2></div>
-                                    <!-- display -->
-                                    {{ qs }}
-                                    <!-- display -->
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
                                     {#  информация о клиение #}
                                     <!--
@@ -220,22 +221,35 @@ div.select2_result_wrapper > span > i {
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
                                 </div>
                             </div>
+                            {# ----------------- ОБЪЕКТ ------------------- #}
                             <div class="flex_row">
                                 <div class="flex_block _zero m10">
                                     <div class="form_row"><h2 class="blue">Объект</h2></div>
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.object  %}</div>
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.place  %}</div>
                                 </div>
                                 <div class="flex_block bordered m10">
                                     <div class="form_row"><h2 class="blue">Контакты на объекте</h2></div>
                                     <div class="form_row">
-                                        <table class="sheet_simple">
-                                            <tbody id="object_contacts_table">
-
-                                            </tbody>
-                                        </table>
+                                        <table class="sheet_simple"><tbody id="object_contacts_table"></tbody></table>
                                     </div>
                                 </div>
                             </div>
+                            {# ----------------- УСЛОВИЯ ------------------- #}
+                            <div class="flex_row">
+                                <div class="flex_block _zero m10">
+                                    <div class="form_row"><h2 class="blue">Состав заявки</h2></div>
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.cargo_type  %}
+                                    </div>
+                                </div>
+                                <div class="flex_block bordered m10">
+                                    <div class="form_row"><h2 class="blue">Параметры заявки</h2></div>
+                                    <div class="form_row">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# --------------------------------------------- #}
                             <div class="form_row">
                                 <span class="button_block">
                                     <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
