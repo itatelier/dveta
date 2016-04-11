@@ -166,6 +166,7 @@ div.input_block._inline > label { display: inline-block;}
 div.input_block._inline > label > input {
     position: relative;
     top: 2px;
+    margin-right: 4px;
 }
 div.input_block._inline > label > p {
     display: inline-block;
@@ -174,7 +175,7 @@ div.input_block._inline > label > p {
     cursor: pointer;
 }
 div.input_block._inline > input[type=text] {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 div.input_block._icon:after {
     width: 1.8rem;

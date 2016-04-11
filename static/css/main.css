@@ -25,6 +25,10 @@ div.flex_row > div.top_header { flex: 1 0 auto; }
 div.flex_block._zero {
     flex: 0 0 auto;
 }
+div.flex_block._half {
+    min-width: 450px;
+    flex: 0 0 auto !important;
+}
 
 div.flex_block.bordered {
     border-left: 1px solid #ccc;

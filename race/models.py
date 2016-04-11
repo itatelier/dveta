@@ -8,7 +8,7 @@ class RaceTypes(models.Model):
     val = models.CharField(max_length=200L, null=False, blank=False)
 
     class Meta:
-        db_table = 'bunker_types'
+        db_table = 'race_types'
         verbose_name_plural = 'Рейсы / Типы рейсов'
 
     def __unicode__(self):
@@ -45,7 +45,7 @@ class Races(models.Model):
     pay_way = models.BooleanField()
     paid = models.BooleanField()
 
-    hodkis = models.IntegerField(null=False, blank=False, editable=True)
+    hodkis = models.DecimalField(null=False, max_digits=2, decimal_places=1, blank=False, editable=True)
 
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=True, blank=True, editable=True, )
     bunker_qty = models.IntegerField(null=False, blank=False, editable=True)

@@ -19,6 +19,7 @@ from django.core.validators import RegexValidator
 
 
 pay_way_choices = [('1', 'Наличная'), ('2', 'Безналичная')]
+hodki_choices = [('1', '1'), ('1.5', '1.5'), ('2', '2')]
 # empty_choices = [('empty_value', 'empty_label'), ]
 
 
@@ -65,11 +66,13 @@ class RaceCreateForm(ModelForm):
 
 
     cargo_type = ModelChoiceFieldNameLabel(queryset=RaceCargoTypes.objects.all(), label="Тип груза", empty_label=None, label_field='val')
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
+
+    date_race = DateTimeField(label="Дата рейса")
     race_type = ModelChoiceFieldNameLabel(queryset=RaceTypes.objects.all(), label="Вид работ", empty_label=None, label_field='val')
+    hodkis = DecimalField(label="Ходки", required=False, widget=Select(choices=hodki_choices, attrs={'size': 1, 'style': 'min-width:6rem;'}))
 
     price = IntegerField(label="Цена", help_text="цена вывза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
-    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
-    hodkis = IntegerField(label="Ходки", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
     bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label="Тип бункеров", empty_label=None, label_field='type')
     bunker_qty = IntegerField(label="Количество", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
