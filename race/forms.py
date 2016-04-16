@@ -17,9 +17,13 @@ from django.forms.utils import ErrorList
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
+from common.utils import DateNowInput
+
+
 
 pay_way_choices = [('1', 'Наличная'), ('2', 'Безналичная')]
 hodki_choices = [('1', '1'), ('1.5', '1.5'), ('2', '2')]
+qty_choices = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')]
 # empty_choices = [('empty_value', 'empty_label'), ]
 
 
@@ -65,17 +69,21 @@ class RaceCreateForm(ModelForm):
         }))
 
 
-    cargo_type = ModelChoiceFieldNameLabel(queryset=RaceCargoTypes.objects.all(), label="Тип груза", empty_label=None, label_field='val')
-    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
+    bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label="Тип бункеров", empty_label=None, label_field='val')
+    bunker_qty = IntegerField(label="Количество", required=True, initial=1, widget=Select(choices=qty_choices, attrs={'size': 1, 'style': 'min-width:6rem;'}))
 
-    date_race = DateTimeField(label="Дата рейса")
+    cargo_type = ModelChoiceFieldNameLabel(queryset=RaceCargoTypes.objects.all(), label="Тип груза", empty_label=None, label_field='val', widget=Select(attrs={'size': 1, 'style': 'min-width:6rem;'}))
+
+    date_race = DateTimeField(label="Дата рейса", initial=DateNowInput())
     race_type = ModelChoiceFieldNameLabel(queryset=RaceTypes.objects.all(), label="Вид работ", empty_label=None, label_field='val')
     hodkis = DecimalField(label="Ходки", required=False, widget=Select(choices=hodki_choices, attrs={'size': 1, 'style': 'min-width:6rem;'}))
 
-    price = IntegerField(label="Цена", help_text="цена вывза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+    price = IntegerField(label="Цена", help_text="цена вывоза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
-    bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label="Тип бункеров", empty_label=None, label_field='type')
-    bunker_qty = IntegerField(label="Количество", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
+
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
+    summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 1, 'style': 'min-width:6rem;'}))
+    recommendation = CharField(label="Примечание к рейсу", required=False, widget=Textarea(attrs={'rows': 2, 'cols': 40}))
 
     dump = ModelChoiceFieldNameLabel(queryset=Dumps.objects.all(), label="Полигон", empty_label=None, label_field='name')
     dump_pay_type = BooleanField(label="Плата за полигон",)
@@ -83,6 +91,7 @@ class RaceCreateForm(ModelForm):
     cash_extra = IntegerField(label="Доп. расход", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     dump_cash_comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
     dump_comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 40}))
+
 
     class Meta:
         model = Races

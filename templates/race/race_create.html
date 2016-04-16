@@ -258,14 +258,9 @@ div.select2_result_wrapper > span > i {
                                 <div class="flex_block _half m10">
                                     <div class="form_row"><h2 class="blue">Состав заявки</h2></div>
                                     <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.bunker_type  %}
+                                        {% include "form_snippets/textinput.html" with field=form.bunker_qty  %}
                                         {% include "form_snippets/textinput.html" with field=form.cargo_type  %}
-                                        <div class="input_wrapper">
-                                            <div class="input_block _inline">
-                                                <legend>Форма оплаты</legend>
-                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != 'True' %}checked{% endif %}>Наличная</label>
-                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == 'True' %}checked{% endif %}>Безналичная</label>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="flex_block bordered m10">
@@ -282,7 +277,28 @@ div.select2_result_wrapper > span > i {
                                     </div>
                                 </div>
                             </div>
-
+                            {# ----------------- ОПЛАТА ------------------- #}
+                            <div class="flex_row">
+                                <div class="flex_block _half m10">
+                                    <div class="form_row"><h2 class="blue">Оплата</h2></div>
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.summ  %}
+                                        <div class="input_wrapper">
+                                            <div class="input_block _inline">
+                                                <legend>Форма оплаты</legend>
+                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != 'True' %}checked{% endif %}>Наличная</label>
+                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == 'True' %}checked{% endif %}>Безналичная</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex_block bordered m10">
+                                    <div class="form_row"><h2 class="blue">Рекомендации</h2></div>
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.recommendation  %}
+                                    </div>
+                                </div>
+                            </div>
                             {# --------------------------------------------- #}
                             <div class="form_row">
                                 <span class="button_block">

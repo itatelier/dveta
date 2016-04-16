@@ -1,5 +1,5 @@
 <div class="input_wrapper">
-    <legend>{{ field.label }}<p>{{ field.help_text }}</p></legend>
+    <legend>{{ field.label }}{% if field.help_text %}<p>{{ field.help_text }}</p>{% endif %}</legend>
     <div class="input_block {% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
         {{ field }}
         {% for error in field.errors %}

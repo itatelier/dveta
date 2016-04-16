@@ -20,7 +20,7 @@ class RaceCargoTypes(models.Model):
     val = models.CharField(max_length=200L, null=False, blank=False)
 
     class Meta:
-        db_table = 'bunker_types'
+        db_table = 'race_cargo_types'
         verbose_name_plural = 'Рейсы / Типы груза'
 
     def __unicode__(self):
@@ -56,6 +56,7 @@ class Races(models.Model):
     cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     dump_cash_comment = models.CharField(max_length=200L, null=True, blank=True)
     dump_comment = models.CharField(max_length=200L, null=True, blank=True)
+    recommendation = models.TextField(blank=True)
 
     date_add = models.DateTimeField(auto_now_add=True)
 

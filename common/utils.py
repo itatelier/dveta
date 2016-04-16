@@ -28,6 +28,11 @@ def DateTimeNowToSql():
     return now.strftime('%Y-%m-%d %H:%M:%S')
 
 
+def DateNowInput():
+    now = datetime.datetime.now()
+    return now.strftime('%d-%m-%Y')
+
+
 def GetObjectOrNone(model, **kwargs):
     try:
         return model.objects.get(**kwargs)

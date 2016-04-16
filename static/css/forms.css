@@ -85,7 +85,9 @@ a.hidden {
     display: inline-block;
     text-decoration: none;
 }
-div.form_row { display: flex; padding: 0.5rem 0; }
+div.form_row { display: flex;
+    padding: 0.5rem 0;
+}
 
 div.form_row legend {
     display: block;
@@ -103,9 +105,9 @@ div.form_row legend > p {
     margin: 0 0 0 10px;
     border-left: 1px solid #cbcfc9;
 }
-div.form_row > h2 { display: block; padding: 1rem 0 0.5rem 0; }
+div.form_row > h2 { display: block; padding: 0.5rem 0 0.5rem 0; }
 
-div.input_wrapper {  margin: 0 1.5rem; }
+div.input_wrapper {  margin: 0 1rem; }
 div.input_wrapper.nomargin {  margin: 0; }
 div.input_wrapper._half {
     flex: 1 0 auto;
