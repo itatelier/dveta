@@ -21,6 +21,7 @@
             var selected_object = '{{ form.place.value }}';
 
         {#    Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
         $('input[name=date_race]').datetimepicker({
             format:'d-m-Y',
             timepicker: false,
