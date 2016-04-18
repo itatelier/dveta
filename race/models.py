@@ -32,8 +32,8 @@ class Races(models.Model):
     car = models.ForeignKey('car.Cars', null=True, blank=True, editable=True, )
     driver = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, )
 
-    company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True,)
-    contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True, editable=True,)
+    company = models.ForeignKey('company.Companies', null=False, blank=False, editable=True,)
+    contragent = models.ForeignKey('contragent.Contragents', null=False, blank=False, editable=True,)
 
     race_type = models.ForeignKey('RaceTypes', null=True, blank=True, editable=True, )
     cargo_type = models.ForeignKey('RaceCargoTypes', null=True, blank=True, editable=True, )
@@ -52,8 +52,8 @@ class Races(models.Model):
 
     dump = models.ForeignKey('dump.Dumps', null=True, blank=True, editable=True, )
     dump_pay_type = models.BooleanField()
-    cash = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
+    dump_cash = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
+    dump_cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     dump_cash_comment = models.CharField(max_length=200L, null=True, blank=True)
     dump_comment = models.CharField(max_length=200L, null=True, blank=True)
     recommendation = models.TextField(blank=True)
@@ -61,7 +61,7 @@ class Races(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'bunker_flow'
+        db_table = 'races'
         verbose_name_plural = 'Рейсы'
 
     def __unicode__(self):

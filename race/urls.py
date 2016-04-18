@@ -17,5 +17,6 @@ urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
     #
     url(r'^create/car/(?P<car_id>\d+)$', RaceCreateView.as_view(), name='race_create'),
+    url(r'^(?P<pk>\d+)/update$', RaceUpdateView.as_view(), name='race_update'),
 )
 

@@ -9,6 +9,7 @@
             <ul>
                 <li><a href="#">Автомобили</a></li>
                 <li class="active" ><a href="#"><b>{{ object.nick_name }}</b> <i> {{ object.reg_num }}</i></a></li>
+                <li class=""><a href="{% url 'race_create' object.pk %}"><i class="icon green" icon=""></i>Новый рейс</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}

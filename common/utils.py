@@ -32,6 +32,9 @@ def DateNowInput():
     now = datetime.datetime.now()
     return now.strftime('%d-%m-%Y')
 
+def DateTimeNowInput():
+    now = datetime.datetime.now()
+    return now.strftime('%d-%m-%Y %H:%M')
 
 def GetObjectOrNone(model, **kwargs):
     try:
