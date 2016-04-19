@@ -76,3 +76,9 @@ class RaceUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self, *args, **kwargs):
         pk = self.kwargs.get('pk', None)
         return "/races/%s/update" % pk
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RaceUpdateView, self).get_context_data(*args, **kwargs)
+        race_pk = self.kwargs.get('pk', None)
+        context_data['race'] = Races.objects.get(pk=race_pk)
+        return context_data

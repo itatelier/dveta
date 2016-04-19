@@ -223,7 +223,7 @@ div.select2_result_wrapper > span > i {
         <div class="breadcrumbs">
             <ul>
                 <li><a href="{#% url 'company_list_clients' %#}">Рейсы</a></li>
-                <li class="active" ><a href="#">Новый рейс</a></li>
+                <li class="active" ><a href="#">Рейс {{ race.id }}</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -234,8 +234,8 @@ div.select2_result_wrapper > span > i {
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
                     <ul><li><a href="#" class="active">
-                            {% if forms.address.instance %}Основная информация
-                            {% else %}Новый объект
+                            {% if form.instance %}Детали рейса
+                            {% else %}Новый рейс
                             {% endif %}
                             </a></li></ul><hr>
                 </div>
@@ -244,39 +244,51 @@ div.select2_result_wrapper > span > i {
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <div class="data_grid_medium" style="">
                             {# ----------------- КЛИЕНТ ------------------ #}
-                            <h2 class="blue">Параметры рейса</h2>
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Клиент</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
-                                    {#  информация о клиение #}
-                                    <!--
-                                    <div class="form_row">
-                                        <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
-                                    </div> -->
+                            <div class="flex_row __dark">
+                                <div class="values_block _header_top">
+                                    <span><em class="rose">рейс ID</em><p>{{ race.id }}</p></span>
                                 </div>
-                                <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Контрагент</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
+                                <div class="values_block _header_top">
+                                    <span><em class="rose">клиент</em><p>{{ race.company.name }}</p></span>
                                 </div>
+                                <div class="values_block _header_top">
+                                    <span><em class="rose">контрагент</em><p>{{ race.contragent.name }}</p></span>
+                                </div>
+                                <div class="values_block _header_top">
+                                    <span><em class="rose">объект</em><p>{{ race.object.name }}</p></span>
+                                </div>
+                            </div>
+                            <div class="flex_row m10">
+                                <span class="m10">
+                                    Назначенный водитель: <a href="#" class="textlink"> <b>{{ race.driver.person.nick_name }} </b>{{ race.driver.person.family_name }}</a>
+                                </span>
                             </div>
                             {# ----------------- ОБЪЕКТ ------------------- #}
                             <div class="flex_row">
                                 <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Объект</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.place  %}</div>
+                                    <h2 class="blue">Объект</h2>
+                                    <table class="sheet_simple">
+                                        <tr><td>Наименование объекта:</td><td><a href="{% url 'object_card' race.object.id %}" class="textlink"><b>{{ race.object.name }}</b></a></td></tr>
+                                        <tr><td>Адрес:</td><td><b>{{ race.object.address.city }}, {{ race.object.address.street }} {{ race.object.address.app }}</b></td></tr>
+                                        {% if race.object.address.comment %}
+                                        <tr><td>Примечание к адресу:</td><td>{{ race.object.address.comment }}</td></tr>
+                                        {% endif %}
+                                    </table>
                                 </div>
                                 <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Контакты на объекте</h2>#}
+                                    <h2 class="blue">Контакты на объекте</h2>
                                     <div class="form_row">
-                                        <table class="sheet_simple"><tbody id="object_contacts_table"></tbody></table>
+                                        <table class="sheet_simple">
+                                            <tbody id="object_contacts_table">
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                             {# ----------------- УСЛОВИЯ ------------------- #}
                             <div class="flex_row">
                                 <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Состав заявки</h2>#}
+                                    <h2 class="blue">Состав заявки</h2>
                                     <div class="form_row">
                                         {% include "form_snippets/textinput.html" with field=form.bunker_type  %}
                                         {% include "form_snippets/textinput.html" with field=form.bunker_qty  %}
@@ -284,12 +296,12 @@ div.select2_result_wrapper > span > i {
                                     </div>
                                 </div>
                                 <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Параметры заявки</h2>#}
+                                    <h2 class="blue">Параметры заявки</h2>
                                 <div class="form_row">
                                         <div class="input_wrapper">
                                             <legend>Дата рейса</legend>
                                             <div class="input_block _inline _icon" icon="">
-                                                <input type="text" size="11" name="date_race" class="" value="{{ form.date_race.value }}">
+                                                <input type="text" size="11" name="date_race" class="" value="{{ form.date_race.value|date:'d-m-Y' }}">
                                             </div>
                                         </div>
                                         {% include "form_snippets/textinput.html" with field=form.race_type  %}
@@ -306,8 +318,8 @@ div.select2_result_wrapper > span > i {
                                         <div class="input_wrapper">
                                             <div class="input_block _inline">
                                                 <legend>Форма оплаты</legend>
-                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != 'True' %}checked{% endif %}>Наличная</label>
-                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == 'True' %}checked{% endif %}>Безналичная</label>
+                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != True %}checked{% endif %}>Наличная</label>
+                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == True %}checked{% endif %}>Безналичная</label>
                                             </div>
                                         </div>
                                     </div>
@@ -328,9 +340,9 @@ div.select2_result_wrapper > span > i {
                                         {% include "form_snippets/textinput.html" with field=form.dump  %}
                                         <div class="input_wrapper">
                                             <div class="input_block _inline">
-                                                <legend>Форма оплаты</legend>
-                                                <label><input type="radio" name="dump_pay_type" value="False" {% if form.dump_pay_type.value != 'True' %}checked{% endif %}>Талон</label>
-                                                <label><input type="radio" name="dump_pay_type" value="True" {% if form.dump_pay_type.value == 'True' %}checked{% endif %}>Наличные</label>
+                                                <legend>Форма оплаты </legend>
+                                                <label><input type="radio" name="dump_pay_type" value="False" {% if form.dump_pay_type.value != True %}checked{% endif %}>Талон</label>
+                                                <label><input type="radio" name="dump_pay_type" value="True" {% if form.dump_pay_type.value == True %}checked{% endif %}>Наличные</label>
                                             </div>
                                         </div>
                                         {% include "form_snippets/textinput.html" with field=form.dump_cash  %}

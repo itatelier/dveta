@@ -40,6 +40,7 @@ h2 {
 form { margin: 0.5rem 2rem; width: 100%;}
 .green { color: #74BA12 !important; }
 .red { color: #FE659C !important; }
+.rose { color: #FE659C !important; }
 .blue { color: #009DDA !important; }
 .alert { color: #FF0E0E;}
 .gray { color: #cbcfc9;}
@@ -354,7 +355,7 @@ footer {
 
 div.sheet div.data_grid_medium {
     flex: 1 0 auto;
-    padding: 1rem 1rem 1rem 4rem;
+    padding: 0 1rem 1rem 4rem;
     margin: 0 0 0 1rem;
 }
 div.sheet div.data_grid_listing {
@@ -545,4 +546,8 @@ div.values_block > span > p { font-weight: bold; font-size: 2.0rem; line-height:
 div.values_block > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; color: #9CAEB9;}
 div.values_block > span > textarea { display: block; margin-top: 5px;  }
 
+div.values_block._header_top > span > p { line-height: 1.8rem;  }
 
+.__dark {
+    background-color: #ddd;
+}
