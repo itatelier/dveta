@@ -13,6 +13,7 @@ from models import *
 # from phones.models import *
 from person.forms import *
 from forms import *
+from serializers import *
 from contragent.models import *
 from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
@@ -81,4 +82,34 @@ class RaceUpdateView(LoginRequiredMixin, UpdateView):
         context_data = super(RaceUpdateView, self).get_context_data(*args, **kwargs)
         race_pk = self.kwargs.get('pk', None)
         context_data['race'] = Races.objects.get(pk=race_pk)
+        return context_data
+
+
+class RacesViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = Races.objects.select_related(
+        'race_type',
+        'cargo_type',
+        'company',
+        'contragent',
+        'object',
+        'car',
+        'driver',
+        'dump',
+        'bunker_type',
+    )
+    serializer_class = RaceSerializer
+    search_fields = ('object__name', 'object__street')
+    filter_class = RaceFilters
+    ordering_fields = ('car', 'driver__nick', 'company__name', 'contragent__name')
+
+
+class RacesListView(LoginRequiredMixin, TemplateView):
+    template_name = 'race/list_races.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RacesListView, self).get_context_data(*args, **kwargs)
+        # context_data['objects'] = BunkerFlow.objects.by_company_id(company_pk)
+        # context_data['company'] = Companies.objects.get(pk=company_pk)
+        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
         return context_data

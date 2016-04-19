@@ -48,11 +48,6 @@ class ObjectsContactsViewSet(viewsets.ModelViewSet):
 class ClientObjectsView(LoginRequiredMixin, TemplateView):
     template_name = 'company/company_objects.html'
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super(ClientObjectsView, self).get_context_data(*args, **kwargs)
-    #     company_pk = self.kwargs.get('company_pk', None)
-    #     context_data['objects_and_remains'] = Objects.objects.list_bunker_remains(company_pk)
-    #     return context_data
     def get_context_data(self, *args, **kwargs):
         context_data = super(ClientObjectsView, self).get_context_data(*args, **kwargs)
         company_pk = self.kwargs.get('company_pk', None)

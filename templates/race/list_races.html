@@ -1,0 +1,114 @@
+ {% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+
+<script>
+    var JsonDataUrl = "/races/api/races_rest/";
+    var req_preprocess_result = "1";
+
+    $(document).ready(function() {
+        list_data_api();
+
+        {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');
+
+        {#    Сортировка по заголовкам столбцов   #}
+        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
+
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('object_id');
+            var url = "/objects/" + id +"/card/";
+            document.location.href = url;
+        });
+
+    });
+
+        {#  постобработка результата AJAX запроса #}
+        function preprocess_result(result) {
+            {# подсветка фрагментов текста в соответствии с параметром поиска #}
+            var search_string = $('input[name=search]').val();
+            result.results = highlight_search_results(result.results, search_string);
+
+{#            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {#}
+{#                 изменение формата даты #}
+{#                result.results[i].date_add = date_json2hr(result.results[i].date_add);#}
+{#            }#}
+        }
+</script>
+{# Шаблон основной таблицы #}
+<script type="text/template" id="tmpl_table">{% verbatim %}
+    <tr data-object_id="{{ pk }}">
+        <td>{{{ name }}}</td>
+        <td>{{{ comment }}}</td>
+        <td>{{{ company.name }}}</td>
+        <td>{{{ address.city }}}, {{{ address.street }}} {{{ address.app }}}</td>
+        <!-- replace -->
+    </tr>
+</script>{% endverbatim %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="left_bar">
+                    {# Форма сортировки данных #}
+                    <form method="post" name="params_form" id="params_form">
+                        {# скрытые фильтры #}
+                        <input type="hidden" name="ordering" value="id"/>
+                        <input type="hidden" name="offset" value="0"/>
+                        <input type="hidden" name="limit" value="20"/>
+                        {# отображенные фильтры #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Поиск</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15" class="loading" name="search">
+                                </div>
+                            </div>
+                        </div>
+                        {# блок кнопок #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <div class="input_block">
+                                    <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
+                                    <a href="#" class="button" onclick="list_data_api();">Найти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {# - Форма сортировки данных #}
+                </div>
+                <div class="data_grid_listing">
+                    {# Основная таблица данных #}
+                    <table class="listing_grid">
+                        <thead class="">
+                            <tr>
+                                <th><a href="#" class="" rel="">Наименование</a></th>
+                                <th><a href="#" class="" rel="">Примечание</a></th>
+                                <th><a href="#" class="" rel="">Клиент</a></th>
+                                <th><a href="#" class="" rel="">Адрес</a></th>
+                            </tr>
+                        </thead>
+                        <tbody id="datatable" class="">
+                        </tbody>
+                    </table>
+                    {# - Основная таблица данных #}
+                    {# Панель управления таблицей #}
+                    {% include 'listing_bottom_navbar.html' %}
+                    {# - Панель управления таблицей #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
