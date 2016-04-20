@@ -14,7 +14,7 @@ from dump.serializers import *
 
 from person.models import Employies
 from rest_framework import serializers
-from rest_framework import viewsets, generics, filters
+from rest_framework import viewsets, generics, filters, fields
 import django_filters
 
 
@@ -31,20 +31,21 @@ class RaceCargoTypesSerializer(serializers.ModelSerializer):
 
 
 class RaceSerializer(serializers.ModelSerializer):
-    company = CompanyClientsSerializer(many=False, read_only=True, allow_null=False)
-    contragent = ContragentUlSerializer(many=False, read_only=True, allow_null=False)
-    car = CarsSerizlizer(many=False, read_only=True, allow_null=False)
-    driver = EmployiesSerializer(many=False, read_only=True, allow_null=False)
-    race_type = RaceTypesSerializer(many=False, read_only=True)
-    race_cargo_type = RaceCargoTypesSerializer(many=False, read_only=True)
-    object = ObjectsSerializer(many=False, read_only=True, allow_null=False)
-    bunker_type = BunkerTypesSerializer(many=False, read_only=True, allow_null=False)
-    dump = DumpsSerializer(many=False, read_only=True, allow_null=True, )
+    # company = CompanyClientsSerializer(many=False, read_only=True, allow_null=False)
+    # contragent = ContragentUlSerializer(many=False, read_only=True, allow_null=False)
+    # car = CarsSerizlizer(many=False, read_only=True, allow_null=False)
+    # driver = EmployiesSerializer(many=False, read_only=True, allow_null=False)
+    # race_type = RaceTypesSerializer(many=False, read_only=True)
+    # cargo_type = RaceCargoTypesSerializer(many=False, read_only=True)
+    # object = ObjectsSerializer(many=False, read_only=True, allow_null=False)
+    # bunker_type = BunkerTypesSerializer(many=False, read_only=True, allow_null=False)
+    # dump = DumpsSerializer(many=False, read_only=True, allow_null=True, )
+    driver = DriverSerializer(read_only=True)
 
     class Meta:
         model = Races
         depth = 1
-        nested_depth = 1
+        # nested_depth = 1
         fields = ('pk',
                   'company',
                   'contragent',
@@ -52,7 +53,7 @@ class RaceSerializer(serializers.ModelSerializer):
                   'car',
                   'driver',
                   'race_type',
-                  'race_cargo_type',
+                  'cargo_type',
 
                   'price',
                   'summ',

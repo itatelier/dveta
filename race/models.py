@@ -65,4 +65,4 @@ class Races(models.Model):
         verbose_name_plural = 'Рейсы'
 
     def __unicode__(self):
-        return u'[%s] %s %s' % (self.id, self.date, self.qty)
+        return u'[%s]' % self.id

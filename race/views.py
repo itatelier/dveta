@@ -97,6 +97,29 @@ class RacesViewSet(viewsets.ModelViewSet):
         'driver',
         'dump',
         'bunker_type',
+        # 'employies'
+    ).prefetch_related(
+        'driver__status',
+        'driver__person'
+        # 'company__status',
+        # 'object__type',
+        # 'driver__person',
+        # 'contragent__type',
+        # 'contragent__group',
+        # 'dump__group',
+        # 'company__org_type',
+        # 'company__attr_source',
+        # 'company__client_options',
+        # 'company__rel_type',
+        # 'car__model',
+        # 'car__status',
+        # 'object__address',
+        # 'object__company',
+        # 'contragent__company',
+        # 'car__unit_group',
+        # 'car__docs',
+        # 'car__fuel_type',
+        # 'driver__roles'
     )
     serializer_class = RaceSerializer
     search_fields = ('object__name', 'object__street')
