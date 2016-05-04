@@ -133,11 +133,11 @@ function ResetFormDefault(formname) {
     return false;
 }
 
-    function input_autocomplite(input_name, url, model_name, field_name, filter_type){
+    function input_autocomplite(input_name, url, model_name, field_name, filter_type, model_manager){
         var $input = $('input[name=' + input_name+ ']');
         $input.autocomplete({
             source: function(request, response){
-                $.ajax({ url: url, dataType: "json", data: { query: request.term, model: model_name, field: field_name, filter_type: filter_type}})
+                $.ajax({ url: url, dataType: "json", data: { query: request.term, model: model_name, field: field_name, filter_type: filter_type, model_manager: model_manager}})
                         .done(function(result)  {
                             var suggestions = [];
                             if (result.data && result.data.length > 0) {

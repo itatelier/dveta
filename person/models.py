@@ -111,6 +111,14 @@ class Employies(models.Model):
         return u'[%s] %s' % (self.id, self.role)
 
 
+class Driverss(Employies):
+    objects = EmployeeAllDefaultManager()
+
+    class Meta:
+        verbose_name_plural = 'Водители'
+        db_table = 'employies'
+
+
 class UnitGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=200L, null=False, blank=False)

@@ -20,7 +20,7 @@
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
-        input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains');
+        input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains', 'objects');
         {#    Виджет datepicker #}
         $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
         {#    Сортировка по заголовкам столбцов   #}

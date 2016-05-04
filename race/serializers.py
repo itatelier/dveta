@@ -77,8 +77,9 @@ class RaceSerializer(serializers.ModelSerializer):
 
 
 class RaceFilters(django_filters.FilterSet):
-    # name_ac = django_filters.CharFilter(name="name", lookup_type='icontains')
-    # date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
+    driver_family_name_ac = django_filters.CharFilter(name="driver__person__family_name", lookup_type='icontains')
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
+    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='lte')
     # request_freq = django_filters.NumberFilter(name="client_options__request_freq")
 
     class Meta:
@@ -86,6 +87,7 @@ class RaceFilters(django_filters.FilterSet):
         fields = [
             'company',
             'contragent',
+            'bunker_type',
             'object',
             'car',
             'driver',

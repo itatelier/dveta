@@ -352,10 +352,10 @@ class JsonViewMix(View):
         if self.login_required and not request.user.is_authenticated():
             return redirect_to_login(request.path)
         if self.check(request):
-            self.prepare()
+            self.prepare(request)
         return HttpResponse(self.to_json(), content_type='text/plain')
 
-    def prepare(self, *args, **kwargs):
+    def prepare(self, request, *args, **kwargs):
         '''
         Метод для подготовки в наследуемых классах
         '''

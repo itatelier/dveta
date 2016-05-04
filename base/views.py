@@ -40,18 +40,27 @@ class PlaygroundForms(TemplateView):
 
 
 class AutoCompliteJsonView(JsonViewMix):
-    param_names = ['model', 'field', 'query', 'filter_type']
+    param_names = ['model', 'field', 'query', 'filter_type', 'model_manager']
 
-    def prepare(self, *args, **kwargs):
+    # тут параметр 'model_manager' нужен для того, что бы иметь возможность задать Queryset точнее
+    # Менеджер по умолчанию для любой модели это 'objects'
+
+    def prepare(self, request, *args, **kwargs):
         model_param_value = self.values['model']
         try:
             model = apps.get_model(*model_param_value.split('.'))
         except LookupError:
             self.errors.append("Model \'%s\' not found!" % model_param_value)
             return
-        log.info("Model param value: %s model: %s" % (model_param_value, model))
+        # log.info("Model param value: %s model: %s" % (model_param_value, model))
         field = self.values['field']
-        qs = model.objects.values_list(field)
+        default_model_manager = 'objects'
+        queryset_manager = default_model_manager
+        param_model_manager = self.values['model_manager']
+        if param_model_manager:
+            queryset_manager = param_model_manager
+        qs = getattr(model, queryset_manager)
+        qs = qs.values_list(field)
         if self.values['query']:
             sort_criteria = self.values['field'] + self.values['filter_type']
             sort_value = self.values['query']

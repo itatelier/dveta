@@ -3,6 +3,11 @@
 {% block add_static %}
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
 <!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+
+
 {% endblock %}
 {% block content %}
 
@@ -15,6 +20,9 @@
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
 {#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
 
         {#    Сортировка по заголовкам столбцов   #}
@@ -44,31 +52,31 @@
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-object_id="{{ pk }}">
-        <td width="40">{{{ date_race.date }}}</td>
+        <td width="100">{{{ date_race.date }}}</td>
         <td>{{{ driver.person.family_name}}} {{ driver.person.given_bame }}{{{ driver.person.nick_name }}}</td>
-        <td>{{{ car.nick_name }}}</td>
+        <td width="80">{{{ car.nick_name }}}</td>
         <td>{{{ company.name }}}</td>
         <td>{{{ object.name }}}</td>
-        <td>
+        <td width="90" class="centertext">
             <div class="bunker">
                 <div class="type">{{{ bunker_type.val }}}</div><div class="qty">{{{ bunker_qty }}}</div>
             </div>
         </td>
-        <td>{{{ race_type.val }}}</td>
-        <td>{{{ hodkis }}}</td>
-        <td>{{{ summ }}}</td>
-        <td>{{#pay_way }} <i class="dot">•</i> {{/pay_way}}</td>
-        <td>{{#paid }} <i class="dot">•</i> {{/paid}}</td>
+        <td width="100" class="centertext">{{{ race_type.val }}}</td>
+        <td width="70" class="centertext">{{{ hodkis }}}</td>
+        <td width="80" >{{{ summ }}}</td>
+        <td width="30" class="centertext">{{#pay_way }}<i class="dot">•</i>{{/pay_way}}</td>
+        <td width="30" class="centertext">{{#paid }}<i class="icon green" icon=""></i>{{/paid}}</td>
         <td>{{{ dump.name }}}</td>
-        <td>{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
-        <td>{{{ dump_cash }}}</td>
-        <td>{{{ dump_cash_extra }}}</td>
+        <td width="30" class="centertext">{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
+        <td width="90" class="centertext">{{{ dump_cash }}}</td>
+        <td width="90" class="centertext">{{{ dump_cash_extra }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Картотека</a></li></ul>
+            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -76,6 +84,45 @@
             {# Рабочий лист #}
             <div class="sheet">
                 <div class="data_grid_listing">
+                    {# Блок фильтрации #}
+                    <div class="flex_row">
+                        <div class="flex_block _zero">
+                            <div class="form_row">
+                                <div class="input_wrapper ">
+                                    <legend>Начиная с даты</legend>
+                                    <div class="input_block _icon" icon="">
+                                        <input type="text" size="15" name="date_after" id="" class="hasDatepicker">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form_row">
+                                <div class="input_wrapper">
+                                    <legend>Дата окончания периода</legend>
+                                    <div class="input_block _icon" icon="">
+                                        <input type="text" size="15" name="date_before" id="" class="hasDatepicker">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex_block _zero">
+                            <div class="form_row">
+                                <div class="input_wrapper ">
+                                    <legend>Водитель<p>фамилия</p></legend>
+                                    <div class="input_block">
+                                        <input type="text" size="15" name="driver_family_name_ac" id="" class="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form_row">
+                                <div class="input_wrapper">
+                                    <legend>Автомобиль<p>ник</p></legend>
+                                    <div class="input_block">
+                                        <input type="text" size="15" name="date_after" id="" class="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {# Основная таблица данных #}
                     <table class="listing_grid">
                         <thead class="">
@@ -85,11 +132,16 @@
                                 <th><a href="#" class="" rel="">Машина</a></th>
                                 <th><a href="#" class="" rel="">Клиент</a></th>
                                 <th><a href="#" class="" rel="">Объект</a></th>
-                                <th><a href="#" class="" rel="">Бункер</a></th>
+                                <th><a href="#" class="centertext" rel="">Бункер</a></th>
                                 <th><a href="#" class="" rel="">Тип рейса</a></th>
-                                <th><a href="#" class="" rel="">Ходки</a></th>
-                                <th><a href="#" class="" rel="">Клиент</a></th>
-                                <th><a href="#" class="" rel="">Клиент</a></th>
+                                <th><a href="#" class="centertext" rel="">Ходки</a></th>
+                                <th><a href="#" class="" rel="">Сумма</a></th>
+                                <th><a href="#" class="centertext" rel="">б/н</a></th>
+                                <th><a href="#" class="centertext" rel="">О</a></th>
+                                <th><a href="#" class="" rel="">Полигон</a></th>
+                                <th><a href="#" class="centertext" rel="">Т</a></th>
+                                <th><a href="#" class="centertext" rel="">Нал</a></th>
+                                <th><a href="#" class="centertext" rel="">Доп</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">
