@@ -45,7 +45,7 @@ class Races(models.Model):
     pay_way = models.BooleanField()
     paid = models.BooleanField()
 
-    hodkis = models.DecimalField(null=False, max_digits=2, decimal_places=1, blank=False, editable=True)
+    hodkis = models.DecimalField(null=False, max_digits=2, decimal_places=0, blank=False, editable=True)
 
     bunker_type = models.ForeignKey('bunker.BunkerTypes', null=True, blank=True, editable=True, )
     bunker_qty = models.IntegerField(null=False, blank=False, editable=True)

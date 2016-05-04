@@ -59,6 +59,7 @@ class RaceSerializer(serializers.ModelSerializer):
                   'summ',
                   'pay_way',
                   'paid',
+                  'hodkis',
 
                   'bunker_type',
                   'bunker_qty',
@@ -67,6 +68,7 @@ class RaceSerializer(serializers.ModelSerializer):
                   'dump_pay_type',
                   'dump_cash',
                   'dump_cash_comment',
+                  'dump_cash_extra',
                   'dump_comment',
                   'recommendation',
                   'date_race',

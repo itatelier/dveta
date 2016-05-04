@@ -15,7 +15,7 @@
         list_data_api();
 
         {#    Автоподсказка для поля сортировки #}
-        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
 
         {#    Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
@@ -35,19 +35,34 @@
             var search_string = $('input[name=search]').val();
             result.results = highlight_search_results(result.results, search_string);
 
-{#            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {#}
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
 {#                 изменение формата даты #}
-{#                result.results[i].date_add = date_json2hr(result.results[i].date_add);#}
-{#            }#}
+                result.results[i].date_race = date_json2hr(result.results[i].date_race);
+            }
         }
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-object_id="{{ pk }}">
-        <td>{{{ name }}}</td>
-        <td>{{{ comment }}}</td>
+        <td width="40">{{{ date_race.date }}}</td>
+        <td>{{{ driver.person.family_name}}} {{ driver.person.given_bame }}{{{ driver.person.nick_name }}}</td>
+        <td>{{{ car.nick_name }}}</td>
         <td>{{{ company.name }}}</td>
-        <td>{{{ address.city }}}, {{{ address.street }}} {{{ address.app }}}</td>
+        <td>{{{ object.name }}}</td>
+        <td>
+            <div class="bunker">
+                <div class="type">{{{ bunker_type.val }}}</div><div class="qty">{{{ bunker_qty }}}</div>
+            </div>
+        </td>
+        <td>{{{ race_type.val }}}</td>
+        <td>{{{ hodkis }}}</td>
+        <td>{{{ summ }}}</td>
+        <td>{{#pay_way }} <i class="dot">•</i> {{/pay_way}}</td>
+        <td>{{#paid }} <i class="dot">•</i> {{/paid}}</td>
+        <td>{{{ dump.name }}}</td>
+        <td>{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
+        <td>{{{ dump_cash }}}</td>
+        <td>{{{ dump_cash_extra }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -60,43 +75,21 @@
             <div class="left_border"><span class="upblock"></span></div>
             {# Рабочий лист #}
             <div class="sheet">
-                <div class="left_bar">
-                    {# Форма сортировки данных #}
-                    <form method="post" name="params_form" id="params_form">
-                        {# скрытые фильтры #}
-                        <input type="hidden" name="ordering" value="id"/>
-                        <input type="hidden" name="offset" value="0"/>
-                        <input type="hidden" name="limit" value="20"/>
-                        {# отображенные фильтры #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Поиск</legend>
-                                <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" class="loading" name="search">
-                                </div>
-                            </div>
-                        </div>
-                        {# блок кнопок #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <div class="input_block">
-                                    <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
-                                    <a href="#" class="button" onclick="list_data_api();">Найти</a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    {# - Форма сортировки данных #}
-                </div>
                 <div class="data_grid_listing">
                     {# Основная таблица данных #}
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="" rel="">Наименование</a></th>
-                                <th><a href="#" class="" rel="">Примечание</a></th>
+                                <th><a href="#" class="" rel="">Дата</a></th>
+                                <th><a href="#" class="" rel="">Водитель</a></th>
+                                <th><a href="#" class="" rel="">Машина</a></th>
                                 <th><a href="#" class="" rel="">Клиент</a></th>
-                                <th><a href="#" class="" rel="">Адрес</a></th>
+                                <th><a href="#" class="" rel="">Объект</a></th>
+                                <th><a href="#" class="" rel="">Бункер</a></th>
+                                <th><a href="#" class="" rel="">Тип рейса</a></th>
+                                <th><a href="#" class="" rel="">Ходки</a></th>
+                                <th><a href="#" class="" rel="">Клиент</a></th>
+                                <th><a href="#" class="" rel="">Клиент</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

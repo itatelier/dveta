@@ -36,7 +36,7 @@
                         </div>
                         <div class="values_block">
                             <span><p>{% if object.client_options.request_freq == 1 %}разовый{% elif object.client_options.request_freq == 2 %}постоянный{% endif %}</p><em>частота заказов</em></span>
-                            <span><p>{{ object.date_add }}</p><em>дата добавления</em></span>
+                            <span><p>{{ object.date_add|date:"d-m-Y" }}</p><em>дата добавления</em></span>
                         </div>
                         <div class="values_block">
                             <span><p>{% if object.client_options.pay_condition == 1 %}по постановке{% elif object.client_options.pay_condition == 2 %}по вывозу{% endif %}</p><em>условия оплаты</em></span>

@@ -201,22 +201,22 @@ div.bunker {
 
 div.bunker > div.type {
     display: inline-block;
-    border-top: 1px solid #9CAEB9;
+    /*border-top: 1px solid #9CAEB9;*/
     border-left: 1px solid #9CAEB9;
-    border-bottom: 1px solid #9CAEB9;
-    border-radius: 6px;
-    padding: 3px 15px 3px 7px;
+    /*border-bottom: 1px solid #9CAEB9;*/
+    /*border-radius: 6px;*/
+    padding: 0px 15px 0px 7px;
     background-color: #EEE;
     color: #999;
 }
 
 div.bunker > div.qty {
     display: inline-block;
-    border-top: 1px solid #9CAEB9;
+    /*border-top: 1px solid #9CAEB9;*/
     border-right: 1px solid #9CAEB9;
-    border-bottom: 1px solid #9CAEB9;
-    border-radius: 6px;
-    padding: 3px 7px 3px 7px;
+    /*border-bottom: 1px solid #9CAEB9;*/
+    /*border-radius: 6px;*/
+    padding: 0px 7px 0px 7px;
     background-color: #FFC;
     margin-left: -10px;
     border-bottom-left-radius: 0px;
@@ -226,3 +226,10 @@ div.bunker > div.qty {
 }
 
 
+i.dot {
+    font-style: normal;
+    font-size: 2.4rem;
+    line-height: 1.2rem;
+    display: block;
+    height: 1rem;;
+}
