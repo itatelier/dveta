@@ -78,8 +78,8 @@ class RaceSerializer(serializers.ModelSerializer):
 
 class RaceFilters(django_filters.FilterSet):
     driver_family_name_ac = django_filters.CharFilter(name="driver__person__family_name", lookup_type='icontains')
-    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
-    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='lte')
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='gte')
+    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='lte')
     # request_freq = django_filters.NumberFilter(name="client_options__request_freq")
 
     class Meta:

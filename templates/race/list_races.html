@@ -6,6 +6,8 @@
 <!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
 
 
 {% endblock %}
@@ -18,6 +20,13 @@
 
     $(document).ready(function() {
         list_data_api();
+
+        {#  Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[rel=datetimepicker]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
 
         {#    Автоподсказка для поля сортировки #}
         input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');
@@ -86,42 +95,62 @@
                 <div class="data_grid_listing">
                     {# Блок фильтрации #}
                     <div class="flex_row">
-                        <div class="flex_block _zero">
-                            <div class="form_row">
-                                <div class="input_wrapper ">
-                                    <legend>Начиная с даты</legend>
-                                    <div class="input_block _icon" icon="">
-                                        <input type="text" size="15" name="date_after" id="" class="hasDatepicker">
+                    {# Форма сортировки данных #}
+                        <form method="post" name="params_form" id="params_form" class="flex nomargin">
+                            {# скрытые фильтры #}
+                            <input type="hidden" name="ordering" value="id"/>
+                            <input type="hidden" name="offset" value="0"/>
+                            <input type="hidden" name="limit" value="20"/>
+                            {# отображенные фильтры #}
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper ">
+                                        <legend>Начиная с даты</legend>
+                                        <div class="input_block _icon" icon="">
+                                            <input type="text" size="15" name="date_after" id="" rel="datetimepicker">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Дата окончания периода</legend>
+                                        <div class="input_block _icon" icon="">
+                                            <input type="text" size="15" name="date_before" id="" rel="datetimepicker">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form_row">
-                                <div class="input_wrapper">
-                                    <legend>Дата окончания периода</legend>
-                                    <div class="input_block _icon" icon="">
-                                        <input type="text" size="15" name="date_before" id="" class="hasDatepicker">
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper ">
+                                        <legend>Водитель<p>фамилия</p></legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="driver_family_name_ac" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Автомобиль<p>ник</p></legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="" id="" class="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex_block _zero">
-                            <div class="form_row">
-                                <div class="input_wrapper ">
-                                    <legend>Водитель<p>фамилия</p></legend>
-                                    <div class="input_block">
-                                        <input type="text" size="15" name="driver_family_name_ac" id="" class="">
+                            <div class="flex_block flex flex_vcentered m10">
+                            {# блок кнопок #}
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <div class="input_block">
+                                            <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
+                                            <a href="#" class="button" onclick="list_data_api();">Найти</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form_row">
-                                <div class="input_wrapper">
-                                    <legend>Автомобиль<p>ник</p></legend>
-                                    <div class="input_block">
-                                        <input type="text" size="15" name="date_after" id="" class="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
+                        {# - Форма сортировки данных #}
                     </div>
                     {# Основная таблица данных #}
                     <table class="listing_grid">
