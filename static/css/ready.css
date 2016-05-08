@@ -54,6 +54,7 @@ form { margin: 0.5rem 2rem; width: 100%;}
     overflow: auto;
     height: 600px;
 }
+.fullwidth { width: 100%; }
 .none { display: none; }
 
 .no_lr_margin {

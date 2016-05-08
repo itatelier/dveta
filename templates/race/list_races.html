@@ -40,7 +40,7 @@
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
             var id = $(this).data('object_id');
-            var url = "/objects/" + id +"/card/";
+            var url = "/races/" + id +"/update";
             document.location.href = url;
         });
 
@@ -152,6 +152,33 @@
                                         <legend>Объект</legend>
                                         <div class="input_block">
                                             <input type="text" size="15" name="object_name" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <legend>Тип бункера</legend>
+                                        <div class="input_block">
+                                            <select name="bunker_type">
+                                                <option value="">любой</option>
+                                                {% for i in bunker_types %}
+                                                    <option value="{{ i.id }}">{{ i.val }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <legend>Форма оплаты</legend>
+                                        <div class="input_block">
+                                            <select name="pay_way">
+                                                <option value="">любая</option>
+                                                <option value="False">Наличная</option>
+                                                <option value="True">Безналичная</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

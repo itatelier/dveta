@@ -132,7 +132,7 @@ class RacesListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RacesListView, self).get_context_data(*args, **kwargs)
-        # context_data['objects'] = BunkerFlow.objects.by_company_id(company_pk)
+        context_data['bunker_types'] = BunkerTypes.objects.all()
         # context_data['company'] = Companies.objects.get(pk=company_pk)
         # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
         return context_data

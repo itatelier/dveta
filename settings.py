@@ -61,6 +61,8 @@ INSTALLED_APPS = (
     'bunker',
     'dump',
     'race',
+    'dds',
+    'workday'
 )
 
 MIDDLEWARE_CLASSES = (

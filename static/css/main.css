@@ -35,7 +35,7 @@ div.flex_block.bordered {
     padding-left: 30px;
 }
 div.sheet_block_mini {
-    flex:  1 0 300px;
+    flex:  1 0 auto;
     padding: 1rem;
     margin: 1rem;
 }

@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^objects/', include('object.urls')),
     url(r'^bunkers/', include('bunker.urls')),
     url(r'^races/', include('race.urls')),
+    url(r'^workday/', include('workday.urls')),
 
     # Admin
     # url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
