@@ -31,6 +31,7 @@ class ModelChoiceFieldNameLabel(ModelChoiceField):
 
 class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
     formconf = None
+    form_classes = None
 
     def get_form_classes(self):
         form_classes = {}
@@ -60,6 +61,7 @@ class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
         return kwargs
 
     def get_forms(self):
+
         return dict(
             [(classname, params['formclass'](**self.get_form_kwargs(classname))) for classname, params in self.formconf.items()])
 
@@ -74,6 +76,13 @@ class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
             raise ImproperlyConfigured(
                 "No URL to redirect to. Provide a success_url.")
         return url
+
+    def get_context_data(self, **kwargs):
+        if 'forms' not in kwargs:
+            kwargs['forms'] = self.get_forms()
+        if 'view' not in kwargs:
+            kwargs['view'] = self
+        return kwargs
 
 
 class MultiFormEdit(MultiFormCreate):
