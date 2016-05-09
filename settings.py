@@ -1,5 +1,5 @@
-"""
-"""
+# -*- coding: utf8 -*
+
 SECRET_KEY = 'l-9&@u1xkcm6-(+4^@*&$_)*tz*!7fllj$1vh#abfeyl*83+qu'
 DEBUG = True
 
@@ -42,6 +42,7 @@ LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 INSTALLED_APPS = (
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +51,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_extensions',
     'debug_toolbar',
-    'suit',
     'rest_framework',
     'common',
     # 'dummyapp',
@@ -126,7 +126,42 @@ LOGGING = {
 
 WSGI_APPLICATION = 'wsgi.application'
 
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': 'Вета админ',
+    # 'HEADER_DATE_FORMAT': 'l, j. F Y',
+    # 'HEADER_TIME_FORMAT': 'H:i',
 
+    # forms
+    # 'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    # 'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    # 'SEARCH_URL': '/admin/auth/user/',
+    # 'MENU_ICONS': {
+    #    'sites': 'icon-leaf',
+    #    'auth': 'icon-lock',
+    # },
+    # 'MENU_OPEN_FIRST_CHILD': True, # Default True
+    # 'MENU_EXCLUDE': ('auth.group',),
+    'MENU': (
+        'sites',
+        {'label': u'Компании', 'app': 'company', },
+        {'label': u'Контрагенты', 'app': 'contragent', },
+        {'label': u'Персоны', 'app': 'person', },
+        {'label': u'Объекты', 'app': 'object', },
+        {'label': u'Бункеры', 'app': 'bunker', },
+        {'label': u'Авто', 'app': 'car', },
+        {'label': u'Рейсы', 'app': 'race', },
+        {'label': u'Деньги', 'app': 'dds', },
+        {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
+        {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
+        {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
+    ),
+
+    # misc
+    # 'LIST_PER_PAGE': 15
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
