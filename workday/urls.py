@@ -11,11 +11,11 @@ from rest_framework import routers
 # router.register(r'cars_rest', CarsViewSet)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     # url(r'^api/', include(router.urls)),
     #
     url(r'^races/$', WdRacesView.as_view(), name='workday_races'),
-)
+]
 

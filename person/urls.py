@@ -12,7 +12,7 @@ router.register(r'contacts_search_json', GetContactViewSet)
 router.register(r'employies_rest', EployiesViewSet)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
@@ -29,5 +29,5 @@ urlpatterns = patterns('',
     url(r'^employee_create/$', EmployeeCreateView.as_view(), name='employee_create'),
     url(r'^employies_list/$', EmployiesListView.as_view(), name='employies_list'),
 
-)
+]
 

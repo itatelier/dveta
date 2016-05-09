@@ -11,8 +11,8 @@ router = routers.DefaultRouter()
 router.register(r'companies', CompanyViewSet)
 router.register(r'dummy_flow', DummyFlowViewSet, 'Flow')
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^listing/$', DummyListingIndex.as_view(), name='dummy_listing'),
     url(r'^api/', include(router.urls)),
-)
+]
 

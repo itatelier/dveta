@@ -15,7 +15,7 @@ router.register(r'clients', CompanyClientsViewSet)
 router.register(r'company_contacts', CompanyContactsViewSet)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # #  REST API
     url(r'^api/', include(router.urls)),
@@ -54,5 +54,5 @@ urlpatterns = patterns('',
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<contragent_pk>\d+)/bank/(?P<pk>\d+)/card', contragent_bank_card.as_view(), name=base_path + '_contragent_bank_card'),
     # url(r'^(?P<company_pk>\d+)/contragent/(?P<contragent_pk>\d+)/bank/(?P<pk>\d+)/edit', contragent_bank_edit.as_view(), name=base_path + '_contragent_bank_edit'),
     # url(r'^bank_acc/(?P<pk>\d+)/delete', contragent_bank_delete.as_view(), name=base_path + '_contragent_bank_delete'),
-)
+]
 

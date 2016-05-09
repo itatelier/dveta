@@ -11,7 +11,7 @@ router = routers.DefaultRouter()
 router.register(r'races_rest', RacesViewSet,)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
@@ -20,5 +20,5 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/update$', RaceUpdateView.as_view(), name='race_update'),
     url(r'^list/$', RacesListView.as_view(), name='races_list'),
 
-)
+]
 

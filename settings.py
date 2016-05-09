@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_extensions',
     'debug_toolbar',
+    'suit',
     'rest_framework',
     'common',
     # 'dummyapp',

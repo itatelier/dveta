@@ -10,7 +10,7 @@ router = routers.DefaultRouter()
 router.register(r'contragents_list', ContragentsViewSet)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
@@ -29,5 +29,5 @@ urlpatterns = patterns('',
     # url(r'^phones_list/$', phones_list_index.as_view(), name=base_path + '_phones_list'),
     # url(r'^phones/', phones_list_json.as_view(), name=base_path + '_phones_list_json'),
     # url(r'^(?P<company_pk>\d+)/branch/(?P<branch_pk>\d+)/phones/edit$', branch_phones_manage.as_view(), name=base_path + '_branch_phones_manage'),
-)
+]
 

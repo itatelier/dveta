@@ -13,7 +13,7 @@ router.register(r'objects_contacts_rest', ObjectsContactsViewSet)
 router.register(r'objects_rest_type_clients', ObjectsListingViewSet)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
@@ -22,5 +22,5 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/card/$', ObjectCardView.as_view(), name='object_card'),
     url(r'^company/(?P<company_pk>\d+)/object_create/$', ObjectCreateView.as_view(), name='object_create'),
     url(r'^company/(?P<company_pk>\d+)/(?P<pk>\d+)/update/$', ObjectUpdateView.as_view(), name='object_update'),
-)
+]
 

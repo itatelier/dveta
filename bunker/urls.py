@@ -11,7 +11,7 @@ router = routers.DefaultRouter()
 router.register(r'bunker_flow_rest', BunkerFlowViewSet,)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
@@ -21,5 +21,5 @@ urlpatterns = patterns('',
     url(r'^remains_report/$', BunkerFlowRemainsReportView.as_view(), name='bunker_remains_report'),
     url(r'^flow_add_op/$', BunkerOperationCreateView.as_view(), name='bunker_flow_add_op'),
 
-)
+]
 
