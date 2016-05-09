@@ -4,6 +4,7 @@ from django.db import models
 from person.models import Employies
 from contragent.models import Contragents
 
+
 class DdsItemGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=False, blank=False)
@@ -21,6 +22,7 @@ class DdsItems(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     item_group = models.ForeignKey('DdsItemGroups', null=False, blank=False)
     name = models.CharField(max_length=255L, null=False, blank=False)
+    direction_type = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'dds_items'

@@ -16,10 +16,10 @@ def validate_phone(value):
 
 
 class PersonUpdateForm(ModelForm):
-    family_name = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    given_name = CharField(label="Имя", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    middle_name = CharField(label="Отчество", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    nick_name = CharField(label="Прозвище / Nick", required=False, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}))
+    family_name = CharField(label="Фамилия", required=True, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
+    given_name = CharField(label="Имя", required=True, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
+    middle_name = CharField(label="Отчество", required=False, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
+    nick_name = CharField(label="Прозвище / Nick", required=False, widget=TextInput(attrs={'size': 15, 'maxlength': 15}))
     date_ofbirth = DateField(label="Дата рождения", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10}))
 
     class Meta:
@@ -28,9 +28,9 @@ class PersonUpdateForm(ModelForm):
 
 
 class PersonEmployeeCreateForm(ModelForm):
-    family_name = CharField(label="Фамилия", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    given_name = CharField(label="Имя", required=True, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
-    nick_name = CharField(label="Прозвище / Nick", required=False, widget=forms.TextInput(attrs={'size': 15, 'maxlength': 15}))
+    family_name = CharField(label="Фамилия", required=True, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
+    given_name = CharField(label="Имя", required=True, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
+    nick_name = CharField(label="Прозвище / Nick", required=False, widget=TextInput(attrs={'size': 15, 'maxlength': 15}))
 
     class Meta:
         model = Persons
@@ -38,7 +38,7 @@ class PersonEmployeeCreateForm(ModelForm):
 
 
 class PersonCompanyCreateForm(ModelForm):
-    nick_name = CharField(label="Контактное лицо", required=True, widget=forms.TextInput(attrs={'size': 25, 'maxlength': 60}), help_text="Фамилия или имя, а лучше все сразу!")
+    nick_name = CharField(label="Контактное лицо", required=True, widget=TextInput(attrs={'size': 25, 'maxlength': 60}), help_text="Фамилия или имя, а лучше все сразу!")
     contact_switch = CharField(max_length=100, widget=HiddenInput, required=False)
     # contact_exist = ChoiceField(choices=CHOICES, widget=RadioSelect())
 
@@ -61,9 +61,9 @@ class PersonCompanyCreateForm(ModelForm):
 
 
 class CompanyContactForm(ModelForm):
-    role = CharField(label="Должность в компании", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 60}))
+    role = CharField(label="Должность в компании", required=False, widget=TextInput(attrs={'size': 20, 'maxlength': 60}))
     email = EmailField(label="E-mail", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 60}))
-    comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 13, 'maxlength': 50}))
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 13, 'maxlength': 50}))
     show_in_card = BooleanField(widget=HiddenInput(), required=False, initial=True)
 
     class Meta:
@@ -82,7 +82,7 @@ class ContactCreateForm(ModelForm):
                 code='invalid_input'
             )],
         required=True,
-        widget=forms.TextInput(attrs={'size': 7, 'maxlength': 10}))
+        widget=TextInput(attrs={'size': 7, 'maxlength': 10}))
 
     class Meta:
         model = Contacts
@@ -92,7 +92,7 @@ class ContactCreateForm(ModelForm):
 class EmployeeEditForm(ModelForm):
     type = ModelChoiceFieldNameLabel(queryset=EmployeeTypes.objects.all(), label_field='val', label="Тип сотрудника", empty_label=None, initial=2)
     role = ModelChoiceFieldNameLabel(queryset=EmployeeRoles.objects.all(), label_field='val', label="Роль сотрудника", empty_label=None, initial=2)
-    comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
 
     class Meta:
         model = Employies

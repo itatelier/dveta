@@ -44,7 +44,7 @@ class BunkerFlowForm(ModelForm):
             'size': 10,
             'class': "select2_powered",
         }))
-    qty = DecimalField(label="Количество", max_digits=10, decimal_places=0, required=True, widget=forms.TextInput(attrs={'size': 6, 'maxlength': 6}))
+    qty = DecimalField(label="Количество", max_digits=10, decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'maxlength': 6}))
     bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label_field="val", label="Тип бункера", empty_label=None)
     operation_type = ModelChoiceFieldNameLabel(queryset=BunkerOperationTypes.objects.all(), label_field="val",label="Операция", empty_label=None)
 

@@ -69,7 +69,7 @@ class AddressUpdateForm(ModelForm):
     postalcode = IntegerField(label="Почтовый код", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     street = CharField(label="Улица", required=True,  widget=TextInput(attrs={'size': 36, 'maxlength': 250}))
     app = CharField(label="Дом, Корпус", required=True, widget=TextInput(attrs={'size': 3}))
-    comment = CharField(label="Примечание к адресу", required=False, widget=forms.Textarea(attrs={'cols': 60, 'rows':1, 'maxlength': 250}))
+    comment = CharField(label="Примечание к адресу", required=False, widget=Textarea(attrs={'cols': 60, 'rows':1, 'maxlength': 250}))
     lat = CharField(required=False, widget=HiddenInput())
     lng = CharField(required=False, widget=HiddenInput())
     # exclude = ('company',)

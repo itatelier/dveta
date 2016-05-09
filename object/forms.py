@@ -16,7 +16,7 @@ log = logging.getLogger('django')
 
 
 class ObjectForm(ModelForm):
-    name = CharField(label="Наименование", help_text="Наименование объекта", required=True, widget=forms.TextInput(attrs={'size': 40, 'maxlength': 200}))
+    name = CharField(label="Наименование", help_text="Наименование объекта", required=True, widget=TextInput(attrs={'size': 40, 'maxlength': 200}))
 
     class Meta:
         model = Objects
@@ -52,7 +52,7 @@ class ObjectForm(ModelForm):
 #             'size': 10,
 #             'class': "select2_powered",
 #         }))
-#     qty = DecimalField(label="Количество", max_digits=10, decimal_places=0, required=False, widget=forms.TextInput(attrs={'size': 6, 'maxlength': 6}))
+#     qty = DecimalField(label="Количество", max_digits=10, decimal_places=0, required=False, widget=TextInput(attrs={'size': 6, 'maxlength': 6}))
 #     bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label_field="val", label="Тип бункера", empty_label=None)
 #     operation_type = ModelChoiceFieldNameLabel(queryset=BunkerOperationTypes.objects.all(), label_field="val",label="Операция", empty_label=None)
 #
@@ -74,9 +74,9 @@ class ObjectForm(ModelForm):
 #
 #
 # class CarCreateForm(ModelForm):
-#     reg_num = CharField(label="Гос. Номер", help_text="Номер государственной регистрации в формате A123BC777", required=True, widget=forms.TextInput(attrs={'size': 10, 'maxlength': 10}))
-#     nick_name = CharField(label="Ник", help_text="Краткое наименование авто", required=True, widget=forms.TextInput(attrs={'size': 10, 'maxlength': 10}))
-#     comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 60, 'maxlength': 60}))
+#     reg_num = CharField(label="Гос. Номер", help_text="Номер государственной регистрации в формате A123BC777", required=True, widget=TextInput(attrs={'size': 10, 'maxlength': 10}))
+#     nick_name = CharField(label="Ник", help_text="Краткое наименование авто", required=True, widget=TextInput(attrs={'size': 10, 'maxlength': 10}))
+#     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
 #     model = ModelChoiceField(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None)
 #     fuel_type = ModelChoiceFieldNameLabel(queryset=CarFuelTypes.objects.all(), label_field='val', label="Тип топлива", empty_label=None)
 #     mechanic = EmployeeChoiceField(queryset=Employies.mechanics.all(), label="Механик", empty_label=None)
@@ -97,12 +97,12 @@ class ObjectForm(ModelForm):
 #
 # class CarDocsForm(ModelForm):
 #     owner = ModelChoiceField(queryset=CarOwners.objects.all(), label="Владелец авто", help_text="владелец авто по регистрационным документам", empty_label=None)
-#     ins_number = CharField(label="Номер полиса", required=False, widget=forms.TextInput(attrs={'size': 10, 'maxlength': 20}))
+#     ins_number = CharField(label="Номер полиса", required=False, widget=TextInput(attrs={'size': 10, 'maxlength': 20}))
 #     ins_date_register = DateField(label="Дата регистрации", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 7, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
 #     ins_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 7, 'maxlength': 10, 'placeholder' :"дд-мм-гггг", 'class': 'icon', 'icon': ''}))
-#     ins_price = DecimalField(label="Стоимость",max_digits=10, decimal_places=0, required=False, widget=forms.TextInput(attrs={'size': 6, 'maxlength': 6}))
-#     ins_comment = CharField(label="Примечание", required=False, widget=forms.TextInput(attrs={'size': 20, 'maxlength': 200}))
-#     to_number = CharField(label="Номер документа", required=False, widget=forms.TextInput(attrs={'size': 10, 'maxlength': 10}))
+#     ins_price = DecimalField(label="Стоимость",max_digits=10, decimal_places=0, required=False, widget=TextInput(attrs={'size': 6, 'maxlength': 6}))
+#     ins_comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 20, 'maxlength': 200}))
+#     to_number = CharField(label="Номер документа", required=False, widget=TextInput(attrs={'size': 10, 'maxlength': 10}))
 #     to_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
 #     rent_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
 #
