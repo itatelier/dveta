@@ -22,7 +22,7 @@ class DdsItems(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     item_group = models.ForeignKey('DdsItemGroups', null=False, blank=False)
     name = models.CharField(max_length=255L, null=False, blank=False)
-    direction_type = models.BooleanField(default=False)
+    direction_type = models.BooleanField(default=False,  editable=True, blank=True)
 
     class Meta:
         db_table = 'dds_items'

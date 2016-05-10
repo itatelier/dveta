@@ -1,0 +1,347 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
+<!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+{#<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>#}
+{#<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>#}
+<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>#}
+{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>#}
+
+{% endblock %}
+{% block content %}
+<script>
+        $(document).ready(function() {
+            var selected_company = '{{ form.company.value }}';
+            var selected_contragent;
+            var selected_object = '{{ form.place.value }}';
+
+        {#    Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[name=date_race]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+
+            {# отключаем селект контрагента, если компания не выбрана #}
+            if (!$('select#select2_client').val()) {
+                $('select#select2_contragent').prop('disabled', true)
+            }
+
+            $('select#select2_client').select2({
+                "language": "ru",
+                placeholder: "клиент не выбран",
+                allowClear: true,
+                ajax: {
+                    url: "/company/api/clients/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id,
+                                    comment: item.comment,
+                                    type: item.org_type.pk
+                                }})};}},
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 2,
+            }).on("change", function(e) {
+                /* изменение */
+                var $this = $(this);
+                var selected_id = $this.val();
+                if (selected_id) {
+                    /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
+                    selected_company = selected_id;
+                    /* "включить" селект контрагента */
+                    $('select#select2_contragent').prop('disabled', false);
+                    /* "включить" селект объекта */
+                    $('select#select2_object').prop('disabled', false);
+                } else {
+                    selected_company = null;
+                    $('select#select2_contragent').prop('disabled', true).select2("val", "");
+                    $('select#select2_object').prop('disabled', true).select2("val", "");
+                }
+            });
+
+            $('select#select2_contragent')
+                .select2({
+                "language": {
+                           "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}
+                           },
+                placeholder: "контрагент не выбран",
+                allowClear: true,
+                ajax: {
+                    url: "/contragents/api/contragents_list/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page,
+                            company: selected_company
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.pk
+                                }})};}},
+                minimumInputLength: 0,
+                escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+
+            $('select#select2_object')
+                .select2({
+                "language": {
+                           "noResults": function(){ return "объекты для клиента не найдены. <a href='/objects/company/"+ selected_company +"/object_create/' class='textlink'>добавить?</a>";}
+                           },
+                placeholder: "объект не выбран",
+                allowClear: true,
+                ajax: {
+                    url: "/objects/api/objects_rest/",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page,
+                            company: selected_company
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.results, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.pk
+                                }})};}},
+                minimumInputLength: 0,
+                escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                }).on("change", function(e) {
+                    /* изменение */
+                    var $this = $(this);
+                    var selected_id = $this.val();
+                    console.log("Object selected id=" + selected_id);
+                    /* выводим перечень контактов для объекта*/
+                    if (selected_id) {
+                        get_object_contacts(selected_id);
+                    }
+
+                });
+            /* получаем список контактов, если объект определен */
+            if (selected_object) {
+                get_object_contacts(selected_object);
+            }
+
+        });
+
+    function get_object_contacts(object_id) {
+                        $.ajax({
+                            tape: 'POST',
+                            url:  '/objects/api/objects_contacts_rest/',
+                            dataType: 'json',
+                            data: { 'object': object_id }
+                        })
+                        .done(function(result) {
+                             if (result.results && result.results.length > 0) {
+                                 var $table_body = $('#object_contacts_table');
+                                     $table_body.empty();
+                                 for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+                                     var el = result.results[i];
+                                     var tr = Mustache.to_html($('#tmpl_contacts_table').html(), el);
+                                     $table_body.append(tr);
+                                     console.log("Res " + el.company_contact.id);
+                                 }
+                             }
+
+                        });
+    }
+</script>
+{# Шаблон таблицы контактов#}
+<script type="text/template" id="tmpl_contacts_table">{% verbatim %}
+<tr data-id="{{ company_contact.id }}">
+    <td></td>
+    <td><input type="checkbox" name="object_contact" value="{{ company_contact.id }}" checked=checked>{{ company_contact.contact.person.nick_name }}</td>{% endif %}
+    <td>+7 {{ company_contact.contact.phonenumber }} </td>
+    <td>{{ company_contact.comment }}</td>
+</tr>
+</script>{% endverbatim %}
+<style>
+select.select2_powered {
+    width: 300px;
+}
+div.select2_result_wrapper {
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+div.select2_result_wrapper > span {
+{#    display: block;#}
+    padding: 0 5px 0 0 ;
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.3rem;
+}
+div.select2_result_wrapper > span > i {
+    padding-left: 0px;
+    font-size: 1.1rem;
+    font-style: normal;
+    color: lightgrey;
+}
+</style>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{#% url 'company_list_clients' %#}">Рейсы</a></li>
+                <li class="active" ><a href="#">Новый рейс</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">
+                            {% if forms.address.instance %}Основная информация
+                            {% else %}Новый объект
+                            {% endif %}
+                            </a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                        {# Форма объекта #}
+                <form action="" method="POST" id="new_object">{% csrf_token %}
+                    <div class="data_grid_medium" style="">
+                            {# ----------------- КЛИЕНТ ------------------ #}
+                            <h2 class="blue">Параметры рейса</h2>
+                            <div class="flex_row">
+                                <div class="flex_block m10 _half">
+{#                                    <h2 class="blue">Клиент</h2>#}
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
+                                    {#  информация о клиение #}
+                                    <!--
+                                    <div class="form_row">
+                                        <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
+                                    </div> -->
+                                </div>
+                                <div class="flex_block m10 bordered">
+{#                                    <h2 class="blue">Контрагент</h2>#}
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
+                                </div>
+                            </div>
+                            {# ----------------- ОБЪЕКТ ------------------- #}
+                            <div class="flex_row">
+                                <div class="flex_block m10 _half">
+{#                                    <h2 class="blue">Объект</h2>#}
+                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.place  %}</div>
+                                </div>
+                                <div class="flex_block m10 bordered">
+{#                                    <h2 class="blue">Контакты на объекте</h2>#}
+                                    <div class="form_row">
+                                        <table class="sheet_simple"><tbody id="object_contacts_table"></tbody></table>
+                                    </div>
+                                </div>
+                            </div>
+                            {# ----------------- УСЛОВИЯ ------------------- #}
+                            <div class="flex_row">
+                                <div class="flex_block m10 _half">
+{#                                    <h2 class="blue">Состав заявки</h2>#}
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.bunker_type  %}
+                                        {% include "form_snippets/textinput.html" with field=form.bunker_qty  %}
+                                        {% include "form_snippets/textinput.html" with field=form.cargo_type  %}
+                                    </div>
+                                </div>
+                                <div class="flex_block m10 bordered">
+{#                                    <h2 class="blue">Параметры заявки</h2>#}
+                                <div class="form_row">
+                                        <div class="input_wrapper">
+                                            <legend>Дата рейса</legend>
+                                            <div class="input_block _inline _icon" icon="">
+                                                <input type="text" size="11" name="date_race" class="" value="{{ form.date_race.value }}">
+                                            </div>
+                                        </div>
+                                        {% include "form_snippets/textinput.html" with field=form.race_type  %}
+                                        {% include "form_snippets/textinput.html" with field=form.hodkis  %}
+                                    </div>
+                                </div>
+                            </div>
+                            {# ----------------- ОПЛАТА ------------------- #}
+                            <div class="flex_row">
+                                <div class="flex_block m10 _half">
+{#                                    <h2 class="blue">Оплата</h2>#}
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.summ  %}
+                                        <div class="input_wrapper">
+                                            <div class="input_block _inline">
+                                                <legend>Форма оплаты</legend>
+                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != True %}checked{% endif %}>Наличная</label>
+                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == True %}checked{% endif %}>Безналичная</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex_block m10 bordered">
+{#                                    <h2 class="blue">Рекомендации</h2>#}
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.recommendation  %}
+                                    </div>
+                                </div>
+                            </div>
+                            {# ----------------- СБРОС ------------------- #}
+                            <h2 class="blue">Сброс</h2>
+                            <div class="flex_row">
+                                <div class="flex_block m10 _half">
+{#                                    <h2 class="blue">Сброс</h2>#}
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.dump  %}
+                                        <div class="input_wrapper">
+                                            <div class="input_block _inline">
+                                                <legend>Форма оплаты</legend>
+                                                <label><input type="radio" name="dump_pay_type" value="False" {% if form.dump_pay_type.value != True %}checked{% endif %}>Талон</label>
+                                                <label><input type="radio" name="dump_pay_type" value="True" {% if form.dump_pay_type.value == True %}checked{% endif %}>Наличные</label>
+                                            </div>
+                                        </div>
+                                        {% include "form_snippets/textinput.html" with field=form.dump_cash  %}
+                                        {% include "form_snippets/textinput.html" with field=form.dump_cash_extra  %}
+                                        {% include "form_snippets/textinput.html" with field=form.dump_cash_comment  %}
+                                    </div>
+                                    <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.dump_comment  %}
+                                    </div>
+                                </div>
+                            </div>
+                            {# --------------------------------------------- #}
+                            <div class="form_row">
+                                <span class="button_block">
+                                    <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                </span>
+                            </div>
+                        {# - Форма объекта #}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                    </div>
+                </form>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
