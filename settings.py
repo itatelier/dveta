@@ -126,6 +126,8 @@ LOGGING = {
 
 WSGI_APPLICATION = 'wsgi.application'
 
+
+
 SUIT_CONFIG = {
     # header
     'ADMIN_NAME': 'Вета админ',

@@ -13,6 +13,7 @@ urlpatterns = [
 
     #REST
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^select2/', include('django_select2.urls')),
 
     # Default
     url(r'^login/$', views.login, name="login"),
@@ -21,6 +22,7 @@ urlpatterns = [
 
     # Ajax actions
      url(r'^ac/$', default.AutoCompliteJsonView.as_view(), name='ac'),
+
     # url(r'^acid/$', default.ac_with_id.as_view(), name='ac'),
 
     # Dummy Views
@@ -34,6 +36,7 @@ urlpatterns = [
     url(r'^objects/', include('object.urls')),
     url(r'^bunkers/', include('bunker.urls')),
     url(r'^races/', include('race.urls')),
+    url(r'^dds/', include('dds.urls')),
     url(r'^workday/', include('workday.urls')),
 
     # Admin
