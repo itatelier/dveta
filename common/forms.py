@@ -12,6 +12,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import force_text
 from django.http import HttpResponseRedirect
 from django.forms.widgets import RadioSelect
+from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 
 import logging
@@ -158,22 +159,79 @@ def none_modelchoicesfields_querysets(form, fields):
     return form
 
 
-class Select2ChoiceField(ChoiceField):
-
-    def __init__(self, queryset=None, to_field_name=None,  label_field=None, *args, **kwargs):
-        super(Select2ChoiceField, self).__init__(*args, **kwargs)
-        self.queryset = queryset
-        self.to_field_name = to_field_name
+class Select2ChoiceField(ModelChoiceFieldNameLabel):
 
     def to_python(self, value):
         if value in self.empty_values:
             return None
         try:
             key = self.to_field_name or 'pk'
-            value = self.queryset.get(**{key: value})
+            obj = self.queryset.get(**{key: value})
         except (ValueError, TypeError, self.queryset.model.DoesNotExist):
             raise ValidationError(u"Значение поля [%s] не найдено в базе" % value, code='invalid_choice')
         return value
 
     def validate(self, value):
         return Field.validate(self, value)
+
+    def _get_choices(self):
+        # If self._choices is set, then somebody must have manually set
+        # the property self.choices. In this case, just return self._choices.
+        if hasattr(self, '_choices'):
+            return self._choices
+        #log.info("--- self.value=%s" % self.value())
+
+        # choices2 = ((22, 44), (66, 77))
+        # from company.models import *
+        # obj = Companies.objects.get(pk=29)
+        choices = [("33", "44")]
+        # Otherwise, execute the QuerySet in self.queryset to determine the
+        # choices dynamically. Return a fresh ModelChoiceIterator that has not been
+        # consumed. Note that we're instantiating a new ModelChoiceIterator *each*
+        # time _get_choices() is called (and, thus, each time self.choices is
+        # accessed) so that we can ensure the QuerySet has not been consumed. This
+        # construct might look complicated but it allows for lazy evaluation of
+        # the queryset.
+        return ModelChoiceIterator(self)
+        # return choices
+
+    def _get_queryset(self):
+        return self._queryset
+
+    def _set_queryset(self, queryset):
+        self._queryset = queryset
+        self.widget.choices = self._get_choices()
+
+    queryset = property(_get_queryset, _set_queryset)
+
+
+class SubsetModelChoiceIterator(ModelChoiceIterator):
+
+    def __init__(self, field):
+        self.field = field
+        self.queryset = field.subset_queryset
+
+
+class SubsetModelChoiceField(ModelChoiceField):
+    """
+    This is just like a ModelChoiceField, but only a subset of the full
+    queryset will be displayed as choices.
+    """
+
+    def __init__(self, subset_queryset, *args, **kwargs):
+        self.subset_queryset = subset_queryset
+        super(SubsetModelChoiceField, self).__init__(*args, **kwargs)
+
+    def _get_choices(self):
+        if hasattr(self, '_choices'):
+            return self._choices
+
+        return SubsetModelChoiceIterator(self)
+    choices = property(_get_choices, ChoiceField._set_choices)
+
+    def _get_subset_queryset(self):
+        return self._subset_queryset
+
+    def _set_subset_queryset(self, queryset):
+        self._subset_queryset = queryset
+        self.widget.choices = self.choices
