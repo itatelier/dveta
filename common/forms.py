@@ -4,7 +4,7 @@ import re
 from django.utils import formats
 from decimal import Decimal, DecimalException
 from django.utils.encoding import smart_text
-from django.forms import DateTimeField, ValidationError, DecimalField, DateTimeInput, ModelChoiceField
+from django.forms import DateTimeField, ValidationError, DecimalField, DateTimeInput, ModelChoiceField, ChoiceField, Field
 from django.core import validators
 from django.views.generic.base import View, TemplateResponseMixin
 from django.views.generic.edit import FormMixin, ProcessFormView, ModelFormMixin
@@ -156,3 +156,24 @@ def none_modelchoicesfields_querysets(form, fields):
     for field in fields:
         form.base_fields[field].queryset = form.base_fields[field].queryset.none()
     return form
+
+
+class Select2ChoiceField(ChoiceField):
+
+    def __init__(self, queryset=None, to_field_name=None,  label_field=None, *args, **kwargs):
+        super(Select2ChoiceField, self).__init__(*args, **kwargs)
+        self.queryset = queryset
+        self.to_field_name = to_field_name
+
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+        try:
+            key = self.to_field_name or 'pk'
+            value = self.queryset.get(**{key: value})
+        except (ValueError, TypeError, self.queryset.model.DoesNotExist):
+            raise ValidationError(u"Значение поля [%s] не найдено в базе" % value, code='invalid_choice')
+        return value
+
+    def validate(self, value):
+        return Field.validate(self, value)

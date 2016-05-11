@@ -2,76 +2,41 @@
 {% load static from staticfiles %}
 {% block add_static %}
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 Bind    --><script type="text/javascript" src="{% static 'js/select2/bind.js' %}"></script>
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
-<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+{#<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>#}
 {#<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>#}
-<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
-<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+{#<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>#}
+{#<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>#}
+{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>#}
+{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>#}
 <!-- Tabs JS    --><script type="text/javascript" src="{% static 'js/tabs/lighttabs.js' %}"></script>
+<!-- Utils  --><script type="text/javascript" src="{% static 'js/utils/utils.js ' %}"></script>
 
 {% endblock %}
 {% block content %}
 <script>
+
         $(document).ready(function() {
             $(".tabs").lightTabs();
 
-            var selected_company = '{{ form.company.value }}';
-            var selected_contragent;
-            var selected_object = '{{ form.place.value }}';
 
-            {#    Виджет datepicker #}
-            $.datetimepicker.setLocale('ru');
-            $('input[name=date_race]').datetimepicker({
-                format: 'd-m-Y',
-                timepicker: false,
-            });
+            $('#select2_company')
+                    .on("change", function (e) {
+                            var selected_value = $(this).val();
+                             $('#select2_contragent').attr('data-filter_value', selected_value);
+                    })
+                    .bindselect2(this);
+
+            $('#select2_contragent').bindselect2(this);
+
 
             {# отключаем селект контрагента, если компания не выбрана #}
-{#            if (!$('select#select2_client').val()) {#}
+            if (!$('select#select2_client').val()) {
 {#                $('select#select2_contragent').prop('disabled', true)#}
-{#            }#}
-
-
-            $('select#select2_contragent')
-                    .select2({
-                        "language": {
-                            "noResults": function () {
-                                return "Контрагент не создан. <a href='/company/" + selected_company + "/contragent_create_ul/' class='textlink'>добавить?</a>";
-                            }
-                        },
-                        placeholder: "контрагент не выбран",
-                        allowClear: true,
-                        ajax: {
-                            url: "/contragents/api/contragents_list/",
-                            dataType: 'json',
-                            delay: 250,
-                            data: function (params) {
-                                return {
-                                    search: params.term, // search term
-                                    page: params.page,
-                                    company: selected_company
-                                };
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: $.map(data.results, function (item) {
-                                        return {
-                                            text: item.name,
-                                            id: item.pk
-                                        }
-                                    })
-                                };
-                            }
-                        },
-                        minimumInputLength: 0,
-                        escapeMarkup: function (markup) {
-                            return markup;
-                        }
-                    });
+            }
 
         });
 
@@ -157,131 +122,35 @@ div.select2_result_wrapper > span > i {
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <div class="data_grid_medium" style="">
-                            <h2 class="blue">Выбор статьи учета</h2>
-                            {# ----------------- КЛИЕНТ ------------------ #}
-                            <h2 class="blue">Параметры счета получателя</h2>
-<div class="tabs m10">
-    <ul>
-        <li>Наличная касса</li>
-        <li>Безналичный счет</li>
-        <li>Счет услуг</li>
-        <li>Счет контрагента</li>
-        <li>Счет сотрудника</li>
-    </ul>
-    <div>
-        <div>Первое содержимое</div>
-        <div>Второе содержимое</div>
-        <div>Третье содержимое</div>
-        <div>Третье содержимое4</div>
-        <div>Третье содержимое5</div>
-    </div>
-</div>
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Клиент</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
-                                    {#  информация о клиение #}
-                                    <!--
+                        <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.dds_item  %}
+                        </div>
+                        {# ----------------- КЛИЕНТ ------------------ #}
+                        <h2 class="m10">Cчет получателя</h2>
+
+                        <div class="tabs m10">
+                            <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
+                            <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li>Счет сотрудника</li><li>Счет контрагента</li></ul>
+                            <div>
+                                <div>Первое содержимое</div>
+                                <div>Второе содержимое</div>
+                                <div>Третье содержимое</div>
+                                <div>Третье содержимое4</div>
+                                <div>{# TAB 5 #}
                                     <div class="form_row">
-                                        <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
-                                    </div> -->
-                                </div>
-                                <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Контрагент</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.contragent  %}</div>
-                                </div>
-                            </div>
-                            {# ----------------- ОБЪЕКТ ------------------- #}
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Объект</h2>#}
-                                    <div class="form_row">{% include "form_snippets/textinput.html" with field=form.place  %}</div>
-                                </div>
-                                <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Контакты на объекте</h2>#}
-                                    <div class="form_row">
-                                        <table class="sheet_simple"><tbody id="object_contacts_table"></tbody></table>
+                                        {% include "form_snippets/textinput.html" with field=form.company  %}
+                                        {% include "form_snippets/textinput.html" with field=form.contragent  %}
                                     </div>
                                 </div>
                             </div>
-                            {# ----------------- УСЛОВИЯ ------------------- #}
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Состав заявки</h2>#}
-                                    <div class="form_row">
-                                        {% include "form_snippets/textinput.html" with field=form.bunker_type  %}
-                                        {% include "form_snippets/textinput.html" with field=form.bunker_qty  %}
-                                        {% include "form_snippets/textinput.html" with field=form.cargo_type  %}
-                                    </div>
-                                </div>
-                                <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Параметры заявки</h2>#}
-                                <div class="form_row">
-                                        <div class="input_wrapper">
-                                            <legend>Дата рейса</legend>
-                                            <div class="input_block _inline _icon" icon="">
-                                                <input type="text" size="11" name="date_race" class="" value="{{ form.date_race.value }}">
-                                            </div>
-                                        </div>
-                                        {% include "form_snippets/textinput.html" with field=form.race_type  %}
-                                        {% include "form_snippets/textinput.html" with field=form.hodkis  %}
-                                    </div>
-                                </div>
-                            </div>
-                            {# ----------------- ОПЛАТА ------------------- #}
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Оплата</h2>#}
-                                    <div class="form_row">
-                                        {% include "form_snippets/textinput.html" with field=form.summ  %}
-                                        <div class="input_wrapper">
-                                            <div class="input_block _inline">
-                                                <legend>Форма оплаты</legend>
-                                                <label><input type="radio" name="pay_way" value="False" {% if form.pay_way.value != True %}checked{% endif %}>Наличная</label>
-                                                <label><input type="radio" name="pay_way" value="True" {% if form.pay_way.value == True %}checked{% endif %}>Безналичная</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex_block m10 bordered">
-{#                                    <h2 class="blue">Рекомендации</h2>#}
-                                    <div class="form_row">
-                                        {% include "form_snippets/textinput.html" with field=form.recommendation  %}
-                                    </div>
-                                </div>
-                            </div>
-                            {# ----------------- СБРОС ------------------- #}
-                            <h2 class="blue">Сброс</h2>
-                            <div class="flex_row">
-                                <div class="flex_block m10 _half">
-{#                                    <h2 class="blue">Сброс</h2>#}
-                                    <div class="form_row">
-                                        {% include "form_snippets/textinput.html" with field=form.dump  %}
-                                        <div class="input_wrapper">
-                                            <div class="input_block _inline">
-                                                <legend>Форма оплаты</legend>
-                                                <label><input type="radio" name="dump_pay_type" value="False" {% if form.dump_pay_type.value != True %}checked{% endif %}>Талон</label>
-                                                <label><input type="radio" name="dump_pay_type" value="True" {% if form.dump_pay_type.value == True %}checked{% endif %}>Наличные</label>
-                                            </div>
-                                        </div>
-                                        {% include "form_snippets/textinput.html" with field=form.dump_cash  %}
-                                        {% include "form_snippets/textinput.html" with field=form.dump_cash_extra  %}
-                                        {% include "form_snippets/textinput.html" with field=form.dump_cash_comment  %}
-                                    </div>
-                                    <div class="form_row">
-                                        {% include "form_snippets/textinput.html" with field=form.dump_comment  %}
-                                    </div>
-                                </div>
-                            </div>
-                            {# --------------------------------------------- #}
-                            <div class="form_row">
-                                <span class="button_block">
-                                    <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
-                                </span>
-                            </div>
-                        {# - Форма объекта #}
+                        </div>
                         {# ошибки формы #}
                         {% include "form_snippets/form_errors.html" with form=form %}
+                    </div>
+                    <div class="form_row">
+                        <span class="button_block">
+                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                        </span>
                     </div>
                 </form>
             </div>

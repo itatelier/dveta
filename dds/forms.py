@@ -13,6 +13,7 @@ from common.formfields import *
 from company.models import Companies
 from contragent.models import Contragents
 
+
 class AdminItemForm(ModelForm):
     direction_choices = ((0, 'Статья расхода'), (1, 'Статья прихода'))
     direction_type = BooleanField(initial=0, label="Тип направления", widget=RadioSelect( choices=direction_choices),  required=False)
@@ -25,28 +26,38 @@ class AdminItemForm(ModelForm):
 
 
 class AccountRefillForm(ModelForm):
-    # item_group = ModelChoiceFieldNameLabel(
-    #     queryset=DdsItems.objects.select_related('item_group').values('item_group', 'item_group__name').annotate(dcount=Count('item_group')).filter(direction_type = True),
-    #     # В запросе будут показаны только группы, в которых есть статьи с положительным типом направления
-    #     label_field='item_group__name',
-    #     label="Группа статей",
-    #     empty_label=None)
-    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type = True), label_field='name', label="Статья учета", empty_label=None)
-    account = ModelChoiceFieldNameLabel(queryset=DdsAccounts.objects.all(), label_field='name', label="Статья учета", empty_label=None)
-    contragent = ChoiceField(
-            label="Контрагент",
-            widget=Select(attrs={
-                'size': 2,
-                'class': "select2_powered",
-                'id': "select2_contragent"
-                }
-            )
+    dds_item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    account = ModelChoiceFieldNameLabel(queryset=DdsAccounts.objects.all(), label_field='name', label="Счет", empty_label=None, required=True)
+    company = Select2ChoiceField(
+        queryset=Companies.objects.all(),
+        required=False,
+        label="Компания",
+        widget=Select(attrs={
+            'class': "select2_powered",
+            'id': "select2_company",
+            'data-url': "/company/api/clients/",
+            'data-field': "name",
+            'data-placeholder': "наименование клиента",
+            'data-minlength': 2
+            }
+        )
     )
-
-    # name = CharField(label="Наименование отделения", required=True, help_text="Краткое наименование отделения")
-    # type = ModelChoiceFieldNameLabel(queryset=BranchTypes.objects.all(), label_field='val', label="Тип отделения", empty_label=None, initial=2)
-    # description = CharField(label="Описание отделения", required=False, widget=TextInput(attrs={'size': 40, 'maxlength': 250}))
+    contragent = Select2ChoiceField(
+        required=False,
+        label="Контрагент",
+        widget=Select(attrs={
+            'class': "select2_powered",
+            'id': "select2_contragent",
+            'data-url': "/contragents/api/contragents_list/",
+            'data-field': "name",
+            'data-placeholder': "наименование контрагента",
+            'data-filter_field': 'company',
+            'data-filter_value': '',
+            }
+        )
+    )
+    active_tab = CharField(required=False, widget=HiddenInput())
 
     class Meta:
         model = DdsFlow
-        fields = ('item', 'account' )
+        fields = ('dds_item', 'account' )

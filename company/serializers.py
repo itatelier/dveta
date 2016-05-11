@@ -52,7 +52,7 @@ class CompanyClientsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Companies
-        fields = ('id', 'name', 'description', 'comment', 'org_type', 'status', 'date_add', 'client_options')
+        fields = ('pk', 'name', 'description', 'comment', 'org_type', 'status', 'date_add', 'client_options')
 
 
 class CompanyClientsFilters(django_filters.FilterSet):
