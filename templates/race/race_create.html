@@ -3,6 +3,8 @@
 {% block add_static %}
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
+<!-- Select2 Bind    --><script type="text/javascript" src="{% static 'js/select2/bind.js' %}"></script>
+
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
 {#<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>#}
@@ -15,8 +17,16 @@
 {% endblock %}
 {% block content %}
 <script>
+    var selected_company = '{{ form.company.value }}';
+
+{#    function set_contragent_options(){#}
+{#        var option = {#}
+{#            "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}#}
+{#        };#}
+{#        return option#}
+{#    }#}
+
         $(document).ready(function() {
-            var selected_company = '{{ form.company.value }}';
             var selected_contragent;
             var selected_object = '{{ form.place.value }}';
 
@@ -27,115 +37,51 @@
             timepicker: false,
         });
 
+
+
             {# отключаем селект контрагента, если компания не выбрана #}
             if (!$('select#select2_client').val()) {
                 $('select#select2_contragent').prop('disabled', true)
+                $('select#select2_object').prop('disabled', true)
+            } else {
+                $('select#select2_contragent').attr('data-filter_value', "{{ form.company.value }}");
+                $('select#select2_object').attr('data-filter_value', "{{ form.company.value }}");
             }
 
-            $('select#select2_client').select2({
-                "language": "ru",
-                placeholder: "клиент не выбран",
-                allowClear: true,
-                ajax: {
-                    url: "/company/api/clients/",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term, // search term
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data.results, function (item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id,
-                                    comment: item.comment,
-                                    type: item.org_type.pk
-                                }})};}},
-                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-                minimumInputLength: 2,
-            }).on("change", function(e) {
-                /* изменение */
-                var $this = $(this);
-                var selected_id = $this.val();
-                if (selected_id) {
-                    /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
-                    selected_company = selected_id;
-                    /* "включить" селект контрагента */
-                    $('select#select2_contragent').prop('disabled', false);
-                    /* "включить" селект объекта */
-                    $('select#select2_object').prop('disabled', false);
-                } else {
-                    selected_company = null;
-                    $('select#select2_contragent').prop('disabled', true).select2("val", "");
-                    $('select#select2_object').prop('disabled', true).select2("val", "");
-                }
-            });
+            $('#select2_client')
+                    .on("change", function(e) {
+                        /* изменение */
+                        var $this = $(this);
+                        var selected_id = $this.val();
+                        if (selected_id) {
+                            /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
+                            selected_company = selected_id;
+                            console.log("--Chanfed!");
+                            /* "включить" селект контрагента */
+                            $('select#select2_contragent')
+                                    .prop('disabled', false)
+                                    .attr('data-filter_value', selected_id)
+                                    .val(null).change();
 
-            $('select#select2_contragent')
-                .select2({
-                "language": {
-                           "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}
-                           },
-                placeholder: "контрагент не выбран",
-                allowClear: true,
-                ajax: {
-                    url: "/contragents/api/contragents_list/",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term, // search term
-                            page: params.page,
-                            company: selected_company
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data.results, function (item) {
-                                return {
-                                    text: item.name,
-                                    id: item.pk
-                                }})};}},
-                minimumInputLength: 0,
-                escapeMarkup: function (markup) {
-                        return markup;
-                    }
-                });
+                            /* "включить" селект объекта */
+                            $('select#select2_object')
+                                    .prop('disabled', false)
+                                    .attr('data-filter_value', selected_id)
+                                    .val(null).change();
+                        } else {
+                            selected_company = null;
+                            $('select#select2_contragent').prop('disabled', true).select2("val", "");
+                            $('select#select2_object').prop('disabled', true).select2("val", "");
+                        }
+                    })
+                    .bindselect2(this);
+
+            $.fn.select2.defaults.set("language", { "noResults": function(){ return "Контрагент не создан. <a href='/company/"+ selected_company +"/contragent_create_ul/' class='textlink'>добавить?</a>";}});
+            $('#select2_contragent').bindselect2(this);
+
 
             $('select#select2_object')
-                .select2({
-                "language": {
-                           "noResults": function(){ return "объекты для клиента не найдены. <a href='/objects/company/"+ selected_company +"/object_create/' class='textlink'>добавить?</a>";}
-                           },
-                placeholder: "объект не выбран",
-                allowClear: true,
-                ajax: {
-                    url: "/objects/api/objects_rest/",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term, // search term
-                            page: params.page,
-                            company: selected_company
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data.results, function (item) {
-                                return {
-                                    text: item.name,
-                                    id: item.pk
-                                }})};}},
-                minimumInputLength: 0,
-                escapeMarkup: function (markup) {
-                        return markup;
-                    }
-                }).on("change", function(e) {
+                .on("change", function(e) {
                     /* изменение */
                     var $this = $(this);
                     var selected_id = $this.val();
@@ -144,8 +90,9 @@
                     if (selected_id) {
                         get_object_contacts(selected_id);
                     }
+                })
+                .bindselect2(this);
 
-                });
             /* получаем список контактов, если объект определен */
             if (selected_object) {
                 get_object_contacts(selected_object);
@@ -161,8 +108,9 @@
                             data: { 'object': object_id }
                         })
                         .done(function(result) {
+                             var $table_body = $('#object_contacts_table').empty();
                              if (result.results && result.results.length > 0) {
-                                 var $table_body = $('#object_contacts_table');
+
                                      $table_body.empty();
                                  for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                                      var el = result.results[i];
@@ -171,7 +119,6 @@
                                      console.log("Res " + el.company_contact.id);
                                  }
                              }
-
                         });
     }
 </script>

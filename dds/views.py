@@ -24,6 +24,7 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
     form_class = AccountRefillForm
     model = DdsFlow
 
+
     # def get(self, *args, **kwargs):
     #     # form = self.form_class
     #     self.object = None
@@ -46,27 +47,12 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        # car_pk = self.kwargs.get('car_id', None)
-
-        # Полям формы снова присваивается полный QS, для парвильной валидации поля.
-        # form.fields["company"].queryset = Companies.objects.all()
-        # form.fields["contragent"].queryset = Contragents.objects.all()
-        # form.fields["place"].queryset = Objects.objects.all()
-
         if form.is_valid():
             new_object = form.save(commit=False)
             new_object.save()
             self.success_url = '/races/list/'
             return HttpResponseRedirect(self.success_url)
         else:
-            # Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
-            # вместо QuerySet добавляем Choices с единичной записью
-            # for key in form.cleaned_data:
-            #     print "--- Clean data key: %s" % key
-            # company_id = form.cleaned_data["company"]
-            # log.info("--- company_id: %s" % company_id )
-            # form.fields["company"].queryset = Companies.objects.filter(pk=company_id)
-            form = replace_modelchoicesfields_data(form, ('company',))
-
             self.object = form.instance
+            form = replace_form_choices_select2(form, ('company',))
             return self.render_to_response(self.get_context_data(form=form))

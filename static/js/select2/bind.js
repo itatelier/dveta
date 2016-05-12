@@ -1,4 +1,5 @@
-(function($){				
+(function($){
+    jQuery.fn.select2.defaults.set("language", "ru");
 	jQuery.fn.bindselect2 = function(){
             var $el = this;
             var url = $el.attr('data-url');
@@ -9,7 +10,7 @@
 
 
             $el.select2({
-                        "language": "ru",
+                        language: 'ru',
                         placeholder: placeholder,
                         allowClear: true,
                         ajax: {

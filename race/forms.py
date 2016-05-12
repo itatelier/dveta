@@ -28,8 +28,7 @@ qty_choices = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')]
 
 
 class RaceCreateForm(ModelForm):
-# ModelChoiceFieldNameLabel
-    company = ModelChoiceFieldNameLabel(
+    company = Select2ChoiceField(
         queryset=Companies.objects.all(),
         empty_label=None,
         label_field='name',
@@ -39,11 +38,15 @@ class RaceCreateForm(ModelForm):
         widget=Select(attrs={
             'size': 2,
             'class': "select2_powered",
-            'id': "select2_client"
+            'id': "select2_client",
+            'data-url': "/company/api/clients/",
+            'data-field': "name",
+            'data-placeholder': "наименование клиента",
+            'data-minlength': 2
             })
         )
 
-    contragent = ModelChoiceFieldNameLabel(
+    contragent = Select2ChoiceField(
         queryset=Contragents.objects.all(),
         label_field='name',
         empty_label=None,
@@ -53,10 +56,16 @@ class RaceCreateForm(ModelForm):
         widget=Select(attrs={
             'size': 2,
             'class': "select2_powered",
-            'id': "select2_contragent"
+            'id': "select2_contragent",
+            'data-url': "/contragents/api/contragents_list/",
+            'data-field': "name",
+            'data-placeholder': "наименование контрагента",
+            'data-minlength': 0,
+            'data-filter_field': 'company',
+            'data-filter_value': ""
         }))
 
-    place = ModelChoiceFieldNameLabel(
+    place = Select2ChoiceField(
         queryset=Objects.objects.all(),
         label_field='name',
         empty_label=None,
@@ -65,7 +74,13 @@ class RaceCreateForm(ModelForm):
         widget=Select(attrs={
             'size': 2,
             'class': "select2_powered",
-            'id': "select2_object"
+            'id': "select2_object",
+            'data-url': "/objects/api/objects_rest/",
+            'data-field': "name",
+            'data-placeholder': "наименование объекта",
+            'data-minlength': 0,
+            'data-filter_field': 'company',
+            'data-filter_value': ""
         }))
 
     bunker_type = ModelChoiceFieldNameLabel(queryset=BunkerTypes.objects.all(), label="Тип бункеров", empty_label=None, label_field='val')
