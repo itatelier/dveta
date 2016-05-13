@@ -68,6 +68,17 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
             self.success_url = '/races/list/'
             return HttpResponseRedirect(self.success_url)
         else:
+<<<<<<< HEAD
+=======
+            # Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
+            # вместо QuerySet добавляем Choices с единичной записью
+            # for key in form.cleaned_data:
+            #     print "--- Clean data key: %s" % key
+            # company_id = form.cleaned_data["company"]
+            # log.info("--- company_id: %s" % company_id )
+            # form.fields["company"].queryset = Companies.objects.filter(pk=company_id)
+            form = replace_modelchoicesfields_data(form, ('company',))
+>>>>>>> origin/master
             self.object = form.instance
             form = replace_form_choices_select2(form, ('company',))
             return self.render_to_response(self.get_context_data(form=form))
