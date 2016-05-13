@@ -67,6 +67,5 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
             # log.info("--- company_id: %s" % company_id )
             # form.fields["company"].queryset = Companies.objects.filter(pk=company_id)
             form = replace_modelchoicesfields_data(form, ('company',))
-
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form))
