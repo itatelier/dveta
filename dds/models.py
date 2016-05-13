@@ -38,7 +38,7 @@ class DdsAccountTypes(models.Model):
     val = models.CharField(max_length=255L, null=False, blank=False)
 
     class Meta:
-        db_table = 'dds_item_groups'
+        db_table = 'dds_account_types'
         managed=False
         verbose_name_plural = 'Деньги / Типы счетов'
 
@@ -48,6 +48,7 @@ class DdsAccountTypes(models.Model):
 
 class DdsAccounts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L, null=True, blank=True)
     type = models.ForeignKey('DdsAccountTypes', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=True, blank=True)
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True)

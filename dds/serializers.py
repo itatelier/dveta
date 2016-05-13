@@ -9,6 +9,21 @@ import django_filters
 from company.serializers import *
 
 
+class AccountsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DdsAccounts
+        depth = 1
+        fields = ('pk', 'name', 'type', 'contragent', 'employee', 'balance')
+
+
+class AccountsFilters(django_filters.FilterSet):
+
+    class Meta:
+        model = DdsAccounts
+        fields = ['type', 'contragent', 'employee', ]
+
+
 # class TypeSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = ContragentTypes

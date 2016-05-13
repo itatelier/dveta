@@ -173,8 +173,10 @@ def replace_form_choices_select2(form, formfields):
     for field in formfields:
         if field in form.cleaned_data:
             field_object = form.cleaned_data[field]
-            text_value = field_object.__getattribute__(form.fields[field].label_field)
-            pk_value = field_object.__getattribute__('pk')
-            # log.info("---Field [%s] Choices: (%s, %s)" % (field, pk_value, text_value))
-            form.fields[field].choices = [(pk_value, text_value), ]
+            if field_object is not None:
+                log.info("--- field object: %s" % field_object)
+                text_value = field_object.__getattribute__(form.fields[field].label_field)
+                pk_value = field_object.__getattribute__('pk')
+                # log.info("---Field [%s] Choices: (%s, %s)" % (field, pk_value, text_value))
+                form.fields[field].choices = [(pk_value, text_value), ]
     return form

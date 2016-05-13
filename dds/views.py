@@ -19,6 +19,21 @@ from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
 
 
+class AccountsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = DdsAccounts.objects.select_related(
+        'type',
+        'contragent',
+        'employee',
+    ).prefetch_related(
+        'employee__person'
+    )
+    serializer_class = AccountsSerializer
+    search_fields = ('name', 'contragent_name', 'employee__person__family_name')
+    filter_class = AccountsFilters
+    ordering_fields = ('pk', 'contragent__name', 'balance')
+
+
 class AccountRefillView(LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill.html'
     form_class = AccountRefillForm

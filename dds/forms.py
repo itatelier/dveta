@@ -26,12 +26,13 @@ class AdminItemForm(ModelForm):
 
 
 class AccountRefillForm(ModelForm):
+    active_tab = CharField(required=False, widget=HiddenInput())
+
     dds_item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
-    account = ModelChoiceFieldNameLabel(queryset=DdsAccounts.objects.all(), label_field='name', label="Счет", empty_label=None, required=True)
     company = Select2ChoiceField(
         queryset=Companies.objects.all(),
         label_field='name',
-        label="Компания",
+        label="Клиент",
         empty_label=None,
         required=True,
         widget=Select(
@@ -44,36 +45,26 @@ class AccountRefillForm(ModelForm):
                     'data-minlength': 2
                     }
         ))
-    #     queryset=Companies.objects.all(),
-    #     label_field='name',
-    #     label="Компания",
-    #     empty_label=None,
-    #     required=True,
-    #     widget=Select(attrs={
-    #         'class': "select2_powered",
-    #         'id': "select2_company",
-    #         'data-url': "/company/api/clients/",
-    #         'data-field': "name",
-    #         'data-placeholder': "наименование клиента",
-    #         'data-minlength': 2
-    #         }
-    #     )
-    # )
-    # contragent = Select2ChoiceField(
-    #     required=False,
-    #     label="Контрагент",
-    #     widget=Select(attrs={
-    #         'class': "select2_powered",
-    #         'id': "select2_contragent",
-    #         'data-url': "/contragents/api/contragents_list/",
-    #         'data-field': "name",
-    #         'data-placeholder': "наименование контрагента",
-    #         'data-filter_field': 'company',
-    #         'data-filter_value': '',
-    #         }
-    #     )
-    # )
-    active_tab = CharField(required=False, widget=HiddenInput())
+
+    contragent = Select2ChoiceField(
+        queryset=Contragents.objects.all(),
+        required=False,
+        label_field='name',
+        empty_label=None,
+        label="Контрагент",
+        widget=Select(attrs={
+            'class': "select2_powered",
+            'id': "select2_contragent",
+            'data-url': "/contragents/api/contragents_list/",
+            'data-field': "name",
+            'data-placeholder': "наименование контрагента",
+            'data-filter_field': 'company',
+            'data-filter_value': '',
+            }
+        )
+    )
+    account = ModelChoiceField(queryset=DdsAccounts.objects.all(), label="Счет", required=True, widget=HiddenInput())
+
 
     class Meta:
         model = DdsFlow

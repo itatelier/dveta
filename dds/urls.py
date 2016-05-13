@@ -8,7 +8,7 @@ from views import *
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-# router.register(r'races_rest', RacesViewSet,)
+router.register(r'dds_accounts_rest', AccountsViewSet,)
 
 
 urlpatterns = [
