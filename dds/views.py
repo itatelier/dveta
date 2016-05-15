@@ -17,6 +17,8 @@ from serializers import *
 from contragent.models import *
 from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import DetailView
 
 
 class AccountsViewSet(viewsets.ModelViewSet):
@@ -37,9 +39,7 @@ class AccountsViewSet(viewsets.ModelViewSet):
 class AccountRefillView(LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill.html'
     form_class = AccountRefillForm
-    model = DdsFlow
-
-
+    model = DdsAccounts
     # def get(self, *args, **kwargs):
     #     # form = self.form_class
     #     self.object = None
@@ -58,7 +58,7 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         # return reverse('car_card', args=(self.object.id,))
-        return reverse('races_list', args=())
+        return reverse('dds_flow', args=())
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -68,17 +68,44 @@ class AccountRefillView(LoginRequiredMixin, CreateView):
             self.success_url = '/races/list/'
             return HttpResponseRedirect(self.success_url)
         else:
-<<<<<<< HEAD
-=======
-            # Удаляем queryset из перечисленных полей, что бы генератор не поставил для Select'a всю таблицу из БД.
-            # вместо QuerySet добавляем Choices с единичной записью
-            # for key in form.cleaned_data:
-            #     print "--- Clean data key: %s" % key
-            # company_id = form.cleaned_data["company"]
-            # log.info("--- company_id: %s" % company_id )
-            # form.fields["company"].queryset = Companies.objects.filter(pk=company_id)
-            form = replace_modelchoicesfields_data(form, ('company',))
->>>>>>> origin/master
             self.object = form.instance
-            form = replace_form_choices_select2(form, ('company',))
+            form = replace_form_choices_select2(form, ('company', 'contragent'))
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class DdsFlowView(LoginRequiredMixin,  TemplateView):
+    template_name = 'dds/flow.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(DdsFlowView, self).get_context_data(*args, **kwargs)
+        #context_data['bunker_types'] = BunkerTypes.objects.all()
+        # context_data['company'] = Companies.objects.get(pk=company_pk)
+        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
+        return context_data
+
+
+class DdsFlowViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = DdsFlow.objects.select_related(
+        'account',
+        'item',
+    ).prefetch_related(
+        'account__employee__person'
+    )
+    serializer_class = DdsFlowSerializer
+    search_fields = ('comment', )
+    filter_class = DdsFlowFilters
+    ordering_fields = ('pk', 'date', 'item', 'account', 'pay_way')
+
+
+class DdsOperationCard(LoginRequiredMixin, DetailView):
+    template_name = "dds/dds_operation_card.html"
+    model = DdsFlow
+    queryset = DdsFlow.objects.select_related('item', 'account', 'account__contragent', 'account__employee__person', 'item__item_group')
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(DdsOperationCard, self).get_context_data(*args, **kwargs)
+    #     context_data['bunkers_onboard'] = self.object.car_object.bunker_remain.all()
+    #     # context_data['bunkers_onboard'] = BunkerFlow.remains.by_object_id(self.object.car_object_id)
+    #     # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
+    #     return context_data

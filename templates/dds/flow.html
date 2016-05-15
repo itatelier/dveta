@@ -1,35 +1,46 @@
-{% extends "main.html" %}
+ {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
 <!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
 <!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
-<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
 <!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+
+
 {% endblock %}
 {% block content %}
 
 
 <script>
-    var base_url = '/company';
-    var JsonDataUrl = "/company/api/clients/";
+    var JsonDataUrl = "/dds/api/dds_flow_rest/";
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
         list_data_api();
 
+        {#  Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[rel=datetimepicker]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+
         {#    Автоподсказка для поля сортировки #}
-        input_autocomplite("name_ac", "/ac/", 'company.Companies', 'name', '__icontains', 'objects');
-        {#    Виджет datepicker #}
-        $('input[name=date_after]').datepicker({'dateFormat':'dd-mm-yy'});
+{#        input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+
         {#    Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('id');
-            var url = base_url + "/" +id +"/card/";
+            var id = $(this).data('object_id');
+            var url = "/dds/operation/" + id +"/card";
             document.location.href = url;
         });
 
@@ -37,33 +48,33 @@
 
         {#  постобработка результата AJAX запроса #}
         function preprocess_result(result) {
+            {# подсветка фрагментов текста в соответствии с параметром поиска #}
+            var search_string = $('input[name=search]').val();
+            result.results = highlight_search_results(result.results, search_string);
+
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
-                result.results[i].date_add = date_json2hr(result.results[i].date_add);
-                if (result.results[i].client_options !== null) {
-                    if (result.results[i].client_options.request_freq == 2) {
-                        result.results[i].client_options.request_freq = "Постоянный"
-                    } else {
-                        result.results[i].client_options.request_freq = "Разовый"
-                    }
-                }
+{#                 изменение формата даты #}
+                result.results[i].date = date_json2hr(result.results[i].date);
             }
         }
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-id="{{ pk }}">
-        <td>{{ name }}</td>
-        <td>{{ comment }}</td>
-        <td>{{ org_type.val }}
-        <td>{{ status.val }}</td>
-        <td>{{ client_options.request_freq }}</td>
-        <td>{{ date_add.date }}</td>
-        <!-- replace -->
+    <tr data-object_id="{{ pk }}">
+        <td width="100">{{{ date.date }}}</td>
+        <td>{{{ item.name }}}</td>
+        <td width="">{{{ account.name }}}</td>
+        <td>{{{ summ }}}</td>
+        <td  width="30" class="centertext">{{#pay_way}}<i class="dot">•</i>{{/pay_way}}</td>
+        <td>{{{ account.contragent.name }}}</td>
+        <td>{{{ account.employee.person.family_name }}}</td>
+        <td>{{{ comment }}}</td>
     </tr>
+
 </script>{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Картотека клиентов</a></li></ul>
+            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -150,12 +161,14 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable active" rel="id">Наименование</a></th>
-                                <th><a href="#" rel="" >Комментарий</a></th>
-                                <th><a href="#" class="sortable" rel="org_type">Тип клиента</a></th>
-                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
-                                <th><a href="#" class="sortable" rel="client_options__request_freq">Частота заказа</a></th>
-                                <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
+                                <th><a href="#" class="" rel="">Дата</a></th>
+                                <th><a href="#" class="" rel="">Статья учета</a></th>
+                                <th><a href="#" class="" rel="">Счет</a></th>
+                                <th><a href="#" class="" rel="">Сумма</a></th>
+                                <th><a href="#" class="centertext" rel="">б/н</a></th>
+                                <th><a href="#" class="" rel="">Контрагент</a></th>
+                                <th><a href="#" class="" rel="">Сотрудник</a></th>
+                                <th><a href="#" class="" rel="">Примечание</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

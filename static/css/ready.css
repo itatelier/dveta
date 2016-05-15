@@ -66,6 +66,8 @@ form { margin: 0.5rem 2rem; width: 100%;}
 .m20 {margin: 20px;}
 .nomargin {margin: 0!important;}
 .centertext { text-align: center !important;}
+.righttext { text-align: right !important;}
+
 
 
 div._white_bordered {

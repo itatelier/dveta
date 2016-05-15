@@ -21,7 +21,7 @@ from common.utils import DateNowInput
 
 
 
-pay_way_choices = [('False', 'Наличная'), ('True', 'Безналичная')]
+pay_way_choices = [(False, 'Наличная'), (True, 'Безналичная')]
 hodki_choices = [('1', '1'), ('1.5', '1.5'), ('2', '2')]
 qty_choices = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')]
 # empty_choices = [('empty_value', 'empty_label'), ]
@@ -94,7 +94,7 @@ class RaceCreateForm(ModelForm):
 
     price = IntegerField(label="Цена", help_text="цена вывоза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
-    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  required=True, initial=False, widget=RadioSelect())
     summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 1, 'style': 'min-width:6rem;'}))
     recommendation = CharField(label="Примечание к рейсу", required=False, widget=Textarea(attrs={'rows': 2, 'cols': 40}))
 
@@ -123,7 +123,7 @@ class RaceUpdateForm(ModelForm):
 
     price = IntegerField(label="Цена", help_text="цена вывоза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
-    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  widget=RadioSelect())
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  required=True, initial=True, widget=RadioSelect())
     summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 1, 'style': 'min-width:6rem;'}))
     recommendation = CharField(label="Примечание к рейсу", required=False, widget=Textarea(attrs={'rows': 2, 'cols': 40}))
 

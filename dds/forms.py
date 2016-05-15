@@ -13,6 +13,8 @@ from common.formfields import *
 from company.models import Companies
 from contragent.models import Contragents
 
+pay_way_choices = [(False, 'Наличная'), (True, 'Безналичная')]
+
 
 class AdminItemForm(ModelForm):
     direction_choices = ((0, 'Статья расхода'), (1, 'Статья прихода'))
@@ -28,13 +30,13 @@ class AdminItemForm(ModelForm):
 class AccountRefillForm(ModelForm):
     active_tab = CharField(required=False, widget=HiddenInput())
 
-    dds_item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
     company = Select2ChoiceField(
         queryset=Companies.objects.all(),
         label_field='name',
         label="Клиент",
         empty_label=None,
-        required=True,
+        required=False,
         widget=Select(
                 attrs={
                     'class': "select2_powered",
@@ -48,7 +50,7 @@ class AccountRefillForm(ModelForm):
 
     contragent = Select2ChoiceField(
         queryset=Contragents.objects.all(),
-        required=False,
+        required=True,
         label_field='name',
         empty_label=None,
         label="Контрагент",
@@ -64,9 +66,11 @@ class AccountRefillForm(ModelForm):
         )
     )
     account = ModelChoiceField(queryset=DdsAccounts.objects.all(), label="Счет", required=True, widget=HiddenInput())
-
+    summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
+    comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
 
     class Meta:
         model = DdsFlow
-        fields = ('dds_item', 'account' )
+        fields = ('item', 'account', 'summ', 'pay_way', 'comment')
 

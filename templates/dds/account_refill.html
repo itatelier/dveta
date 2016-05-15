@@ -23,16 +23,23 @@
     var selected_contragent = '{{ form.contragent.value }}';
 
     $(document).ready(function() {
-        if (selected_contragent) {
+        if (selected_contragent != 'None') {
             load_account_detaild('contragent', selected_contragent);
         }
 
         {# отключаем селект контрагента, если компания не выбрана #}
-        if (!$('select#select2_client').val()) {
-            $('select#select2_contragent').prop('disabled', true)
-        } else {
+        if (parseInt(selected_company)) {
+            // console.log("Selected cli val: " + $('select#select2_client').val() + " Selected company now: " + selected_company);
             $('select#select2_contragent').attr('data-filter_value', "{{ form.company.value }}");
+        } else {
+
+            $('select#select2_contragent').prop('disabled', true)
+            // console.log("UNDEF Selected cli val: " + $('select#select2_client').val() + " Selected company now: " + selected_company);
         }
+
+        {# Болоки таблицы счета #}
+        var $datatable = $('table#account_datatable');
+        var $datatable_body = $('tbody', $datatable);
 
         {# Виджет Компания #}
         $('#select2_company')
@@ -40,7 +47,13 @@
                     /* изменение */
                     var $this = $(this);
                     var selected_id = $this.val();
+                    {# Прячем таблицу счета и ошибку #}
+
+                    $('table#account_datatable').addClass('none');
+                    $('#nodata_error').addClass('none');
+                    console.log("Company select changed! Selected ID:" + selected_id);
                     if (selected_id) {
+                        console.log("Got ID! " + selected_id);
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
                         selected_company = selected_id;
                         /* "включить" селект контрагента */
@@ -48,9 +61,12 @@
                                 .prop('disabled', false)
                                 .attr('data-filter_value', selected_id)
                                 .val(null).change();
+                        console.log("Selected company now " + selected_company);
                     } else {
-                        selected_company = null;
+                        selected_company = undefined;
+                        console.log("Got NO ID!");
                         $('select#select2_contragent').prop('disabled', true).select2("val", "");
+                        console.log("Selected company now " + selected_company);
                     }
                 })
                 .bindselect2(this);
@@ -59,6 +75,11 @@
         $('#select2_contragent')
                 .on("change", function (e) {
                     console.log("Contr changed!");
+
+                    {# Прячем таблицу счета и ошибку #}
+                    $('table#account_datatable').addClass('none');
+                    $('#nodata_error').addClass('none');
+
                     var $this = $(this);
                     var selected_id = $this.val();
                     if (selected_id) {
@@ -68,15 +89,25 @@
                         load_account_detaild('contragent', selected_contragent);
                     } else {
                         selected_contragent = null;
+                        $('#nodata_error').addClass('none');
                     }
                 })
                 .bindselect2(this);
-
+        {# Чекбокс выбора счета #}
 
     });
 
+    function SelectAccountFromCheck(el) {
+        $el = $(el);
+        if ($el.is( ":checked" )) {
+            $el.parents('tr').addClass('green_bg');
+            $account_input = $('input[name="account"]').val($el.val());
+        } else {
+            $el.parents('tr').removeClass('green_bg');
+            $account_input = $('input[name="account"]').val("");
+        }
+    }
     function load_account_detaild(param_name, param_value) {
-        console.log("load fired!");
         data = { };
         data[param_name] = param_value;
     /* получаем данные из схемы */
@@ -87,21 +118,27 @@
             data: data
         })
         .done(function(result){
+            var $error_block = $('#nodata_error');
             var $datatable = $('table#account_datatable');
             var $datatable_body = $('tbody', $datatable);
             var $js_template = $('#tmpl_account_table').html(); /* шаблон таблицы */
 
             /* очищаяем таблицу, если она заполнена */
             $datatable_body.empty();
+
             /* Стандартная постобработка */
             if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
                 for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
                     var el = result.results[i];
                     var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
                     $datatable_body.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
+                    $datatable.removeClass('none');
+                    $error_block.addClass('none');
                 }
+            } else {
+                $error_block.removeClass('none');
+                return false;
             }
-            $datatable.removeClass('none');
         });
 
     }
@@ -110,10 +147,11 @@
 {# Шаблон таблицы счетов#}
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
 <tr data-id="{{ company_contact.id }}">
+    <td><label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать </label></td>
     <td>{{ pk }}</td>
-    <td><input type="checkbox" name="selected_account" value="{{ pk }}">{{ name }}</td>{% endif %}
+    <td>{{ name }}</td>{% endif %}
     <td>{{ contragent.name }}</td>
-    <td>{{ status }}</td>
+    <td>Активен{{ status }}</td>
     <td>{{ balance }}</td>
 </tr>
 </script>{% endverbatim %}
@@ -197,28 +235,37 @@ div.select2_result_wrapper > span > i {
                 {# - Левый бар #}
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
+                    <input type="hidden" name="account" value="">
                     <div class="data_grid_medium" style="">
                         {# ----------------- КЛИЕНТ ------------------ #}
 
-                        <div class="tabs m10">
+                        <div class=" m10">
                             <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
-                            <div class="form_row m10">
+                            <div class="tabs form_row m10">
                                 <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li>Счет сотрудника</li><li class="active">Счет контрагента</li></ul>
                             </div>
                             <h2 class="m10">Параметры операции зачисления</h2>
                             <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=form.dds_item  %}
+                                {% include "form_snippets/textinput.html" with field=form.item  %}
                             </div>
                             <div class="form_row">
                                 {% include "form_snippets/textinput.html" with field=form.company  %}
                                 {% include "form_snippets/textinput.html" with field=form.contragent  %}
                             </div>
-                            <div class="form_row">
+                            <div class="form_row" id="datatable_wrapper">
                                 <table class="sheet_headered none" id="account_datatable">
                                     <thead>
-                                        <tr><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
+                                        <tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
                                     </thead>
                                     <tbody></tbody></table>
+                                <div class="input_wrapper none" id="nodata_error"><p class="red">Счет для данного контрагента не создан!</p></div>
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.summ  %}
+                                {% include "form_snippets/radio.html" with field=form.pay_way  %}
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.comment  %}
                             </div>
                         </div>
                         {# ошибки формы #}

@@ -9,23 +9,8 @@
 {% load date_compare %}
 <script>
         $(document).ready(function() {
-            $('select.select2_powered').addClass('newbutton');
-
-
-            var $input = $('input[type="text"]');
-
-
-            $input.attr('placeholder', '+7-()-xxxxxxx')
-                  .insertAfter($('select.select2_powered'));
-
-
-
-
-
-
-            $('select.select2_powered2').select2({
-                //   "language": { "noResults": function(){ return "No Resultsrr Found <a href='#' class='btn btn-danger'>Use it anyway</a>"; }},
-                "language": "ru",
+            $('select.select2_powered').select2({
+                language: "ru",
                 placeholder: "объект не указан",
                 allowClear: true,
                 ajax: {
@@ -65,7 +50,6 @@
 {#                templateSelection: formatRepoSelection // omitted for brevity, see the source of this page#}
             });
         });
-
     function formatResults (result) {
         if (result.loading) return result.text;
         var markup;

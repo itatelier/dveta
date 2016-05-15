@@ -65,7 +65,6 @@ class CarCardView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarCardView, self).get_context_data(*args, **kwargs)
-        log.info("--- car_object_ID: %s" % self.object.car_object.id)
         context_data['bunkers_onboard'] = self.object.car_object.bunker_remain.all()
         # context_data['bunkers_onboard'] = BunkerFlow.remains.by_object_id(self.object.car_object_id)
         # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))

@@ -65,11 +65,13 @@ class DdsAccounts(models.Model):
 
 class DdsFlow(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    date_add = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     parent_op = models.ForeignKey('self', null=True, blank=True)
     item = models.ForeignKey('DdsItems', null=False, blank=False)
     account = models.ForeignKey('DdsAccounts', null=False, blank=False)
     summ = models.FloatField(default=0, null=True, blank=True, )
+    pay_way = models.BooleanField()
+    comment = models.CharField(max_length=255L, null=True, blank=True)
 
     class Meta:
         db_table = 'dds_flow'

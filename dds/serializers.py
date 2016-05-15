@@ -7,6 +7,8 @@ from rest_framework import serializers
 from rest_framework import viewsets, generics, filters
 import django_filters
 from company.serializers import *
+from person.serializers import EmployiesSerializer, UnitGroupsSerializer
+
 
 
 class AccountsSerializer(serializers.ModelSerializer):
@@ -24,34 +26,20 @@ class AccountsFilters(django_filters.FilterSet):
         fields = ['type', 'contragent', 'employee', ]
 
 
-# class TypeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ContragentTypes
-#         fields = ('pk', 'val',)
-#
-#
-# class GroupSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ContragentGroups
-#         fields = ('pk', 'val',)
-#
-#
-# class ContragentUlSerializer(serializers.ModelSerializer):
-#     type = TypeSerializer(many=False, required=False)
-#     group = GroupSerializer(many=False, required=False)
-#
-#     class Meta:
-#         model = Contragents
-#         fields = ('pk', 'company', 'name', 'type', 'group', 'inn', 'kpp', 'ogrn', 'uraddress', 'date_add', 'date_update', 'comment')
-#
-#
-# class ContragentsFilters(django_filters.FilterSet):
-#     # date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
-#     # request_freq = django_filters.NumberFilter(name="client_options__request_freq")
-#
-#     class Meta:
-#         model = Contragents
-#         fields = ['id', 'name', 'company', 'type', 'group', 'inn', 'comment']
+class DdsFlowSerializer(serializers.ModelSerializer):
+    employee = EmployiesSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = DdsFlow
+        depth = 1
+        fields = ('pk', 'date', 'parent_op', 'item', 'account', 'summ', 'pay_way', 'employee', 'comment')
+
+
+class DdsFlowFilters(django_filters.FilterSet):
+
+    class Meta:
+        model = DdsFlow
+        fields = ['item', 'account', 'summ']
 
 
 

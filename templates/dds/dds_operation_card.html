@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'dds_flow' %}">Движение денег</a></li>
+                <li class="active" ><a href="#">Операция <b>{{ object.pk }}</b></a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "dds/operation_left_bar.html" with pk=object.pk sel=1 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <h2>Параметры операции</h2>
+                    {# Ключевые значения #}
+                    <div class="flex_row">
+                        <div class="values_block">
+                            <span><p>{{ object.pk }}</p><em>номер</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.date|date:"d-m-Y" }}</p><em>Дата</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.item.item_group.name }}</p><em>Группа статей</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.item.name }}</p><em>Статья</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ object.summ }}</p><em>Сумма</em></span>
+                        </div>
+                    </div>
+                    {# - Ключевые значения #}
+                    {# Информационный блок - основная информация #}
+                    <div class="sheet_row_headered">
+                        <table class="sheet_simple">
+                            <tr><td>Примечание</td><td>{{ object.comment|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Форма оплаты</td><td><b>{% if object.pay_way == True %}Безналичная{% else %}Наличная{% endif %}</b></td></tr>
+                            {% if object.account.contragent %}
+                            <tr><td>Контрагент</td><td><a href="/company/{{ object.account.contragent.company.pk }}/card/" class="textlink">{{ object.account.contragent.name }}</a></td></tr>
+                            {% endif %}
+                            {% if object.account.employee %}
+                            <tr><td>Сотрудник</td><td>
+                                <a href="/person/{{ object.account.employee.person.pk }}/card/" class="textlink">
+                                    {{ object.account.employee.person.family_name }} [{{ object.account.temployee.person.nick_name }}] {{ object.account.employee.person.given_name }}
+                                </a></td></tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    {# - Информационный блок - основная информация #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

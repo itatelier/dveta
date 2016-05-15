@@ -1,6 +1,8 @@
-<div class="input_block _inline">
-    {{ field }}
-    {% for error in field.errors %}
-    <em>{{ error|escape }}</em>
-    {% endfor %}
+<div class="input_wrapper">
+    <div class="input_block _inline">
+        <legend>{{ field.label }}</legend>
+        {% for choice in field %}
+            {{ choice }}
+        {% endfor %}
+    </div>
 </div>

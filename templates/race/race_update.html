@@ -271,7 +271,7 @@ div.select2_result_wrapper > span > i {
                                         <tr><td>Наименование объекта:</td><td><a href="{% url 'object_card' race.object.id %}" class="textlink"><b>{{ race.object.name }}</b></a></td></tr>
                                         <tr><td>Адрес:</td><td><b>{{ race.object.address.city }}, {{ race.object.address.street }} {{ race.object.address.app }}</b></td></tr>
                                         {% if race.object.address.comment %}
-                                        <tr><td>Примечание к адресу:</td><td>{{ race.object.address.comment }}</td></tr>
+                                        <tr><td>Примечание к адресу:</td><td width="230">{{ race.object.address.comment }}</td></tr>
                                         {% endif %}
                                     </table>
                                 </div>
