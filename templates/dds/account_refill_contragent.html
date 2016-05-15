@@ -6,13 +6,6 @@
 <!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
 <!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
-{#<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>#}
-{#<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>#}
-{#<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>#}
-{#<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>#}
-{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>#}
-{#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>#}
-{#<!-- Tabs JS    --><script type="text/javascript" src="{% static 'js/tabs/lighttabs.js' %}"></script>#}
 <!-- Utils  --><script type="text/javascript" src="{% static 'js/utils/utils.js ' %}"></script>
 
 {% endblock %}
@@ -93,55 +86,10 @@
                     }
                 })
                 .bindselect2(this);
-        {# Чекбокс выбора счета #}
-
     });
 
-    function SelectAccountFromCheck(el) {
-        $el = $(el);
-        if ($el.is( ":checked" )) {
-            $el.parents('tr').addClass('green_bg');
-            $account_input = $('input[name="account"]').val($el.val());
-        } else {
-            $el.parents('tr').removeClass('green_bg');
-            $account_input = $('input[name="account"]').val("");
-        }
-    }
-    function load_account_detaild(param_name, param_value) {
-        data = { };
-        data[param_name] = param_value;
-    /* получаем данные из схемы */
-        $.ajax({
-            tape: 'POST',
-            url:  '/dds/api/dds_accounts_rest/',
-            dataType: "json",
-            data: data
-        })
-        .done(function(result){
-            var $error_block = $('#nodata_error');
-            var $datatable = $('table#account_datatable');
-            var $datatable_body = $('tbody', $datatable);
-            var $js_template = $('#tmpl_account_table').html(); /* шаблон таблицы */
-
-            /* очищаяем таблицу, если она заполнена */
-            $datatable_body.empty();
-
-            /* Стандартная постобработка */
-            if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
-                for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {   /* проходим по массиву данных из схемы result.data */
-                    var el = result.results[i];
-                    var tr = Mustache.to_html($js_template, el);  /* создаем шаблонный объект с данными из элемента массива */
-                    $datatable_body.append(tr);                               /* вставляем щаблонный объект (строчку) в таблицу */
-                    $datatable.removeClass('none');
-                    $error_block.addClass('none');
-                }
-            } else {
-                $error_block.removeClass('none');
-                return false;
-            }
-        });
-
-    }
+    {# дополнительные функции #}
+    {% include "dds/account_refill_fucntions.js" %}
 
 </script>
 {# Шаблон таблицы счетов#}
@@ -159,64 +107,13 @@
 select.select2_powered {
     width: 300px;
 }
-div.select2_result_wrapper {
-    font-weight: bold;
-    font-size: 1.6rem;
-}
-div.select2_result_wrapper > span {
-{#    display: block;#}
-    padding: 0 5px 0 0 ;
-    margin: 0;
-    font-weight: normal;
-    font-size: 1.3rem;
-}
-div.select2_result_wrapper > span > i {
-    padding-left: 0px;
-    font-size: 1.1rem;
-    font-style: normal;
-    color: lightgrey;
-}
-.tabs{
-	display:inline-block;
-}
-.tabs > div{
-	padding-top:10px;
-}
-.tabs ul{
-	margin:0px;
-	padding:0px;
-}
-.tabs ul:after{
-	content:"";
-	display:block;
-	clear:both;
-	height:5px;
-	background: #D3D3D3;
-}
-.tabs ul li{
-	margin:0px;
-	padding:0px;
-	cursor:pointer;
-	display:block;
-	float:left;
-	padding:10px 15px;
-	background:#F6F5F3;
-	color:#707070;
-}
-.tabs ul li.active, .tabs ul li.active:hover{
-	background: #D3D3D3;
-	color: #666;
-}
-.tabs ul li:hover{
-	background:#d6d6d7;
-}
 
 </style>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
                 <li><a href="{#% url 'company_list_clients' %#}">Рейсы</a></li>
-                <li class="active" ><a href="#">Новый рейс</a></li>
+                <li class="active" ><a href="#">Операция пополнения</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -226,24 +123,22 @@ div.select2_result_wrapper > span > i {
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
-                    <ul><li><a href="#" class="active">
-                            {% if forms.address.instance %}Основная информация
-                            {% else %}Новый объект
-                            {% endif %}
-                            </a></li></ul><hr>
+                    <ul>
+                        <li><a href="#" class="active">Операция пополнения</a></li>
+                    </ul><hr>
                 </div>
                 {# - Левый бар #}
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <input type="hidden" name="account" value="">
                     <div class="data_grid_medium" style="">
-                        {# ----------------- КЛИЕНТ ------------------ #}
-
                         <div class=" m10">
                             <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
+                            {# -------- Tabs Menu --------- #}
                             <div class="tabs form_row m10">
                                 <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li>Счет сотрудника</li><li class="active">Счет контрагента</li></ul>
                             </div>
+                            {# -------- End of Tabs Menu --------- #}
                             <h2 class="m10">Параметры операции зачисления</h2>
                             <div class="form_row">
                                 {% include "form_snippets/textinput.html" with field=form.item  %}

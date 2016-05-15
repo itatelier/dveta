@@ -36,36 +36,17 @@ class AccountsViewSet(viewsets.ModelViewSet):
     ordering_fields = ('pk', 'contragent__name', 'balance')
 
 
-class AccountRefillView(LoginRequiredMixin, CreateView):
-    template_name = 'dds/account_refill.html'
+class AccountRefillContragentView(LoginRequiredMixin, CreateView):
+    template_name = 'dds/account_refill_contragent.html'
     form_class = AccountRefillForm
     model = DdsAccounts
-    # def get(self, *args, **kwargs):
-    #     # form = self.form_class
-    #     self.object = None
-    #     # Полям формы присваивается пустой QS, что бы не тянуть всю талицу в Choices для селекта
-    #     form = none_modelchoicesfields_querysets(self.form_class, ('company', ))
-    #     return self.render_to_response(self.get_context_data(form=form))
-
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super(AccountRefillView, self).get_context_data(*args, **kwargs)
-    #     companny_id = self.request.POST.get('company', None)
-    #     form = self.form_class
-    #     # context_data.update({'formdict': "hz"})
-    #     form.fields['company'].queryset = Companies.objects.filter(pk=companny_id)
-    #     context_data.update({'form': form})
-    #     return context_data
-
-    def get_success_url(self):
-        # return reverse('car_card', args=(self.object.id,))
-        return reverse('dds_flow', args=())
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
             new_object = form.save(commit=False)
             new_object.save()
-            self.success_url = '/races/list/'
+            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
             return HttpResponseRedirect(self.success_url)
         else:
             self.object = form.instance
@@ -78,9 +59,7 @@ class DdsFlowView(LoginRequiredMixin,  TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(DdsFlowView, self).get_context_data(*args, **kwargs)
-        #context_data['bunker_types'] = BunkerTypes.objects.all()
-        # context_data['company'] = Companies.objects.get(pk=company_pk)
-        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
+        context_data['item_groups'] = DdsItemGroups.objects.all()
         return context_data
 
 
@@ -95,17 +74,10 @@ class DdsFlowViewSet(viewsets.ModelViewSet):
     serializer_class = DdsFlowSerializer
     search_fields = ('comment', )
     filter_class = DdsFlowFilters
-    ordering_fields = ('pk', 'date', 'item', 'account', 'pay_way')
+    ordering_fields = ('pk', 'date', 'item', 'summ', 'account', 'pay_way', 'account__contragent', 'account__employee')
 
 
 class DdsOperationCard(LoginRequiredMixin, DetailView):
     template_name = "dds/dds_operation_card.html"
     model = DdsFlow
     queryset = DdsFlow.objects.select_related('item', 'account', 'account__contragent', 'account__employee__person', 'item__item_group')
-
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super(DdsOperationCard, self).get_context_data(*args, **kwargs)
-    #     context_data['bunkers_onboard'] = self.object.car_object.bunker_remain.all()
-    #     # context_data['bunkers_onboard'] = BunkerFlow.remains.by_object_id(self.object.car_object_id)
-    #     # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
-    #     return context_data

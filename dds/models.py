@@ -79,4 +79,4 @@ class DdsFlow(models.Model):
         verbose_name_plural = 'Деньги / Движение'
 
     def __unicode__(self):
-        return u'[%s] %s %s %s %s' % (self.id, self.date_add, self.item, self.account, self.summ)
+        return u'[%s] %s %s %s %s' % (self.id, self.date, self.item, self.account, self.summ)

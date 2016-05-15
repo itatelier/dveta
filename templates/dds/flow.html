@@ -65,7 +65,7 @@
         <td>{{{ item.name }}}</td>
         <td width="">{{{ account.name }}}</td>
         <td>{{{ summ }}}</td>
-        <td  width="30" class="centertext">{{#pay_way}}<i class="dot">•</i>{{/pay_way}}</td>
+        <td  width="50" class="centertext">{{#pay_way}}<i class="dot">•</i>{{/pay_way}}</td>
         <td>{{{ account.contragent.name }}}</td>
         <td>{{{ account.employee.person.family_name }}}</td>
         <td>{{{ comment }}}</td>
@@ -91,7 +91,7 @@
                         {# отображенные фильтры #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Наименование</legend>
+                                <legend>Примечание</legend>
                                 <div class="input_block _icon" icon="">
                                     <input type="text" size="15" class="loading" name="name_ac">
                                 </div>
@@ -102,45 +102,41 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Начиная с даты</legend>
                                 <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" name="date_after">
+                                    <input type="text" size="15" name="date_after" rel="datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        {# Дата заканчивая Select filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>по дату</legend>
+                                <div class="input_block _icon" icon="">
+                                    <input type="text" size="15" name="date_before" rel="datetimepicker">
                                 </div>
                             </div>
                         </div>
                         {# Статус Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Статус</legend>
+                                <legend>Группа статей</legend>
                                 <div class="input_block">
-                                    <select name="status">
-                                        <option value="">любой статус</option>
-                                        <option value="1">новый</option>
-                                        <option value="2">на оформлении</option>
-                                        <option value="3">в работе</option>
-                                        <option value="4">заблокирован</option>
-                                        <option value="5">архивный</option>
+                                    <select name="item__item_group">
+                                        <option value="">Любая</option>
+                                        {% for i in item_groups %}
+                                            <option value="{{ i.id }}">{{ i.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        {# Тип клиента Radio filter  #}
+                        {# Форма оплаты Radio filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Тип клиента</legend>
+                                <legend>Форма оплаты</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
-                                    <label><input type="radio" name="org_type" value="1"><p>Частник</p></label>
-                                    <label><input type="radio" name="org_type" value="2"><p>Фирма</p></label>
-                                </div>
-                            </div>
-                        </div>
-                        {# Частота вывоза Radio filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Частота вывозов</legend>
-                                <div class="input_block">
-                                    <label><input type="radio" name="client_options__request_freq" value="" checked><p>Любая</p></label>
-                                    <label><input type="radio" name="client_options__request_freq" value="1"><p>Разовые</p></label>
-                                    <label><input type="radio" name="client_options__request_freq" value="2"><p>Постоянные</p></label>
+                                    <label><input type="radio" name="pay_way" value=""  checked><p>Любой тип</p></label>
+                                    <label><input type="radio" name="pay_way" value="False"><p>Наличная</p></label>
+                                    <label><input type="radio" name="pay_way" value="True"><p>Безналичная</p></label>
                                 </div>
                             </div>
                         </div>
@@ -161,13 +157,13 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="" rel="">Дата</a></th>
-                                <th><a href="#" class="" rel="">Статья учета</a></th>
-                                <th><a href="#" class="" rel="">Счет</a></th>
-                                <th><a href="#" class="" rel="">Сумма</a></th>
-                                <th><a href="#" class="centertext" rel="">б/н</a></th>
-                                <th><a href="#" class="" rel="">Контрагент</a></th>
-                                <th><a href="#" class="" rel="">Сотрудник</a></th>
+                                <th><a href="#" class="sortable" rel="date">Дата</a></th>
+                                <th><a href="#" class="sortable" rel="item">Статья учета</a></th>
+                                <th><a href="#" class="sortable" rel="account">Счет</a></th>
+                                <th><a href="#" class="sortable" rel="summ">Сумма</a></th>
+                                <th><a href="#" class="sortable centertext" rel="pay_way">б/н</a></th>
+                                <th><a href="#" class="sortable" rel="account__contragent">Контрагент</a></th>
+                                <th><a href="#" class="sortable" rel="account__employee">Сотрудник</a></th>
                                 <th><a href="#" class="" rel="">Примечание</a></th>
                             </tr>
                         </thead>

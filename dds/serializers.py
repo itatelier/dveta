@@ -36,10 +36,12 @@ class DdsFlowSerializer(serializers.ModelSerializer):
 
 
 class DdsFlowFilters(django_filters.FilterSet):
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='gte')
+    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='lte')
 
     class Meta:
         model = DdsFlow
-        fields = ['item', 'account', 'summ']
+        fields = ['item', 'account', 'summ', 'item__item_group', 'date_after', 'date_before', 'pay_way']
 
 
 
