@@ -3,6 +3,7 @@
 from django.db import models
 from person.models import Employies
 from contragent.models import Contragents
+from django.db import transaction
 
 
 class DdsItemGroups(models.Model):
@@ -61,6 +62,12 @@ class DdsAccounts(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s %s %s %s ' % (self.id, self.type, self.employee, self.contragent, self.balance)
+
+
+    def update_balance(self, value=None, *args, **kwargs):
+        with transaction.atomic():
+         job_qs = Job.objects.select_for_update().filter(pk=job.id)
+      for job in job_qs:
 
 
 class DdsFlow(models.Model):

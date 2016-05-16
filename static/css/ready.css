@@ -492,7 +492,7 @@ div.left_bar > ul > li > a {
 div.left_bar > ul > li > a.active {  color: #333333;  }
 div.left_bar > ul > li > a.active:after {
     margin-left: 1rem;
-    content: '';
+    content: "";
     color: #FE659C;
     font-family: 'FontAwesome';
     font-style: normal;
