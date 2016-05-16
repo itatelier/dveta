@@ -89,6 +89,10 @@ class AccountRefillCashView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             new_object = form.save(commit=False)
             new_object.save()
+
+            # Обновление баланса счета
+            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
+
             self.success_url = reverse('dds_operation_card', args=(new_object.id,))
             return HttpResponseRedirect(self.success_url)
         else:

@@ -4,6 +4,7 @@ from django.db import models
 from person.models import Employies
 from contragent.models import Contragents
 from django.db import transaction
+from django.db.models import F
 
 
 class DdsItemGroups(models.Model):
@@ -47,6 +48,14 @@ class DdsAccountTypes(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
+class AccountManager(models.Manager):
+
+    def update_balance(self, pk, summ):
+        with transaction.atomic():
+            self.select_for_update().filter(pk=pk).update(balance=F('balance')+summ)
+        return self
+
+
 class DdsAccounts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=True, blank=True)
@@ -54,6 +63,7 @@ class DdsAccounts(models.Model):
     employee = models.ForeignKey('person.Employies', null=True, blank=True)
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True)
     balance = models.FloatField(default=0, null=True, blank=True, )
+    objects = AccountManager()
 
     class Meta:
         db_table = 'dds_accounts'
@@ -64,10 +74,10 @@ class DdsAccounts(models.Model):
         return u'[%s] %s %s %s %s ' % (self.id, self.type, self.employee, self.contragent, self.balance)
 
 
-    def update_balance(self, value=None, *args, **kwargs):
-        with transaction.atomic():
-         job_qs = Job.objects.select_for_update().filter(pk=job.id)
-      for job in job_qs:
+    # def update_balance(self, value=None, *args, **kwargs):
+    #     with transaction.atomic():
+    #      job_qs = Job.objects.select_for_update().filter(pk=job.id)
+    #   for job in job_qs:
 
 
 class DdsFlow(models.Model):
