@@ -1,0 +1,9 @@
+                            <div class="tabs form_row m10">
+                                <ul>
+                                    <li {% if sel == 1 %} class="active"{% endif %}><a href="{% url 'dds_account_refill_cash' %}">Наличная касса</a></li>
+                                    <li {% if sel == 2 %} class="active"{% endif %}><a href="{% url 'dds_account_refill_bank' %}">Безналичный счет</a></li>
+                                    <li {% if sel == 3 %} class="active"{% endif %}><a href="{% url 'dds_account_refill_service' %}">Счет услуг</a></li>
+                                    <li {% if sel == 4 %} class="active"{% endif %}><a href="{% url 'dds_account_refill_employee' %}">Счет сотрудника</a></li>
+                                    <li {% if sel == 5 %} class="active"{% endif %}><a href="{% url 'dds_account_refill_contragent' %}">Счет контрагента</a></li>
+                                </ul>
+                            </div>

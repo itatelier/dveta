@@ -15,7 +15,7 @@
     var selected_employee = '{{ form.employee.value }}';
 
     $(document).ready(function() {
-        if (selected_contragent != 'None') {
+        if (selected_employee != 'None') {
             load_account_detaild('employee', selected_employee);
         }
 
@@ -34,11 +34,12 @@
 
                     $('table#account_datatable').addClass('none');
                     $('#nodata_error').addClass('none');
-                    console.log("Company select changed! Selected ID:" + selected_id);
+                    console.log("Employee select changed! Selected ID:" + selected_id);
                     if (selected_id) {
                         console.log("Got ID! " + selected_id);
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
                         selected_employee = selected_id;
+                        load_account_detaild('employee', selected_employee);
                     } else {
                         selected_employee = undefined;
                     }
@@ -47,16 +48,23 @@
 
     });
 
+    {# Функция компоновки текста для значений Select2 #}
+    function select2_compose_text(item) {
+        if (item) {
+            return item.person.family_name + " " + item.person.given_name + " ( " + item.person.nick_name +" )";
+        }
+    }
+
     {# дополнительные функции #}
     {% include "dds/account_refill_fucntions.js" %}
 
 </script>
 {# Шаблон таблицы счетов#}
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
-<tr data-id="{{ company_contact.id }}">
+<tr data-id="{{ pk }}">
     <td><label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать </label></td>
     <td>{{ pk }}</td>
-    <td>{{ name }}</td>{% endif %}
+    <td>{{ name }}</td>
     <td>{{ contragent.name }}</td>
     <td>Активен{{ status }}</td>
     <td>{{ balance }}</td>
@@ -94,11 +102,9 @@ select.select2_powered {
                         <div class=" m10">
                             <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
                             {# -------- Tabs Menu --------- #}
-                            <div class="tabs form_row m10">
-                                <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li class="active">Счет сотрудника</li><li>Счет контрагента</li></ul>
-                            </div>
+                            {%  include "dds/account_refill_navbar.html" with sel=4 %}
                             {# -------- End of Tabs Menu --------- #}
-                            <h2 class="m10">Параметры операции зачисления</h2>
+                            <h2 class="m10">Параметры операции пополнения</h2>
                             <div class="form_row">
                                 {% include "form_snippets/textinput.html" with field=form.item  %}
                             </div>

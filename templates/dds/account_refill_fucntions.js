@@ -1,5 +1,14 @@
     function SelectAccountFromCheck(el) {
         $el = $(el);
+        var this_id = $el.data('id');
+        var $tbody = $el.parents('tbody');
+        $('tr', $tbody).each(function (index, element) {
+            var $tr = $(element);
+            if ($('input[type=checkbox]', $tr).data('id') != this_id) {
+                $tr.removeClass('green_bg');
+                $('input[type=checkbox]', $tr).attr('checked', false);
+            }
+        });
         if ($el.is( ":checked" )) {
             $el.parents('tr').addClass('green_bg');
             $account_input = $('input[name="account"]').val($el.val());

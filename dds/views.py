@@ -71,6 +71,67 @@ class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
+class AccountRefillCashView(LoginRequiredMixin, CreateView):
+    # родительский класс для форм с типом счета 1,2,3 - следующие View: AccountRefillBankView, AccountRefillServiceView
+    template_name = 'dds/account_refill_simple.html'
+    form_class = AccountRefillSimpleForm
+    account_type = 1
+    menu_item = 1
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AccountRefillCashView, self).get_context_data(*args, **kwargs)
+        context_data['accounts'] = DdsAccounts.objects.filter(type=self.account_type)
+        context_data['menu_item'] = self.menu_item
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            new_object = form.save(commit=False)
+            new_object.save()
+            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = form.instance
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+class AccountRefillBankView(AccountRefillCashView, LoginRequiredMixin, CreateView):
+    template_name = 'dds/account_refill_simple.html'
+    form_class = AccountRefillSimpleForm
+    account_type = 2
+    menu_item = 2
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            new_object = form.save(commit=False)
+            new_object.save()
+            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = form.instance
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+class AccountRefillServiceView(AccountRefillCashView, LoginRequiredMixin, CreateView):
+    template_name = 'dds/account_refill_simple.html'
+    form_class = AccountRefillSimpleForm
+    account_type = 3
+    menu_item = 3
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            new_object = form.save(commit=False)
+            new_object.save()
+            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = form.instance
+            return self.render_to_response(self.get_context_data(form=form))
+
+
 class DdsFlowView(LoginRequiredMixin,  TemplateView):
     template_name = 'dds/flow.html'
 

@@ -50,8 +50,8 @@
                             {% endif %}
                             {% if object.account.employee %}
                             <tr><td>Сотрудник</td><td>
-                                <a href="/person/{{ object.account.employee.person.pk }}/card/" class="textlink">
-                                    {{ object.account.employee.person.family_name }} [{{ object.account.temployee.person.nick_name }}] {{ object.account.employee.person.given_name }}
+                                <a href="{% url 'person_card' object.account.employee.person.pk %}" class="textlink">
+                                    {{ object.account.employee.person.family_name }}  {{ object.account.employee.person.given_name }} [{{ object.account.employee.person.nick_name }}]
                                 </a></td></tr>
                             {% endif %}
                         </table>

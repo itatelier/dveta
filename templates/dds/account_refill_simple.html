@@ -1,0 +1,92 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+
+{% endblock %}
+{% block content %}
+<script>
+
+    {# дополнительные функции #}
+    {% include "dds/account_refill_fucntions.js" %}
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'dds_flow' %}">Движение денег</a></li>
+                <li class="active" ><a href="#">Операция пополнения</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        <li><a href="#" class="active">Операция пополнения</a></li>
+                    </ul><hr>
+                </div>
+                {# - Левый бар #}
+                        {# Форма объекта #}
+                <form action="" method="POST" id="new_object">{% csrf_token %}
+                    {{ form.account }}
+                    <div class="data_grid_medium" style="">
+                        <div class=" m10">
+                            <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
+                            {# -------- Tabs Menu --------- #}
+                            {%  include "dds/account_refill_navbar.html" with sel=menu_item %}
+                            {# -------- End of Tabs Menu --------- #}
+                            <h2 class="m10">Параметры операции пополнения</h2>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.item  %}
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.company  %}
+                                {% include "form_snippets/textinput.html" with field=form.contragent  %}
+                            </div>
+                            <div class="form_row" id="datatable_wrapper">
+                                <div class="input_wrapper">
+                                    <legend>Счет</legend>
+                                    <table class="sheet_headered nomargin" id="account_datatable">
+                                        <thead>
+                                            <tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in accounts %}
+                                            <tr>
+                                                <td><label><input type="checkbox" data-id="{{ i.pk }}" name="selected_account" value="{{ i.pk }}" onclick="SelectAccountFromCheck(this);">Выбрать </label></td>
+                                                <td>{{ i.pk }}</td>
+                                                <td>{{ i.name }}</td>
+                                                <td>{{ i.contragent.name }}</td>
+                                                <td>Активен{{i.status }}</td>
+                                                <td>{{ i.balance|floatformat:0 }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody></table>
+                                </div>
+                                <div class="input_wrapper none" id="nodata_error"><p class="red">Счет для данного контрагента не создан!</p></div>
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.summ  %}
+                                {% include "form_snippets/radio.html" with field=form.pay_way  %}
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.comment  %}
+                            </div>
+                        </div>
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                    </div>
+                    <div class="form_row">
+                        <span class="button_block">
+                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

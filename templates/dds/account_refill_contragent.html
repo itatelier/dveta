@@ -135,11 +135,9 @@ select.select2_powered {
                         <div class=" m10">
                             <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
                             {# -------- Tabs Menu --------- #}
-                            <div class="tabs form_row m10">
-                                <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li>Счет сотрудника</li><li class="active">Счет контрагента</li></ul>
-                            </div>
+                            {%  include "dds/account_refill_navbar.html" with sel=5 %}
                             {# -------- End of Tabs Menu --------- #}
-                            <h2 class="m10">Параметры операции зачисления</h2>
+                            <h2 class="m10">Параметры операции пополнения</h2>
                             <div class="form_row">
                                 {% include "form_snippets/textinput.html" with field=form.item  %}
                             </div>

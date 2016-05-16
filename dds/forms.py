@@ -80,7 +80,7 @@ class AccountRefillEmployeeForm(ModelForm):
 
     item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
     employee = Select2ChoiceField(
-        queryset=Employies.objects.select_related('employee__person').filter(type=2),
+        queryset=Employies.objects.select_related('person').filter(type=2),
         label_field='name',
         label="Сотрудник",
         empty_label=None,
@@ -88,15 +88,16 @@ class AccountRefillEmployeeForm(ModelForm):
         widget=Select(
                 attrs={
                     'class': "select2_powered",
-                    'id': "select2_company",
-                    'data-url': "/company/api/clients/",
+                    'id': "select2_employee",
+                    'data-url': "/persons/api/employies_rest/",
                     'data-field': "person.family_name",
                     'data-placeholder': "фамилия сотрудника",
-                    'data-minlength': 2
+                    'data-minlength': 2,
+                    'data-text_func': 'select2_compose_text'
                     }
         ))
 
-    account = ModelChoiceField(queryset=DdsAccounts.objects.all(), label="Счет", required=True, widget=HiddenInput())
+    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=4), label="Счет", required=True, widget=HiddenInput())
     summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
     comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
@@ -104,3 +105,17 @@ class AccountRefillEmployeeForm(ModelForm):
     class Meta:
         model = DdsFlow
         fields = ('item', 'account', 'summ', 'pay_way', 'comment')
+
+
+class AccountRefillSimpleForm(ModelForm):
+    # Касса
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
+    comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
+
+    class Meta:
+        model = DdsFlow
+        fields = ('item', 'account', 'summ', 'pay_way', 'comment')
+
