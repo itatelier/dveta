@@ -1,0 +1,137 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
+<!-- Select2 Bind    --><script type="text/javascript" src="{% static 'js/select2/bind.js' %}"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
+<!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Utils  --><script type="text/javascript" src="{% static 'js/utils/utils.js ' %}"></script>
+
+{% endblock %}
+{% block content %}
+<script>
+
+    var selected_employee = '{{ form.employee.value }}';
+
+    $(document).ready(function() {
+        if (selected_contragent != 'None') {
+            load_account_detaild('employee', selected_employee);
+        }
+
+
+        {# Болоки таблицы счета #}
+        var $datatable = $('table#account_datatable');
+        var $datatable_body = $('tbody', $datatable);
+
+        {# Виджет Сотрудника #}
+        $('#select2_employee')
+                .on("change", function (e) {
+                    /* изменение */
+                    var $this = $(this);
+                    var selected_id = $this.val();
+                    {# Прячем таблицу счета и ошибку #}
+
+                    $('table#account_datatable').addClass('none');
+                    $('#nodata_error').addClass('none');
+                    console.log("Company select changed! Selected ID:" + selected_id);
+                    if (selected_id) {
+                        console.log("Got ID! " + selected_id);
+                        /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
+                        selected_employee = selected_id;
+                    } else {
+                        selected_employee = undefined;
+                    }
+                })
+                .bindselect2(this);
+
+    });
+
+    {# дополнительные функции #}
+    {% include "dds/account_refill_fucntions.js" %}
+
+</script>
+{# Шаблон таблицы счетов#}
+<script type="text/template" id="tmpl_account_table">{% verbatim %}
+<tr data-id="{{ company_contact.id }}">
+    <td><label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать </label></td>
+    <td>{{ pk }}</td>
+    <td>{{ name }}</td>{% endif %}
+    <td>{{ contragent.name }}</td>
+    <td>Активен{{ status }}</td>
+    <td>{{ balance }}</td>
+</tr>
+</script>{% endverbatim %}
+<style>
+select.select2_powered {
+    width: 300px;
+}
+
+</style>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{#% url 'company_list_clients' %#}">Рейсы</a></li>
+                <li class="active" ><a href="#">Операция пополнения</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        <li><a href="#" class="active">Операция пополнения</a></li>
+                    </ul><hr>
+                </div>
+                {# - Левый бар #}
+                        {# Форма объекта #}
+                <form action="" method="POST" id="new_object">{% csrf_token %}
+                    <input type="hidden" name="account" value="">
+                    <div class="data_grid_medium" style="">
+                        <div class=" m10">
+                            <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
+                            {# -------- Tabs Menu --------- #}
+                            <div class="tabs form_row m10">
+                                <ul><li>Наличная касса</li><li>Безналичный счет</li><li>Счет услуг</li><li class="active">Счет сотрудника</li><li>Счет контрагента</li></ul>
+                            </div>
+                            {# -------- End of Tabs Menu --------- #}
+                            <h2 class="m10">Параметры операции зачисления</h2>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.item  %}
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.employee  %}
+                            </div>
+                            <div class="form_row" id="datatable_wrapper">
+                                <table class="sheet_headered none" id="account_datatable">
+                                    <thead>
+                                        <tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
+                                    </thead>
+                                    <tbody></tbody></table>
+                                <div class="input_wrapper none" id="nodata_error"><p class="red">Счет для данного контрагента не создан!</p></div>
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.summ  %}
+                                {% include "form_snippets/radio.html" with field=form.pay_way  %}
+                            </div>
+                            <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.comment  %}
+                            </div>
+                        </div>
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                    </div>
+                    <div class="form_row">
+                        <span class="button_block">
+                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

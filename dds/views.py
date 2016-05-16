@@ -38,7 +38,7 @@ class AccountsViewSet(viewsets.ModelViewSet):
 
 class AccountRefillContragentView(LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill_contragent.html'
-    form_class = AccountRefillForm
+    form_class = AccountRefillContragentForm
     model = DdsAccounts
 
     def post(self, request, *args, **kwargs):
@@ -51,6 +51,23 @@ class AccountRefillContragentView(LoginRequiredMixin, CreateView):
         else:
             self.object = form.instance
             form = replace_form_choices_select2(form, ('company', 'contragent'))
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
+    template_name = 'dds/account_refill_employee.html'
+    form_class = AccountRefillEmployeeForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            new_object = form.save(commit=False)
+            new_object.save()
+            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = form.instance
+            form = replace_form_choices_select2(form, ('employee', ))
             return self.render_to_response(self.get_context_data(form=form))
 
 

@@ -27,8 +27,8 @@ class AdminItemForm(ModelForm):
         fields = ('item_group', 'name', 'direction_type')
 
 
-class AccountRefillForm(ModelForm):
-    active_tab = CharField(required=False, widget=HiddenInput())
+class AccountRefillContragentForm(ModelForm):
+    # active_tab = CharField(required=False, widget=HiddenInput())
 
     item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
     company = Select2ChoiceField(
@@ -74,3 +74,33 @@ class AccountRefillForm(ModelForm):
         model = DdsFlow
         fields = ('item', 'account', 'summ', 'pay_way', 'comment')
 
+
+class AccountRefillEmployeeForm(ModelForm):
+    # active_tab = CharField(required=False, widget=HiddenInput())
+
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    employee = Select2ChoiceField(
+        queryset=Employies.objects.select_related('employee__person').filter(type=2),
+        label_field='name',
+        label="Сотрудник",
+        empty_label=None,
+        required=False,
+        widget=Select(
+                attrs={
+                    'class': "select2_powered",
+                    'id': "select2_company",
+                    'data-url': "/company/api/clients/",
+                    'data-field': "person.family_name",
+                    'data-placeholder': "фамилия сотрудника",
+                    'data-minlength': 2
+                    }
+        ))
+
+    account = ModelChoiceField(queryset=DdsAccounts.objects.all(), label="Счет", required=True, widget=HiddenInput())
+    summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
+    comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
+
+    class Meta:
+        model = DdsFlow
+        fields = ('item', 'account', 'summ', 'pay_way', 'comment')
