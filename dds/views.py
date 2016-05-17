@@ -33,7 +33,16 @@ class AccountsViewSet(viewsets.ModelViewSet):
     serializer_class = AccountsSerializer
     search_fields = ('name', 'contragent_name', 'employee__person__family_name')
     filter_class = AccountsFilters
-    ordering_fields = ('pk', 'contragent__name', 'balance')
+    ordering_fields = ('pk', 'contragent__name', 'balance', 'name', 'type')
+
+
+class AccountsBalanceView(LoginRequiredMixin,  TemplateView):
+    template_name = 'dds/accounts_balance.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AccountsBalanceView, self).get_context_data(*args, **kwargs)
+        context_data['account_types'] = DdsAccountTypes.objects.all()
+        return context_data
 
 
 class AccountRefillContragentView(LoginRequiredMixin, CreateView):
@@ -142,6 +151,7 @@ class DdsFlowView(LoginRequiredMixin,  TemplateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(DdsFlowView, self).get_context_data(*args, **kwargs)
         context_data['item_groups'] = DdsItemGroups.objects.all()
+        context_data['selected_account'] = self.kwargs.get('account_id', "")
         return context_data
 
 

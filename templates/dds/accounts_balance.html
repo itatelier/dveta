@@ -15,7 +15,7 @@
 
 
 <script>
-    var JsonDataUrl = "/dds/api/dds_flow_rest/";
+    var JsonDataUrl = "/dds/api/dds_accounts_rest/";
     var req_preprocess_result = "1";
 
     $(document).ready(function() {
@@ -28,19 +28,13 @@
             timepicker: false,
         });
 
-        {#    Автоподсказка для поля сортировки #}
-{#        input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');#}
-{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
-{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
-{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
-
         {#    Сортировка по заголовкам столбцов   #}
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
             var id = $(this).data('object_id');
-            var url = "/dds/operation/" + id +"/card";
+            var url = "/dds/flow/account/" + id +"/";
             document.location.href = url;
         });
 
@@ -61,27 +55,18 @@
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-object_id="{{ pk }}">
-        <td width="100">{{{ date.date }}}</td>
-        <td>{{{ item.name }}}</td>
-        <td width="">{{{ account.name }}}</td>
-        <td>{{{ summ }}}</td>
-        <td  width="50" class="centertext">{{#pay_way}}<i class="dot">•</i>{{/pay_way}}</td>
-        <td>{{{ account.contragent.name }}}</td>
-        <td>{{{ account.employee.person.family_name }}}</td>
-        <td>{{{ comment }}}</td>
+        <td>{{{ name }}}</td>
+        <td>{{{ type.val }}}</td>
+        <td width="80">{{{ balance }}}</td>
+        <td class="centertext">{{#status}}Активен{{/status}}{{^status}}<p class="red">Заблокирован</p>{{/status}}</td>
+        <td>{{{ employee.person.family_name }}} {{{ employee.person.given_name }}}{{#employee.person.nick_name}} [{{{ employee.person.nick_name }}}]{{/employee.person.nick_name}}</td>
+        <td>{{{ contragent.name }}}</td>
     </tr>
 
 </script>{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul>
-                {% if selected_account %}
-                <li class="" ><a href="{% url 'dds_flow' %}">Движение денег</a></li>
-                <li class="active" ><a href="{% url 'dds_flow_by_account' selected_account %}">Счет№ {{ selected_account }}</a></li>
-                {% else %}
-                <li class="active" ><a href="{% url 'dds_flow' %}">Движение денег</a></li>
-                {% endif %}
-            </ul>
+            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -95,56 +80,35 @@
                         <input type="hidden" name="ordering" value="id"/>
                         <input type="hidden" name="offset" value="0"/>
                         <input type="hidden" name="limit" value="20"/>
-                        <input type="hidden" name="account" value="{{ selected_account }}"/>
                         {# отображенные фильтры #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Примечание</legend>
+                                <legend>Поиск</legend>
                                 <div class="input_block _icon" icon="">
                                     <input type="text" size="15" class="loading" name="name_ac">
                                 </div>
                             </div>
                         </div>
-                        {# Дата начиная с Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Начиная с даты</legend>
-                                <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" name="date_after" rel="datetimepicker">
-                                </div>
-                            </div>
-                        </div>
-                        {# Дата заканчивая Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>по дату</legend>
-                                <div class="input_block _icon" icon="">
-                                    <input type="text" size="15" name="date_before" rel="datetimepicker">
-                                </div>
-                            </div>
-                        </div>
-                        {# Статус Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Группа статей</legend>
-                                <div class="input_block">
-                                    <select name="item__item_group">
-                                        <option value="">Любая</option>
-                                        {% for i in item_groups %}
-                                            <option value="{{ i.id }}">{{ i.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        {# Форма оплаты Radio filter  #}
+                        {# Тип счета Radio filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
                                 <legend>Форма оплаты</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="pay_way" value=""  checked><p>Любой тип</p></label>
-                                    <label><input type="radio" name="pay_way" value="False"><p>Наличная</p></label>
-                                    <label><input type="radio" name="pay_way" value="True"><p>Безналичная</p></label>
+                                    <label><input type="radio" name="type" value=""  checked><p>Любой тип</p></label>
+                                    {% for i in account_types %}
+                                    <label><input type="radio" name="type" value="{{ i.pk }}"><p>{{ i.val }}</p></label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {# Статус Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Форма оплаты</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="status" value=""  checked><p>Любой статус</p></label>
+                                    <label><input type="radio" name="status" value="True"><p>Активен</p></label>
+                                    <label><input type="radio" name="status" value="False"><p>Заблокирован</p></label>
                                 </div>
                             </div>
                         </div>
@@ -165,14 +129,12 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable" rel="date">Дата</a></th>
-                                <th><a href="#" class="sortable" rel="item">Статья учета</a></th>
-                                <th><a href="#" class="sortable" rel="account">Счет</a></th>
-                                <th><a href="#" class="sortable" rel="summ">Сумма</a></th>
-                                <th><a href="#" class="sortable centertext" rel="pay_way">б/н</a></th>
-                                <th><a href="#" class="sortable" rel="account__contragent">Контрагент</a></th>
-                                <th><a href="#" class="sortable" rel="account__employee">Сотрудник</a></th>
-                                <th><a href="#" class="" rel="">Примечание</a></th>
+                                <th><a href="#" class="sortable" rel="name">Имя</a></th>
+                                <th><a href="#" class="sortable" rel="type">Тип счета</a></th>
+                                <th><a href="#" class="sortable" rel="balance">Баланс</a></th>
+                                <th><a href="#" class="sortable centertext" rel="balance">Статус</a></th>
+                                <th><a href="#" rel="">Сотрудник</a></th>
+                                <th><a href="#" class="sortable " rel="contragent">Контрагент</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

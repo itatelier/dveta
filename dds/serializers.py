@@ -10,20 +10,20 @@ from company.serializers import *
 from person.serializers import EmployiesSerializer, UnitGroupsSerializer
 
 
-
 class AccountsSerializer(serializers.ModelSerializer):
+    employee = EmployiesSerializer(many=False, read_only=True)
 
     class Meta:
         model = DdsAccounts
         depth = 1
-        fields = ('pk', 'name', 'type', 'contragent', 'employee', 'balance')
+        fields = ('pk', 'name', 'type', 'contragent', 'employee', 'balance', 'status')
 
 
 class AccountsFilters(django_filters.FilterSet):
 
     class Meta:
         model = DdsAccounts
-        fields = ['type', 'contragent', 'employee', ]
+        fields = ['type', 'contragent', 'employee', 'status']
 
 
 class DdsFlowSerializer(serializers.ModelSerializer):

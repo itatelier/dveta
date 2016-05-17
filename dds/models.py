@@ -63,6 +63,7 @@ class DdsAccounts(models.Model):
     employee = models.ForeignKey('person.Employies', null=True, blank=True)
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True)
     balance = models.FloatField(default=0, null=True, blank=True, )
+    status = models.BooleanField()
     objects = AccountManager()
 
     class Meta:
