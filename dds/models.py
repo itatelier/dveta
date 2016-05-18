@@ -75,10 +75,15 @@ class DdsAccounts(models.Model):
         return u'[%s] %s %s %s %s ' % (self.id, self.type, self.employee, self.contragent, self.balance)
 
 
-    # def update_balance(self, value=None, *args, **kwargs):
-    #     with transaction.atomic():
-    #      job_qs = Job.objects.select_for_update().filter(pk=job.id)
-    #   for job in job_qs:
+class FlowManager(models.Manager):
+    def addflowop(self, item_id, account_id, pay_way, summ):
+        flowop = self.create(
+            item=DdsItems(pk=item_id),
+            account=DdsAccounts(pk=account_id),
+            pay_way=True,
+            summ=summ
+        )
+        return flowop
 
 
 class DdsFlow(models.Model):
@@ -88,8 +93,9 @@ class DdsFlow(models.Model):
     item = models.ForeignKey('DdsItems', null=False, blank=False)
     account = models.ForeignKey('DdsAccounts', null=False, blank=False)
     summ = models.FloatField(default=0, null=True, blank=True, )
-    pay_way = models.BooleanField()
+    pay_way = models.BooleanField(default=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
+    objects = FlowManager()
 
     class Meta:
         db_table = 'dds_flow'
@@ -98,3 +104,5 @@ class DdsFlow(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s %s %s %s' % (self.id, self.date, self.item, self.account, self.summ)
+
+
