@@ -1,19 +1,21 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
-<!-- Select2 JS    --><script type="text/javascript" src="{% static 'js/select2/i18n/ru.js' %}"></script>
-<!-- Select2 Bind    --><script type="text/javascript" src="{% static 'js/select2/bind.js' %}"></script>
 
 <!-- Select2 CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/select2/select2.min.css' %}'/>
-<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
 {#<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>#}
 {#<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>#}
-<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
 <!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
 {#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>#}
 {#<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>#}
 
+{% endblock %}
+{%  block js %}
+<!-- Select2 JS    --><script type="text/javascript" src="/static/js/select2/select2.min.js"></script>
+<!-- Select2 JS    --><script type="text/javascript" src="/static/js/select2/i18n/ru.js"></script>
+<!-- Select2 Bind    --><script type="text/javascript" src="/static/js/select2/bind.js"></script>
+<!-- JS Template    --><script type="text/javascript" src="/static/js/mustache/mustache.min.js"></script>
+<!-- DateTime       --><script type="text/javascript" src="/static/js/datetime/jquery.datetimepicker.full.min.js"></script>
 {% endblock %}
 {% block content %}
 <script>
@@ -37,19 +39,17 @@
             timepicker: false,
         });
 
+        {# отключаем селект контрагента, если компания не выбрана #}
+        if (!$('select#select2_client').val()) {
+            $('select#select2_contragent').prop('disabled', true)
+            $('select#select2_object').prop('disabled', true)
+        } else {
+            $('select#select2_contragent').attr('data-filter_value', "{{ form.company.value }}");
+            $('select#select2_object').attr('data-filter_value', "{{ form.company.value }}");
 
-
-            {# отключаем селект контрагента, если компания не выбрана #}
-            if (!$('select#select2_client').val()) {
-                $('select#select2_contragent').prop('disabled', true)
-                $('select#select2_object').prop('disabled', true)
-            } else {
-                $('select#select2_contragent').attr('data-filter_value', "{{ form.company.value }}");
-                $('select#select2_object').attr('data-filter_value', "{{ form.company.value }}");
-
-                /* Информация о клиенте */
-                get_company_info(selected_company);
-            }
+            /* Информация о клиенте */
+            get_company_info(selected_company);
+        }
 
             $('#select2_client')
                     .on("change", function(e) {
@@ -86,12 +86,10 @@
             $('#select2_contragent').bindselect2(this);
 
 
-            $('select#select2_object')
-                .on("change", function(e) {
+            $('#select2_object').on("change", function(e) {
                     /* изменение */
                     var $this = $(this);
                     var selected_id = $this.val();
-                    console.log("Object selected id=" + selected_id);
                     /* выводим перечень контактов для объекта*/
                     if (selected_id) {
                         get_object_contacts(selected_id);
@@ -100,7 +98,9 @@
                 .bindselect2(this);
 
             /* получаем список контактов, если объект определен */
-            if (selected_object) {
+            console.log("SElected object: " + selected_object);
+            if (selected_object != 'None') {
+                 console.log("SElected object  nont None!");
                 get_object_contacts(selected_object);
             }
 

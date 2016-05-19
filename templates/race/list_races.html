@@ -55,6 +55,14 @@
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
 {#                 изменение формата даты #}
                 result.results[i].date_race = date_json2hr(result.results[i].date_race);
+                if (result.results[i].mark_required) {
+                    console.log("-- Race: " + result.results[i].pk + " Mark req!");
+                    if (result.results[i].mark_done) {
+                        result.results[i].is_marked = 1;
+                    } else {
+                        result.results[i].need_mark = 1;
+                    }
+                }
             }
         }
 </script>
@@ -75,7 +83,7 @@
         <td width="70" class="centertext">{{{ hodkis }}}</td>
         <td width="80" >{{{ summ }}}</td>
         <td width="30" class="centertext">{{#pay_way }}<i class="dot">•</i>{{/pay_way}}</td>
-        <td width="30" class="centertext">{{#paid }}<i class="icon green" icon=""></i>{{/paid}}</td>
+        <td width="30" class="centertext">{{#is_marked }}<i class="icon green" icon=""></i>{{/is_marked}}{{#need_mark }}<i class="icon red" icon=""></i>{{/need_mark }}</td>
         <td>{{{ dump.name }}}</td>
         <td width="30" class="centertext">{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
         <td width="90" class="centertext">{{{ dump_cash }}}</td>
@@ -183,6 +191,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper _inline">
+                                        <legend>Отметка о прибытии</legend>
+                                        <div class="input_block">
+                                            <label><input type="checkbox" name="need_mark" value="True">требуется</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="flex_block flex flex_vcentered m10">
                             {# блок кнопок #}
                                 <div class="form_row">
@@ -211,7 +229,7 @@
                                 <th><a href="#" class="centertext" rel="">Ходки</a></th>
                                 <th><a href="#" class="" rel="">Сумма</a></th>
                                 <th><a href="#" class="centertext" rel="">б/н</a></th>
-                                <th><a href="#" class="centertext" rel="">О</a></th>
+                                <th><a href="#" class="centertext" rel="">Отм</a></th>
                                 <th><a href="#" class="" rel="">Полигон</a></th>
                                 <th><a href="#" class="centertext" rel="">Т</a></th>
                                 <th><a href="#" class="centertext" rel="">Нал</a></th>

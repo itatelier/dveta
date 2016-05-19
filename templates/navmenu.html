@@ -1,12 +1,12 @@
         <nav>
             <ul>
                 <li><a href="/"><div>&#xf015;<span>Главная</span></div></a></li>
-                <li><a href="{% url 'company_search_contacts' %}"><div>&#xf0b1;<span>Клиенты {{ selected_menu_id2 }}</span></div></a>
+                <li><a href="{% url 'company_list_clients' %}"><div>&#xf0b1;<span>Клиенты {{ selected_menu_id2 }}</span></div></a>
                     <div>
                         <ul>
                             <li><a href="{% url 'company_list_clients' %}">Картотека клиентов</a></li>
+                            <li><a href="{% url 'company_search_contacts' %}">Поиск контактов</a></li>
                             <li><a href="{% url 'contragents_list_all' %}">Контрагенты</a></li>
-                            <li><a href="listing.html" class="unused">Баланс счетов</a></li>
                             <li><hr></li>
                             <li><a href="{% url 'company_create_private' %}"><i>&#xf067;</i>Новый клиент</a></li>
                         </ul>

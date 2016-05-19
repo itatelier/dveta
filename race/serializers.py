@@ -73,6 +73,8 @@ class RaceSerializer(serializers.ModelSerializer):
                   'recommendation',
                   'date_race',
                   'date_add',
+                  'mark_required',
+                  'mark_done'
                   )
 
 
@@ -83,12 +85,19 @@ class RaceFilters(django_filters.FilterSet):
     object_name = django_filters.CharFilter(name="object__name", lookup_type='icontains')
     date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='gte')
     date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='lte')
-    # request_freq = django_filters.NumberFilter(name="client_options__request_freq")
+    need_mark = django_filters.MethodFilter()
+
+    def filter_need_mark(self, queryset, value):
+        if not value:
+            return queryset
+
+        queryset = queryset.filter(mark_required=True, mark_done__isnull=True)
+        return queryset
 
     class Meta:
         model = Races
         fields = [
             'bunker_type',
-            'pay_way'
+            'pay_way',
         ]
 
