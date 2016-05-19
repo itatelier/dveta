@@ -59,7 +59,7 @@ class AccountManager(models.Manager):
 class DdsAccounts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=True, blank=True)
-    type = models.ForeignKey('DdsAccountTypes', null=False, blank=False)
+    type = models.ForeignKey('dds.DdsAccountTypes', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=True, blank=True)
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True)
     balance = models.FloatField(default=0, null=True, blank=True, )
@@ -72,17 +72,19 @@ class DdsAccounts(models.Model):
         verbose_name_plural = 'Деньги / Счета'
 
     def __unicode__(self):
-        return u'[%s] %s %s %s %s ' % (self.id, self.type, self.employee, self.contragent, self.balance)
+        return u'[%s] %s %s %s %s' % (self.id, self.employee, self.contragent, self.balance, self.type)
 
 
 class FlowManager(models.Manager):
     def addflowop(self, item_id, account_id, pay_way, summ):
-        flowop = self.create(
-            item=DdsItems(pk=item_id),
-            account=DdsAccounts(pk=account_id),
-            pay_way=True,
-            summ=summ
-        )
+        with transaction.atomic():
+            DdsAccounts.objects.select_for_update().filter(pk=account_id).update(balance=F('balance')+summ)
+            flowop = self.create(
+                item=DdsItems(pk=item_id),
+                account=DdsAccounts(pk=account_id),
+                pay_way=True,
+                summ=summ
+            )
         return flowop
 
 
@@ -103,6 +105,6 @@ class DdsFlow(models.Model):
         verbose_name_plural = 'Деньги / Движение'
 
     def __unicode__(self):
-        return u'[%s] %s %s %s %s' % (self.id, self.date, self.item, self.account, self.summ)
+        return u'[%s] %s %s %s %s' % (self.id, self.date, self.item.pk, self.account.pk, self.summ)
 
 

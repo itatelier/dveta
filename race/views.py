@@ -37,7 +37,7 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
         form = self.get_form()
         car_pk = self.kwargs.get('car_id', None)
         if form.is_valid():
-            # смежные объекты
+            # смежные объекты 
             car_obj = Cars.objects.get(pk=car_pk)
             object_obj = Objects.objects.get(pk=self.request.POST.get('place', None))
             # Объект формы (Race object)
