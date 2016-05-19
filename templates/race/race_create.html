@@ -46,6 +46,9 @@
             } else {
                 $('select#select2_contragent').attr('data-filter_value', "{{ form.company.value }}");
                 $('select#select2_object').attr('data-filter_value', "{{ form.company.value }}");
+
+                /* Информация о клиенте */
+                get_company_info(selected_company);
             }
 
             $('#select2_client')
@@ -68,8 +71,11 @@
                                     .prop('disabled', false)
                                     .attr('data-filter_value', selected_id)
                                     .val(null).change();
+                            /* Информация о клиенте */
+                            get_company_info(selected_company);
                         } else {
                             selected_company = null;
+                            $('#company_info').empty();
                             $('select#select2_contragent').prop('disabled', true).select2("val", "");
                             $('select#select2_object').prop('disabled', true).select2("val", "");
                         }
@@ -100,6 +106,25 @@
 
         });
 
+    function get_company_info(selected_company_id) {
+                        var $infobox = $('#company_info');
+                            $infobox.empty();
+                        var $mark_input = $('input[name="is_mark_required"]');
+                            $mark_input.val("");
+                        $.ajax({
+                            tape: 'POST',
+                            url:  '/company/api/clients/',
+                            dataType: 'json',
+                            data: { 'id': selected_company_id }
+                        })
+                        .done(function(result) {
+                            var result_data = result.results[0];
+                            var infotable = Mustache.to_html($('#tmpl_company_info_content').html(), result_data );
+                            $infobox.append(infotable);
+                            $('input[name="is_mark_required"]').val(result_data.client_options.request_special_sign);
+                        });
+
+    }
     function get_object_contacts(object_id) {
                         $.ajax({
                             tape: 'POST',
@@ -122,6 +147,11 @@
                         });
     }
 </script>
+{# Шаблон таблицы информации о клиенте#}
+<script type="text/template" id="tmpl_company_info_content">{% verbatim %}
+    <span>Статус: <b>{{ status.val }}</b></span>{{#client_options.request_special_sign}}<span>Отметка: <b>требуется!</b></span>{{/client_options.request_special_sign}}<span><a href="/company/{{ pk }}/card/" class="textlink">карточка клиента</a> </span><br>
+    <div><i class="icon" icon="">{{ comment }}</i></div>
+</script>{% endverbatim %}{#  #}
 {# Шаблон таблицы контактов#}
 <script type="text/template" id="tmpl_contacts_table">{% verbatim %}
 <tr data-id="{{ company_contact.id }}">
@@ -152,6 +182,17 @@ div.select2_result_wrapper > span > i {
     font-style: normal;
     color: lightgrey;
 }
+
+#company_info span {
+    margin: 0.5rem 0.3rem 0.3rem 0.5rem;
+}
+#company_info div {
+    margin: 0.5rem 0 0 1rem;
+}
+#company_info i {
+    display: block;
+    width: 430px;
+}
 </style>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -176,6 +217,7 @@ div.select2_result_wrapper > span > i {
                 {# - Левый бар #}
                         {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
+                    <input type="hidden" name="is_mark_required" value="{{ form.is_mark_required.value }}">
                     <div class="data_grid_medium" style="">
                             {# ----------------- КЛИЕНТ ------------------ #}
                             <h2 class="blue">Параметры рейса</h2>
@@ -184,10 +226,7 @@ div.select2_result_wrapper > span > i {
 {#                                    <h2 class="blue">Клиент</h2>#}
                                     <div class="form_row">{% include "form_snippets/textinput.html" with field=form.company  %}</div>
                                     {#  информация о клиение #}
-                                    <!--
-                                    <div class="form_row">
-                                        <div class="input_wrapper" id="comapny_info">Баланс: 4500р. Кредит: 7000р.</div>
-                                    </div> -->
+                                    <div id="company_info" class=""></div>
                                 </div>
                                 <div class="flex_block m10 bordered">
 {#                                    <h2 class="blue">Контрагент</h2>#}

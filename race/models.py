@@ -60,6 +60,10 @@ class Races(models.Model):
 
     date_add = models.DateTimeField(auto_now_add=True)
 
+    mark_required = models.BooleanField()
+    mark_done = models.BooleanField()
+    mark_author = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, related_name="race_marked")
+
     class Meta:
         db_table = 'races'
         verbose_name_plural = 'Рейсы'

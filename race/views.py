@@ -45,6 +45,11 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
             race_object.car = car_obj
             race_object.driver = car_obj.driver
             race_object.object = object_obj
+            if form.cleaned_data['is_mark_required']:
+                race_object.mark_required = True
+                log.info("--- mark: %s" % form.cleaned_data['is_mark_required'])
+            else:
+                log.info("Mark not req!")
             race_object.save()
             self.success_url = '/races/%s/update' % race_object.id
             return HttpResponseRedirect(self.success_url)
