@@ -48,6 +48,10 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
             # В шаблоне есть hidden input: is_mark_required. Его значение устанавливается после функции инфо о клиенте
             if form.cleaned_data['is_mark_required']:
                 race_object.mark_required = True
+            # Обновление ДДС
+            if race_object.pay_way:
+                # если оплата Безналичная
+                log.info("Pay way true!")
             race_object.save()
             self.success_url = '/races/%s/update' % race_object.id
             return HttpResponseRedirect(self.success_url)
