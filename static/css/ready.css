@@ -5,6 +5,13 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+    font-family: 'Roboto';
+    src: url('./fonts/Roboto/Roboto-Regular.woff2') format('woff2');
+    /*src: url('./fonts/Roboto/Roboto-Regular.woff') format('woff');*/
+    /*font-weight: 200;*/
+    font-style: normal;
+}
 
 * {margin: 0;padding: 0;outline: none;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
 *:after, *:before { -webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
@@ -44,7 +51,7 @@ form { margin: 0.5rem 2rem; width: 100%;}
 .blue { color: #009DDA !important; }
 .alert { color: #FF0E0E;}
 .gray { color: #cbcfc9;}
-.green_bg { background-color: #74BA12 !important; }
+.green_bg { background-color: rgb(208, 236, 169) !important; }
 .lightgreen_bg { background-color: #ECF7DE; }
 .red_bg { background-color: #F7A3A3 !important; }
 .blue_bg { background-color: #009DDA !important; }

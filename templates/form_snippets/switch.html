@@ -1,0 +1,9 @@
+<div class="input_block _inline">
+    <label class="switch">
+        {{ field }}{{ field.label }}
+        <div class="slider"></div>
+    </label>
+    {% for error in field.errors %}
+    <em>{{ error|escape }}</em>
+    {% endfor %}
+</div>

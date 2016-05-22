@@ -61,7 +61,7 @@ class DdsAccounts(models.Model):
     name = models.CharField(max_length=255L, null=True, blank=True)
     type = models.ForeignKey('dds.DdsAccountTypes', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=True, blank=True)
-    contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True)
+    contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True, related_name='money_account')
     balance = models.FloatField(default=0, null=True, blank=True, )
     status = models.BooleanField()
     objects = AccountManager()
@@ -76,7 +76,7 @@ class DdsAccounts(models.Model):
 
 
 class FlowManager(models.Manager):
-    def addflowop(self, item_id, account_id, pay_way, summ):
+    def flow_op(self, item_id, account_id, pay_way, summ):
         with transaction.atomic():
             DdsAccounts.objects.select_for_update().filter(pk=account_id).update(balance=F('balance')+summ)
             flowop = self.create(
@@ -86,6 +86,31 @@ class FlowManager(models.Manager):
                 summ=summ
             )
         return flowop
+
+    def flow_move(self, item_out_id, account_out_id, pay_way_out, item_in_id, account_in_id, pay_way_in,  summ):
+        with transaction.atomic():
+            # Обновляем баланс исходящего счета
+            DdsAccounts.objects.select_for_update().filter(pk=account_out_id).update(balance=F('balance')+summ*(-1))
+            # Обновляем баланс входящего счета
+            DdsAccounts.objects.select_for_update().filter(pk=account_in_id).update(balance=F('balance')+summ)
+            # Запись в потоке для исходящей операции
+            flow_object_out = DdsFlow(
+                item=DdsItems(pk=item_out_id),
+                account=DdsAccounts(pk=account_out_id),
+                pay_way=pay_way_out,
+                summ=summ
+            )
+            flow_object_out.save()
+            # Запись в потоке для входящей операции
+            flow_object_in = DdsFlow(
+                item=DdsItems(pk=item_in_id),
+                account=DdsAccounts(pk=account_in_id),
+                pay_way=pay_way_out,
+                parent_op=flow_object_out,
+                summ=summ
+            )
+            flow_object_in.save()
+        return True
 
 
 class DdsFlow(models.Model):

@@ -17,7 +17,7 @@ from serializers import *
 from contragent.models import *
 from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
-
+from dds.models import *
 
 class RaceCreateView(LoginRequiredMixin, CreateView):
     template_name = 'race/race_create.html'
@@ -51,7 +51,23 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
             # Обновление ДДС
             if race_object.pay_way:
                 # если оплата Безналичная
-                log.info("Pay way true!")
+                DdsFlow.objects.flow_move(
+                    item_out_id=18,
+                    account_out_id=race_object.contragent.money_account.get().pk,
+                    pay_way_out=True,
+                    item_in_id=4,
+                    account_in_id=5,
+                    pay_way_in=True,
+                    summ=race_object.summ
+                 )
+            else:
+                # если оплата Нал
+                DdsFlow.objects.flow_op(
+                    17,
+                    race_object.race_object.contragent.money_account.get().pk,
+                    False,
+                    race_object.summ
+                )
             race_object.save()
             self.success_url = '/races/%s/update' % race_object.id
             return HttpResponseRedirect(self.success_url)

@@ -28,9 +28,8 @@ class AdminItemForm(ModelForm):
 
 
 class AccountRefillContragentForm(ModelForm):
-    # active_tab = CharField(required=False, widget=HiddenInput())
-
-    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
     company = Select2ChoiceField(
         queryset=Companies.objects.all(),
         label_field='name',
@@ -76,12 +75,12 @@ class AccountRefillContragentForm(ModelForm):
 
 
 class AccountRefillEmployeeForm(ModelForm):
-    # active_tab = CharField(required=False, widget=HiddenInput())
+    item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
 
-    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
     employee = Select2ChoiceField(
         queryset=Employies.objects.select_related('person').filter(type=2),
-        label_field='name',
+        label_field='person',
         label="Сотрудник",
         empty_label=None,
         required=False,
@@ -109,7 +108,8 @@ class AccountRefillEmployeeForm(ModelForm):
 
 class AccountRefillSimpleForm(ModelForm):
     # Касса
-    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.filter(direction_type=True), label_field='name', label="Статья учета", empty_label=None, required=True)
+    item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
     account = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
     summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())

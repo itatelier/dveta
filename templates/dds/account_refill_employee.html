@@ -15,6 +15,19 @@
     var selected_employee = '{{ form.employee.value }}';
 
     $(document).ready(function() {
+        /* очищаем селект выбора статей, т.к. опции будут загружены из Ajax*/
+        $('#id_item').empty();
+
+        /* загружаем список опция для селекта статей*/
+        load_items_by_group({{ form.item_groups.value }}, '{{ form.item.value }}');
+
+        /* при изменении селекта групп перешружаем список селекта статей */
+        $('#id_item_groups').on("change", function (el) {
+            var $group_select = $(this);
+            var selected_group_id = $group_select.val();
+            load_items_by_group(selected_group_id);
+        });
+
         if (selected_employee != 'None') {
             load_account_detaild('employee', selected_employee);
         }
@@ -62,11 +75,11 @@
 {# Шаблон таблицы счетов#}
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
 <tr data-id="{{ pk }}">
-    <td><label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать </label></td>
+   <td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать</label>{{/status}}</td>
     <td>{{ pk }}</td>
     <td>{{ name }}</td>
     <td>{{ contragent.name }}</td>
-    <td>Активен{{ status }}</td>
+    <td>{{#status}}Активен{{/status}}{{^status}}<em class="red">Заблокирован</em>{{/status}}</td>
     <td>{{ balance }}</td>
 </tr>
 </script>{% endverbatim %}
@@ -79,8 +92,8 @@ select.select2_powered {
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="{#% url 'company_list_clients' %#}">Рейсы</a></li>
-                <li class="active" ><a href="#">Операция пополнения</a></li>
+                <li><a href="{% url 'dds_flow' %}">Движение денег</a></li>
+                <li class="active" ><a href="#">Новая операция</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -91,7 +104,7 @@ select.select2_powered {
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
                     <ul>
-                        <li><a href="#" class="active">Операция пополнения</a></li>
+                        <li><a href="#" class="active">Новая операция</a></li>
                     </ul><hr>
                 </div>
                 {# - Левый бар #}
@@ -104,8 +117,8 @@ select.select2_powered {
                             {# -------- Tabs Menu --------- #}
                             {%  include "dds/account_refill_navbar.html" with sel=4 %}
                             {# -------- End of Tabs Menu --------- #}
-                            <h2 class="m10">Параметры операции пополнения</h2>
                             <div class="form_row">
+                                {% include "form_snippets/textinput.html" with field=form.item_groups  %}
                                 {% include "form_snippets/textinput.html" with field=form.item  %}
                             </div>
                             <div class="form_row">
@@ -119,7 +132,7 @@ select.select2_powered {
                                     <tbody></tbody></table>
                                 <div class="input_wrapper none" id="nodata_error"><p class="red">Счет для данного контрагента не создан!</p></div>
                             </div>
-                            <div class="form_row">
+                            <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=form.summ  %}
                                 {% include "form_snippets/radio.html" with field=form.pay_way  %}
                             </div>

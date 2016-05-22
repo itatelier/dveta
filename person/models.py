@@ -19,7 +19,11 @@ class Persons(models.Model):
         verbose_name_plural = 'Персоны'
 
     def __unicode__(self):
-        return u'[%s] %s' % (self.id, self.nick_name)
+        return u'%s %s (%s)' % (self.family_name, self.given_name, self.nick_name)
+
+    def fio_and_nick(self):
+        return u'%s %s (%s)' % (self.family_name, self.given_name, self.nick_name)
+
 
     def get_absolute_url(self):
         return reverse('person_card', kwargs={'pk': self.pk})

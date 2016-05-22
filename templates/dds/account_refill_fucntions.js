@@ -54,3 +54,25 @@
                 }
             });
     }
+
+    function load_items_by_group(selected_group_id, selected_item) {
+        var $item_select = $('#id_item');
+        $.ajax({
+            tape: 'POST',
+            url: '/dds/api/dds_items_rest/',
+            dataType: "json",
+            data: { "item_group": selected_group_id}
+        })
+        .done(function (result) {
+            $item_select.empty();
+
+            for (var i = 0, data_len = result.results.length; i < data_len; i++) {
+                var selected = "";
+                if (result.results[i].pk == selected_item) {
+                    selected = "SELECTED"
+                }
+                var option = "<option value=\"" + result.results[i].pk + "\" "+selected+">" + result.results[i].name + "</option>";
+                $item_select.append(option);
+            }
+        });
+    }

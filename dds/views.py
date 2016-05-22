@@ -55,6 +55,10 @@ class AccountRefillContragentView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             new_object = form.save(commit=False)
             new_object.save()
+
+            # Обновление баланса счета
+            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
+
             self.success_url = reverse('dds_operation_card', args=(new_object.id,))
             return HttpResponseRedirect(self.success_url)
         else:
@@ -72,11 +76,15 @@ class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             new_object = form.save(commit=False)
             new_object.save()
+
+            # Обновление баланса счета
+            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
+
             self.success_url = reverse('dds_operation_card', args=(new_object.id,))
             return HttpResponseRedirect(self.success_url)
         else:
             self.object = form.instance
-            form = replace_form_choices_select2(form, ('employee', ))
+            form = replace_form_choices_select2(form, formfields=('employee', ))
             return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -160,16 +168,24 @@ class DdsFlowViewSet(viewsets.ModelViewSet):
     queryset = DdsFlow.objects.select_related(
         'account',
         'item',
-    ).prefetch_related(
-        'account__employee__person'
+        'account__type'
     )
     serializer_class = DdsFlowSerializer
     search_fields = ('comment', )
     filter_class = DdsFlowFilters
-    ordering_fields = ('pk', 'date', 'item', 'summ', 'account', 'pay_way', 'account__contragent', 'account__employee')
+    ordering_fields = ('pk', 'date', 'item', 'summ', 'account', 'pay_way', 'account__name', 'account__type')
+    ordering = ('-pk',)
 
 
 class DdsOperationCard(LoginRequiredMixin, DetailView):
     template_name = "dds/dds_operation_card.html"
     model = DdsFlow
     queryset = DdsFlow.objects.select_related('item', 'account', 'account__contragent', 'account__employee__person', 'item__item_group')
+
+
+class DdsItemsViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
+    queryset = DdsItems.objects.select_related('item_group', )
+    serializer_class = ItemSerializer
+    filter_class = ItemFilters
+    ordering = ('direction_type',)

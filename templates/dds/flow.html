@@ -66,8 +66,8 @@
         <td width="">{{{ account.name }}}</td>
         <td>{{{ summ }}}</td>
         <td  width="50" class="centertext">{{#pay_way}}<i class="dot">•</i>{{/pay_way}}</td>
-        <td>{{{ account.contragent.name }}}</td>
-        <td>{{{ account.employee.person.family_name }}}</td>
+        <td>{{{ account.name }}}</td>
+        <td>{{{ account.type.val }}}</td>
         <td>{{{ comment }}}</td>
     </tr>
 
@@ -170,8 +170,8 @@
                                 <th><a href="#" class="sortable" rel="account">Счет</a></th>
                                 <th><a href="#" class="sortable" rel="summ">Сумма</a></th>
                                 <th><a href="#" class="sortable centertext" rel="pay_way">б/н</a></th>
-                                <th><a href="#" class="sortable" rel="account__contragent">Контрагент</a></th>
-                                <th><a href="#" class="sortable" rel="account__employee">Сотрудник</a></th>
+                                <th><a href="#" class="sortable" rel="account__name">Наименование счета</a></th>
+                                <th><a href="#" class="sortable" rel="account__type">Тип счета</a></th>
                                 <th><a href="#" class="" rel="">Примечание</a></th>
                             </tr>
                         </thead>

@@ -169,7 +169,7 @@ class Select2ChoiceField(ModelChoiceFieldNameLabel):
 
 
 def replace_form_choices_select2(form, formfields):
-    formfields = ['company', 'contragent', 'place']
+    # formfields = ['company', 'contragent', 'place']
     for field in formfields:
         if field in form.cleaned_data:
             field_object = form.cleaned_data[field]

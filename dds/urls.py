@@ -10,6 +10,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'dds_accounts_rest', AccountsViewSet,)
 router.register(r'dds_flow_rest', DdsFlowViewSet,)
+router.register(r'dds_items_rest', DdsItemsViewSet,)
 
 
 urlpatterns = [
