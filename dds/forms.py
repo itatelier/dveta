@@ -47,23 +47,6 @@ class AccountRefillContragentForm(ModelForm):
                     }
         ))
 
-    contragent = Select2ChoiceField(
-        queryset=Contragents.objects.all(),
-        required=True,
-        label_field='name',
-        empty_label=None,
-        label="Контрагент",
-        widget=Select(attrs={
-            'class': "select2_powered",
-            'id': "select2_contragent",
-            'data-url': "/contragents/api/contragents_list/",
-            'data-field': "name",
-            'data-placeholder': "наименование контрагента",
-            'data-filter_field': 'company',
-            'data-filter_value': '',
-            }
-        )
-    )
     account = ModelChoiceField(queryset=DdsAccounts.objects.all(), label="Счет", required=True, widget=HiddenInput())
     summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
@@ -127,6 +110,42 @@ class DdsOpTransferForm(ModelForm):
     item_groups_in = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
     item_in = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
     account_in = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+
     summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
     comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
+
+
+class DdsTemplateForm(ModelForm):
+    ruquired_choices = [(True, 'Требуется'), (False, 'Нет')]
+
+    name = CharField(label="Наименование шаблона", required=False, widget=TextInput(attrs={'size': 40}))
+
+    # Статья расхода
+    item_groups_out = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группа статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
+    item_out = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
+    item_out_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
+
+    # Исходный счет
+    account_out = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    account_out_required = ChoiceField(label="Наличие счета в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
+
+    # Статья прихода
+    item_groups_in = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группа статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
+    item_in = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
+    item_in_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect())
+
+    # Счет получателя
+    account_in = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    account_in_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
+
+    summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
+    comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
+
+    class Meta:
+        model = DdsTemplates
+        fields = ('name', 'item_groups_out', 'item_out', 'item_out_required', 'account_out',
+                  'account_out_required', 'item_groups_in', 'item_in', 'item_in_required',
+                  'account_in', 'account_in_required', 'summ', 'pay_way', 'comment')
+

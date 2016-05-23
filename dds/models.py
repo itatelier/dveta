@@ -126,10 +126,30 @@ class DdsFlow(models.Model):
 
     class Meta:
         db_table = 'dds_flow'
-        managed=False
+        managed = False
         verbose_name_plural = 'Деньги / Движение'
 
     def __unicode__(self):
         return u'[%s] %s %s %s %s' % (self.id, self.date, self.item.pk, self.account.pk, self.summ)
 
+
+class DdsTemplates(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L, null=True, blank=True)
+    item_out = models.ForeignKey('DdsItems', null=False, blank=False, related_name='template_item_out')
+    item_out_required = models.BooleanField(default=False)
+    account_out = models.ForeignKey('DdsAccounts', null=False, blank=False, related_name='template_account_out')
+    account_out_required = models.BooleanField(default=False)
+    item_in = models.ForeignKey('DdsItems', null=False, blank=False, related_name='template_item_in')
+    item_in_required = models.BooleanField(default=False)
+    account_in = models.ForeignKey('DdsAccounts', null=False, blank=False, related_name='template_account_in')
+    account_in_required = models.BooleanField(default=False)
+    summ = models.FloatField(default=0, null=True, blank=True, )
+    pay_way = models.BooleanField(default=False)
+    comment = models.CharField(max_length=255L, null=True, blank=True)
+
+    class Meta:
+        db_table = 'dds_templates'
+        managed = False
+        verbose_name_plural = 'Деньги / Шаблоны'
 

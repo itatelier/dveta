@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^account/refill/service', AccountRefillServiceView.as_view(), name='dds_account_refill_service'),
     url(r'^account/refill/employee$', AccountRefillEmployeeView.as_view(), name='dds_account_refill_employee'),
     url(r'^account/refill/contragent$', AccountRefillContragentView.as_view(), name='dds_account_refill_contragent'),
+    url(r'^account/template/create$', DdsTemplateCreateView.as_view(), name='dds_template_create'),
     url(r'^account_balance/$', AccountsBalanceView.as_view(), name='dds_accounts_balance'),
     url(r'^flow/$', DdsFlowView.as_view(), name='dds_flow'),
     url(r'^flow/account/(?P<account_id>\d+)/$', DdsFlowView.as_view(), name='dds_flow_by_account'),

@@ -8,7 +8,7 @@
             var minlength = $el.attr('data-minlength');
             var filter_field = $el.attr('data-filter_field');
             var text_compose_function = $el.attr('data-text_func');
-            console.log("func " + text_compose_function);
+            console.log("Binding Select2 for: " + url);
 
             // Функция компоновки текста. Если в файле шаблона будет прописана отдельная функция обработки, то ее наименование следует указать в параметре select'a -'data-text_func'
             function prepare_text(item) {

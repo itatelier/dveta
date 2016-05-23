@@ -12,33 +12,33 @@
 {% block content %}
 <script>
 
-    var selected_employee = '{{ form.employee.value }}';
-
     $(document).ready(function() {
-        /* очищаем селект выбора статей, т.к. опции будут загружены из Ajax*/
-        $('#id_item').empty();
 
-        /* загружаем список опция для селекта статей*/
-        load_items_by_group({{ form.item_groups.value }}, '{{ form.item.value }}');
-
-        /* при изменении селекта групп перешружаем список селекта статей */
-        $('#id_item_groups').on("change", function (el) {
-            var $group_select = $(this);
-            var selected_group_id = $group_select.val();
-            load_items_by_group(selected_group_id);
+        /* Переключатель видимости блока, если блок "требуется" */
+        $('input[rel="required_switch"]').on("change", function(el) {
+            var value = $(this).val();
+            var rel = $(this).attr('name');
+            var $hide_block = $('div[rel="'+rel+'"]');
+            if (value == "True") {
+                $hide_block.removeClass('none');
+            } else {
+                $hide_block.addClass('none');
+            }
         });
 
-        if (selected_employee != 'None') {
-            load_account_detaild('employee', selected_employee);
-        }
-
-
-        {# Болоки таблицы счета #}
-        var $datatable = $('table#account_datatable');
-        var $datatable_body = $('tbody', $datatable);
-
         {# Виджет Сотрудника #}
-        $('#select2_employee')
+        $('select.select2_ajax').each(function() {
+                    $(this).bindselect2(this);
+                });
+        $('select.select2_preload').each(function(){
+            $(this).select2({
+                data: [{id:1, text:'Наличные счета'},{id:2, text:'Безналичные счета'},{id:3, text:'Счета услуг'},],
+                language: 'ru',
+                placeholder: "Прочие счета",
+                allowClear: true,
+            })
+        });
+        $('select[rel="account_out_load"]')
                 .on("change", function (e) {
                     /* изменение */
                     var $this = $(this);
@@ -46,26 +46,20 @@
                     {# Прячем таблицу счета и ошибку #}
 
                     $('table#account_datatable').addClass('none');
-                    $('#nodata_error').addClass('none');
                     if (selected_id) {
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
-                        selected_employee = selected_id;
-                        load_account_detaild('employee', selected_employee);
-                    } else {
-                        selected_employee = undefined;
+                        load_account_detaild($this.data('account-field'), selected_id);
                     }
-                })
-                .bindselect2(this);
+                });
 
     });
 
-    {# Функция компоновки текста для значений Select2 #}
-    function select2_compose_text(item) {
+    {# Функция компоновки текста для значений Select2 Employee #}
+    function compose_text_employee(item) {
         if (item) {
             return item.person.family_name + " " + item.person.given_name + " ( " + item.person.nick_name +" )";
         }
     }
-
     {# дополнительные функции #}
     {% include "dds/account_refill_fucntions.js" %}
 
@@ -81,9 +75,10 @@
     <td>{{ balance }}</td>
 </tr>
 </script>{% endverbatim %}
+{#  #}
 <style>
-select.select2_powered {
-    width: 300px;
+select.select2 {
+    width: 200px;
 }
 
 </style>
@@ -106,29 +101,42 @@ select.select2_powered {
                     </ul><hr>
                 </div>
                 {# - Левый бар #}
-                        {# Форма объекта #}
+                {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
                     <input type="hidden" name="account" value="">
                     <div class="data_grid_medium" style="">
                         <div class=" m10">
-                            <input type="hidden" name="active_tab" value="{{ form.active_tab.value }}">
-                            {# -------- Tabs Menu --------- #}
-                            {%  include "dds/account_refill_navbar.html" with sel=4 %}
-                            {# -------- End of Tabs Menu --------- #}
+                            <h3 class="blue m10">Операция расхода</h3>
+                            {# --- Item out --- #}
                             <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=form.item_groups  %}
-                                {% include "form_snippets/textinput.html" with field=form.item  %}
+                                {% include "form_snippets/radio.html" with field=form.item_out_required  %}
+                                <div class="flex none" rel="item_out_required">
+                                    {% include "form_snippets/select.html" with field=form.item_groups_out  %}
+                                    {% include "form_snippets/select.html" with field=form.item_out  %}
+                                </div>
                             </div>
+                            {# ---  Account Out --- #}
                             <div class="form_row">
-                                {% include "form_snippets/textinput.html" with field=form.employee  %}
+                                {% include "form_snippets/radio.html" with field=form.account_out_required  %}
                             </div>
-                            <div class="form_row" id="datatable_wrapper">
+                            <div class="form-row {# none #}" rel="account_out_required">
+                                <div class="form_row" rel="employee_out">
+                                    <div class="input_wrapper">
+                                        <select name="account_type4" class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
+                                    </div>
+                                    <div class="input_wrapper">
+                                        <select name="account_type5" class="select2_ajax select2" rel="account_out_load" data-url="/company/api/clients/" data-field="name" data-placeholder="Клиент" data-minlength="2" data-account-field="contragent__company"></select>
+                                    </div>
+                                    <div class="input_wrapper">
+                                        <select name="account_type123" class="select2_preload select2" rel="account_out_load" data-account-field="type"><option></option></select>
+                                    </div>
+                                </div>
                                 <table class="sheet_headered none" id="account_datatable">
                                     <thead>
                                         <tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
                                     </thead>
-                                    <tbody></tbody></table>
-                                <div class="input_wrapper none" id="nodata_error"><p class="red">Счет для данного контрагента не создан!</p></div>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                             <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=form.summ  %}
