@@ -71,6 +71,16 @@ class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill_employee.html'
     form_class = AccountRefillEmployeeForm
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AccountRefillEmployeeView, self).get_context_data(*args, **kwargs)
+        #context_data['form'].fields['comment'].initial = "TEST"
+
+        context_data['form'].initial = {
+            'employee': 1
+        }
+        return context_data
+
+
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():

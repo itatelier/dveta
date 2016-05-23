@@ -19,6 +19,7 @@ from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
 from dds.models import *
 
+
 class RaceCreateView(LoginRequiredMixin, CreateView):
     template_name = 'race/race_create.html'
     form_class = RaceCreateForm
