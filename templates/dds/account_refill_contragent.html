@@ -30,7 +30,7 @@
         });
 
         if (selected_company != 'None') {
-            load_account_detaild('contragent__company', selected_company);
+            load_account_detail('contragent__company', selected_company);
         }
 
         {# отключаем селект контрагента, если компания не выбрана #}
@@ -56,7 +56,7 @@
                         console.log("Value found!");
                         selected_company = selected_id;
                         /* "включить" селект контрагента */
-                        load_account_detaild('contragent__company', selected_company);
+                        load_account_detail('contragent__company', selected_company);
                     } else {
                         selected_company = null;
                         $('#nodata_error').addClass('none');

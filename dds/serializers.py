@@ -31,7 +31,7 @@ class AccountsFilters(django_filters.FilterSet):
 
     class Meta:
         model = DdsAccounts
-        fields = ['type', 'contragent', 'employee', 'status', 'contragent__company']
+        fields = ['id', 'type', 'contragent', 'employee', 'status', 'contragent__company']
 
 
 class DdsFlowSerializer(serializers.ModelSerializer):

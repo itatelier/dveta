@@ -119,24 +119,24 @@ class DdsOpTransferForm(ModelForm):
 class DdsTemplateForm(ModelForm):
     ruquired_choices = [(True, 'Требуется'), (False, 'Нет')]
 
-    name = CharField(label="Наименование шаблона", required=False, widget=TextInput(attrs={'size': 40}))
+    name = CharField(label="Наименование шаблона", required=True, widget=TextInput(attrs={'size': 40}))
 
     # Статья расхода
     item_groups_out = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группа статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
-    item_out = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
+    item_out = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=False, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
     item_out_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
 
     # Исходный счет
-    account_out = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    account_out = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет отправления", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
     account_out_required = ChoiceField(label="Наличие счета в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
 
     # Статья прихода
     item_groups_in = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группа статей", empty_label=None, required=False, widget=Select(attrs={"size":8}))
-    item_in = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
-    item_in_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect())
+    item_in = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=False, widget=Select(attrs={"size":8, 'style': "width: 270px;"}))
+    item_in_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
 
     # Счет получателя
-    account_in = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    account_in = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет получения", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
     account_in_required = ChoiceField(label="Наличие статьи в форме", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
 
     summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))

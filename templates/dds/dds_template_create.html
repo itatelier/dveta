@@ -13,7 +13,16 @@
 <script>
 
     $(document).ready(function() {
+        var item_out_id = "{{ form.account_out.value }}";
+        var item_in_id = "{{ form.account_in.value }}";
 
+        /* Загружаем счет, если он был выбран ранее*/
+        if (item_out_id) {
+            load_account_detail('account_out_load', 'id', item_out_id);
+        }
+        if (item_in_id) {
+            load_account_detail('account_in_load', 'id', item_in_id);
+        }
         /* Переключатель видимости блока, если блок "требуется" */
         $('input[rel="required_switch"]').on("change", function(el) {
             var value = $(this).val();
@@ -26,10 +35,11 @@
             }
         });
 
-        {# Виджет Сотрудника #}
+        {# Запуск Select2 Ajax #}
         $('select.select2_ajax').each(function() {
                     $(this).bindselect2(this);
                 });
+        {# Запуск Select2 с готовым набором данных #}
         $('select.select2_preload').each(function(){
             $(this).select2({
                 data: [{id:1, text:'Наличные счета'},{id:2, text:'Безналичные счета'},{id:3, text:'Счета услуг'},],
@@ -38,7 +48,9 @@
                 allowClear: true,
             })
         });
-        $('select[rel="account_out_load"]')
+
+        {# При изменении виджета Select2 подгружаем таблицу счета #}
+        $('select.select2')
                 .on("change", function (e) {
                     /* изменение */
                     var $this = $(this);
@@ -48,7 +60,7 @@
                     $('table#account_datatable').addClass('none');
                     if (selected_id) {
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
-                        load_account_detaild($this.data('account-field'), selected_id);
+                        load_account_detail($this.attr('rel'), $this.data('account-field'), selected_id);
                     }
                 });
 
@@ -61,13 +73,13 @@
         }
     }
     {# дополнительные функции #}
-    {% include "dds/account_refill_fucntions.js" %}
+    {% include "dds/account_refill_fucntions2.js" %}
 
 </script>
 {# Шаблон таблицы счетов#}
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
-<tr data-id="{{ pk }}">
-   <td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);">Выбрать</label>{{/status}}</td>
+<tr data-id="{{{ pk }}}" {{#checked}}class="green_bg"{{/checked}}>
+   <td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);" {{#checked}}checked{{/checked}}>Выбрать</label>{{/status}}</td>
     <td>{{ pk }}</td>
     <td>{{ name }}</td>
     <td>{{ contragent.name }}</td>
@@ -86,7 +98,7 @@ select.select2 {
         <div class="breadcrumbs">
             <ul>
                 <li><a href="{% url 'dds_flow' %}">Движение денег</a></li>
-                <li class="active" ><a href="#">Новая операция</a></li>
+                <li class="active" ><a href="#">Шаблон операции</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -97,54 +109,81 @@ select.select2 {
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
                     <ul>
-                        <li><a href="#" class="active">Новая операция</a></li>
+                        <li><a href="#" class="active">Новый шаблон</a></li>
                     </ul><hr>
                 </div>
                 {# - Левый бар #}
                 {# Форма объекта #}
                 <form action="" method="POST" id="new_object">{% csrf_token %}
-                    <input type="hidden" name="account" value="">
+                    {{ form.account_out }}
+                    {{ form.account_in }}
                     <div class="data_grid_medium" style="">
                         <div class=" m10">
-                            <h3 class="blue m10">Операция расхода</h3>
-                            {# --- Item out --- #}
+                            <h2 class="blue m10">Операция расхода</h2>
+                            {#  --- Item out --- #}
                             <div class="form_row">
                                 {% include "form_snippets/radio.html" with field=form.item_out_required  %}
-                                <div class="flex none" rel="item_out_required">
+                                <div class="flex {% if not form.item_out_required.value %}none{% endif %}" rel="item_out_required">
                                     {% include "form_snippets/select.html" with field=form.item_groups_out  %}
                                     {% include "form_snippets/select.html" with field=form.item_out  %}
                                 </div>
                             </div>
                             {# ---  Account Out --- #}
-                            <div class="form_row">
-                                {% include "form_snippets/radio.html" with field=form.account_out_required  %}
-                            </div>
-                            <div class="form-row {# none #}" rel="account_out_required">
+                            <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_out_required  %}</div>
+                            {# ---  Поиск счета  --- #}
+                            <div class="form-row  {% if not form.account_out_required.value %}none{% endif %}" rel="account_out_required">
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
-                                        <select name="account_type4" class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
+                                        <select class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
                                     </div>
                                     <div class="input_wrapper">
-                                        <select name="account_type5" class="select2_ajax select2" rel="account_out_load" data-url="/company/api/clients/" data-field="name" data-placeholder="Клиент" data-minlength="2" data-account-field="contragent__company"></select>
+                                        <select class="select2_ajax select2" rel="account_out_load" data-url="/company/api/clients/" data-field="name" data-placeholder="Клиент" data-minlength="2" data-account-field="contragent__company"></select>
                                     </div>
                                     <div class="input_wrapper">
-                                        <select name="account_type123" class="select2_preload select2" rel="account_out_load" data-account-field="type"><option></option></select>
+                                        <select class="select2_preload select2" rel="account_out_load" data-account-field="type"><option></option></select>
                                     </div>
                                 </div>
-                                <table class="sheet_headered none" id="account_datatable">
-                                    <thead>
-                                        <tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr>
-                                    </thead>
-                                    <tbody></tbody>
+                                <table class="sheet_headered none" rel="account_out_load">
+                                    <thead><tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
+                                    <tbody rel="account_out"></tbody>
                                 </table>
                             </div>
+                            <h2 class="hr blue m10">Операция прихода</h2>
+                            {# --- Item in --- #}
+                            <div class="form_row">
+                                {% include "form_snippets/radio.html" with field=form.item_in_required  %}
+                                <div class="flex {% if not form.item_in_required.value %}none{% endif %}" rel="item_in_required">
+                                    {% include "form_snippets/select.html" with field=form.item_groups_in  %}
+                                    {% include "form_snippets/select.html" with field=form.item_in  %}
+                                </div>
+                            </div>
+                            {# ---  Account in --- #}
+                            <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_in_required  %}</div>
+                            {# ---  Поиск счета  --- #}
+                            <div class="form-row {% if not form.account_in_required.value %}none{% endif %}" rel="account_in_required">
+                                <div class="form_row" rel="employee_out">
+                                    <div class="input_wrapper">
+                                        <select name="account_type4" class="select2_ajax select2" rel="account_in_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
+                                    </div>
+                                    <div class="input_wrapper">
+                                        <select name="account_type5" class="select2_ajax select2" rel="account_in_load" data-url="/company/api/clients/" data-field="name" data-placeholder="Клиент" data-minlength="2" data-account-field="contragent__company"></select>
+                                    </div>
+                                    <div class="input_wrapper">
+                                        <select name="account_type123" class="select2_preload select2" rel="account_in_load" data-account-field="type"><option></option></select>
+                                    </div>
+                                </div>
+                                <table class="sheet_headered none" rel="account_in_load">
+                                    <thead><tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
+                                    <tbody rel="account_in"></tbody>
+                                </table>
+                            </div>
+                            <h2 class="hr blue m10">Параметры операции</h2>
                             <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=form.summ  %}
                                 {% include "form_snippets/radio.html" with field=form.pay_way  %}
-                            </div>
-                            <div class="form_row">
                                 {% include "form_snippets/textinput.html" with field=form.comment  %}
                             </div>
+                            <div class="form_row margint10">{% include "form_snippets/textinput.html" with field=form.name  %}</div>
                         </div>
                         {# ошибки формы #}
                         {% include "form_snippets/form_errors.html" with form=form %}

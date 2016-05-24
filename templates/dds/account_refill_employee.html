@@ -29,7 +29,7 @@
         });
 
         if (selected_employee != 'None') {
-            load_account_detaild('employee', selected_employee);
+            load_account_detail('employee', selected_employee);
         }
 
 
@@ -50,7 +50,7 @@
                     if (selected_id) {
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
                         selected_employee = selected_id;
-                        load_account_detaild('employee', selected_employee);
+                        load_account_detail('employee', selected_employee);
                     } else {
                         selected_employee = undefined;
                     }

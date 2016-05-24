@@ -43,6 +43,11 @@ h2 {
     color: rgba(0,0,0,.4) !important;
     font-weight: normal;
 }
+
+h2.hr {
+    border-top: 1px solid lightgray;
+    padding-top: 10px;
+}
 /*table { border-spacing: 0;}*/
 form { margin: 0.5rem 2rem; width: 100%;}
 .green { color: #74BA12 !important; }
