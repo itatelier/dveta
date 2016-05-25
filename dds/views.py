@@ -204,15 +204,5 @@ class DdsItemsViewSet(viewsets.ModelViewSet):
 class DdsTemplateCreateView(LoginRequiredMixin, CreateView):
     template_name = 'dds/dds_template_create.html'
     form_class = DdsTemplateForm
+    success_url = '/dds/flow/'
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            return self.render_to_response(self.get_context_data(form=form))

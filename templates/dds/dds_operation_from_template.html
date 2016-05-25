@@ -134,7 +134,7 @@ select.select2 {
                             {#  --- Item out --- #}
                             <div class="form_row">
                                 {% include "form_snippets/radio.html" with field=form.item_out_required  %}
-                                <div class="flex {% if form.item_out_required.value == "False" %}none{% endif %}" rel="item_out_required">
+                                <div class="flex {% if not form.item_out_required.value %}none{% endif %}" rel="item_out_required">
                                     {% include "form_snippets/select.html" with field=form.item_groups_out  %}
                                     {% include "form_snippets/select.html" with field=form.item_out  %}
                                 </div>
@@ -142,7 +142,7 @@ select.select2 {
                             {# ---  Account Out --- #}
                             <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_out_required  %}</div>
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row  {% if form.account_out_required.value  == "False" %}none{% endif %}" rel="account_out_required">
+                            <div class="form-row  {% if not form.account_out_required.value %}none{% endif %}" rel="account_out_required">
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
@@ -163,7 +163,7 @@ select.select2 {
                             {# --- Item in --- #}
                             <div class="form_row">
                                 {% include "form_snippets/radio.html" with field=form.item_in_required  %}
-                                <div class="flex {% if form.item_in_required.value  == "False" %}none{% endif %}" rel="item_in_required">
+                                <div class="flex {% if not form.item_in_required.value %}none{% endif %}" rel="item_in_required">
                                     {% include "form_snippets/select.html" with field=form.item_groups_in  %}
                                     {% include "form_snippets/select.html" with field=form.item_in  %}
                                 </div>
@@ -171,7 +171,7 @@ select.select2 {
                             {# ---  Account in --- #}
                             <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_in_required  %}</div>
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row {% if form.account_in_required.value  == "False" %}none{% endif %}" rel="account_in_required">
+                            <div class="form-row {% if not form.account_in_required.value %}none{% endif %}" rel="account_in_required">
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select name="account_type4" class="select2_ajax select2" rel="account_in_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>

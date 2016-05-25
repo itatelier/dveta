@@ -63,8 +63,8 @@
             });
     }
 
-    function load_items_by_group(selected_group_id, selected_item) {
-        var $item_select = $('#id_item');
+    function load_items_by_group(target_select_rel, selected_group_id, selected_item) {
+        var $item_select = $('select#'+target_select_rel);
         $.ajax({
             tape: 'POST',
             url: '/dds/api/dds_items_rest/',
