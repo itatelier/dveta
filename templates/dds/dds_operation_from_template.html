@@ -23,17 +23,6 @@
         if (item_in_id) {
             load_account_detail('account_in_load', 'id', item_in_id);
         }
-        /* Переключатель видимости блока, если блок "требуется" */
-        $('input[rel="required_switch"]').on("change", function(el) {
-            var value = $(this).val();
-            var rel = $(this).attr('name');
-            var $hide_block = $('div[rel="'+rel+'"]');
-            if (value == "True") {
-                $hide_block.removeClass('none');
-            } else {
-                $hide_block.addClass('none');
-            }
-        });
 
         /* загружаем список опция для селекта статей*/
         load_items_by_group('id_item_out', '{{ form.item_groups_out.value }}', '{{ form.item_out.value }}');
@@ -74,7 +63,6 @@
                         load_account_detail($this.attr('rel'), $this.data('account-field'), selected_id);
                     }
                 });
-
     });
 
     {# Функция компоновки текста для значений Select2 Employee #}
@@ -133,16 +121,12 @@ select.select2 {
                             <h2 class="blue m10">Операция расхода</h2>
                             {#  --- Item out --- #}
                             <div class="form_row">
-                                {% include "form_snippets/radio.html" with field=form.item_out_required  %}
-                                <div class="flex {% if not form.item_out_required.value %}none{% endif %}" rel="item_out_required">
-                                    {% include "form_snippets/select.html" with field=form.item_groups_out  %}
-                                    {% include "form_snippets/select.html" with field=form.item_out  %}
-                                </div>
+                                {% include "form_snippets/select.html" with field=form.item_groups_out  %}
+                                {% include "form_snippets/select.html" with field=form.item_out  %}
                             </div>
                             {# ---  Account Out --- #}
-                            <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_out_required  %}</div>
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row  {% if not form.account_out_required.value %}none{% endif %}" rel="account_out_required">
+                            <div class="form-row">
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
@@ -159,19 +143,16 @@ select.select2 {
                                     <tbody rel="account_out"></tbody>
                                 </table>
                             </div>
+                            <!--------------------------------------------------------------------------------------------------------------------->
                             <h2 class="hr blue m10">Операция прихода</h2>
                             {# --- Item in --- #}
                             <div class="form_row">
-                                {% include "form_snippets/radio.html" with field=form.item_in_required  %}
-                                <div class="flex {% if not form.item_in_required.value %}none{% endif %}" rel="item_in_required">
-                                    {% include "form_snippets/select.html" with field=form.item_groups_in  %}
-                                    {% include "form_snippets/select.html" with field=form.item_in  %}
-                                </div>
+                                {% include "form_snippets/select.html" with field=form.item_groups_in  %}
+                                {% include "form_snippets/select.html" with field=form.item_in  %}
                             </div>
                             {# ---  Account in --- #}
-                            <div class="form_row">{% include "form_snippets/radio.html" with field=form.account_in_required  %}</div>
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row {% if not form.account_in_required.value %}none{% endif %}" rel="account_in_required">
+                            <div class="form-row">
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select name="account_type4" class="select2_ajax select2" rel="account_in_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
@@ -188,6 +169,7 @@ select.select2 {
                                     <tbody rel="account_in"></tbody>
                                 </table>
                             </div>
+                            <!--------------------------------------------------------------------------------------------------------------------->
                             <h2 class="hr blue m10">Параметры операции</h2>
                             <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=form.summ  %}
@@ -197,7 +179,7 @@ select.select2 {
                             <div class="form_row margint10">{% include "form_snippets/textinput.html" with field=form.name  %}</div>
                         </div>
                         {# ошибки формы #}
-                        {% include "form_snippets/form_errors.html" with form=form %}
+                        {% include "form_snippets/multiform_errors.html" with forms=forms %}
                     </div>
                     <div class="form_row">
                         <span class="button_block">

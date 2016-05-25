@@ -101,7 +101,7 @@ class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
 class AccountRefillCashView(LoginRequiredMixin, CreateView):
     # родительский класс для форм с типом счета 1,2,3 - следующие View: AccountRefillBankView, AccountRefillServiceView
     template_name = 'dds/account_refill_simple.html'
-    form_class = AccountRefillSimpleForm
+    form_class = DdsOperationForm
     account_type = 1
     menu_item = 1
 
@@ -129,7 +129,7 @@ class AccountRefillCashView(LoginRequiredMixin, CreateView):
 
 class AccountRefillBankView(AccountRefillCashView, LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill_simple.html'
-    form_class = AccountRefillSimpleForm
+    form_class = DdsOperationForm
     account_type = 2
     menu_item = 2
 
@@ -147,7 +147,7 @@ class AccountRefillBankView(AccountRefillCashView, LoginRequiredMixin, CreateVie
 
 class AccountRefillServiceView(AccountRefillCashView, LoginRequiredMixin, CreateView):
     template_name = 'dds/account_refill_simple.html'
-    form_class = AccountRefillSimpleForm
+    form_class = DdsOperationForm
     account_type = 3
     menu_item = 3
 
@@ -206,3 +206,35 @@ class DdsTemplateCreateView(LoginRequiredMixin, CreateView):
     form_class = DdsTemplateForm
     success_url = '/dds/flow/'
 
+
+class DdsTemplateOperation(MultiFormCreate):
+    template_name = 'dds/dds_operation_from_template.html'
+    success_url = '/dds/flow/'
+    formconf = {
+        'out': {'formclass': DdsOperationForm},
+        'in': {'formclass': DdsOperationForm}
+    }
+
+    def post(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        outform = forms['out']
+        inform = forms['in']
+        if outform.is_valid() and inform.is_valid():
+            # company_pk = kwargs.pop('company_pk', None)
+            # company_object = Companies(pk=company_pk)
+            # address_object = aform.save()
+            # branch_object = bform.save(commit=False)
+            # branch_object.company = company_object
+            # branch_object.address = address_object
+            # branch_object.save()
+            # self.success_url = '/company/%s/card' % company_pk
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            # forms = self.get_forms()
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(DdsTemplateOperation, self).get_context_data(*args, **kwargs)
+        # company_pk = self.kwargs.get('company_pk', None)
+        # context_data.update({'company': Companies.objects.get(pk=company_pk)})
+        return context_data

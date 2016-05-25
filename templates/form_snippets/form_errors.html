@@ -3,8 +3,6 @@
     <span class="errorbox">
         <h2 class="m10">Форма содержит ошибки!</h2>
         <em class="red">{{ form.non_field_errors }}</em>
-
-
         {% for field in form %}
             {% if field.errors %}
                 {{ field.label }}

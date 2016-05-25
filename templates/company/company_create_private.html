@@ -75,6 +75,8 @@
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=forms.company_contact.email %}</div>
                         {# Кнопки #}
                         <div class="form_row"><span class="button_block"><a class="button"  onclick="$('form#new_object').submit();">Добавить клиента</a></span></div>
+                        {# ошибки формы #}
+                        {% include "form_snippets/multiform_errors.html" with forms=forms %}
                     </form>
                 </div>
             </div>
