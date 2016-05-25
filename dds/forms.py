@@ -103,6 +103,18 @@ class DdsOperationForm(ModelForm):
         fields = ('item', 'account', 'summ', 'pay_way', 'comment')
 
 
+class DdsOperationAccountForm(DdsOperationForm):
+    class Meta:
+        model = DdsFlow
+        fields = ('item', 'account')
+
+
+class DdsOperationDetailsForm(DdsOperationForm):
+    class Meta:
+        model = DdsFlow
+        fields = ('summ', 'pay_way', 'comment')
+
+
 class DdsTemplateForm(ModelForm):
     ruquired_choices = [(False, 'Нет'), (True, 'Требуется')]
 
@@ -163,4 +175,5 @@ class DdsTemplateOperationForm(Form):
             'summ',
             'pay_way',
             'comment')
+
 

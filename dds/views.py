@@ -211,14 +211,45 @@ class DdsTemplateOperation(MultiFormCreate):
     template_name = 'dds/dds_operation_from_template.html'
     success_url = '/dds/flow/'
     formconf = {
-        'out': {'formclass': DdsOperationForm},
-        'in': {'formclass': DdsOperationForm}
+        'outop': {'formclass': DdsOperationAccountForm},
+        'inop': {'formclass': DdsOperationAccountForm},
+        'details': {'formclass': DdsOperationDetailsForm}
     }
+
+    def get(self, request, *args, **kwargs):
+        forms = self.get_forms()
+        # Загружаем объект шаблона
+        template_object = DdsTemplates.objects.get(pk=kwargs.pop('template_id', None))
+        initial = {}
+        # Если в шалоне стоит флаг _required для поля формы - обновляем значение поля формы, если оно тоже есть
+        if template_object.item_out_required:
+            forms['outop'].fields['item'].required = True
+            # Передаем параметры в виджеты, что бы корректно работали функции во фронте
+            forms['outop'].fields['item_groups'].widget.attrs = {"size": 8, "rel": "select_group",  'data-combined-id': "id_outop-item"}
+            if hasattr(template_object, 'item_out'):
+                initial['account'] = template_object.item_out.pk
+        if template_object.account_out_required:
+            forms['outop'].fields['account'].required = True
+            if hasattr(template_object, 'account_out'):
+                initial['account'] = template_object.account_out.pk
+        forms['outop'].initial = initial
+        if template_object.item_out_required:
+            forms['inop'].fields['item'].required = True
+            forms['outop'].fields['item_groups'].widget.attrs = {"size": 8, "rel": "select_group",  'data-combined-id': "id_inop-item"}
+            if hasattr(template_object, 'item_in'):
+                initial['item'] = template_object.item_in.pk
+        if template_object.account_out_required:
+            forms['account'].fields['account'].required = True
+            if hasattr(template_object, 'account_in'):
+                initial['account'] = template_object.account_in.pk
+        forms['inop'].initial = initial
+        forms['details'].initial = {'summ': 100}
+        return self.render_to_response(self.get_context_data(forms=forms))
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
-        outform = forms['out']
-        inform = forms['in']
+        outform = forms['outop']
+        inform = forms['inop']
         if outform.is_valid() and inform.is_valid():
             # company_pk = kwargs.pop('company_pk', None)
             # company_object = Companies(pk=company_pk)

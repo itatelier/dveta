@@ -1,20 +1,24 @@
-{% for form in forms %}
-    {% if form.errors %}
-    <div class="form_row">
-        <span class="errorbox">
-            <h2 class="m10">Форма содержит ошибки!</h2>
-            <em class="red">{{ form.non_field_errors }}</em>
-
-
-            {% for field in form %}
-                {% if field.errors %}
-                    {{ field.label }}
-                    {% for error in field.errors %}
-                    <em class="red">{{ error|escape }}</em>
-                    {% endfor %}<br>
-                {% endif %}
-            {% endfor %}
-        </span>
-    </div>
-    {% endif %}
-{% endfor %}
+<div class="flex_row">
+    {% for formname, form in forms.items %}
+        {% if form.errors %}
+            <span class="errorbox">
+                <h2 class="m10 red">Форма "{{ formname }}" содержит ошибки!</h2>
+                <em class="red">{{ form.non_field_errors }}</em>
+                <table>
+                {% for field in form %}
+                    {% if field.errors %}
+                        <tr>
+                            <td>{{ field.label }}</td>
+                            <td>
+                            {% for error in field.errors %}
+                            <em class="red">{{ error|escape }}</em>
+                            {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </table>
+            </span>
+        {% endif %}
+    {% endfor %}
+</div>

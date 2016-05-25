@@ -25,10 +25,10 @@
         }
 
         /* загружаем список опция для селекта статей*/
-        load_items_by_group('id_item_out', '{{ form.item_groups_out.value }}', '{{ form.item_out.value }}');
-        load_items_by_group('id_item_in', '{{ form.item_groups_in.value }}', '{{ form.item_in.value }}');
+        load_items_by_group('outop-id_item', '{{ form.item_groups_out.value }}', '{{ form.item_out.value }}');
+        load_items_by_group('inop-id_item', '{{ form.item_groups_in.value }}', '{{ form.item_in.value }}');
 
-        /* при изменении селекта групп перешружаем список селекта статей */
+        /* при изменении селекта групп перегружаем список селекта статей */
         $('select[rel="select_group"]').on("change", function (el) {
             var $group_select = $(this);
             var selected_group_id = $group_select.val();
@@ -121,8 +121,8 @@ select.select2 {
                             <h2 class="blue m10">Операция расхода</h2>
                             {#  --- Item out --- #}
                             <div class="form_row">
-                                {% include "form_snippets/select.html" with field=form.item_groups_out  %}
-                                {% include "form_snippets/select.html" with field=form.item_out  %}
+                                {% include "form_snippets/select.html" with field=forms.outop.item_groups  %}
+                                {% include "form_snippets/select.html" with field=forms.outop.item  %}
                             </div>
                             {# ---  Account Out --- #}
                             {# ---  Поиск счета  --- #}
@@ -172,11 +172,10 @@ select.select2 {
                             <!--------------------------------------------------------------------------------------------------------------------->
                             <h2 class="hr blue m10">Параметры операции</h2>
                             <div class="form_row margint10">
-                                {% include "form_snippets/textinput.html" with field=form.summ  %}
-                                {% include "form_snippets/radio.html" with field=form.pay_way  %}
-                                {% include "form_snippets/textinput.html" with field=form.comment  %}
+                                {% include "form_snippets/textinput.html" with field=forms.details.summ  %}
+                                {% include "form_snippets/radio.html" with field=forms.inop.pay_way  %}
+                                {% include "form_snippets/textinput.html" with field=forms.inop.comment  %}
                             </div>
-                            <div class="form_row margint10">{% include "form_snippets/textinput.html" with field=form.name  %}</div>
                         </div>
                         {# ошибки формы #}
                         {% include "form_snippets/multiform_errors.html" with forms=forms %}

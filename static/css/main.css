@@ -167,12 +167,12 @@ div.empty_block > p {
 }
 
 span.errorbox {
-    /*display: flex;*/
-    margin: 1rem;
+    /* display: flex; */
+    margin: 0 1rem;
     padding: 0 1rem 1rem 1rem;
-    background-color: #FDDEDE;
-    border: 1px solid;
-    border-radius: 6px;
+    background-color: #FFFFFF;
+    border: 1px dotted;
+    /* border-radius: 6px; */
     border-color: #D0BDBD;
 }
 span.errorbox ul {
