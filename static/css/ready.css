@@ -73,6 +73,7 @@ form { margin: 0.5rem 2rem; width: 100%;}
     margin-left: 0!important;
     margin-right: 0!important;
 }
+.mhorizont10 { margin: 0 10px;}
 .margint10 { margin-top: 1rem; }
 .m10 {margin: 10px;}
 .m20 {margin: 20px;}
@@ -256,7 +257,9 @@ div.sheet_row_headered > h2 { color: #333; }
 
 table.sheet_simple { margin: 0.5rem 1rem; }
 table.sheet_simple > tbody > tr > td { padding: 0.3rem 1rem;}
-table.sheet_headered { margin: 1.5rem 1rem 0rem 1rem; }
+table.sheet_headered {
+    /*margin: 1.5rem 1rem 0rem 1rem; */
+}
 table.sheet_headered > thead > tr > th {
     text-align: left;
     padding: 0.5rem 1rem;
@@ -282,7 +285,7 @@ table._bordered > tbody > tr > td {
 
 div.content {
     flex-direction: row;
-    background-color: #F2F5F7;
+    /*background-color: #F2F5F7;*/
     min-height: 100px;
     justify-content: flex-start;
     overflow: hidden;
@@ -339,12 +342,12 @@ div.content > div.sheet_wrapper {
 }
 div.content > div.sheet_wrapper > div.left_border {
     flex-basis: 20px;
-    background-color: #F2F5F7;
+    /*background-color: #F2F5F7;*/
 }
 div.content > div.sheet_wrapper > div.left_border > span {width: 20px;}
 div.content > div.sheet_wrapper > div.right_border {
     flex-basis: 20px;
-    background-color: #F2F5F7;
+    /*background-color: #F2F5F7;*/
 }
 div.content > div.sheet_wrapper > div.sheet {
     display: flex;

@@ -13,8 +13,8 @@
 <script>
 
     $(document).ready(function() {
-        var item_out_id = "{{ form.account_out.value }}";
-        var item_in_id = "{{ form.account_in.value }}";
+        var item_out_id = "{{ forms.outop.account.value }}";
+        var item_in_id = "{{ forms.inop.account.value }}";
 
         /* Загружаем счет, если он был выбран ранее*/
         if (item_out_id) {
@@ -25,8 +25,8 @@
         }
 
         /* загружаем список опция для селекта статей*/
-        load_items_by_group('outop-id_item', '{{ form.item_groups_out.value }}', '{{ form.item_out.value }}');
-        load_items_by_group('inop-id_item', '{{ form.item_groups_in.value }}', '{{ form.item_in.value }}');
+        load_items_by_group('outop-id_item', '{{ forms.outop.item_groups.value }}', '{{ forms.outop.item.value }}');
+        load_items_by_group('inop-id_item', '{{ forms.inop.item_groups.value }}', '{{ forms.inop.item.value }}');
 
         /* при изменении селекта групп перегружаем список селекта статей */
         $('select[rel="select_group"]').on("change", function (el) {
@@ -79,7 +79,6 @@
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
 <tr data-id="{{{ pk }}}" {{#checked}}class="green_bg"{{/checked}}>
    <td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);" {{#checked}}checked{{/checked}}>Выбрать</label>{{/status}}</td>
-    <td>{{ pk }}</td>
     <td>{{ name }}</td>
     <td>{{ contragent.name }}</td>
     <td>{{#status}}Активен{{/status}}{{^status}}<em class="red">Заблокирован</em>{{/status}}</td>
@@ -117,16 +116,25 @@ select.select2 {
                     {{ form.account_out }}
                     {{ form.account_in }}
                     <div class="data_grid_medium" style="">
+                        <h2>{{ template.name }}</h2>
                         <div class=" m10">
-                            <h2 class="blue m10">Операция расхода</h2>
+                            {# === Операция расхода === #}
+                            {% if template.account_out_required %}
+                            <h3 class="blue m10">Операция расхода</h3>
                             {#  --- Item out --- #}
                             <div class="form_row">
-                                {% include "form_snippets/select.html" with field=forms.outop.item_groups  %}
+                                {% if not forms.outop.item.value %}
+                                    {% include "form_snippets/select.html" with field=forms.outop.item_groups  %}
+                                {% endif %}
                                 {% include "form_snippets/select.html" with field=forms.outop.item  %}
                             </div>
                             {# ---  Account Out --- #}
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row">
+                            <div class="form_row flex_column">
+                                <div class="input_wrapper">
+                                    <legend>Cчет</legend>
+                                </div>
+                                {% if not forms.outop.account.value %}
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select class="select2_ajax select2" rel="account_out_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
@@ -138,21 +146,31 @@ select.select2 {
                                         <select class="select2_preload select2" rel="account_out_load" data-account-field="type"><option></option></select>
                                     </div>
                                 </div>
-                                <table class="sheet_headered none" rel="account_out_load">
-                                    <thead><tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
+                                {% endif %}
+                                <table class="sheet_headered none mhorizont10" rel="account_out_load">
+                                    <thead><tr><th></th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
                                     <tbody rel="account_out"></tbody>
                                 </table>
                             </div>
+                            {% endif %}
                             <!--------------------------------------------------------------------------------------------------------------------->
-                            <h2 class="hr blue m10">Операция прихода</h2>
+                            {# === Операция Прихода === #}
+                            {% if template.account_out_required %}
+                            <h3 class="hr blue m10">Операция прихода</h3>
                             {# --- Item in --- #}
                             <div class="form_row">
-                                {% include "form_snippets/select.html" with field=form.item_groups_in  %}
-                                {% include "form_snippets/select.html" with field=form.item_in  %}
+                                {% if not forms.inop.item.value %}
+                                    {% include "form_snippets/select.html" with field=forms.inop.item_groups  %}
+                                {% endif %}
+                                {% include "form_snippets/select.html" with field=forms.inop.item  %}
                             </div>
                             {# ---  Account in --- #}
                             {# ---  Поиск счета  --- #}
-                            <div class="form-row">
+                            <div class="form_row flex_column">
+                                <div class="input_wrapper">
+                                    <legend>Cчет</legend>
+                                </div>
+                                {% if not forms.inop.account.value %}
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
                                         <select name="account_type4" class="select2_ajax select2" rel="account_in_load" data-url="/persons/api/employies_rest/" data-field="person.family_name" data-placeholder="Сотрудник / фамилия" data-minlength="2" data-text_func="compose_text_employee" data-account-field="employee"></select>
@@ -164,17 +182,19 @@ select.select2 {
                                         <select name="account_type123" class="select2_preload select2" rel="account_in_load" data-account-field="type"><option></option></select>
                                     </div>
                                 </div>
-                                <table class="sheet_headered none" rel="account_in_load">
-                                    <thead><tr><th></th><th>ID</th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
+                                {% endif %}
+                                <table class="sheet_headered none mhorizont10" rel="account_in_load">
+                                    <thead><tr><th></th><th>Наименование счета</th><th>Контрагент</th><th>Статус счета</th><th>Баланс</th></tr></thead>
                                     <tbody rel="account_in"></tbody>
                                 </table>
                             </div>
+                            {% endif %}
                             <!--------------------------------------------------------------------------------------------------------------------->
                             <h2 class="hr blue m10">Параметры операции</h2>
                             <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=forms.details.summ  %}
-                                {% include "form_snippets/radio.html" with field=forms.inop.pay_way  %}
-                                {% include "form_snippets/textinput.html" with field=forms.inop.comment  %}
+                                {% include "form_snippets/radio.html" with field=forms.details.pay_way  %}
+                                {% include "form_snippets/textinput.html" with field=forms.details.comment  %}
                             </div>
                         </div>
                         {# ошибки формы #}

@@ -220,31 +220,45 @@ class DdsTemplateOperation(MultiFormCreate):
         forms = self.get_forms()
         # Загружаем объект шаблона
         template_object = DdsTemplates.objects.get(pk=kwargs.pop('template_id', None))
-        initial = {}
+        initial_out = {}
+        initial_in = {}
+        initial_details = {}
         # Если в шалоне стоит флаг _required для поля формы - обновляем значение поля формы, если оно тоже есть
-        if template_object.item_out_required:
-            forms['outop'].fields['item'].required = True
-            # Передаем параметры в виджеты, что бы корректно работали функции во фронте
-            forms['outop'].fields['item_groups'].widget.attrs = {"size": 8, "rel": "select_group",  'data-combined-id': "id_outop-item"}
-            if hasattr(template_object, 'item_out'):
-                initial['account'] = template_object.item_out.pk
         if template_object.account_out_required:
+            # Передаем параметры в виджеты, что бы корректно работали функции во фронте
+            # -- Статья Расход --
+            forms['outop'].fields['item_groups'].widget.attrs = {"rel": "select_group",  'data-combined-id': "id_outop-item"}
+            forms['outop'].fields['item'].required = True
+            if hasattr(template_object, 'item_out'):
+                initial_out['item'] = template_object.item_out.pk
+                forms['outop'].fields['item'].widget.attrs.update({"disabled": True})
+            # -- Счет расхода --
             forms['outop'].fields['account'].required = True
             if hasattr(template_object, 'account_out'):
-                initial['account'] = template_object.account_out.pk
-        forms['outop'].initial = initial
-        if template_object.item_out_required:
-            forms['inop'].fields['item'].required = True
-            forms['outop'].fields['item_groups'].widget.attrs = {"size": 8, "rel": "select_group",  'data-combined-id': "id_inop-item"}
-            if hasattr(template_object, 'item_in'):
-                initial['item'] = template_object.item_in.pk
+                initial_out['account'] = template_object.account_out.pk
+        forms['outop'].initial = initial_out
+        # Форма операции прихода
         if template_object.account_out_required:
-            forms['account'].fields['account'].required = True
+            # -- Статья Приход --
+            forms['inop'].fields['item'].required = True
+            forms['inop'].fields['item_groups'].widget.attrs = {"rel": "select_group",  'data-combined-id': "id_inop-item"}
+            if hasattr(template_object, 'item_in'):
+                forms['inop'].fields['item'].widget.attrs.update({"disabled": True})
+                initial_in['item'] = template_object.item_in.pk
+            # -- Счет Приход --
+            forms['inop'].fields['account'].required = True
             if hasattr(template_object, 'account_in'):
-                initial['account'] = template_object.account_in.pk
-        forms['inop'].initial = initial
-        forms['details'].initial = {'summ': 100}
-        return self.render_to_response(self.get_context_data(forms=forms))
+                initial_in['account'] = template_object.account_in.pk
+        forms['inop'].initial = initial_in
+        # Форма параметров операции
+        if hasattr(template_object, 'summ'):
+            initial_details['summ'] = int(template_object.summ)
+        if hasattr(template_object, 'comment'):
+            initial_details['comment'] = template_object.comment
+        if hasattr(template_object, 'pay_way'):
+            initial_details['pay_way'] = template_object.pay_way
+        forms['details'].initial = initial_details
+        return self.render_to_response(self.get_context_data(forms=forms, template=template_object))
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
