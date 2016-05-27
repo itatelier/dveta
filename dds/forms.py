@@ -137,7 +137,7 @@ class DdsTemplateForm(ModelForm):
 class DdsOperationAccountForm(ModelForm):
     item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, )
     item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, )
-    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(type=1), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
 
     class Meta:
         model = DdsFlow

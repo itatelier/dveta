@@ -33,7 +33,6 @@
                 var $datatable = $('table[rel="'+table_rel+'"]');
                 var $datatable_body = $('tbody', $datatable);
                 var $js_template = $('#tmpl_account_table').html();
-                /* шаблон таблицы */
 
                 /* очищаяем таблицу, если она заполнена */
                 $datatable_body.empty();
@@ -41,11 +40,10 @@
                 /* Стандартная постобработка */
                 if (result.results && result.results.length > 0) {                              /* Если из схемы получены строки ( data json['data'] не пуста )*/
                     for (var i = 0, data_len = result.results.length; i < data_len; i++) {   /* проходим по массиву данных из схемы result.data */
-                        console.log("---" + result.results[i].status);
-
                         if (data_len == 1 && result.results[i].status) {
                             result.results[i].checked = 1;
                             var input_name = $('tbody', $datatable).attr('rel');
+                            console.log("---Status: " + result.results[i].status);
                             $('input[name="' + input_name + '"]').val(result.results[i].pk);
                         }
                         var el = result.results[i];

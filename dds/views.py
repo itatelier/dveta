@@ -264,7 +264,9 @@ class DdsTemplateOperation(MultiFormCreate):
         forms = self.get_forms()
         outform = forms['outop']
         inform = forms['inop']
-        if outform.is_valid() and inform.is_valid():
+        details_form = forms['details']
+
+        if outform.is_valid() and inform.is_valid() and details_form.is_valid():
             # company_pk = kwargs.pop('company_pk', None)
             # company_object = Companies(pk=company_pk)
             # address_object = aform.save()
@@ -275,8 +277,10 @@ class DdsTemplateOperation(MultiFormCreate):
             # self.success_url = '/company/%s/card' % company_pk
             return HttpResponseRedirect(self.get_success_url())
         else:
-            # forms = self.get_forms()
-            return self.render_to_response(self.get_context_data(forms=forms))
+            template_object = DdsTemplates.objects.get(pk=kwargs.pop('template_id', None))
+            forms = self.get_forms()
+            # return self.get(self, request, template_id=kwargs.pop('template_id', None))
+            return self.render_to_response(self.get_context_data(forms=forms, template=template_object))
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(DdsTemplateOperation, self).get_context_data(*args, **kwargs)
