@@ -105,6 +105,7 @@ class DdsOperationForm(ModelForm):
 
 class DdsTemplateForm(ModelForm):
     ruquired_choices = [(False, 'Нет'), (True, 'Требуется')]
+    visible_choices = [(False, 'Нет'), (True, 'Да')]
 
     name = CharField(label="Наименование шаблона", required=True, widget=TextInput(attrs={'size': 40}))
 
@@ -115,6 +116,7 @@ class DdsTemplateForm(ModelForm):
     # Исходный счет
     account_out = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет отправления", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
     account_out_required = ChoiceField(label="Операция Расхода в шаблоне", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
+    # account_out_visible = ChoiceField(label="Отображать информацию о счете в форме", choices=visible_choices, initial=True,  widget=RadioSelect())
 
     # Статья прихода
     item_groups_in = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группа статей", empty_label=None, required=False, widget=Select(attrs={"rel": "select_group", 'data-combined-id': "id_item_in", "size":8}))
@@ -123,8 +125,9 @@ class DdsTemplateForm(ModelForm):
     # Счет получателя
     account_in = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет получения", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
     account_in_required = ChoiceField(label="Операция Прихода в шаблоне", choices=ruquired_choices, initial=False,  widget=RadioSelect(attrs={"rel": "required_switch"}))
+    # account_in_visible = ChoiceField(label="Отображать информацию о счете в форме", choices=visible_choices, initial=True,  widget=RadioSelect())
 
-    summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    summ = DecimalField(label="Сумма", decimal_places=0, required=False, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
     comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
 
@@ -145,7 +148,7 @@ class DdsOperationAccountForm(ModelForm):
 
 
 class DdsOperationDetailsForm(ModelForm):
-    summ = DecimalField(label="Сумма", decimal_places=0, required=True, initial=100, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    summ = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices, initial=False,  widget=RadioSelect())
     comment = CharField(label="Примечание к операции", required=False, widget=TextInput(attrs={'size': 40}))
 

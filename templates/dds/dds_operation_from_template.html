@@ -15,7 +15,7 @@
     $(document).ready(function() {
         var account_out_id = "{{ forms.outop.account.value }}";
         var account_in_id = "{{ forms.inop.account.value }}";
-        /* {{ forms.outop.account.value }}   */
+        /* INOP Account value: {{ forms.inop.account.value }}   */
 
         /* Загружаем счет, если он был выбран ранее*/
         if (parseInt(account_out_id) > 0 ) {
@@ -28,6 +28,7 @@
         }
 
         /* загружаем список опция для селекта статей*/
+
         load_items_by_group('outop-id_item', '{{ forms.outop.item_groups.value }}', '{{ forms.outop.item.value }}');
         load_items_by_group('inop-id_item', '{{ forms.inop.item_groups.value }}', '{{ forms.inop.item.value }}');
 
@@ -58,9 +59,12 @@
                     /* изменение */
                     var $this = $(this);
                     var selected_id = $this.val();
-                    {# Прячем таблицу счета и ошибку #}
+                    console.log("---Select changed!");
 
-                    $('table#account_datatable').addClass('none');
+                    {# Прячем таблицу счета и ошибку #}
+                    var $datatable = $('table[rel="'+$this.attr('rel')+'"]');
+                    $datatable.addClass('none');
+
                     if (selected_id) {
                         /* установить значение переменной selected_company для фильтра в зависимом селекте (контрагент)*/
                         load_account_detail($this.attr('rel'), $this.data('account-field'), selected_id);
@@ -81,7 +85,7 @@
 {# Шаблон таблицы счетов#}
 <script type="text/template" id="tmpl_account_table">{% verbatim %}
 <tr data-id="{{{ pk }}}" {{#checked}}class="green_bg"{{/checked}}>
-   <td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);" {{#checked}}checked{{/checked}}>Выбрать</label>{{/status}}</td>
+   {{#selected}}<td></td>{{/selected}}{{^selected}}<td>{{#status}}<label><input type="checkbox" name="selected_account" value="{{ pk }}" onclick="SelectAccountFromCheck(this);" {{#checked}}checked{{/checked}}>Выбрать</label>{{/status}}</td>{{/selected}}
     <td>{{ name }}</td>
     <td>{{ contragent.name }}</td>
     <td>{{#status}}Активен{{/status}}{{^status}}<em class="red">Заблокирован</em>{{/status}}</td>
@@ -126,10 +130,17 @@ select.select2 {
                             <div class="form_row">
                                 {% if not forms.outop.item.value %}
                                     {% include "form_snippets/select.html" with field=forms.outop.item_groups  %}
+                                    {% include "form_snippets/select.html" with field=forms.outop.item  %}
                                 {% else %}
                                     <input type="hidden" name="outop-item" value="{{ forms.outop.item.value }}">
+                                    <div class="input_wrapper">
+                                        <legend>Статья</legend>
+                                        <div class="input_block">
+                                            {{ template.item_out.name }}
+                                        </div>
+                                    </div>
                                 {% endif %}
-                                {% include "form_snippets/select.html" with field=forms.outop.item  %}
+
                             </div>
                             {# ---  Account Out --- #}
                             <input type="hidden" name="outop-account" value="{{ forms.outop.account.value }}">
@@ -159,16 +170,22 @@ select.select2 {
                             {% endif %}
                             <!--------------------------------------------------------------------------------------------------------------------->
                             {# === Операция Прихода === #}
-                            {% if template.account_out_required %}
+                            {% if template.account_in_required %}
                             <h3 class="hr blue m10">Операция прихода</h3>
                             {# --- Item in --- #}
                             <div class="form_row">
                                 {% if not forms.inop.item.value %}
                                     {% include "form_snippets/select.html" with field=forms.inop.item_groups  %}
+                                    {% include "form_snippets/select.html" with field=forms.inop.item  %}
                                 {% else %}
                                     <input type="hidden" name="inop-item" value="{{ forms.inop.item.value }}">
+                                    <div class="input_wrapper">
+                                        <legend>Статья</legend>
+                                        <div class="input_block">
+                                            {{ template.item_in.name }}
+                                        </div>
+                                    </div>
                                 {% endif %}
-                                {% include "form_snippets/select.html" with field=forms.inop.item  %}
                             </div>
                             {# ---  Account in --- #}
                             <input type="hidden" name="inop-account" value="{{ forms.inop.account.value }}">
@@ -177,7 +194,6 @@ select.select2 {
                                 <div class="input_wrapper">
                                     <legend>Cчет</legend>
                                 </div>
-                                {{ forms.inop.account.value }}
                                 {% if not forms.inop.account.value %}
                                 <div class="form_row" rel="employee_out">
                                     <div class="input_wrapper">
@@ -198,7 +214,7 @@ select.select2 {
                             </div>
                             {% endif %}
                             <!--------------------------------------------------------------------------------------------------------------------->
-                            <h2 class="hr blue m10">Параметры операции</h2>
+                            <h3 class="hr blue m10">Параметры операции</h3>
                             <div class="form_row margint10">
                                 {% include "form_snippets/textinput.html" with field=forms.details.summ  %}
                                 {% include "form_snippets/radio.html" with field=forms.details.pay_way  %}

@@ -40,7 +40,7 @@ a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
 
 h2 {
-    color: rgba(0,0,0,.4) !important;
+    color: #595959 !important;
     font-weight: normal;
 }
 
@@ -264,7 +264,7 @@ table.sheet_headered > thead > tr > th {
     text-align: left;
     padding: 0.5rem 1rem;
     /*border-bottom: 1px #D3D3D3 solid;*/
-    background-color: #D9E4EC;
+    background-color: #EEE;
     color: #495D69;
     text-shadow: rgb(242, 242, 242) 1px 1px;
     font-weight: normal;

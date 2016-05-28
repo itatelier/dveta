@@ -251,11 +251,12 @@ class DdsTemplateOperation(MultiFormCreate):
                 initial_in['account'] = template_object.account_in.pk
         forms['inop'].initial = initial_in
         # Форма параметров операции
-        if hasattr(template_object, 'summ'):
+        if template_object.summ:
+            log.info("--- Summ: %s" % template_object.summ)
             initial_details['summ'] = int(template_object.summ)
-        if hasattr(template_object, 'comment'):
+        if template_object.comment:
             initial_details['comment'] = template_object.comment
-        if hasattr(template_object, 'pay_way'):
+        if template_object.pay_way:
             initial_details['pay_way'] = template_object.pay_way
         forms['details'].initial = initial_details
         return self.render_to_response(self.get_context_data(forms=forms, template=template_object))

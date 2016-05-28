@@ -24,7 +24,7 @@ class AccountsSerializerShort(serializers.ModelSerializer):
     class Meta:
         model = DdsAccounts
         depth = 1
-        fields = ('pk', 'name', 'type', 'balance', 'status')
+        fields = ('pk', 'name', 'type', 'balance', 'status', )
 
 
 class AccountsFilters(django_filters.FilterSet):

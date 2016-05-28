@@ -1,23 +1,3 @@
-    function SelectAccountFromCheck(el) {
-        $el = $(el);
-        var this_id = $el.data('id');
-        var $tbody = $el.parents('tbody');
-        var $value_input = $('input[name="'+ $tbody.attr('rel') + '"');
-        $('tr', $tbody).each(function (index, element) {
-            var $tr = $(element);
-            if ($('input[type=checkbox]', $tr).data('id') != this_id) {
-                $tr.removeClass('green_bg');
-                $('input[type=checkbox]', $tr).attr('checked', false);
-            }
-        });
-        if ($el.is( ":checked" )) {
-            $el.parents('tr').addClass('green_bg');
-            $value_input.val($el.val());
-        } else {
-            $el.parents('tr').removeClass('green_bg');
-            $value_input.val("");
-        }
-    }
     function load_account_detail(table_rel, field, param_value) {
         data = {};
         data[field] = param_value;
@@ -43,8 +23,11 @@
                         if (data_len == 1 && result.results[i].status) {
                             result.results[i].checked = 1;
                             var input_name = $('tbody', $datatable).attr('rel');
-                            console.log("---Status: " + result.results[i].status);
+                            console.log("--- Param value: " + param_value + " Data len: " + data_len);
                             $('input[name="' + input_name + '"]').val(result.results[i].pk);
+                            if (param_value) {
+                                result.results[i].selected = 1;
+                            }
                         }
                         var el = result.results[i];
                         var tr = Mustache.to_html($js_template, el);
@@ -81,4 +64,26 @@
                 $item_select.append(option);
             }
         });
+    }
+    function SelectAccountFromCheck(el) {
+        var $el = $(el);
+        var checkbox_value = $el.val();
+        var $tbody = $el.parents('tbody');
+        var $value_input = $('input[name="'+ $tbody.attr('rel') + '"');
+        $('tr', $tbody).each(function (index, element) {
+            var $tr = $(element);
+            var $tr_id = $tr.data('id');
+             // console.log("--- checkbox_value: " + checkbox_value + " TR id: " + $tr_id);
+            if ($tr_id != checkbox_value) {
+                $tr.removeClass('green_bg');
+                $('input[type=checkbox]', $tr).attr('checked', false);
+            }
+        });
+        if ($el.is( ":checked" )) {
+            $el.parents('tr').addClass('green_bg');
+            $value_input.val($el.val());
+        } else {
+            $el.parents('tr').removeClass('green_bg');
+            $value_input.val("");
+        }
     }
