@@ -137,10 +137,20 @@ class DdsTemplateForm(ModelForm):
                   'account_out_required', 'item_groups_in', 'item_in', 'account_in', 'account_in_required', 'summ', 'pay_way', 'comment')
 
 
-class DdsOperationAccountForm(ModelForm):
+class DdsOperationAccountFormOut(ModelForm):
     item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, )
-    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья учета", empty_label=None, required=True, )
-    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет", required=True, widget=HiddenInput(attrs={'data-type': 1}), )
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья операции расхода", empty_label=None, required=False, )
+    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет списания", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
+
+    class Meta:
+        model = DdsFlow
+        fields = ('item', 'account')
+
+
+class DdsOperationAccountFormIn(ModelForm):
+    item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, )
+    item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья операции прихода", empty_label=None, required=False, )
+    account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет получения", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
 
     class Meta:
         model = DdsFlow

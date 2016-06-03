@@ -211,8 +211,8 @@ class DdsTemplateOperation(MultiFormCreate):
     template_name = 'dds/dds_operation_from_template.html'
     success_url = '/dds/flow/'
     formconf = {
-        'outop': {'formclass': DdsOperationAccountForm},
-        'inop': {'formclass': DdsOperationAccountForm},
+        'outop': {'formclass': DdsOperationAccountFormOut},
+        'inop': {'formclass': DdsOperationAccountFormIn},
         'details': {'formclass': DdsOperationDetailsForm}
     }
 
@@ -223,7 +223,16 @@ class DdsTemplateOperation(MultiFormCreate):
         initial_out = {}
         initial_in = {}
         initial_details = {}
-        # Если в шалоне стоит флаг _required для поля формы - обновляем значение поля формы, если оно тоже есть
+        # Передача параметров в форму из урла
+        # if request.GET.get('item_out'):
+        #     initial_out['item'] = request.GET.get('item_out')
+        if request.GET.get('account_out'):
+            initial_out['account'] = request.GET.get('account_out')
+        # if request.GET.get('item_in'):
+        #     initial_in['item'] = request.GET.get('item_in')
+        if request.GET.get('account_in'):
+            initial_in['account'] = request.GET.get('account_in')
+        # Если в шаблоне стоит флаг _required для поля формы - обновляем значение поля формы, если оно тоже есть
         if template_object.account_out_required:
             # Передаем параметры в виджеты, что бы корректно работали функции во фронте
             # -- Статья Расход --
@@ -231,19 +240,17 @@ class DdsTemplateOperation(MultiFormCreate):
             forms['outop'].fields['item'].required = True
             if hasattr(template_object, 'item_out'):
                 initial_out['item'] = template_object.item_out.pk
-                forms['outop'].fields['item'].widget.attrs.update({"disabled": True})
             # -- Счет расхода --
             forms['outop'].fields['account'].required = True
             if hasattr(template_object, 'account_out'):
                 initial_out['account'] = template_object.account_out.pk
         forms['outop'].initial = initial_out
         # Форма операции прихода
-        if template_object.account_out_required:
+        if template_object.account_in_required:
             # -- Статья Приход --
             forms['inop'].fields['item'].required = True
             forms['inop'].fields['item_groups'].widget.attrs = {"rel": "select_group",  'data-combined-id': "id_inop-item"}
             if hasattr(template_object, 'item_in'):
-                forms['inop'].fields['item'].widget.attrs.update({"disabled": True})
                 initial_in['item'] = template_object.item_in.pk
             # -- Счет Приход --
             forms['inop'].fields['account'].required = True
@@ -252,11 +259,10 @@ class DdsTemplateOperation(MultiFormCreate):
         forms['inop'].initial = initial_in
         # Форма параметров операции
         if template_object.summ:
-            log.info("--- Summ: %s" % template_object.summ)
             initial_details['summ'] = int(template_object.summ)
         if template_object.comment:
             initial_details['comment'] = template_object.comment
-        if template_object.pay_way:
+        if template_object.pay_way is not None:
             initial_details['pay_way'] = template_object.pay_way
         forms['details'].initial = initial_details
         return self.render_to_response(self.get_context_data(forms=forms, template=template_object))
