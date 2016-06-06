@@ -194,7 +194,10 @@ select.select2 {
                                 {% include "form_snippets/radio.html" with field=form.pay_way  %}
                                 {% include "form_snippets/textinput.html" with field=form.comment  %}
                             </div>
-                            <div class="form_row margint10">{% include "form_snippets/textinput.html" with field=form.name  %}</div>
+                            <div class="form_row margint10">
+                                {% include "form_snippets/textinput.html" with field=form.name  %}
+                                {% include "form_snippets/textinput.html" with field=form.group  %}
+                            </div>
                         </div>
                         {# ошибки формы #}
                         {% include "form_snippets/form_errors.html" with form=form %}

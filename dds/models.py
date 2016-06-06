@@ -133,8 +133,22 @@ class DdsFlow(models.Model):
         return u'[%s] %s %s %s %s' % (self.id, self.date, self.item.pk, self.account.pk, self.summ)
 
 
+class DdsTemplateGroups(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'dds_template_groups'
+        managed=False
+        verbose_name_plural = 'Деньги / Группы шаблонов операций'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.name)
+
+
 class DdsTemplates(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    group = models.ForeignKey('dds.DdsTemplateGroups', null=False, blank=False)
     name = models.CharField(max_length=255L, null=True, blank=True)
     item_out = models.ForeignKey('DdsItems', null=False, blank=False, related_name='template_item_out')
     account_out = models.ForeignKey('DdsAccounts', null=False, blank=False, related_name='template_account_out')
@@ -152,4 +166,3 @@ class DdsTemplates(models.Model):
         db_table = 'dds_templates'
         managed = False
         verbose_name_plural = 'Деньги / Шаблоны'
-
