@@ -45,126 +45,8 @@ class AccountsBalanceView(LoginRequiredMixin,  TemplateView):
         return context_data
 
 
-class AccountRefillContragentView(LoginRequiredMixin, CreateView):
-    template_name = 'dds/account_refill_contragent.html'
-    form_class = AccountRefillContragentForm
-    model = DdsAccounts
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-
-            # Обновление баланса счета
-            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
-
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            form = replace_form_choices_select2(form, ('company', 'contragent'))
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class AccountRefillEmployeeView(LoginRequiredMixin, CreateView):
-    template_name = 'dds/account_refill_employee.html'
-    form_class = AccountRefillEmployeeForm
-
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(AccountRefillEmployeeView, self).get_context_data(*args, **kwargs)
-        #context_data['form'].fields['comment'].initial = "TEST"
-
-        context_data['form'].initial = {
-            'employee': 1
-        }
-        return context_data
-
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-
-            # Обновление баланса счета
-            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
-
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            form = replace_form_choices_select2(form, formfields=('employee', ))
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class AccountRefillCashView(LoginRequiredMixin, CreateView):
-    # родительский класс для форм с типом счета 1,2,3 - следующие View: AccountRefillBankView, AccountRefillServiceView
-    template_name = 'dds/account_refill_simple.html'
-    form_class = DdsOperationForm
-    account_type = 1
-    menu_item = 1
-
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(AccountRefillCashView, self).get_context_data(*args, **kwargs)
-        context_data['accounts'] = DdsAccounts.objects.filter(type=self.account_type)
-        context_data['menu_item'] = self.menu_item
-        return context_data
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-
-            # Обновление баланса счета
-            DdsAccounts.objects.update_balance(pk=new_object.account.id, summ=new_object.summ)
-
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class AccountRefillBankView(AccountRefillCashView, LoginRequiredMixin, CreateView):
-    template_name = 'dds/account_refill_simple.html'
-    form_class = DdsOperationForm
-    account_type = 2
-    menu_item = 2
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class AccountRefillServiceView(AccountRefillCashView, LoginRequiredMixin, CreateView):
-    template_name = 'dds/account_refill_simple.html'
-    form_class = DdsOperationForm
-    account_type = 3
-    menu_item = 3
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.save()
-            self.success_url = reverse('dds_operation_card', args=(new_object.id,))
-            return HttpResponseRedirect(self.success_url)
-        else:
-            self.object = form.instance
-            return self.render_to_response(self.get_context_data(form=form))
-
-
 class DdsFlowView(LoginRequiredMixin,  TemplateView):
-    template_name = 'dds/flow.html'
+    template_name = 'dds/dds_flow.html'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(DdsFlowView, self).get_context_data(*args, **kwargs)
@@ -204,7 +86,31 @@ class DdsItemsViewSet(viewsets.ModelViewSet):
 class DdsTemplateCreateView(LoginRequiredMixin, CreateView):
     template_name = 'dds/dds_template_create.html'
     form_class = DdsTemplateForm
-    success_url = '/dds/flow/'
+    success_url = '/dds/templates/group/0/'
+
+
+class DdsTemplatesListView(LoginRequiredMixin,  TemplateView):
+    template_name = 'dds/dds_templates_list.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(DdsTemplatesListView, self).get_context_data(*args, **kwargs)
+        list_templates_qs = DdsTemplates.objects.select_related('group', 'item_in', 'item_out')
+        list_groups_qs = DdsTemplateGroups.objects.all()
+        group_id = self.kwargs.get('group_id', "")
+        if int(group_id) > 0:
+            list_templates_qs.filter(group=group_id)
+            list_groups_qs.filter(pk=group_id)
+            context_data['selected_group'] = DdsTemplateGroups.objects.get(pk=group_id)
+        context_data['templates'] = list_templates_qs
+        context_data['groups'] = list_groups_qs
+        return context_data
+
+
+class DdsTemplateDeleteView(LoginRequiredMixin, DeleteNoticeView):
+    # permission_required = 'company.delete_branches'
+    model = DdsTemplates
+    success_url = '/dds/templates/group/0/'
+    notice = 'Восстановление шаблона финансовой операции невозможно!'
 
 
 class DdsTemplateOperation(MultiFormCreate):
@@ -238,11 +144,13 @@ class DdsTemplateOperation(MultiFormCreate):
             # -- Статья Расход --
             forms['outop'].fields['item_groups'].widget.attrs = {"rel": "select_group",  'data-combined-id': "id_outop-item"}
             forms['outop'].fields['item'].required = True
-            if hasattr(template_object, 'item_out'):
+            ''' В моделе обязательно должно для полей быть выставлено null=True, blank=True, иначе проверку на if template_object.поле выдаст ошибку'''
+            if template_object.item_out:
+                log.info("--- obj item_out: %s" % template_object.item_out)
                 initial_out['item'] = template_object.item_out.pk
             # -- Счет расхода --
             forms['outop'].fields['account'].required = True
-            if hasattr(template_object, 'account_out'):
+            if template_object.account_out:
                 initial_out['account'] = template_object.account_out.pk
         forms['outop'].initial = initial_out
         # Форма операции прихода
@@ -250,11 +158,11 @@ class DdsTemplateOperation(MultiFormCreate):
             # -- Статья Приход --
             forms['inop'].fields['item'].required = True
             forms['inop'].fields['item_groups'].widget.attrs = {"rel": "select_group",  'data-combined-id': "id_inop-item"}
-            if hasattr(template_object, 'item_in'):
+            if template_object.item_in:
                 initial_in['item'] = template_object.item_in.pk
             # -- Счет Приход --
             forms['inop'].fields['account'].required = True
-            if hasattr(template_object, 'account_in'):
+            if template_object.account_in:
                 initial_in['account'] = template_object.account_in.pk
         forms['inop'].initial = initial_in
         # Форма параметров операции

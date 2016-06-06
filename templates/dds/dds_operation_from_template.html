@@ -29,7 +29,6 @@
         }
 
         /* загружаем список опция для селекта статей*/
-
         load_items_by_group('outop-id_item', '{{ forms.outop.item_groups.value }}', '{{ forms.outop.item.value }}');
         load_items_by_group('inop-id_item', '{{ forms.inop.item_groups.value }}', '{{ forms.inop.item.value }}');
 
@@ -79,7 +78,7 @@
         }
     }
     {# дополнительные функции #}
-    {% include "dds/account_refill_fucntions2.js" %}
+    {% include "dds/dds_operation.js" %}
 
 </script>
 {# Шаблон таблицы счетов#}
@@ -125,7 +124,6 @@ select.select2 {
                         <div class=" m10">
                             {# === Операция расхода === #}
                             {% if template.account_out_required %}
-{#                            <h3 class="blue m10">Операция расхода</h3>#}
                             {#  --- Item out --- #}
                             <div class="form_row">
                                 {% if not forms.outop.item.value|check_none %}
@@ -140,7 +138,6 @@ select.select2 {
                                         </div>
                                     </div>
                                 {% endif %}
-
                             </div>
                             {# ---  Account Out --- #}
                             <input type="hidden" name="outop-account" value="{{ forms.outop.account.value }}">
@@ -171,7 +168,6 @@ select.select2 {
                             <!--------------------------------------------------------------------------------------------------------------------->
                             {# === Операция Прихода === #}
                             {% if template.account_in_required %}
-{#                            <h3 class="hr blue m10">Операция прихода</h3>#}
                             {# --- Item in --- #}
                             <div class="form_row">
                                 {% if not forms.inop.item.value|check_none %}

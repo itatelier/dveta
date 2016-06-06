@@ -258,6 +258,7 @@ div.sheet_row_headered > h2 { color: #333; }
 table.sheet_simple { margin: 0.5rem 1rem; }
 table.sheet_simple > tbody > tr > td { padding: 0.3rem 1rem;}
 table.sheet_headered {
+    border-spacing: 0;
     /*margin: 1.5rem 1rem 0rem 1rem; */
 }
 table.sheet_headered > thead > tr > th {
@@ -270,8 +271,8 @@ table.sheet_headered > thead > tr > th {
     font-weight: normal;
 }
 
-table.sheet_headered > tbody > tr > td { padding: 0.3rem 1rem 0.2rem 1rem;}
-
+table.sheet_headered > tbody > tr > td { padding: 0.5rem 1rem 0.5rem 1rem;}
+table.sheet_headered > tbody > tr:nth-child(even) {background: #FFF}
 table.sheet_headered.dotted > tbody > tr > td {
     border-bottom: 1px dotted lightgray;
     padding: 8px 0 8px;
@@ -381,6 +382,63 @@ div.sheet div.data_grid_listing {
     flex: 1 0 auto;
     padding: 0rem 1rem 1rem 0.5rem;
     margin: 0 0 0 1rem;
+}
+
+/* ======================== Links ===================================*/
+span.button_block {
+    display: block;
+    padding: 0.5rem;
+}
+a.button {
+    border-bottom: 3px solid #B1D085;
+    border-radius: 3px;
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    padding: 6px 15px;
+    margin: 1px 5px;
+    /*background-color: #ffffd7;*/
+    background-color: rgb(208, 236, 169);
+    color: #595959;
+    cursor: pointer;
+}
+a.button:active { top: 1px;
+    border-bottom-width: 2px;
+}
+
+a.button.red_bg {border-color: #9C9292;}
+
+a.textlink {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    padding: 0 0.2rem 0 0.2rem;
+    /*margin: 0 0.5rem 0.4rem 0.5rem;*/
+    border-bottom: 1px dotted #009DDA;
+    color: #009DDA;
+    cursor: pointer;
+}
+a.textlink:active {  top: 1px; }
+
+a.textlink._icon:before {
+    display: inline-block;
+    content: attr(icon);
+    font-size: 1.4rem;
+    font-weight: normal;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    /*color: #D84D4D;*/
+}
+a.textlink.red {
+    border-color: #FE659C;
+    /*color: #D84D4D !important;*/
+}
+
+a.hidden {
+    display: inline-block;
+    text-decoration: none;
 }
  /*======================== Listing greed ========================== */
 table.listing_grid {

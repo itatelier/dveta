@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'dds_flow' %}">Движение денег</a></li>
+                <li class="active" ><a href="#">Шаблоны операций<b>{{ selected_group.name }}</b></a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        <li><a href="#" class="active">Шаблоны операций</a></li>
+                        <li><a href="{% url 'dds_template_create' %}">Новый шаблон</a></li>
+                    </ul>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <h2>Шаблоны финансовых операций</h2>
+                    {% for g in groups %}
+                        <h3 class="m10">{{ g.name }}</h3>
+                        <table class="sheet_headered">
+                            <thead>
+                                <th>Наименование шаблона</th>
+                                <th>Статья расхода</th>
+                                <th>Статья прихода</th>
+                                <th>Примечание</th>
+                                <th>Опции</th>
+                            </thead>
+                            <tbody>
+                            {% for t in templates %}
+                                {% if t.group.pk == g.pk %}
+                                <tr>
+                                    <td><a href="{% url 'dds_template_operation' t.pk %}" class="hidden">{{ t.name }}</a></td>
+                                    <td>{{ t.item_in.name }}</td>
+                                    <td>{{ t.item_out.name }}</td>
+                                    <td>{{ t.comment|default_if_none:"не указано" }}</td>
+                                    <td><a href="{% url 'dds_template_delete' t.pk %}"><i class="red icon" icon=""></i> </a></td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endfor %}
+                    {# - Ключевые значения #}
+                    {# Информационный блок - основная информация #}
+                    <div class="sheet_row_headered">
+                    </div>
+                    {# - Информационный блок - основная информация #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

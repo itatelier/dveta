@@ -17,13 +17,10 @@ urlpatterns = [
     #
     # REST API
     url(r'^api/', include(router.urls)),
-    #
-    url(r'^account/refill/cash', AccountRefillCashView.as_view(), name='dds_account_refill_cash'),
-    url(r'^account/refill/bank', AccountRefillBankView.as_view(), name='dds_account_refill_bank'),
-    url(r'^account/refill/service', AccountRefillServiceView.as_view(), name='dds_account_refill_service'),
-    url(r'^account/refill/employee$', AccountRefillEmployeeView.as_view(), name='dds_account_refill_employee'),
-    url(r'^account/refill/contragent$', AccountRefillContragentView.as_view(), name='dds_account_refill_contragent'),
-    url(r'^account/template/create$', DdsTemplateCreateView.as_view(), name='dds_template_create'),
+    #^(?P<pk>\d+)/delete/$
+    url(r'^template/create$', DdsTemplateCreateView.as_view(), name='dds_template_create'),
+    url(r'^template/(?P<pk>\d+)/delete/$', DdsTemplateDeleteView.as_view(), name='dds_template_delete'),
+    url(r'^templates/group/(?P<group_id>\d+)/$', DdsTemplatesListView.as_view(), name='dds_templates_list'),
     url(r'^operation/template/(?P<template_id>\d+)/$', DdsTemplateOperation.as_view(), name='dds_template_operation'),
     url(r'^account_balance/$', AccountsBalanceView.as_view(), name='dds_accounts_balance'),
     url(r'^flow/$', DdsFlowView.as_view(), name='dds_flow'),
