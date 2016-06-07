@@ -130,12 +130,8 @@ class DdsTemplateOperation(MultiFormCreate):
         initial_in = {}
         initial_details = {}
         # Передача параметров в форму из урла
-        # if request.GET.get('item_out'):
-        #     initial_out['item'] = request.GET.get('item_out')
         if request.GET.get('account_out'):
             initial_out['account'] = request.GET.get('account_out')
-        # if request.GET.get('item_in'):
-        #     initial_in['item'] = request.GET.get('item_in')
         if request.GET.get('account_in'):
             initial_in['account'] = request.GET.get('account_in')
         # Если в шаблоне стоит флаг _required для поля формы - обновляем значение поля формы, если оно тоже есть
@@ -180,25 +176,32 @@ class DdsTemplateOperation(MultiFormCreate):
         outform = forms['outop']
         inform = forms['inop']
         details_form = forms['details']
-
+        template_object = DdsTemplates.objects.get(pk=kwargs.pop('template_id', None))
         if outform.is_valid() and inform.is_valid() and details_form.is_valid():
-            # company_pk = kwargs.pop('company_pk', None)
-            # company_object = Companies(pk=company_pk)
-            # address_object = aform.save()
-            # branch_object = bform.save(commit=False)
-            # branch_object.company = company_object
-            # branch_object.address = address_object
-            # branch_object.save()
-            # self.success_url = '/company/%s/card' % company_pk
+            details_object = details_form.save(commit=False)
+            if template_object.account_out_required:
+                out_operation = outform.save(commit=False)
+                out_operation.summ = details_object.summ
+                out_operation.pay_way = details_object.pay_way
+                out_operation.comment = details_object.comment
+                # Обновляем баланс счета на положительную сумму
+                DdsAccounts.objects.update_balance(out_operation.account.pk, abs(out_operation.summ)*-1)
+                out_operation.save()
+            if template_object.account_in_required:
+                in_operation = inform.save(commit=False)
+                in_operation.summ = details_object.summ
+                in_operation.pay_way = details_object.pay_way
+                in_operation.comment = details_object.comment
+                # Обновляем баланс счета на отрицатульную сумму
+                DdsAccounts.objects.update_balance(in_operation.account.pk, abs(in_operation.summ))
+                in_operation.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
-            template_object = DdsTemplates.objects.get(pk=kwargs.pop('template_id', None))
             forms = self.get_forms()
-            # return self.get(self, request, template_id=kwargs.pop('template_id', None))
             return self.render_to_response(self.get_context_data(forms=forms, template=template_object))
 
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(DdsTemplateOperation, self).get_context_data(*args, **kwargs)
-        # company_pk = self.kwargs.get('company_pk', None)
-        # context_data.update({'company': Companies.objects.get(pk=company_pk)})
-        return context_data
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(DdsTemplateOperation, self).get_context_data(*args, **kwargs)
+    #     # company_pk = self.kwargs.get('company_pk', None)
+    #     # context_data.update({'company': Companies.objects.get(pk=company_pk)})
+    #     return context_data
