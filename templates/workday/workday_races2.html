@@ -1,0 +1,79 @@
+{% extends "workday/workday_base.html" %}
+{% block cardriver %}
+    {% include 'workday/workday_block_cardriver.html' %}
+{% endblock %}
+{% block stats %}
+    {% include 'workday/workday_block_stats.html' %}
+{% endblock %}
+{% block tabdata %}
+    {% include 'workday/workday_tabs_menu.html' with sel=1 %}
+    <div class="flex_row">
+        <div class="sheet_block_tabbed _white_bordered">
+            <div class="flex_row flex_vcentered">
+                <div class="flex_block">
+                    <h2 class="blue">Рейсы</h2>
+                </div>
+                <div class="flex_block _zero flex flex_vcentered">
+                    <h2 class="blue">Сверка</h2>
+                    <div class="input_wrapper">
+                        <div class="input_block _inline">
+                            <label><input type="checkbox" name="ch1" checked><p>рейсы</p></label>
+                            <label><input type="checkbox" name="ch1" checked><p>бункеры</p></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex_row">
+                <table class="sheet_headered no_lr_margin" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Клиент</th>
+                            <th>Объект</th>
+                            <th width="90px">Вид работ</th>
+                            <th width="40px" class="centertext">Ходки</th>
+                            <th width="70px">Оплата</th>
+                            <th width="20px" class="centertext">БН</th>
+                            <th width="20px" class="centertext">О</th>
+                            <th>Полигон</th>
+                            <th width="30px">Т</th>
+                            <th width="40px" class="centertext">Нал</th>
+                            <th width="40px" class="centertext">Доп</th>
+                            <th width="40px" class="centertext">Груз</th>
+                            <th>Рекомендации</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in races %}
+                        <tr>
+                            <td>{{ l.company.name }}</td>
+                            <td>{{ l.object.name }}</td>
+                            <td>{{ l.race_type.val }}</td>
+                            <td  class="centertext">{{ l.hodkis }}</td>
+                            <td>{{ l.summ|default_if_none:"" }}</td>
+                            <td>{% if l.pay_way == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
+                            <td>{% if l.paid == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
+                            <td>{{ l.dump.name }}</td>
+                            <td>{% if l.dump_pay_type == 0 %}<i class="icon" icon=""></i>{% endif %}</td>
+                            <td>{{ l.dump_cash|default_if_none:"" }}</td>
+                            <td>{{ l.dump_cash_extra|default_if_none:"" }}</td>
+                            <td>{{ l.cargo_type.val }}</td>
+                            <td>{{ l.recommendation }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex_row flex_vcentered">
+                <div class="flex_block">
+                    <p>Количество бункеров на авто: <b>2</b></p>
+                </div>
+                <div class="flex_block _zero">
+                    <span class="button_block">
+                        <a class="textlink" href="#">Все рейсы</a>
+                        <a class="button" href="#">Новый рейс</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
