@@ -7,15 +7,43 @@ from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNot
 from common.utils import GetObjectOrNone
 from django.shortcuts import get_object_or_404
 from common.forms import *
+from datetime import datetime
 from race.models import *
+from dds.models import *
+from person.models import Employies
 
 
-class WdRacesView(LoginRequiredMixin, TemplateView):
-    template_name = 'workday/workday_races2.html'
+class WorkdayBaseView(LoginRequiredMixin, TemplateView):
+    driver_pk = False
+    date = False
 
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(WdRacesView, self).get_context_data(*args, **kwargs)
-        context_data['races'] = Races.objects.select_related('object', 'dump', 'company', 'race_type', 'cargo_type', 'bunker_type')
-        # context_data['company'] = Companies.objects.get(pk=company_pk)
-        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
-        return context_data
+    def dispatch(self, request, *args, **kwargs):
+        self.driver_pk = self.kwargs.get('driver_pk', False)
+        self.date = datetime.strptime(self.kwargs.get('date', False), '%d-%m-%y')
+        return super(WorkdayBaseView, self).dispatch(request, *args, **kwargs)
+
+    def driver(self):
+        return Employies.objects.get(pk=self.driver_pk)
+
+
+class WorkdayRacesView(WorkdayBaseView):
+    template_name = 'workday/workday_races.html'
+
+    def races(self):
+        log.info("--- DAte: %s" % self.date.isoformat())
+        return Races.objects.filter(
+            driver=self.driver_pk,
+            date_race__day=self.date.day,
+            date_race__month=self.date.month,
+            date_race__year=self.date.year,
+        ).select_related('object', 'dump', 'company', 'race_type', 'cargo_type', 'bunker_type')
+
+
+class WorkdayDdsView(LoginRequiredMixin, TemplateView):
+    template_name = 'workday/workday_dds.html'
+
+    def dds_flow(self):
+        driver_pk = self.kwargs.get('driver_pk')
+        return DdsFlow.objects.filter()
+
+

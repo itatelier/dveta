@@ -1,253 +1,79 @@
- {% extends "main.html" %}
-{% load static from staticfiles %}
-{% block add_static %}
-<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
-<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
-<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
-<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
-<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
-
-
+{% extends "workday/workday_base.html" %}
+{% block cardriver %}
+    {% include 'workday/workday_block_cardriver.html' %}
 {% endblock %}
-{% block content %}
-
-
-<script>
-    var JsonDataUrl = "/races/api/races_rest/";
-    var req_preprocess_result = "1";
-
-    $(document).ready(function() {
-{#        list_data_api();#}
-
-        {#  Виджет datepicker #}
-{#        $.datetimepicker.setLocale('ru');#}
-{#        $('input[rel=datetimepicker]').datetimepicker({#}
-{#            format:'d-m-Y',#}
-{#            timepicker: false,#}
-{#        });#}
-
-        {#    Автоподсказка для поля сортировки #}
-{#        input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');#}
-
-        {#    Сортировка по заголовкам столбцов   #}
-        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
-
-        {#  Переход на карточу   #}
-        $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('object_id');
-            var url = "/races/" + id +"/update";
-            document.location.href = url;
-        });
-
-    });
-
-        {#  постобработка результата AJAX запроса #}
-        function preprocess_result(result) {
-            {# подсветка фрагментов текста в соответствии с параметром поиска #}
-            var search_string = $('input[name=search]').val();
-            result.results = highlight_search_results(result.results, search_string);
-
-            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
-{#                 изменение формата даты #}
-                result.results[i].date_race = date_json2hr(result.results[i].date_race);
-            }
-        }
-</script>
-{# Шаблон основной таблицы #}
-<script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-object_id="{{ pk }}">
-        <td width="100">{{{ date_race.date }}}</td>
-        <td>{{{ driver.person.family_name}}} {{ driver.person.given_bame }}{{{ driver.person.nick_name }}}</td>
-        <td width="80">{{{ car.nick_name }}}</td>
-        <td>{{{ company.name }}}</td>
-        <td>{{{ object.name }}}</td>
-        <td width="90" class="centertext">
-            <div class="bunker">
-                <div class="type">{{{ bunker_type.val }}}</div><div class="qty">{{{ bunker_qty }}}</div>
-            </div>
-        </td>
-        <td width="100" class="centertext">{{{ race_type.val }}}</td>
-        <td width="70" class="centertext">{{{ hodkis }}}</td>
-        <td width="80" >{{{ summ }}}</td>
-        <td width="30" class="centertext">{{#pay_way }}<i class="dot">•</i>{{/pay_way}}</td>
-        <td width="30" class="centertext">{{#paid }}<i class="icon green" icon=""></i>{{/paid}}</td>
-        <td>{{{ dump.name }}}</td>
-        <td width="30" class="centertext">{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
-        <td width="90" class="centertext">{{{ dump_cash }}}</td>
-        <td width="90" class="centertext">{{{ dump_cash_extra }}}</td>
-        <!-- replace -->
-    </tr>
-</script>{% endverbatim %}
-        {# Breadcrumbs #}
-        <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
-        </div>
-        {# - Breadcrumbs #}
-        <div class="sheet_wrapper">
-            <div class="left_border"><span class="upblock"></span></div>
-            {# Рабочий лист #}
-            <div class="sheet">
-            <!--********************* Sheet *********************  -->
-                <!--*********** Data grid medium ***********  -->
-                <div class="flex_block fullwidth">
-                    <!--*********** Values block ***********  -->
-                    <div class="flex_row">
-                        <div class="values_block">
-                            <span><p>Сауленко Виктор</p><em>водитель</em></span>
-                        </div>
-                        <div class="values_block">
-                            <span><p>365</p><em>ник</em></span>
-                        </div>
-                        <div class="values_block">
-                            <span><p>365</p><em>машина</em></span>
-                        </div>
-                        <div class="values_block">
-                            <span><p>Ю.З.</p><em>регион</em></span>
-                        </div>
-                        <div class="values_block">
-                            <span><p>Ю.З.</p><em>регион</em></span>
-                        </div>
-                        <div class="values_block">
-                            <span><p>8 926 523 1749</p><em>контактный номер</em></span>
-                        </div>
-                    </div>
-                    <!--*********** End Values block ***********  -->
-                    <div class="flex_row">
-                        <div class="sheet_block_mini _white_bordered">
-                            <h2>Наличные</h2>
-                            <hr>
-                            <table>
-                                <tr>
-                                    <td>Входящий остаток</td><td>13265</td>
-                                </tr>
-                                <tr>
-                                    <td>Сверка</td><td>18265</td>
-                                </tr>
-                                <tr>
-                                    <td>Баланс</td><td>5000</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="sheet_block_mini _white_bordered">
-                            <h2>Ходки</h2>
-                            <hr>
-                            <table>
-                                <tr>
-                                    <td>Сегодня</td><td>4,5</td>
-                                </tr>
-                                <tr>
-                                    <td>В этом месяце</td><td>63</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="sheet_block_mini _white_bordered">
-                            <h2>Примечание</h2>
-                            <hr>
-                            <textarea rows="3">сломался во время работы,  ремонт на нашей базе, установка</textarea>
-                        </div>
-                        <div class="sheet_block_mini _white_bordered">
-                            <h2>Сверка</h2>
-                            <hr>
-                            <div class="form_row">
-                                <div class="input_wrapper">
-                                    <div class="input_block _inline">
-                                        <label><input type="radio" name="ch1" ><p>с водителем</p></label>
-                                        <label><input type="radio" name="ch1" checked><p>день закрыт</p></label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex_row">
-                        <div class="tabbed_menu margint10">
-                            <ul>
-                                <li class="active" ><a href="listing.html">Рейсы</a></li>
-                                <li ><a href="listing.html">История</a></li>
-                                <li><a href="listing.html">Талоны</a></li>
-                                <li><a href="listing.html">Заправки</a></li>
-                                <li><a href="listing.html">Наличные</a></li>
-                                <li><a href="listing.html">Премии</a></li>
-                                <li><a href="listing.html">Итоги месяца</a></li>
-                                <li><a href="listing.html">Сверка</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="flex_row">
-                        <div class="sheet_block_tabbed _white_bordered">
-                            <div class="flex_row flex_vcentered">
-                                <div class="flex_block">
-                                    <h2 class="blue">Рейсы</h2>
-                                </div>
-                                <div class="flex_block _zero flex flex_vcentered">
-                                    <h2 class="blue">Сверка</h2>
-                                    <div class="input_wrapper">
-                                        <div class="input_block _inline">
-                                            <label><input type="checkbox" name="ch1" checked><p>рейсы</p></label>
-                                            <label><input type="checkbox" name="ch1" checked><p>бункеры</p></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex_row">
-                                <table class="sheet_headered _bordered no_lr_margin" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Клиент</th>
-                                            <th>Объект</th>
-                                            <th width="90px">Вид работ</th>
-                                            <th width="40px" class="centertext">Ходки</th>
-                                            <th width="70px">Оплата</th>
-                                            <th width="20px" class="centertext">БН</th>
-                                            <th width="20px" class="centertext">О</th>
-                                            <th>Полигон</th>
-                                            <th width="30px">Т</th>
-                                            <th width="40px" class="centertext">Нал</th>
-                                            <th width="40px" class="centertext">Доп</th>
-                                            <th width="40px" class="centertext">Груз</th>
-                                            <th>Рекомендации</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for l in races %}
-                                        <tr>
-                                            <td>{{ l.company.name }}</td>
-                                            <td>{{ l.object.name }}</td>
-                                            <td>{{ l.race_type.val }}</td>
-                                            <td  class="centertext">{{ l.hodkis }}</td>
-                                            <td>{{ l.summ|default_if_none:"" }}</td>
-                                            <td>{% if l.pay_way == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
-                                            <td>{% if l.paid == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
-                                            <td>{{ l.dump.name }}</td>
-                                            <td>{% if l.dump_pay_type == 0 %}<i class="icon" icon=""></i>{% endif %}</td>
-                                            <td>{{ l.dump_cash|default_if_none:"" }}</td>
-                                            <td>{{ l.dump_cash_extra|default_if_none:"" }}</td>
-                                            <td>{{ l.cargo_type.val }}</td>
-                                            <td>{{ l.recommendation }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="flex_row flex_vcentered">
-                                <div class="flex_block">
-                                    <p>Количество бункеров на авто: <b>2</b></p>
-                                </div>
-                                <div class="flex_block _zero">
-                                    <span class="button_block">
-                                        <a class="textlink" href="#">Все рейсы</a>
-                                        <a class="button" href="#">Новый рейс</a>
-                                    </span>
-                                </div>
-                            </div>
+{% block stats %}
+    {% include 'workday/workday_block_stats.html' %}
+{% endblock %}
+{% block tabdata %}
+{#    {% include 'workday/workday_tabs_menu.html' with sel=1 %}#}
+    <div class="flex_row">
+        <div class="sheet_block_tabbed _white_bordered">
+            <div class="flex_row flex_vcentered">
+                <div class="flex_block">
+                    <h2 class="blue">Рейсы</h2>
+                </div>
+                <div class="flex_block _zero flex flex_vcentered">
+                    <h2 class="blue">Сверка</h2>
+                    <div class="input_wrapper">
+                        <div class="input_block _inline">
+                            <label><input type="checkbox" name="ch1" checked><p>рейсы</p></label>
+                            <label><input type="checkbox" name="ch1" checked><p>бункеры</p></label>
                         </div>
                     </div>
                 </div>
-                <!--*********** End Data grid medium ***********  -->
-            <!--********************* End Sheet *********************  -->
             </div>
-            {# - Рабочий лист #}
-            <div class="right_border"><span class="upblock"></span></div>
+            <div class="flex_row">
+                <table class="sheet_headered no_lr_margin" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Клиент</th>
+                            <th>Объект</th>
+                            <th width="90px">Вид работ</th>
+                            <th width="40px" class="centertext">Ходки</th>
+                            <th width="70px">Оплата</th>
+                            <th width="20px" class="centertext">БН</th>
+                            <th width="20px" class="centertext">О</th>
+                            <th>Полигон</th>
+                            <th width="30px">Т</th>
+                            <th width="40px" class="centertext">Нал</th>
+                            <th width="40px" class="centertext">Доп</th>
+                            <th width="40px" class="centertext">Груз</th>
+                            <th>Рекомендации</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in view.races %}
+                        <tr>
+                            <td>{{ l.company.name }} {{ l.pk }}</td>
+                            <td>{{ l.object.name }}</td>
+                            <td>{{ l.race_type.val }}</td>
+                            <td  class="centertext">{{ l.hodkis }}</td>
+                            <td>{{ l.summ|default_if_none:"" }}</td>
+                            <td>{% if l.pay_way == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
+                            <td>{% if l.paid == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
+                            <td>{{ l.dump.name }}</td>
+                            <td>{% if l.dump_pay_type == 0 %}<i class="icon" icon=""></i>{% endif %}</td>
+                            <td>{{ l.dump_cash|default_if_none:"" }}</td>
+                            <td>{{ l.dump_cash_extra|default_if_none:"" }}</td>
+                            <td>{{ l.cargo_type.val }}</td>
+                            <td>{{ l.recommendation }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex_row flex_vcentered">
+                <div class="flex_block">
+                    <p>Количество бункеров на авто: <b>2</b></p>
+                </div>
+                <div class="flex_block _zero">
+                    <span class="button_block">
+                        <a class="textlink" href="#">Все рейсы</a>
+                        <a class="button" href="#">Новый рейс</a>
+                    </span>
+                </div>
+            </div>
         </div>
+    </div>
 {% endblock %}
