@@ -434,6 +434,12 @@ a.hidden {
     text-decoration: none;
 }
  /*======================== Listing greed ========================== */
+table.pointed {
+    cursor: pointer;
+}
+table.pointed tr:hover {
+    background-color: rgba(0, 221, 28, 0.11)!important;
+}
 table.listing_grid {
     border-spacing: 0px;
     width: 100%;
@@ -480,6 +486,8 @@ table.listing_grid > tbody > tr > td {
     border-bottom: 1px solid #eaeaea;
     cursor: pointer;
 }
+
+
  /*======================== Table bottom bar ========================== */
 div.table_bottom_bar {
     height: 40px;

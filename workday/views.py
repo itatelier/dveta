@@ -39,11 +39,11 @@ class WorkdayRacesView(WorkdayBaseView):
         ).select_related('object', 'dump', 'company', 'race_type', 'cargo_type', 'bunker_type')
 
 
-class WorkdayDdsView(LoginRequiredMixin, TemplateView):
+class WorkdayDdsView(WorkdayBaseView):
     template_name = 'workday/workday_dds.html'
 
     def dds_flow(self):
         driver_pk = self.kwargs.get('driver_pk')
-        return DdsFlow.objects.filter()
+        return DdsFlow.objects.filter(account__employee__pk=driver_pk)
 
 

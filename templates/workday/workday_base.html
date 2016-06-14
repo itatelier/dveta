@@ -7,37 +7,8 @@
 <!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
 {% endblock %}
 {% block content %}
-
-
-<script>
-    var JsonDataUrl = "/races/api/races_rest/";
-    var req_preprocess_result = "1";
-
-    $(document).ready(function() {
-{#        list_data_api();#}
-
-
-        {#  Переход на карточу   #}
-        $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('object_id');
-            var url = "/races/" + id +"/update";
-            document.location.href = url;
-        });
-
-    });
-
-        {#  постобработка результата AJAX запроса #}
-        function preprocess_result(result) {
-            {# подсветка фрагментов текста в соответствии с параметром поиска #}
-            var search_string = $('input[name=search]').val();
-            result.results = highlight_search_results(result.results, search_string);
-
-            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
-{#                 изменение формата даты #}
-                result.results[i].date_race = date_json2hr(result.results[i].date_race);
-            }
-        }
-</script>
+{% block jscontent %}
+{% endblock %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
