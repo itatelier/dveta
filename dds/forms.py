@@ -140,6 +140,7 @@ class DdsOperationAccountFormOut(ModelForm):
     item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, )
     item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья операции расхода", empty_label=None, required=False, )
     account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет списания", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
+    # op_type = BooleanField(initial=False, widget=HiddenInput())
 
     class Meta:
         model = DdsFlow
@@ -150,6 +151,7 @@ class DdsOperationAccountFormIn(ModelForm):
     item_groups = ModelChoiceFieldNameLabel(queryset=DdsItemGroups.objects.all(), initial=1, label_field='name', label="Группы статей", empty_label=None, required=False, )
     item = ModelChoiceFieldNameLabel(queryset=DdsItems.objects.all(), label_field='name', label="Статья операции прихода", empty_label=None, required=False, )
     account = ModelChoiceField(queryset=DdsAccounts.objects.filter(), label="Счет получения", required=False, widget=HiddenInput(attrs={'data-type': 1}), )
+    # op_type = BooleanField(initial=True, widget=HiddenInput())
 
     class Meta:
         model = DdsFlow

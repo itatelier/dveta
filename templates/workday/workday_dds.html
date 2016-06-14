@@ -54,7 +54,11 @@
                                 <td>{{ l.account.name }}</td>
                                 <td>{{ l.account.contragent.name }}</td>
                                 <td>{{ l.comment|default_if_none:""}}</td>
+                                {% if l.op_type == False %}
+                                <td class="red">-{{ l.summ }}</td>
+                                {% else %}
                                 <td>{{ l.summ }}</td>
+                            {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>

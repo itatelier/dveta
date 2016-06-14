@@ -76,14 +76,15 @@ class DdsAccounts(models.Model):
 
 
 class FlowManager(models.Manager):
-    def flow_op(self, item_id, account_id, pay_way, summ):
+    def flow_op(self, item_id, account_id, pay_way, summ, op_type):
         with transaction.atomic():
             DdsAccounts.objects.select_for_update().filter(pk=account_id).update(balance=F('balance')+summ)
             flowop = self.create(
                 item=DdsItems(pk=item_id),
                 account=DdsAccounts(pk=account_id),
                 pay_way=True,
-                summ=summ
+                summ=summ,
+                op_type=op_type
             )
         return flowop
 
@@ -98,7 +99,8 @@ class FlowManager(models.Manager):
                 item=DdsItems(pk=item_out_id),
                 account=DdsAccounts(pk=account_out_id),
                 pay_way=pay_way_out,
-                summ=summ
+                summ=summ,
+                op_type=False
             )
             flow_object_out.save()
             # Запись в потоке для входящей операции
@@ -107,7 +109,8 @@ class FlowManager(models.Manager):
                 account=DdsAccounts(pk=account_in_id),
                 pay_way=pay_way_out,
                 parent_op=flow_object_out,
-                summ=summ
+                summ=summ,
+                op_type=True
             )
             flow_object_in.save()
         return True
@@ -120,6 +123,7 @@ class DdsFlow(models.Model):
     item = models.ForeignKey('DdsItems', null=False, blank=False)
     account = models.ForeignKey('DdsAccounts', null=False, blank=False)
     summ = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
+    op_type = models.BooleanField(default=False)  # тип операции над счетом (1 приход, 0 расход)
     pay_way = models.BooleanField(default=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
     objects = FlowManager()

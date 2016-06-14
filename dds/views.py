@@ -182,6 +182,7 @@ class DdsTemplateOperation(MultiFormCreate):
             if template_object.account_out_required:
                 out_operation = outform.save(commit=False)
                 out_operation.summ = details_object.summ
+                out_operation.op_type = False
                 out_operation.pay_way = details_object.pay_way
                 out_operation.comment = details_object.comment
                 # Обновляем баланс счета на положительную сумму
@@ -190,6 +191,7 @@ class DdsTemplateOperation(MultiFormCreate):
             if template_object.account_in_required:
                 in_operation = inform.save(commit=False)
                 in_operation.summ = details_object.summ
+                in_operation.op_type = True
                 in_operation.pay_way = details_object.pay_way
                 in_operation.comment = details_object.comment
                 # Обновляем баланс счета на отрицатульную сумму
