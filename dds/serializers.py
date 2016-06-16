@@ -41,7 +41,7 @@ class DdsFlowSerializer(serializers.ModelSerializer):
     class Meta:
         model = DdsFlow
         depth = 1
-        fields = ('pk', 'date', 'parent_op', 'item', 'account','account', 'summ', 'pay_way', 'employee', 'comment')
+        fields = ('pk', 'date', 'parent_op', 'item', 'account','account', 'summ', 'op_type', 'pay_way', 'employee', 'comment')
 
 
 class DdsFlowFilters(django_filters.FilterSet):
@@ -50,7 +50,7 @@ class DdsFlowFilters(django_filters.FilterSet):
 
     class Meta:
         model = DdsFlow
-        fields = ['item', 'account', 'summ', 'item__item_group', 'date_after', 'date_before', 'pay_way']
+        fields = ['item', 'account', 'summ', 'op_type', 'item__item_group', 'date_after', 'date_before', 'pay_way']
 
 
 class ItemSerializer(serializers.ModelSerializer):

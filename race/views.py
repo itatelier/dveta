@@ -65,8 +65,9 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                 # если оплата Нал
                 DdsFlow.objects.flow_op(
                     17,
-                    race_object.contragent.money_account.get().pk,
-                    False,
+                    # race_object.contragent.money_account.get().pk,
+                    race_object.driver.ddsaccounts_set.get().pk,
+                    False, # тип оплаты - нал
                     race_object.summ,
                     True  # Тип операции - приход
                 )

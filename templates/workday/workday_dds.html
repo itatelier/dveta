@@ -25,8 +25,7 @@
                     <h2 class="blue">Сверка</h2>
                     <div class="input_wrapper">
                         <div class="input_block _inline">
-                            <label><input type="checkbox" name="ch1" checked><p>рейсы</p></label>
-                            <label><input type="checkbox" name="ch1" checked><p>бункеры</p></label>
+                            <label><input type="checkbox" name="ch1" checked><p>Остаток наличных</p></label>
                         </div>
                     </div>
                 </div>
@@ -35,6 +34,9 @@
             <div class="flex_row">
                     <div class="flex_column m10">
                     <h3 class="">Движение наличных средств</h3>
+                    <div class="flex_block flex_end margint10">
+                        <p>Входящий остаток: <b>{{ summ_income }}</b></p>
+                    </div>
                     <table class="pointed sheet_headered  margint10 " width="100%">
                         <thead>
                         <tr>
@@ -47,7 +49,7 @@
                         </tr>
                         </thead>
                         <tbody id="datatable">
-                            {% for l in view.dds_flow %}
+                            {% for l in dds_flow %}
                             <tr data-object_id="{{ l.pk }}">
                                 <td>{{ l.date|date:"d-m-y m:h"}}</td>
                                 <td>{{ l.item.name }}</td>
@@ -55,7 +57,7 @@
                                 <td>{{ l.account.contragent.name }}</td>
                                 <td>{{ l.comment|default_if_none:""}}</td>
                                 {% if l.op_type == False %}
-                                <td class="red">-{{ l.summ }}</td>
+                                <td class="red">{{ l.summ }}</td>
                                 {% else %}
                                 <td>{{ l.summ }}</td>
                             {% endif %}
@@ -63,20 +65,12 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <div class="flex_block flex_end margint10">
+                        <p>Остаток на конец дня: <b class="marginr10">{{ balance }}</b> Баланс дня: <b>{{ summ_end_of_day }}</b></p>
+                    </div>
                 </div>
                 <div class="flex_column">
                     Блок ссылок
-                </div>
-            </div>
-            <div class="flex_row flex_vcentered">
-                <div class="flex_block">
-                    <p>Количество бункеров на авто: <b>2</b></p>
-                </div>
-                <div class="flex_block _zero">
-                    <span class="button_block">
-                        <a class="textlink" href="#">Все рейсы</a>
-                        <a class="button" href="#">Новый рейс</a>
-                    </span>
                 </div>
             </div>
         </div>

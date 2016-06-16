@@ -15,6 +15,7 @@
 .flex_column { flex-direction: column;}
 .flex_vcentered { align-items: center;}
 .flex_hcentered { justify-content: center;}
+.flex_end { align-self: flex-end;}
 html {
     height: 100%;
     font-size: 70.0%;
@@ -70,6 +71,8 @@ form { margin: 0.5rem 2rem; width: 100%;}
 .margint10 { margin-top: 1rem; }
 .m10 {margin: 10px;}
 .m20 {margin: 20px;}
+.marginr10 {margin-right: 10px;}
+.marginl10 {margin-left: 10px;}
 .nomargin {margin: 0!important;}
 .centertext { text-align: center !important;}
 .righttext { text-align: right !important;}
@@ -256,7 +259,7 @@ table.sheet_headered {
 }
 table.sheet_headered > thead > tr > th {
     text-align: left;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     /*border-bottom: 1px #D3D3D3 solid;*/
     background-color: #EEE;
     color: #495D69;
@@ -264,7 +267,7 @@ table.sheet_headered > thead > tr > th {
     font-weight: normal;
 }
 
-table.sheet_headered > tbody > tr > td { padding: 0.5rem 1rem 0.5rem 1rem;  border-top: 1px solid #e2e2e2; }
+table.sheet_headered > tbody > tr > td { padding: 0.5rem;  border-top: 1px solid #e2e2e2; }
 table.sheet_headered > tbody > tr:nth-child(even) {background: #FFF;}
 table.sheet_headered.dotted > tbody > tr > td {
     border-bottom: 1px dotted lightgray;
@@ -615,7 +618,7 @@ div.values_block {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0 3rem;
+    padding: 0 3rem 0 0.5rem;
     margin: 1rem 0;
 }
 div.values_block:not(:last-child) { border-right: 1px #D3D3D3 solid;}

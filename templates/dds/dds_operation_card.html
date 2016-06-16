@@ -22,8 +22,8 @@
                 <div class="data_grid_medium">
                     <h2>Параметры операции</h2>
                     {# Ключевые значения #}
-                    <div class="flex_row">
-                        <div class="values_block">
+                    <div class="flex_row ">
+                        <div class="values_block ">
                             <span><p>{{ object.pk }}</p><em>номер</em></span>
                         </div>
                         <div class="values_block">
@@ -43,6 +43,7 @@
                     {# Информационный блок - основная информация #}
                     <div class="sheet_row_headered">
                         <table class="sheet_simple">
+                            <tr><td>Тип операции</td><td>{% if object.op_type == True %}<i class="icon inherit green" icon=""></i> приход{% else %}<i class="icon inherit red" icon=""></i> расход{% endif %}</td></tr>
                             <tr><td>Примечание</td><td>{{ object.comment|default_if_none:"не указано" }}</td></tr>
                             <tr><td>Форма оплаты</td><td><b>{% if object.pay_way == True %}Безналичная{% else %}Наличная{% endif %}</b></td></tr>
                             {% if object.account.contragent %}
@@ -54,6 +55,7 @@
                                     {{ object.account.employee.person.family_name }}  {{ object.account.employee.person.given_name }} [{{ object.account.employee.person.nick_name }}]
                                 </a></td></tr>
                             {% endif %}
+                            <tr><td>Счет</td><td>{{ object.account.name }} <a class="textlink" href="{% url 'dds_flow_by_account' object.account.pk %}">история</a></td></tr>
                         </table>
                     </div>
                     {# - Информационный блок - основная информация #}

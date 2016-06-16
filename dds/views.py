@@ -65,7 +65,7 @@ class DdsFlowViewSet(viewsets.ModelViewSet):
     serializer_class = DdsFlowSerializer
     search_fields = ('comment', )
     filter_class = DdsFlowFilters
-    ordering_fields = ('pk', 'date', 'item', 'summ', 'account', 'pay_way', 'account__name', 'account__type')
+    ordering_fields = ('pk', 'date', 'item', 'summ', 'op_type', 'account', 'pay_way', 'account__name', 'account__type')
     ordering = ('-pk',)
 
 
@@ -181,7 +181,7 @@ class DdsTemplateOperation(MultiFormCreate):
             details_object = details_form.save(commit=False)
             if template_object.account_out_required:
                 out_operation = outform.save(commit=False)
-                out_operation.summ = details_object.summ
+                out_operation.summ = details_object.summ * -1
                 out_operation.op_type = False
                 out_operation.pay_way = details_object.pay_way
                 out_operation.comment = details_object.comment

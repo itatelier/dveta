@@ -39,11 +39,11 @@
                             {% for t in templates %}
                                 {% if t.group.pk == g.pk %}
                                 <tr>
-                                    <td><a href="{% url 'dds_template_operation' t.pk %}" class="hidden">{{ t.name }}</a></td>
-                                    <td>{{ t.item_in.name }}</td>
-                                    <td>{{ t.item_out.name }}</td>
-                                    <td>{{ t.comment|default_if_none:"не указано" }}</td>
-                                    <td><a href="{% url 'dds_template_delete' t.pk %}"><i class="red icon" icon=""></i> </a></td>
+                                    <td  width="200"><a href="{% url 'dds_template_operation' t.pk %}" class="hidden">{{ t.name }}</a></td>
+                                    <td  width="230">{{ t.item_in.name }}</td>
+                                    <td  width="230">{{ t.item_out.name }}</td>
+                                    <td  width="230">{{ t.comment|default_if_none:"не указано" }}</td>
+                                    <td  width="50"><a href="{% url 'dds_template_delete' t.pk %}"><i class="red icon" icon=""></i> </a></td>
                                 </tr>
                                 {% endif %}
                             {% endfor %}

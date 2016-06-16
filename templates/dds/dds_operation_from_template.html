@@ -215,10 +215,10 @@ select.select2 {
                                 {% include "form_snippets/textinput.html" with field=forms.details.summ  %}
                                 {% if template.pay_way == True %}
                                     <input type="hidden" name="details-pay_way" value="True">
-                                    {% include "form_snippets/empty_field.html" with legend="Форма оплаты" label="Наличная" %}
+                                    {% include "form_snippets/empty_field.html" with legend="Форма оплаты" label="Безналичная" %}
                                 {% elif template.pay_way == False %}
                                     <input type="hidden" name="details-pay_way" value="False">
-                                    {% include "form_snippets/empty_field.html" with legend="Форма оплаты" label="Безналичная" %}
+                                    {% include "form_snippets/empty_field.html" with legend="Форма оплаты" label="Наличная" %}
                                 {% else  %}
                                     {% include "form_snippets/radio.html" with field=forms.details.pay_way  %}
                                 {% endif %}
