@@ -74,6 +74,7 @@ class WorkdayDdsView(WorkdayBaseView):
                             ).aggregate(Sum('summ'))['summ__sum']
         })
         context_data['balance'] = context_data['summ_income'] + context_data['summ_end_of_day']
+        context_data['templates'] = DdsTemplates.objects.filter(group=2).values_list('pk', 'name', 'comment')
         return context_data
 
 
