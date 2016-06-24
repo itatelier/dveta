@@ -15,7 +15,7 @@
 {% block cardriver %}{% include 'workday/workday_block_cardriver.html' %}{% endblock %}
 {% block stats %}{% include 'workday/workday_block_stats.html' %}{% endblock %}
 {% block tabdata %}
-    {% include 'workday/workday_tabs_menu.html' with sel=5 date=view.date driver_pk=view.driver.pk %}
+    {% include 'workday/workday_tabs_menu.html' with sel=5 date=view.date driver_pk=view.driver_pk %}
     <div class="flex_row">
         <div class="sheet_block_tabbed _white_bordered">
             {# ----------- Заголовок-бар --------- #}
@@ -34,7 +34,7 @@
                 <div class="flex_column marginr10">
                     <h3 class="">Движение наличных средств</h3>
                     <div class="flex_block flex_end">
-                        <p>Входящий остаток: <b>{{ summ_income }}</b></p>
+                        <p>Входящий остаток: <b>{{ summ_income|default_if_none:0 }}</b></p>
                     </div>
                     <table class="pointed sheet_headered  margint10 " width="100%">
                         <thead>
@@ -65,7 +65,7 @@
                         </tbody>
                     </table>
                     <div class="flex_block flex_end margint10">
-                        <p>Остаток на конец дня: <b class="marginr10">{{ balance }}</b> Баланс дня: <b>{{ summ_end_of_day }}</b></p>
+                        <p>Остаток на конец дня: <b class="marginr10">{{ balance }}</b> Баланс дня: <b>{{ summ_end_of_day|default_if_none:0 }}</b></p>
                     </div>
                 </div>
                 <div class="flex_column marginl10">
@@ -74,7 +74,7 @@
                         <table class="sheet_simple margint10">
                             {% for l in templates %}
                             <tr>
-                                <td><a href="{% url 'dds_template_operation' l.0 %}">{{ l.1 }}</a></td>
+                                <td><a href="{% url 'dds_template_operation' l.0 %}?account_out={{ money_account_id }}&return_url={{ request.path }}">{{ l.1 }}</a></td>
                                 <td><i>{{ l.2 }}</i></td>
                             </tr>
                             {% endfor %}

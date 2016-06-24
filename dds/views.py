@@ -202,6 +202,12 @@ class DdsTemplateOperation(MultiFormCreate):
             forms = self.get_forms()
             return self.render_to_response(self.get_context_data(forms=forms, template=template_object))
 
+    def get_success_url(self):
+        if self.request.GET.get('return_url'):
+            return self.request.GET.get('return_url')
+        else:
+            return reverse('dds_flow')
+
     # def get_context_data(self, *args, **kwargs):
     #     context_data = super(DdsTemplateOperation, self).get_context_data(*args, **kwargs)
     #     # company_pk = self.kwargs.get('company_pk', None)

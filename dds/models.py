@@ -60,7 +60,7 @@ class DdsAccounts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=True, blank=True)
     type = models.ForeignKey('dds.DdsAccountTypes', null=False, blank=False)
-    employee = models.ForeignKey('person.Employies', null=True, blank=True)
+    employee = models.ForeignKey('person.Employies', null=True, blank=True, related_name='money_account')
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True, related_name='money_account')
     balance = models.FloatField(default=0, null=True, blank=True, )
     status = models.BooleanField()

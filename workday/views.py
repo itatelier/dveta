@@ -17,14 +17,21 @@ from person.models import Employies
 class WorkdayBaseView(LoginRequiredMixin, TemplateView):
     driver_pk = False
     date = False
+    money_account_id = False
 
     def dispatch(self, request, *args, **kwargs):
         self.driver_pk = self.kwargs.get('driver_pk', False)
         self.date = datetime.strptime(self.kwargs.get('date', False), '%d-%m-%y')
+        # self.money_account_id = Employies.objects.get(pk=self.driver_pk).money_account.get().pk
         return super(WorkdayBaseView, self).dispatch(request, *args, **kwargs)
 
     def driver(self):
         return Employies.objects.get(pk=self.driver_pk)
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context_data = super(WorkdayBaseView, self).get_context_data(*args, **kwargs)
+    #     context_data['driver'] = Employies.objects.get(pk=self.driver_pk)
+    #     return context_data
 
     # def stats(self):
     #     stats = {
@@ -56,14 +63,12 @@ class WorkdayRacesView(WorkdayBaseView):
 class WorkdayDdsView(WorkdayBaseView):
     template_name = 'workday/workday_dds.html'
 
-    # def dds_flow(self):
-    #     return DdsFlow.objects.filter(account__employee__pk=self.driver_pk).select_related('account', 'item')
-
     def get_context_data(self, *args, **kwargs):
         context_data = super(WorkdayDdsView, self).get_context_data(*args, **kwargs)
+        money_account = DdsAccounts.objects.get(employee=self.driver_pk)
         context_data.update({
             'dds_flow':     DdsFlow.objects.filter(account__employee__pk=self.driver_pk).select_related('account', 'item'),
-            'balance':      DdsAccounts.objects.get(employee=self.driver_pk).balance,
+            'balance':      money_account.balance,
             'summ_income':  DdsFlow.objects.filter(
                                 account__employee=self.driver_pk,
                                 date__lte=self.date.date()
@@ -73,8 +78,10 @@ class WorkdayDdsView(WorkdayBaseView):
                                 account__employee=self.driver_pk
                             ).aggregate(Sum('summ'))['summ__sum']
         })
-        context_data['balance'] = context_data['summ_income'] + context_data['summ_end_of_day']
+        if context_data['summ_income'] and context_data['summ_end_of_day']:
+            context_data['balance'] = context_data['summ_income'] + context_data['summ_end_of_day']
         context_data['templates'] = DdsTemplates.objects.filter(group=2).values_list('pk', 'name', 'comment')
+        context_data['money_account_id'] = money_account.pk
         return context_data
 
 

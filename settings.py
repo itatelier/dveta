@@ -63,7 +63,8 @@ INSTALLED_APPS = (
     'dump',
     'race',
     'dds',
-    'workday'
+    'workday',
+    'refuels'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -156,6 +157,7 @@ SUIT_CONFIG = {
         {'label': u'Авто', 'app': 'car', },
         {'label': u'Рейсы', 'app': 'race', },
         {'label': u'Деньги', 'app': 'dds', },
+        {'label': u'Заправки', 'app': 'refuels', },
         {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
         {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
         {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
