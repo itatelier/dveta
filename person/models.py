@@ -33,6 +33,7 @@ class Contacts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     phonenumber = models.CharField(max_length=255L, blank=True, null=True)
     is_work = models.BooleanField(default=0, editable=False)
+    is_main = models.BooleanField(default=0, editable=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     # company = models.ForeignKey('company.Companies', null=True, blank=True, editable=True, related_name='contacts')

@@ -11,22 +11,31 @@ from common.forms import *
 from datetime import datetime, timedelta
 from race.models import *
 from dds.models import *
+from car.models import *
+
 from person.models import Employies
 
 
 class WorkdayBaseView(LoginRequiredMixin, TemplateView):
+    car_pk = False
+    car = False
     driver_pk = False
+    driver = False
     date = False
     money_account_id = False
 
     def dispatch(self, request, *args, **kwargs):
-        self.driver_pk = self.kwargs.get('driver_pk', False)
+        self.car_pk = self.kwargs.get('car_pk', False)
+        self.car = Cars.objects.select_related('driver').get(pk=self.car_pk)
+        if self.car.driver:
+            self.driver = self.car.driver
+            self.driver_pk = self.driver.pk
         self.date = datetime.strptime(self.kwargs.get('date', False), '%d-%m-%y')
         # self.money_account_id = Employies.objects.get(pk=self.driver_pk).money_account.get().pk
         return super(WorkdayBaseView, self).dispatch(request, *args, **kwargs)
 
-    def driver(self):
-        return Employies.objects.get(pk=self.driver_pk)
+    # def driver(self):
+    #     return Employies.objects.get(pk=self.driver_pk)
 
     # def get_context_data(self, *args, **kwargs):
     #     context_data = super(WorkdayBaseView, self).get_context_data(*args, **kwargs)
@@ -84,4 +93,11 @@ class WorkdayDdsView(WorkdayBaseView):
         context_data['money_account_id'] = money_account.pk
         return context_data
 
+
+class WorkdayRefuelsView(WorkdayBaseView):
+    template_name = 'workday/workday_refuels.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(WorkdayRefuelsView, self).get_context_data(*args, **kwargs)
+        return context_data
 

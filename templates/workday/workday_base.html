@@ -11,7 +11,7 @@
 {% endblock %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
+            <ul><li class="active" ><a href="#">Рабочий день</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -22,8 +22,14 @@
                 <!--*********** Data grid medium ***********  -->
                 <div class="flex_block fullwidth">
                     {% block cardriver %}{% endblock %}
+                    {% if view.driver %}
                     {% block stats %}{% endblock %}
                     {% block tabdata %}{% endblock %}
+                    {% else %}
+                        <div class="dummy">
+                            Данные рабочего дня водителя не доступны, водительн не назначен
+                        </div>
+                    {% endif %}
                 </div>
                 <!--*********** End Data grid medium ***********  -->
             <!--********************* End Sheet *********************  -->

@@ -6,7 +6,9 @@ from company.models import *
 from forms import *
 
 # Base Views
-from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix
+from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
+from django.http import HttpResponse
+
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.apps import apps
@@ -158,3 +160,27 @@ class PersonContactsUpdateView(LoginRequiredMixin, CreateView):
                 for err in field.errors:
                     log.warn("Field %s Err: %s" % (field.name, err))
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class ContactDeleteView(LoginRequiredMixin, DeleteNoticeView):
+    model = Contacts
+    notice = 'Восстановление контактной информации персоны невозможно!'
+
+    def get_success_url(self, *args, **kwargs):
+        person_pk = self.kwargs.get('person_pk', None)
+        return reverse('person_card', args=(person_pk,))
+
+
+class ContactSetMainView(JsonUpdateObject):
+    model_name = 'person.Contacts'
+    inicial_data = {'colname': 'is_main'}
+
+    def get(self, request, *args, **kwargs):
+        person_pk = self.kwargs.get('person_pk', None)
+        if self.check_required_params(self.required_params):
+            all_contacts = Contacts.objects.filter(person__pk=person_pk)
+            all_contacts.update(**{'is_main': False})
+            self.update_data['value'] = True
+            self.update_object(self.update_data)
+        return HttpResponse(self.to_json(self.json), )
+

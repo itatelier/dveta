@@ -88,6 +88,19 @@ class ContactCreateForm(ModelForm):
         model = Contacts
         fields = ('phonenumber',)
 
+    def clean(self):
+        cleaned_data = super(ContactCreateForm, self).clean()
+        phonenumber = cleaned_data.get("phonenumber")
+        phone_object = None
+        try:
+            phone_object = Contacts.objects.select_related('person').get(phonenumber=phonenumber)
+        except Contacts.DoesNotExist:
+            x = None
+
+        if phone_object:
+            msg = u"Номер телефона уже присвоен персоне %s %s [%s] (id# %s)" % (phone_object.person.family_name, phone_object.person.given_name, phone_object.person.nick_name, phone_object.person.pk)
+            self.add_error('phonenumber', msg)
+
 
 class EmployeeEditForm(ModelForm):
     type = ModelChoiceFieldNameLabel(queryset=EmployeeTypes.objects.all(), label_field='val', label="Тип сотрудника", empty_label=None, initial=2)

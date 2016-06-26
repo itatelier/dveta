@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/card/$', PersonCardView.as_view(), name='person_card'),
     url(r'^(?P<pk>\d+)/update/$', PersonUpdateView.as_view(), name='person_update'),
     url(r'^(?P<pk>\d+)/contacts/$', PersonContactsUpdateView.as_view(), name='person_contacts_update'),
+    url(r'^(?P<person_pk>\d+)/contacts/(?P<pk>\d+)/delete/$', ContactDeleteView.as_view(), name='contact_delete'),
+    url(r'^(?P<person_pk>\d+)/contacts/setmain/ajax/$', ContactSetMainView.as_view(), name='contact_set_main'),
 
     # Employies
     url(r'^employee_create/$', EmployeeCreateView.as_view(), name='employee_create'),

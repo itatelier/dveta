@@ -1,0 +1,85 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Заправки</a></li>
+                {# Если объект уже создан в базе (редактирование) #}
+                {% if form.instance.id %}
+                <li class=""><a href="{% url 'car_card' object.pk %}"><b>{{ object.nick_name }}</b> <i> {{ object.reg_num }}</i></a></li>
+                <li class="active"><a href="#">Редактор информации</a></li>
+                {% else %}
+                <li class="active"><a href="#">Новая заправка</a></li>
+
+                {% endif %}
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        {% if form.instance.id %}
+                            <li><a href="#" class="active">Параметры заправки</a></li>
+                        {% else %}
+                            <li><a href="#" class="active">Новая заправка</a></li>
+                        {%  endif %}
+                    </ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="form_row">
+                        <h2>{% if form.instance.id %} Основная инфомрация{% else %}Новая заправка{% endif %}</h2>
+                    </div>
+                    <div class="flex_row">
+                        <div class="flex_column marginr10">
+                            <div class="flex_row">
+                                <table class="sheet_simple">
+                                    {% if data.driver %}
+                                        <tr><td>Водитель</td><td><b>{{ data.driver.person.given_name }}{{ data.driver.person.family_name }} [{{ data.driver.person.nick_name }}]</b></td></tr>
+                                    {% endif %}
+                                    {% if data.car %}
+                                        <tr><td>Автомобиль</td><td><b>{{ data.car.nick_name }} ({{ data.car.reg_num }})</b>   Модель: {{ data.car.model.val }}</td></tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                            {# - Форма объекта #}
+                            <form action="" method="POST" id="new_object">{% csrf_token %}
+                                {# Скрытые поля #}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                <div class="form_row">{% include "form_snippets/radio.html" with field=form.type  %}</div>
+                                {# --- Водитель --- #}
+                                {% if not form.driver.value %}
+                                    <div class="form_row">{% include "form_snippets/select.html" with field=form.driver  %}</div>
+                                {% endif %}
+                                {# --- Автомобиль --- #}
+                                {% if not form.car.value %}
+                                    <div class="form_row">{% include "form_snippets/select.html" with field=form.car %}</div>
+                                {% endif %}
+                                {# ошибки формы #}
+                                {% include "form_snippets/form_errors.html" with form=form %}
+                                {# Кнопки #}
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                    </span>
+                                </div>
+                                {# - Кнопки #}
+                            </form>
+                        </div>
+                        <div class="flex_column marginr10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

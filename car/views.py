@@ -108,7 +108,10 @@ class CarDriverView(LoginRequiredMixin, UpdateView):
     form_class = CarDriverUpdateForm
 
     def get_success_url(self):
-        return reverse('car_card', args=(self.object.id,))
+        if self.request.GET.get('return_url'):
+            return self.request.GET.get('return_url')
+        else:
+            return reverse('car_card', args=(self.object.id,))
 
 
 class CarDocsView(LoginRequiredMixin, UpdateView):

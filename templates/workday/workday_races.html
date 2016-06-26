@@ -6,7 +6,7 @@
     {% include 'workday/workday_block_stats.html' %}
 {% endblock %}
 {% block tabdata %}
-    {% include 'workday/workday_tabs_menu.html' with sel=1 date=view.date driver_pk=view.driver.pk %}
+    {% include 'workday/workday_tabs_menu.html' with sel=1 date=view.date car_pk=view.car_pk %}
     <div class="flex_row">
         <div class="sheet_block_tabbed _white_bordered">
             <div class="flex_row flex_vcentered">

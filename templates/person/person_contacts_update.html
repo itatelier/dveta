@@ -1,25 +1,29 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
-<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
-
 {% endblock %}
 {% block content %}
 <script>
     $(document).ready(function() {
-
-        {#    Виджет datepicker #}
-        $('input[name=date_ofbirth]').datepicker(
-            {
-                'dateFormat':'dd-mm-yy',
-                'changeMonth': true,
-                'changeYear':true,
-                'yearRange': "1950:1998"
-                });
     });
+
+    function setMainContact(obj, contact_id) {
+        var $obj = $(obj);
+        $.ajax({
+            url: '/persons/{{ object.pk }}/contacts/setmain/ajax',
+            dataType: "json",
+            data: { pk: contact_id, value: 'True' }
+        })
+        .done(function (result) {
+            if (result.result == 1) {
+                $('i[rel="main_icon"]').removeClass('gold').addClass('gray').attr('icon', '');
+                $('i', $obj).addClass('gold').attr('icon', '');
+            } else {
+                LogJsonResultError(result);
+            }
+        });
+        return false;
+    }
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -49,14 +53,24 @@
                     {% if contacts %}
                     <div class="sheet_row_headered">
                         <h2>Контактные данные</h2>
-                        <table class="sheet_headered">
+                        <table class="sheet_headered m10">
                             <thead>
-                                <tr><th>Номер телефона</th><th>Статус</th></tr>
+                                <tr><th>Номер телефона</th><th>Статус</th><th><i class="icon" icon=""></i></th><th><i class="icon" icon=""></i></th></tr>
                             </thead>
-                            {% for i in contacts %}
+                            {% for l in contacts %}
                             <tr>
-                                <td>+7 {{ i.phonenumber }} </td>
-                                <td>{% if i.is_work %}рабочий{% else %}персональный{% endif %}</td>
+                                <td>+7 {{ l.phonenumber }} </td>
+                                <td>{% if l.is_work %}рабочий{% else %}персональный{% endif %}</td>
+                                <td>
+                                    <a class="icon" href="#" onclick="setMainContact(this, {{ l.pk }});">
+                                        {% if l.is_main %}
+                                            <i rel="main_icon" class="icon gold selected" icon=""></i>
+                                        {% else %}
+                                            <i rel="main_icon" class="icon gray" icon=""></i>
+                                        {% endif %}
+                                    </a>
+                                </td>
+                                <td><a class="icon red" href="{% url 'contact_delete' object.pk l.pk %}"><i class="icon" icon=""></i></a></td>
                             </tr>
                             {% endfor %}
                         </table>
@@ -68,7 +82,7 @@
                         {# Скрытые поля #}
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row">
-                            <h2>Новый контактный номер</h2>
+                            <h3>Новый контактный номер</h3>
                         </div>
                         {% include "form_snippets/formfields_as_row.html" with forms=form %}
                         {# Кнопки #}

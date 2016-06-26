@@ -23,6 +23,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.views import redirect_to_login
 from django import http
 # from django.db.models import get_model
+from django.apps import apps
 import datetime
 import decimal
 from django.utils.timezone import is_aware
@@ -106,87 +107,85 @@ class DeleteNoticeView(DeleteView):
         })
         return context_data
 
-#
-# class _JsonObjectViews(View):
-#     model_name = None
-#     required_params = ['pk', 'colname', 'value']
-#     inicial_data = {}
-#
-#     def __init__(self, *args, **kwargs):
-#         self.json = {}
-#         self.errors = []
-#         self.update_data = {}
-#         super(_JsonObjectViews, self).__init__(*args, **kwargs)
-#
-#     def check_required_params(self, required_params):
-#         if not self.model_name:
-#             self.errors.append("No model specified!")
-#             return False
-#         for param in required_params:
-#             if param not in self.inicial_data:
-#                 if param not in self.request.GET or self.request.GET[param] == '':
-#                     self.errors.append("Parameter '%s' required, not found" % param)
-#                     return False
-#                 else:
-#                     self.update_data[param] = self.request.GET[param]
-#             else:
-#                 self.update_data[param] = self.inicial_data[param]
-#         return True
-#
-#     def to_json(self, ret):
-#         self.json['GET'] = self.request.GET
-#         if len(self.errors) > 0:
-#             self.json['result'] = 0
-#             self.json['errors'] = self.errors
-#         else:
-#             self.json['result'] = 1
-#             self.json['update_data'] = self.update_data
-#         json_ret = json.dumps(ret, indent=2)
-#         return  json_ret
-#
-#     def _get_model(self, model_name):
-#         model = get_model(*model_name.split('.'))
-#         return model
-#
-#     def _get_object(self, model):
-#         try:
-#             obj = model.objects.get(pk=self.update_data['pk'])
-#             return obj
-#         except model.DoesNotExist:
-#             self.errors.append("Object not found! pk=%s" % self.update_data['pk'] )
-#         return
-#
-#
-# class JsonUpdateObject(_JsonObjectViews):
-#     def update_object(self, data):
-#         model = self._get_model(self.model_name)
-#         obj = self._get_object(model)
-#         if obj:
-#             log.info("Updating object with colname [%s] and value: %s" % (data['colname'], data['value']))
-#             setattr(obj, data['colname'], data['value'])
-#             obj.save()
-#
-#     def get(self, request, *args, **kwargs):
-#         if self.check_required_params(self.required_params):
-#             self.update_object(self.update_data)
-#         return HttpResponse(self.to_json(self.json), mimetype='text/plain')
-#
-#
-# class JsonDeleteObject(_JsonObjectViews):
-#     required_params = ['pk',]
-#
-#     def update_object(self, data):
-#         model = self._get_model(self.model_name)
-#         obj = self._get_object(model)
-#         if obj:
-#             obj.delete()
-#
-#     def get(self, request, *args, **kwargs):
-#         if self.check_required_params(self.required_params):
-#             self.update_object(self.update_data)
-#         return HttpResponse(self.to_json(self.json), mimetype='text/plain')
-#
 
+class _JsonObjectViews(View):
+    model_name = None
+    required_params = ['pk', 'colname', 'value']
+    inicial_data = {}
+
+    def __init__(self, *args, **kwargs):
+        self.json = {}
+        self.errors = []
+        self.update_data = {}
+        super(_JsonObjectViews, self).__init__(*args, **kwargs)
+
+    def check_required_params(self, required_params):
+        if not self.model_name:
+            self.errors.append("No model specified!")
+            return False
+        for param in required_params:
+            if param not in self.inicial_data:
+                if param not in self.request.GET or self.request.GET[param] == '':
+                    self.errors.append("Parameter '%s' required, not found" % param)
+                    return False
+                else:
+                    self.update_data[param] = self.request.GET[param]
+            else:
+                self.update_data[param] = self.inicial_data[param]
+        return True
+
+    def to_json(self, ret):
+        self.json['GET'] = self.request.GET
+        if len(self.errors) > 0:
+            self.json['result'] = 0
+            self.json['errors'] = self.errors
+        else:
+            self.json['result'] = 1
+            self.json['update_data'] = self.update_data
+        json_ret = json.dumps(ret, indent=2)
+        return  json_ret
+
+    def _get_model(self, model_name):
+        model = apps.get_model(*model_name.split('.'))
+        return model
+
+    def _get_object(self, model):
+        try:
+            obj = model.objects.get(pk=self.update_data['pk'])
+            return obj
+        except model.DoesNotExist:
+            self.errors.append("Object not found! pk=%s" % self.update_data['pk'] )
+        return
+
+
+class JsonUpdateObject(_JsonObjectViews):
+    def update_object(self, data):
+        model = self._get_model(self.model_name)
+        obj = self._get_object(model)
+        if obj:
+            log.info("Updating object with colname [%s] and value: %s" % (data['colname'], data['value']))
+            setattr(obj, data['colname'], data['value'])
+            obj.save()
+
+    def get(self, request, *args, **kwargs):
+        if self.check_required_params(self.required_params):
+            self.update_object(self.update_data)
+        return HttpResponse(self.to_json(self.json), mimetype='text/plain')
+
+
+class JsonDeleteObject(_JsonObjectViews):
+    required_params = ['pk',]
+
+    def update_object(self, data):
+        model = self._get_model(self.model_name)
+        obj = self._get_object(model)
+        if obj:
+            obj.delete()
+
+    def get(self, request, *args, **kwargs):
+        if self.check_required_params(self.required_params):
+            self.update_object(self.update_data)
+        return HttpResponse(self.to_json(self.json), mimetype='text/plain')
 
 
 class JsonListMixin(View):
@@ -300,33 +299,6 @@ class JsonListMixin(View):
             values.setdefault(el.id, el_values)
         jsondata = json.dumps(values, encoding='utf8', cls=DjangoJSONEncoder)
         return jsondata
-
-
-class JSONResponseMixin(object):
-
-    def __init__(self, *args, **kwargs):
-        self.values = {}
-        self.errors = []
-        self.result = True
-        self.json = {}
-        self.get_params = {}
-
-    def render_to_response(self, context):
-        return self.get_json_response(self.convert_context_to_json(context))
-
-    def get_json_response(self, content, **httpresponse_kwargs):
-        httpresponse_kwargs['content_type'] = 'application/json'
-        httpresponse_kwargs['Pragma'] = 'no cache'
-        httpresponse_kwargs['Cache-Control'] = 'no-cache, must-revalidate'
-        return http.HttpResponse(content, **httpresponse_kwargs)
-
-    def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
-        # Note: This is *EXTREMELY* naive; in reality, you'll need
-        # to do much more complex handling to ensure that arbitrary
-        # objects -- such as Django model instances or querysets
-        # -- can be serialized as JSON.
-        return json.dumps(context)
 
 
 class JsonViewMix(View):

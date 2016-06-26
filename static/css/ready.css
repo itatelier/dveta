@@ -32,6 +32,7 @@ a { color: #009DDA; }
 a.unused { cursor: not-allowed; color: #e2e2e2 !important; }
 a.unused:hover { cursor: not-allowed; color: #e2e2e2 !important; }
 b.search { background-color: #4C4C4C; color: yellow; padding: 0 1px;}
+a.icon { text-decoration: none;}
 
 h2 {
     color: #595959 !important;
@@ -45,11 +46,12 @@ h2.hr {
 /*table { border-spacing: 0;}*/
 form { margin: 0.5rem 2rem; width: 100%;}
 .green { color: #74BA12 !important; }
+.gold { color: gold !important; }
 .red { color: #FE659C !important; }
 .rose { color: #FE659C !important; }
 .blue { color: #009DDA !important; }
 .alert { color: #FF0E0E;}
-.gray { color: #cbcfc9;}
+.gray { color: #cbcfc9 !important;}
 .green_bg { background-color: rgb(208, 236, 169) !important; }
 .lightgreen_bg { background-color: #ECF7DE; }
 .red_bg { background-color: #F7A3A3 !important; }
@@ -84,6 +86,14 @@ div._white_bordered {
     border-radius: 0 0 2px 2px;
 }
 
+div.dummy {
+    width: 100%;
+    height: 100%;
+    padding: 3rem;
+    font-size: 3rem;
+    text-align: center;
+    color: lightgrey;
+}
  /*======================== Main Header Menu ========================== */
 
 header {

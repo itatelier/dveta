@@ -1,11 +1,11 @@
                     <div class="flex_row">
                         <div class="tabbed_menu margint10">
                             <ul>
-                                <li {% if sel == 1 %}class="active"{% endif %}><a href="{% url 'workday_races' date|date:"d-m-y" driver_pk %}">Рейсы</a></li>
+                                <li {% if sel == 1 %}class="active"{% endif %}><a href="{% url 'workday_races' date|date:"d-m-y" car_pk %}">Рейсы</a></li>
                                 <li {% if sel == 2 %}class="active"{% endif %}><a href="listing.html">История</a></li>
                                 <li {% if sel == 3 %}class="active"{% endif %}><a href="listing.html">Талоны</a></li>
-                                <li {% if sel == 4 %}class="active"{% endif %}><a href="listing.html">Заправки</a></li>
-                                <li {% if sel == 5 %}class="active"{% endif %}><a href="{% url 'workday_dds' date|date:"d-m-y" driver_pk %}">Деньги</a></li>
+                                <li {% if sel == 4 %}class="active"{% endif %}><a href="{% url 'workday_refuels' date|date:"d-m-y" car_pk %}">Заправки</a></li>
+                                <li {% if sel == 5 %}class="active"{% endif %}><a href="{% url 'workday_dds' date|date:"d-m-y" car_pk %}">Деньги</a></li>
                                 <li {% if sel == 6 %}class="active"{% endif %}><a href="listing.html">Премии</a></li>
                                 <li {% if sel == 7 %}class="active"{% endif %}><a href="listing.html">Итоги месяца</a></li>
                                 <li {% if sel == 8 %}class="active"{% endif %}><a href="listing.html">Сверка</a></li>

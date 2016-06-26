@@ -176,3 +176,10 @@ function CheckPhoneInput(company_id, obj) {
                         }
                 });
         }
+
+
+    function LogJsonResultError(result) {
+        for (var i=0, len=result.errors.length; i < len; i++ ) {
+            console.log("Error: " + result.errors[i]);
+        }
+    }

@@ -1,22 +1,26 @@
     <!--*********** Values block ***********  -->
     <div class="flex_row marginl10">
         <div class="values_block">
-            <span><p>Сауленко Виктор</p><em>водитель</em></span>
+            <span><p>{{ view.car.nick_name }}</p><em>ник машины</em></span>
         </div>
         <div class="values_block">
-            <span><p>365</p><em>ник</em></span>
+            <span><p>{{ view.car.reg_num }}</p><em>рег. номер</em></span>
+        </div>
+        {% if view.driver %}
+        <div class="values_block">
+            <span><p>{{ view.driver.person.family_name }} {{ view.driver.person.given_name }}</p><em>водитель</em></span>
         </div>
         <div class="values_block">
-            <span><p>365</p><em>машина</em></span>
-        </div>
-        <div class="values_block">
-            <span><p>Ю.З.</p><em>регион</em></span>
-        </div>
-        <div class="values_block">
-            <span><p>Ю.З.</p><em>регион</em></span>
+            <span><p>{{ view.driver.person.nick_name }}</p><em>ник</em></span>
         </div>
         <div class="values_block">
             <span><p>8 926 523 1749</p><em>контактный номер</em></span>
         </div>
+        {% else %}
+            <div class="values_block">
+                <a href="{% url 'car_driver' view.car_pk %}?return_url={{ request.path }}" class="button">Назначить водителя</a>
+            </div>
+        {% endif %}
+
     </div>
     <!--*********** End Values block ***********  -->

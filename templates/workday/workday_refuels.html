@@ -1,0 +1,74 @@
+{% extends "workday/workday_base.html" %}
+{% block jscontent %}
+    <script>
+    $(document).ready(function() {
+        {#  Переход на карточу   #}
+        $('#datatable').on("click", 'tr', function () {
+            var id = $(this).data('object_id');
+            console.log("---DAta ID: " + id);
+            var url = "/dds/operation/" + id + "/card";
+            document.location.href = url;
+        });
+    });
+    </script>
+{% endblock %}
+{% block cardriver %}{% include 'workday/workday_block_cardriver.html' %}{% endblock %}
+{% block stats %}{% include 'workday/workday_block_stats.html' %}{% endblock %}
+{% block tabdata %}
+    {% include 'workday/workday_tabs_menu.html' with sel=4 date=view.date driver_pk=view.driver_pk %}
+    <div class="flex_row">
+        <div class="sheet_block_tabbed _white_bordered">
+            {# ----------- Заголовок-бар --------- #}
+            <div class="flex_column flex_vcentered">
+                <div class="flex_block flex_end _zero flex flex_vcentered">
+                    <h2 class="blue">Сверка</h2>
+                    <div class="input_wrapper">
+                        <div class="input_block _inline">
+                            <label><input type="checkbox" name="ch1" checked><p>Заправки</p></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# ----------- Заголовок-бар --------- #}
+            <div class="flex_row">
+                <div class="flex_column marginr10">
+                    <h3 class="">Заправки</h3>
+                    <table class="pointed sheet_headered  margint10 " width="100%">
+                        <thead>
+                        <tr>
+                            <th width="120px" class="centertext">Дата, время</th>
+                            <th>Статья</th>
+                            <th width="">Счет</th>
+                            <th width="">Контрагент</th>
+                            <th width="">Примечание</th>
+                            <th width="80px">Сумма</th>
+                        </tr>
+                        </thead>
+                        <tbody id="datatable">
+                            {% for l in dds_flow %}
+                            <tr data-object_id="{{ l.pk }}">
+                                <td>{{ l.date|date:"d-m-y m:h"}}</td>
+                                <td>{{ l.item.name }}</td>
+                                <td>{{ l.account.name }}</td>
+                                <td>{{ l.account.contragent.name }}</td>
+                                <td>{{ l.comment|default_if_none:""}}</td>
+                                {% if l.op_type == False %}
+                                <td class="red">{{ l.summ }}</td>
+                                {% else %}
+                                <td>{{ l.summ }}</td>
+                            {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex_column marginl10">
+                    <h3 class="marginl10">Новая операция</h3>
+                    <div class="flex_block m10">
+                        <a href="{% url 'refuel_create' view.driver_pk %}?return_url={{ request.path }}">Новая заправка</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

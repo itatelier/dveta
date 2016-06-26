@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^objects/', include('object.urls')),
     url(r'^bunkers/', include('bunker.urls')),
     url(r'^races/', include('race.urls')),
+    url(r'^refuels/', include('refuels.urls')),
     url(r'^dds/', include('dds.urls')),
     url(r'^workday/', include('workday.urls')),
 
