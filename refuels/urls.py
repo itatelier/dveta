@@ -8,7 +8,7 @@ from views import *
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-# router.register(r'cars_rest', CarsViewSet)
+router.register(r'refuels_rest', RacesViewSet)
 
 
 urlpatterns = [
@@ -22,6 +22,6 @@ urlpatterns = [
     # url(r'^(?P<pk>\d+)/driver/$', CarDriverView.as_view(), name='car_driver'),
     # url(r'^(?P<pk>\d+)/docs/$', CarDocsView.as_view(), name='car_docs'),
     # url(r'^(?P<pk>\d+)/update/$', CarUpdateView.as_view(), name='car_update'),
-    # url(r'^list/$', CarListView.as_view(), name='car_list'),
+    url(r'^list/$', RefuelsListView.as_view(), name='refuels_list'),
 ]
 

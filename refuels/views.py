@@ -98,3 +98,27 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
                 form.fields['fuel_card'].widget = widgets.HiddenInput()
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form, data=data))
+
+
+class RacesViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    queryset = RefuelsFlow.objects.select_related(
+        'car',
+        'fuel_card',
+        'driver',
+    ).prefetch_related('driver__person', 'fuel_card__fuel_company', 'driver__status')
+    serializer_class = RefuelsFlowSerializer
+    search_fields = ('comment', )
+    filter_class = RefuelsFlowFilters
+    ordering_fields = ('car', 'driver__nick', 'fuelcard', )
+
+
+class RefuelsListView(LoginRequiredMixin, TemplateView):
+    template_name = 'refuels/list_refuels.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RefuelsListView, self).get_context_data(*args, **kwargs)
+        # context_data['bunker_types'] = BunkerTypes.objects.all()
+        # context_data['company'] = Companies.objects.get(pk=company_pk)
+        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
+        return context_data

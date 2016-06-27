@@ -32,17 +32,18 @@ class FuelCardsSerializer(serializers.ModelSerializer):
         fields = ('pk', 'fuel_company', 'num', 'assigned_car')
 
 
-class FuelFlowSerializer(serializers.ModelSerializer):
-    driver = EmployiesSerializer(many=False, read_only=True, allow_null=False)
-    car = CarsSerizlizer(many=False, read_only=True, allow_null=False)
+class RefuelsFlowSerializer(serializers.ModelSerializer):
+    driver = DriverSerializer(many=False, read_only=True, allow_null=False)
+    car = CarsSimpleSerializer(many=False, read_only=True, allow_null=False)
     fuel_card = FuelCardsSerializer(many=False, read_only=True, allow_null=True)
 
     class Meta:
-        model = FuelCards
+        depth = 1
+        model = RefuelsFlow
         fields = ('pk', 'driver', 'car', 'date', 'type', 'fuel_card', 'amount', 'summ', 'km', 'comment', 'checked')
 
 
-class RaceFilters(django_filters.FilterSet):
+class RefuelsFlowFilters(django_filters.FilterSet):
     driver_family_name_ac = django_filters.CharFilter(name="driver__person__family_name", lookup_type='icontains')
     car_name = django_filters.CharFilter(name="car__nick_name", lookup_type='icontains')
     date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='gte')

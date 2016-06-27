@@ -1,0 +1,226 @@
+ {% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- JS Template    --><script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+<!-- Ajax listing   --><script type="text/javascript" src="{% static  'js/utils/ajax_list.js' %}"></script>
+<!-- DateTime       --><script type="text/javascript" src="{% static 'js/datetime/jquery.datetimepicker.full.min.js' %}"></script>
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+
+
+{% endblock %}
+{% block content %}
+
+
+<script>
+    var JsonDataUrl = "/refuels/api/refuels_rest/";
+    var req_preprocess_result = "1";
+
+    $(document).ready(function() {
+        list_data_api();
+
+        {#  Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[rel=datetimepicker]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+
+        {#    Автоподсказка для поля сортировки #}
+        input_autocomplite("driver_family_name_ac", "/ac/", 'person.Employies', 'person__family_name', '__icontains', 'drivers');
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+{#        input_autocomplite("name_ac", "/ac/", 'contragent.Contragents', 'name', '__icontains');#}
+
+        {#    Сортировка по заголовкам столбцов   #}
+        $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
+
+        {#  Переход на карточу   #}
+        $( 'tbody#datatable').on("click", 'tr', function(){
+            var id = $(this).data('object_id');
+            var url = "/races/" + id +"/update";
+            document.location.href = url;
+        });
+
+    });
+
+        {#  постобработка результата AJAX запроса #}
+        function preprocess_result(result) {
+            {# подсветка фрагментов текста в соответствии с параметром поиска #}
+            var search_string = $('input[name=search]').val();
+            result.results = highlight_search_results(result.results, search_string);
+
+            for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
+{#                 изменение формата даты #}
+                result.results[i].date = date_json2hr(result.results[i].date);
+                if (parseInt(result.results[i].type) == 0) {
+                    result.results[i].card = 1;
+                }
+            }
+        }
+</script>
+{# Шаблон основной таблицы #}
+<script type="text/template" id="tmpl_table">{% verbatim %}
+    <tr data-object_id="{{ pk }}">
+        <td width="100">{{{ date.date }}}</td>
+        <td width="80">{{{ car.nick_name }}}</td>
+        <td width="120">{{{ car.reg_num }}}</td>
+        <td>{{{ driver.person.family_name}}} {{ driver.person.given_name }} [{{{ driver.person.nick_name }}}]</td>
+        <td width="80" class="centertext">{{#card}}<i class="icon" icon=""></i>{{/card}}</td>
+        <td>{{{ km }}}</td>
+        <td>{{{ amount }}}</td>
+        <td  width="120"  class="centertext">{{{ summ }}}</td>
+        <td>{{{ comment }}}</td>
+    </tr>
+</script>{% endverbatim %}
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="data_grid_listing">
+                    {# Блок фильтрации #}
+                    <div class="flex_row">
+                    {# Форма сортировки данных #}
+                        <form method="post" name="params_form" id="params_form" class="flex nomargin">
+                            {# скрытые фильтры #}
+                            <input type="hidden" name="ordering" value="id"/>
+                            <input type="hidden" name="offset" value="0"/>
+                            <input type="hidden" name="limit" value="20"/>
+                            {# отображенные фильтры #}
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper ">
+                                        <legend>Начиная с даты</legend>
+                                        <div class="input_block _icon" icon="">
+                                            <input type="text" size="15" name="date_after" id="" rel="datetimepicker">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Дата окончания периода</legend>
+                                        <div class="input_block _icon" icon="">
+                                            <input type="text" size="15" name="date_before" id="" rel="datetimepicker">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper ">
+                                        <legend>Водитель<p>фамилия</p></legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="driver_family_name_ac" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Автомобиль<p>ник</p></legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="car_name" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper ">
+                                        <legend>Клиент</legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="company_name" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Объект</legend>
+                                        <div class="input_block">
+                                            <input type="text" size="15" name="object_name" id="" class="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <legend>Тип бункера</legend>
+                                        <div class="input_block">
+                                            <select name="bunker_type">
+                                                <option value="">любой</option>
+                                                {% for i in bunker_types %}
+                                                    <option value="{{ i.id }}">{{ i.val }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <legend>Форма оплаты</legend>
+                                        <div class="input_block">
+                                            <select name="pay_way">
+                                                <option value="">любая</option>
+                                                <option value="False">Наличная</option>
+                                                <option value="True">Безналичная</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block _zero">
+                                <div class="form_row">
+                                    <div class="input_wrapper _inline">
+                                        <legend>Отметка о прибытии</legend>
+                                        <div class="input_block">
+                                            <label><input type="checkbox" name="need_mark" value="True">требуется</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_block flex flex_vcentered m10">
+                            {# блок кнопок #}
+                                <div class="form_row">
+                                    <div class="input_wrapper nomargin">
+                                        <div class="input_block">
+                                            <a href="#" class="textlink" onclick="ResetFormDefault('params_form');">Сбросить</a>
+                                            <a href="#" class="button" onclick="list_data_api();">Найти</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {# - Форма сортировки данных #}
+                    </div>
+                    {# Основная таблица данных #}
+                    <table class="listing_grid">
+                        <thead class="">
+                            <tr>
+                                <th><a href="#" class="" rel="">Дата</a></th>
+                                <th><a href="#" class="" rel="">Машина</a></th>
+                                <th><a href="#" class="" rel="">Рег. номер</a></th>
+                                <th><a href="#" class="" rel="">Водитель</a></th>
+                                <th><a href="#" class="centertext" rel="">Карта</a></th>
+                                <th><a href="#" class="" rel="">Километраж</a></th>
+                                <th><a href="#" class="" rel="">Литров</a></th>
+                                <th><a href="#" class="centertext" rel="">Сумма</a></th>
+                                <th><a href="#" class="" rel="">Примечание</a></th>
+                            </tr>
+                        </thead>
+                        <tbody id="datatable" class="">
+                        </tbody>
+                    </table>
+                    {# - Основная таблица данных #}
+                    {# Панель управления таблицей #}
+                    {% include 'listing_bottom_navbar.html' %}
+                    {# - Панель управления таблицей #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

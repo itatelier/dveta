@@ -50,6 +50,13 @@ class CarsSerizlizer(serializers.ModelSerializer):
         fields = ('pk', 'model', 'fuel_type', 'unit_group', 'reg_num', 'nick_name', 'comment', 'trailer_attached', 'date_add', 'mechanic', 'status', 'driver')
 
 
+class CarsSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 1
+        model = Cars
+        fields = ('pk', 'reg_num', 'nick_name', 'comment', 'trailer_attached', 'date_add', )
+
+
 class CarFilters(django_filters.FilterSet):
     date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
 
