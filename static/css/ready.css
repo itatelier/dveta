@@ -16,6 +16,8 @@
 .flex_vcentered { align-items: center;}
 .flex_hcentered { justify-content: center;}
 .flex_end { align-self: flex-end;}
+.flex_zero { flex: 0 0;}
+
 html {
     height: 100%;
     font-size: 70.0%;
@@ -659,8 +661,7 @@ div.values_block._header_top > span > p { line-height: 1.8rem;  }
 	background: #D3D3D3;
 }
 .tabs ul li{
-	margin:0px;
-	padding:0px;
+	margin:0;
 	cursor:pointer;
 	display:block;
 	float:left;
@@ -674,4 +675,17 @@ div.values_block._header_top > span > p { line-height: 1.8rem;  }
 }
 .tabs ul li:hover{
 	background:#d6d6d7;
+}
+
+ul.linklist {
+	background:#F6F5F3;
+    padding: 1rem;
+}
+
+ul.linklist li {
+	margin:0;
+	cursor:pointer;
+	display:block;
+	padding:5px 10px;
+	color:#707070;
 }

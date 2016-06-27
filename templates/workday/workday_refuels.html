@@ -32,31 +32,27 @@
             {# ----------- Заголовок-бар --------- #}
             <div class="flex_row">
                 <div class="flex_column marginr10">
-                    <h3 class="">Заправки</h3>
-                    <table class="pointed sheet_headered  margint10 " width="100%">
+                    <h3 class="">Последние заправки</h3>
+                    <table class="sheet_headered  margint10 marginr10 " width="100%">
                         <thead>
                         <tr>
                             <th width="120px" class="centertext">Дата, время</th>
-                            <th>Статья</th>
-                            <th width="">Счет</th>
-                            <th width="">Контрагент</th>
-                            <th width="">Примечание</th>
-                            <th width="80px">Сумма</th>
+                            <th>Километраж</th>
+                            <th width="">Карта</th>
+                            <th width="">Литров</th>
+                            <th width="">Сумма</th>
+                            <th width="180px">Примечатние</th>
                         </tr>
                         </thead>
                         <tbody id="datatable">
-                            {% for l in dds_flow %}
+                            {% for l in refuels %}
                             <tr data-object_id="{{ l.pk }}">
-                                <td>{{ l.date|date:"d-m-y m:h"}}</td>
-                                <td>{{ l.item.name }}</td>
-                                <td>{{ l.account.name }}</td>
-                                <td>{{ l.account.contragent.name }}</td>
-                                <td>{{ l.comment|default_if_none:""}}</td>
-                                {% if l.op_type == False %}
-                                <td class="red">{{ l.summ }}</td>
-                                {% else %}
+                                <td>{{ l.date|date:"d-m-y H:i"}}</td>
+                                <td>{{ l.km }}</td>
+                                <td>{% if l.type == 0 %}<i class="icon" icon=""></i> {% endif %}</td>
+                                <td>{{ l.amount }}</td>
                                 <td>{{ l.summ }}</td>
-                            {% endif %}
+                                <td>{{ l.comment }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -65,7 +61,12 @@
                 <div class="flex_column marginl10">
                     <h3 class="marginl10">Новая операция</h3>
                     <div class="flex_block m10">
-                        <a href="{% url 'refuel_create' view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}">Новая заправка</a>
+                        <ul class="linklist">
+                            <li><a href="{% url 'refuel_create' 0 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по карте</a></li>
+                            <li><a href="{% url 'refuel_create' 1 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка за наличные</a></li>
+                            <li><a href="{% url 'refuel_create' 2 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по талону</a></li>
+                            <li><a href="{% url 'refuel_create' 3 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка ДТ на Базу</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

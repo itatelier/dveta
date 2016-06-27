@@ -50,7 +50,7 @@
                         <tbody id="datatable">
                             {% for l in dds_flow %}
                             <tr data-object_id="{{ l.pk }}">
-                                <td>{{ l.date|date:"d-m-y m:h"}}</td>
+                                <td>{{ l.date|date:"d-m-y H:i"}}</td>
                                 <td>{{ l.item.name }}</td>
                                 <td>{{ l.account.name }}</td>
                                 <td>{{ l.account.contragent.name }}</td>
@@ -71,13 +71,11 @@
                 <div class="flex_column marginl10">
                     <h3 class="marginl10">Денежные операции</h3>
                     <div class="flex_block m10">
-                        <table class="sheet_simple margint10">
+                            <ul class="linklist margint10">
                             {% for l in templates %}
-                            <tr>
-                                <td><a href="{% url 'dds_template_operation' l.0 %}?account_out={{ money_account_id }}&return_url={{ request.path }}">{{ l.1 }}</a></td>
-                                <td><i>{{ l.2 }}</i></td>
-                            </tr>
+                                <li><a href="{% url 'dds_template_operation' l.0 %}?account_out={{ money_account_id }}&return_url={{ request.path }}">{{ l.1 }}</a><i class="marginl10">{{ l.2 }}</i></li>
                             {% endfor %}
+                            </ul>
                         </table>
                     </div>
                 </div>

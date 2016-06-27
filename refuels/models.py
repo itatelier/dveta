@@ -24,7 +24,7 @@ class FuelCards(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     fuel_company = models.ForeignKey('FuelCompanies', null=False, blank=False)
     num = models.CharField(max_length=255L, null=False, blank=False)
-    assigned_driver = models.ForeignKey('person.Employies', null=True, blank=True)
+    assigned_car = models.ForeignKey('car.Cars', null=True, blank=True)
 
     class Meta:
         db_table = 'fuel_cards'
@@ -46,6 +46,7 @@ class RefuelsFlow(models.Model):
     summ = models.FloatField(null=False, blank=False)
     km = models.IntegerField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
+    checked = models.BooleanField(blank=False, null=False, default=False)
 
     class Meta:
         db_table = 'refuels_flow'

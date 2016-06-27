@@ -35,9 +35,13 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
     form_class = RefuelForm
     model = RefuelsFlow
     car_pk = False
+    type_pk = False
+    driver_pk = False
 
     def dispatch(self, request, *args, **kwargs):
         self.car_pk = self.kwargs.get('car_pk', False)
+        self.type_pk = self.kwargs.get('type_pk', False)
+        self.driver_pk = self.request.GET.get('driver_pk', False)
         return super(RefuelCreateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -46,15 +50,17 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
         # Передача параметров в форму из урла
         initial = {}
         data = {}    # Данные для контекста шаблона
+        initial['type'] = self.type_pk
         if self.car_pk:
             initial['car'] = self.car_pk
             form.fields['car'].widget = widgets.HiddenInput()
-            data['car'] = Cars.objects.get(pk=self.car_pk)
-        if self.request.GET.get('driver_pk'):
-            driver_pk = self.request.GET.get('driver_pk')
-            initial['driver'] = driver_pk
+            data['car'] = Cars.objects.select_related('model').get(pk=self.car_pk)
+        if self.driver_pk:
+            initial['driver'] = self.driver_pk
             form.fields['driver'].widget = widgets.HiddenInput()
-            data['driver'] = Employies.drivers.get(pk=driver_pk)
+            data['driver'] = Employies.drivers.get(pk=self.driver_pk)
+        if not int(self.type_pk) == 0:
+            form.fields['fuel_card'].widget = widgets.HiddenInput()
         form.initial = initial
         return self.render_to_response(self.get_context_data(form=form, data=data))
 
@@ -64,23 +70,31 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
         else:
             return reverse('/')
 
-    # def post(self, request, *args, **kwargs):
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         # Создаем клон авто в "Объектах"
-    #         car_nick_name = u'Авто %s' % form.cleaned_data.get("nick_name")
-    #         object_type_object = ObjectTypes.objects.get(pk=2)
-    #         car_object = Objects.objects.create(name=car_nick_name, type=object_type_object)
-    #         # Создаем пустую запись в Car Documents
-    #         docs_object = CarDocs(date_update=DateTimeNowToSql())
-    #         docs_object.save()
-    #         create_object = form.save(commit=False)
-    #         create_object.car_object = car_object
-    #         create_object.docs = docs_object
-    #         create_object.status = CarStatuses(pk=1)
-    #         create_object.save()
-    #         self.success_url = '/cars/%s/card' % create_object.id
-    #         return HttpResponseRedirect(self.success_url)
-    #     else:
-    #         self.object = form.instance
-    #         return self.render_to_response(self.get_context_data(form=form))
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RefuelCreateView, self).get_context_data(*args, **kwargs)
+        # company_pk = self.kwargs.get('company_pk', None)
+        # context_data.update({'company': Companies.objects.get(pk=company_pk)})
+        context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            refuel_object = form.save(commit=False)
+            # Если тип заправки "По карте" - присваиваем карты привязанную к машине
+            if int(self.type_pk) == 0:
+                refuel_object.fuel_card = FuelCards.objects.get(assigned_car__pk=self.car_pk)
+            refuel_object.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            data = {}    # Данные для контекста шаблона
+            if self.car_pk:
+                form.fields['car'].widget = widgets.HiddenInput()
+                data['car'] = Cars.objects.select_related('model').get(pk=self.car_pk)
+            if self.driver_pk:
+                form.fields['driver'].widget = widgets.HiddenInput()
+                data['driver'] = Employies.drivers.get(pk=self.driver_pk)
+            if not int(self.type_pk) == 0:
+                form.fields['fuel_card'].widget = widgets.HiddenInput()
+            self.object = form.instance
+            return self.render_to_response(self.get_context_data(form=form, data=data))

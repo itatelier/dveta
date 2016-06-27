@@ -13,6 +13,7 @@ from race.models import *
 from dds.models import *
 from car.models import *
 from person.models import *
+from refuels.models import *
 
 from person.models import Employies
 
@@ -99,5 +100,6 @@ class WorkdayRefuelsView(WorkdayBaseView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(WorkdayRefuelsView, self).get_context_data(*args, **kwargs)
+        context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
         return context_data
 
