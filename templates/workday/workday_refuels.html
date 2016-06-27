@@ -65,7 +65,7 @@
                 <div class="flex_column marginl10">
                     <h3 class="marginl10">Новая операция</h3>
                     <div class="flex_block m10">
-                        <a href="{% url 'refuel_create' view.driver_pk %}?return_url={{ request.path }}">Новая заправка</a>
+                        <a href="{% url 'refuel_create' view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}">Новая заправка</a>
                     </div>
                 </div>
             </div>

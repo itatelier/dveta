@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from race.models import *
 from dds.models import *
 from car.models import *
+from person.models import *
 
 from person.models import Employies
 
@@ -21,6 +22,7 @@ class WorkdayBaseView(LoginRequiredMixin, TemplateView):
     car = False
     driver_pk = False
     driver = False
+    driver_phones = False
     date = False
     money_account_id = False
 
@@ -30,12 +32,10 @@ class WorkdayBaseView(LoginRequiredMixin, TemplateView):
         if self.car.driver:
             self.driver = self.car.driver
             self.driver_pk = self.driver.pk
+            self.driver_phones = Contacts.objects.filter(person__pk=self.driver.person.pk, is_main=True)
         self.date = datetime.strptime(self.kwargs.get('date', False), '%d-%m-%y')
-        # self.money_account_id = Employies.objects.get(pk=self.driver_pk).money_account.get().pk
         return super(WorkdayBaseView, self).dispatch(request, *args, **kwargs)
 
-    # def driver(self):
-    #     return Employies.objects.get(pk=self.driver_pk)
 
     # def get_context_data(self, *args, **kwargs):
     #     context_data = super(WorkdayBaseView, self).get_context_data(*args, **kwargs)

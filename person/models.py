@@ -24,7 +24,6 @@ class Persons(models.Model):
     def fio_and_nick(self):
         return u'%s %s (%s)' % (self.family_name, self.given_name, self.nick_name)
 
-
     def get_absolute_url(self):
         return reverse('person_card', kwargs={'pk': self.pk})
 
@@ -42,6 +41,8 @@ class Contacts(models.Model):
     class Meta:
         db_table = 'contacts'
         verbose_name_plural = 'Контакты'
+
+
 
 
 class EmployeeTypes(models.Model):

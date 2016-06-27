@@ -34,10 +34,10 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
     template_name = 'refuels/refuel_create_update.html'
     form_class = RefuelForm
     model = RefuelsFlow
-    driver_pk = False
+    car_pk = False
 
     def dispatch(self, request, *args, **kwargs):
-        self.driver_pk = self.kwargs.get('driver_pk', False)
+        self.car_pk = self.kwargs.get('car_pk', False)
         return super(RefuelCreateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -46,16 +46,15 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
         # Передача параметров в форму из урла
         initial = {}
         data = {}    # Данные для контекста шаблона
-        if self.driver_pk:
-            initial['driver'] = self.driver_pk
-            form.fields['driver'].widget = widgets.HiddenInput()
-            data['driver'] = Employies.drivers.get(pk=self.driver_pk)
-        if self.request.GET.get('car_id'):
-            car_id = self.request.GET.get('car_id')
-            initial['car'] = car_id
+        if self.car_pk:
+            initial['car'] = self.car_pk
             form.fields['car'].widget = widgets.HiddenInput()
-            data['car'] = Cars.objects.get(pk=car_id)
-
+            data['car'] = Cars.objects.get(pk=self.car_pk)
+        if self.request.GET.get('driver_pk'):
+            driver_pk = self.request.GET.get('driver_pk')
+            initial['driver'] = driver_pk
+            form.fields['driver'].widget = widgets.HiddenInput()
+            data['driver'] = Employies.drivers.get(pk=driver_pk)
         form.initial = initial
         return self.render_to_response(self.get_context_data(form=form, data=data))
 

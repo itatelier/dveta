@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     #
     # Persons
-    url(r'^create/driver/(?P<driver_pk>\d+)/$', RefuelCreateView.as_view(), name='refuel_create'),
+    url(r'^create/car/(?P<car_pk>\d+)/$', RefuelCreateView.as_view(), name='refuel_create'),
     # url(r'^(?P<pk>\d+)/card/$', CarCardView.as_view(), name='car_card'),
     # url(r'^(?P<pk>\d+)/driver/$', CarDriverView.as_view(), name='car_driver'),
     # url(r'^(?P<pk>\d+)/docs/$', CarDocsView.as_view(), name='car_docs'),
