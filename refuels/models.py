@@ -46,7 +46,7 @@ class RefuelsFlow(models.Model):
     summ = models.FloatField(null=False, blank=False)
     km = models.IntegerField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
-    checked = models.BooleanField(blank=False, null=False, default=False)
+    checked = models.IntegerField(blank=False, null=False, default=0)
 
     class Meta:
         db_table = 'refuels_flow'
@@ -54,4 +54,4 @@ class RefuelsFlow(models.Model):
         verbose_name_plural = 'Заправки / Все заправки'
 
     def __unicode__(self):
-        return u'[%s] %s %s' % (self.id, self.num, self.driver)
+        return u'[%s] %s %s' % (self.id, self.amount, self.summ)

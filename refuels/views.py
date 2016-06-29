@@ -14,7 +14,7 @@ from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNot
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import DetailView
-from django.db.models import Sum
+from django.db.models import Sum, Count, Func, F
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 
@@ -72,8 +72,6 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RefuelCreateView, self).get_context_data(*args, **kwargs)
-        # company_pk = self.kwargs.get('company_pk', None)
-        # context_data.update({'company': Companies.objects.get(pk=company_pk)})
         context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
         return context_data
 
@@ -100,7 +98,7 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
             return self.render_to_response(self.get_context_data(form=form, data=data))
 
 
-class RacesViewSet(viewsets.ModelViewSet):
+class RefuelsFlowViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     queryset = RefuelsFlow.objects.select_related(
         'car',
@@ -114,11 +112,42 @@ class RacesViewSet(viewsets.ModelViewSet):
 
 
 class RefuelsListView(LoginRequiredMixin, TemplateView):
-    template_name = 'refuels/list_refuels2.html'
+    template_name = 'refuels/list_refuels.html'
+
+
+class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
+    template_name = 'refuels/refuels_check_fuelcards.html'
+    report_month = False
+    report_year = False
+
+    def dispatch(self, request, *args, **kwargs):
+        nowtime = datetime.now()
+        first = nowtime.replace(day=1)
+        lastMonthDT = first - timedelta(days=1)
+        self.report_month = lastMonthDT.month
+        self.report_month = nowtime.month
+        self.report_year = lastMonthDT.year
+        # if self.kwargs.get('year') and self.kwargs.get('month'):
+        return super(RefuelsCheckCardsView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(RefuelsListView, self).get_context_data(*args, **kwargs)
-        # context_data['bunker_types'] = BunkerTypes.objects.all()
-        # context_data['company'] = Companies.objects.get(pk=company_pk)
-        # context_data['bunker_types_summ'] = ('type1_summ', 'type2_summ', 'type3_summ', 'type4_summ', 'type5_summ', 'type6_summ', 'type7_summ', )
+        context_data = super(RefuelsCheckCardsView, self).get_context_data(*args, **kwargs)
+        nowtime = datetime.now()
+        last_month_num = nowtime.month - 1
+        # Подготовка запроса
+        not_checked = Sum(Func('checked', function='IF', template='%(function)s(%(expressions)s=0, 1, 0)'))
+        already_checked = Sum(Func('checked', function='IF', template='%(function)s(%(expressions)s=0, 0, 1)'))
+        check_finished = Func(
+                not_checked,
+                function='IF', template='%(function)s(%(expressions)s=0, 1, 0)'
+        )
+        context_data['refuels'] = RefuelsFlow.objects.values('car__nick_name', 'car__pk').annotate(
+            total_amount=Sum('amount'),
+            total_refuels = Count('id'),
+            already_checked=already_checked,
+            not_checked=not_checked,
+            check_finished=check_finished
+        )
+        context_data['prev_month'] = last_month_num - 1
+        context_data['next_month'] = last_month_num - 1
         return context_data

@@ -1,0 +1,76 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Заправки</a></li>
+                <li class="active"><a href="#">Сверки топлива</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        {% if form.instance.id %}
+                            <li><a href="#" class="active">Параметры заправки</a></li>
+                        {% else %}
+                            <li><a href="#" class="active">Новая заправка</a></li>
+                        {%  endif %}
+                    </ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="form_row">
+                        <div class="">
+                            <ul>
+                                <li><a href="#"><i class="icon" icon=""></i></a></li>
+                                <li>Июнь 2016</li>
+                                <li><a href="#"><i class="icon" icon=""></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                            <h3>Заправки по автомобилям</h3>
+                    </div>
+                    <div class="form_row">
+                        <div class="flex_block">
+                            <table class="sheet_headered  margint10 marginr10 " width="">
+                                <thead>
+                                <tr>
+                                    <th width="120px">Авто | ник</th>
+                                    <th>Всего литров</th>
+                                    <th>Всего заправок</th>
+                                    <th>Сверено</th>
+                                    <th>Не сверено</th>
+                                    <th>Итог</th>
+                                </tr>
+                                </thead>
+                                <tbody id="datatable">
+                                    {% for l in refuels %}
+                                    <tr data-object_id="{{ l.car__pk }}">
+                                        <td>{{ l.car__nick_name}}</td>
+                                        <td>{{ l.total_amount }}</td>
+                                        <td>{{ l.total_refuels }}</td>
+                                        <td>{{ l.already_checked }}</td>
+                                        <td {% if not l.not_checked == 0 %} class="red"{% endif %}>{{ l.not_checked }}</td>
+                                        <td>{% if l.check_finished %}<i class="icon green" icon=""></i> {% endif %}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

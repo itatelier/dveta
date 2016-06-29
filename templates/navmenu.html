@@ -44,7 +44,13 @@
                     </div>
                 </li>
                 <li><a href="listing.html" class="unused"><div>&#xf145;<span>Талоны</span></div></a></li>
-                <li><a href="listing.html" class="unused"><div>&#xf080;<span>Отчеты</span></div></a></li>
+                <li><a href="listing.html"><div>&#xf080;<span>Отчеты</span></div></a>
+                    <div>
+                        <ul>
+                            <li><a href="{% url 'refuels_check_cards' %}">Сверка топлива</a></li>
+                        </ul>
+                    </div>
+                </li>
                 <li><a href="{% url 'dds_flow' %}"><div>&#xf153;<span>Финансы</span></div></a>
                     <div>
                         <ul>

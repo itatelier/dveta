@@ -46,8 +46,8 @@ class RefuelsFlowSerializer(serializers.ModelSerializer):
 class RefuelsFlowFilters(django_filters.FilterSet):
     driver_family_name_ac = django_filters.CharFilter(name="driver__person__family_name", lookup_type='icontains')
     car_name = django_filters.CharFilter(name="car__nick_name", lookup_type='icontains')
-    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='gte')
-    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_race", lookup_type='lte')
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='gte')
+    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='lte')
 
     class Meta:
         model = RefuelsFlow
@@ -60,3 +60,17 @@ class RefuelsFlowFilters(django_filters.FilterSet):
             'fuel_card',
             'checked',
         ]
+
+
+# class RefuelsCheckSerializer(serializers.ModelSerializer):
+#     # car__nick_name = serializers.IntegerField()
+#     car__nick_name = serializers.CharField()
+#     already_checked = serializers.IntegerField()
+#     not_checked = serializers.IntegerField()
+#     total_amount = serializers.IntegerField()
+#     check_finished = serializers.IntegerField()
+#
+#     class Meta:
+#         depth = 1
+#         model = RefuelsFlow
+#         fields = ('car__nick_name', 'already_checked', 'not_checked', 'total_amount', 'check_finished',)
