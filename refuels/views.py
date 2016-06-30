@@ -117,17 +117,17 @@ class RefuelsListView(LoginRequiredMixin, TemplateView):
 
 class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
     template_name = 'refuels/refuels_check_fuelcards.html'
-    report_month = False
-    report_year = False
+    report_month_dt = False
+    report_prev_dt = False
+    report_next_dt = False
 
     def dispatch(self, request, *args, **kwargs):
-        nowtime = datetime.now()
-        first = nowtime.replace(day=1)
-        lastMonthDT = first - timedelta(days=1)
-        self.report_month = lastMonthDT.month
-        self.report_month = nowtime.month
-        self.report_year = lastMonthDT.year
-        # if self.kwargs.get('year') and self.kwargs.get('month'):
+        today = datetime.now()
+        first_month_day = today.replace(day=1)
+        self.report_month_dt = first_month_day - timedelta(days=1)
+        report_month_firstday = self.report_month_dt.replace(day=1)
+        self.report_prev_dt = report_month_firstday - timedelta(days=1)
+        self.report_next_dt = report_month_firstday + timedelta(days=32)
         return super(RefuelsCheckCardsView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):

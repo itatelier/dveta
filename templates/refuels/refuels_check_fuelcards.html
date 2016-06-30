@@ -31,9 +31,9 @@
                     <div class="form_row">
                         <div class="">
                             <ul>
-                                <li><a href="#"><i class="icon" icon=""></i></a></li>
-                                <li>Июнь 2016</li>
-                                <li><a href="#"><i class="icon" icon=""></i></a></li>
+                                <li><a href="#"><i class="icon" icon=""></i>{{ view.report_prev_dt.month }}</a></li>
+                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                <li><a href="#"><i class="icon" icon=""></i>{{ view.report_next_dt.month }}</a></li>
                             </ul>
                         </div>
                     </div>
