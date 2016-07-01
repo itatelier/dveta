@@ -1,29 +1,14 @@
 {% extends "main.html" %}
-{% load static from staticfiles %}
-{% block add_static %}
-<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
-<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
-<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
-{% endblock %}
-
 {% block content %}
 <script>
-    $(document).ready(function() {
 
-        {#    Виджет datepicker #}
-        $('input[name=ins_date_register]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
-        $('input[name=ins_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
-        $('input[name=to_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
-        $('input[name=rent_date_end]').datepicker({'dateFormat':'dd-mm-yy', 'changeMonth': true,});
-    });
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Автомобили</a></li>
                 <li><a href="{% url 'car_card' object.pk %}"><b>{{ object.nick_name }}</b> <i> {{ object.reg_num }}</i></a></li>
-                <li class="active" ><a href="#">Документы</a></li>
+                <li class="active"><a href="#">Топливная карта</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -32,7 +17,7 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                {%  include "car/car_left_bar.html" with pk=object.pk sel=4 %}
+                {%  include "car/car_left_bar.html" with pk=object.pk sel=3 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Ключевые значения #}
@@ -67,27 +52,14 @@
                     </div>
                     {# - Ключевые значения #}
                     {# Форма объекта #}
+                    <div class="form_row">
+                        <span class="m10">Текущая топливная карта: <b>{{ object.fuel_card.num|default_if_none:"не привязана" }}</b> {{ object.fuel_card.fuel_company.name }}</span>
+                    </div>
                     <form action="" method="POST" id="new_object">{% csrf_token %}
-                        <div class="form_row"><h2>Регистрационные документы</h2></div>
-                        <div class="form_row">{% include "form_snippets/textinput.html" with field=form.owner  %}</div>
-                        <div class="form_row"><h2>Страховка</h2></div>
-                        <div class="form_row">
-                            {% include "form_snippets/textinput.html" with field=form.ins_number  %}
-                            {% include "form_snippets/textinput.html" with field=form.ins_date_register  %}
-                            {% include "form_snippets/textinput.html" with field=form.ins_date_end  icon="" %}
-                            {% include "form_snippets/textinput.html" with field=form.ins_price  %}
-                            {% include "form_snippets/textinput.html" with field=form.ins_comment  %}
-                        </div>
-                        <div class="form_row"><h2>Технический осмотр</h2></div>
-                        <div class="form_row">
-                            {% include "form_snippets/textinput.html" with field=form.to_number  %}
-                            {% include "form_snippets/textinput.html" with field=form.to_date_end  %}
-                        </div>
-                        <div class="form_row"><h2>Договор аренды</h2></div>
-                        <div class="form_row">{% include "form_snippets/textinput.html" with field=form.rent_date_end  %}</div>
-                        <div class="form_row"><h2>Топливная карта</h2></div>
-                        <div class="form_row">{% include "form_snippets/select.html" with field=form.fuel_card  %}</div>
-
+                        {# Скрытые поля #}
+                        <input type="hidden" name="id-assigned_card" value="{{ object.fuel_card.pk }}">
+                        {# Видимые поля #}
+                        {% include "form_snippets/formfields_as_row.html" with form=form %}
                         {# ошибки формы #}
                         {% include "form_snippets/form_errors.html" with form=form %}
                         {# Кнопки #}

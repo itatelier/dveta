@@ -114,6 +114,56 @@ class CarDriverView(LoginRequiredMixin, UpdateView):
             return reverse('car_card', args=(self.object.id,))
 
 
+class CarFuelCardView(LoginRequiredMixin, UpdateView):
+    template_name = "car/car_fuel_card.html"
+    model = Cars
+    form_class = CarFuelCardUpdateForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.comment="TEST"
+        # self.object.user = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    # def post(self, request, *args, **kwargs):
+    #     # form = self.get_form()
+    #     self.object = self.get_object()
+    #     form = CarDriverUpdateForm(request.POST, instance=self.object)
+    #     if form.is_valid():
+    #         self.object = form.save()
+    #         # self.object.save()
+    #         return HttpResponseRedirect(self.get_success_url())
+    #     else:
+    #         return self.render_to_response(self.get_context_data(form=form))
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     return super(CarFuelCardView, self).post(request, *args, **kwargs)
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         log.info(" --- Form valid!")
+    #         update_object = form.save(commit=False)
+    #         if request.GET.get('assigned_card'):
+    #             log.info(" --- prev card: %s" % request.GET.get('assigned_card'))
+    #         update_object.save()
+    #         self.success_url = '/cars/%s/card' % update_object.id
+    #         return HttpResponseRedirect(self.success_url)
+    #         # self.form_valid(form)
+    #     else:
+    #         # return self.form_invalid(form)
+    #         self.object = form.instance
+    #         return self.render_to_response(self.get_context_data(form=form))
+
+    def get_success_url(self):
+        if self.request.GET.get('return_url'):
+            return self.request.GET.get('return_url')
+        else:
+            return reverse('car_card', args=(self.object.id,))
+
+
 class CarDocsView(LoginRequiredMixin, UpdateView):
     template_name = "car/car_docs.html"
     model = CarDocs

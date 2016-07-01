@@ -71,7 +71,7 @@
                                 </td></tr>
                             <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
                             <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
-                            <tr><td>Топливная карта</td><td>{{ object.description|default_if_none:"не указано" }}</td></tr>
+                            <tr><td>Топливная карта</td><td><b>{{ object.fuel_card.num|default_if_none:"не привязана" }}</b> {{ object.fuel_card.fuel_company.name }}</td></tr>
                             <tr><td>Норма расхода</td><td>{{ object.fuel_norm}}</td></tr>
                         </table>
                     </div>

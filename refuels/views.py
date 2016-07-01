@@ -122,12 +122,18 @@ class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
     report_next_dt = False
 
     def dispatch(self, request, *args, **kwargs):
+        # Месяц и год отчета будет предыдущий от даты "сегодня" или даты из запроса
         today = datetime.now()
-        first_month_day = today.replace(day=1)
+        first_month_day = today.replace(day=1) # прошлый месяц это 1е исло текщуго минус 1 день
         self.report_month_dt = first_month_day - timedelta(days=1)
+        if request.GET.get('month') and request.GET.get('year'):
+            try:
+                self.report_month_dt = datetime.strptime("1/%s/%s" % (request.GET.get('month'), request.GET.get('year')), "%d/%m/%Y")
+            except ValueError as err:
+                log.info("- Month and Year params not good!")
         report_month_firstday = self.report_month_dt.replace(day=1)
         self.report_prev_dt = report_month_firstday - timedelta(days=1)
-        self.report_next_dt = report_month_firstday + timedelta(days=32)
+        self.report_next_dt = report_month_firstday + timedelta(days=32) # следующий месяц это первый день текущего + 32 дня
         return super(RefuelsCheckCardsView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -141,7 +147,7 @@ class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
                 not_checked,
                 function='IF', template='%(function)s(%(expressions)s=0, 1, 0)'
         )
-        context_data['refuels'] = RefuelsFlow.objects.values('car__nick_name', 'car__pk').annotate(
+        context_data['refuels'] = RefuelsFlow.objects.values('car__nick_name', 'car__pk', 'car__fuel_card__num', 'car__fuel_card__fuel_company__name').annotate(
             total_amount=Sum('amount'),
             total_refuels = Count('id'),
             already_checked=already_checked,

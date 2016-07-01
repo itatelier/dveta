@@ -9,6 +9,7 @@ from common.formfields import *
 from django.forms.utils import ErrorList
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from refuels.models import *
 
 
 def validate_phone(value):
@@ -47,6 +48,14 @@ class CarDriverUpdateForm(ModelForm):
         fields = ('driver', )
 
 
+class CarFuelCardUpdateForm(ModelForm):
+    fuel_card = ModelChoiceField(queryset=FuelCards.objects.all(), required=False, label="Топливная карта", help_text="Выбор топливной карты из списка доступных", empty_label="-- не привязана --")
+
+    class Meta:
+        model = Cars
+        fields = ('fuel_card', )
+
+
 class CarDocsForm(ModelForm):
     owner = ModelChoiceField(queryset=CarOwners.objects.all(), label="Владелец авто", help_text="владелец авто по регистрационным документам", empty_label=None)
     ins_number = CharField(label="Номер полиса", required=False, widget=TextInput(attrs={'size': 10, 'maxlength': 20}))
@@ -57,8 +66,9 @@ class CarDocsForm(ModelForm):
     to_number = CharField(label="Номер документа", required=False, widget=TextInput(attrs={'size': 10, 'maxlength': 10}))
     to_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
     rent_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
+    fuel_card = ModelChoiceField(queryset=FuelCards.objects.all(), label="Топливная карта", empty_label="-- не привязана --", required=False)
 
     class Meta:
         model = CarDocs
-        fields = ('owner', 'ins_number', 'ins_date_register', 'ins_date_end', 'ins_price', 'ins_comment', 'to_number', 'to_date_end', 'rent_date_end')
+        fields = ('owner', 'ins_number', 'ins_date_register', 'ins_date_end', 'ins_price', 'ins_comment', 'to_number', 'to_date_end', 'rent_date_end', 'fuel_card')
 

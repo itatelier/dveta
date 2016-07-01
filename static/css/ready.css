@@ -613,6 +613,10 @@ i.icon.gold::before {
 i.icon.inherit::before {
     font-size: inherit;
 }
+i.icon.big::before {
+    font-size: 2.5rem;
+    line-height: 1.5rem;
+}
 /*======================== Customer details ========================== */
 
 div.customer_account_detales { display: flex; flex-direction: row; justify-content: flex-end; align-items: center; }
@@ -684,8 +688,11 @@ ul.linklist {
 
 ul.linklist li {
 	margin:0;
-	cursor:pointer;
 	display:block;
 	padding:5px 10px;
 	color:#707070;
+}
+
+ul.linklist a {
+    text-decoration: none;
 }

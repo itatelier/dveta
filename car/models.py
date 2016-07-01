@@ -72,6 +72,7 @@ class Cars(models.Model):
     status = models.ForeignKey('CarStatuses', null=False, blank=False, editable=True)
     driver = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, related_name="cardriver")
     docs = models.ForeignKey('CarDocs', null=True, blank=False, editable=True, related_name="car")
+    fuel_card = models.ForeignKey('refuels.FuelCards', null=True, blank=True, editable=True, related_name="driver")
 
     class Meta:
         db_table = 'cars'
