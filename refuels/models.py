@@ -24,6 +24,7 @@ class FuelCards(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     fuel_company = models.ForeignKey('FuelCompanies', null=False, blank=False)
     num = models.CharField(max_length=255L, null=False, blank=False)
+    assigned_to_car = models.ForeignKey('car.Cars', null=True, blank=True)
 
     class Meta:
         db_table = 'fuel_cards'

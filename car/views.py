@@ -7,6 +7,7 @@ from bunker.models import BunkerFlow
 from object.models import ObjectTypes
 from forms import *
 from common.utils import DateTimeNowToSql
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Base Views
@@ -120,42 +121,17 @@ class CarFuelCardView(LoginRequiredMixin, UpdateView):
     form_class = CarFuelCardUpdateForm
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.comment="TEST"
-        # self.object.user = self.request.user
-        self.object.save()
+        self.object = form.save()
+        try:
+            old_card_object = FuelCards.objects.get(assigned_to_car=self.object.pk)
+            old_card_object.assigned_to_car = None
+            old_card_object.save()
+        except ObjectDoesNotExist:
+            pass
+        card_object = FuelCards.objects.get(pk=self.object.fuel_card.pk)
+        card_object.assigned_to_car = self.object
+        card_object.save()
         return HttpResponseRedirect(self.get_success_url())
-
-    # def post(self, request, *args, **kwargs):
-    #     # form = self.get_form()
-    #     self.object = self.get_object()
-    #     form = CarDriverUpdateForm(request.POST, instance=self.object)
-    #     if form.is_valid():
-    #         self.object = form.save()
-    #         # self.object.save()
-    #         return HttpResponseRedirect(self.get_success_url())
-    #     else:
-    #         return self.render_to_response(self.get_context_data(form=form))
-
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     return super(CarFuelCardView, self).post(request, *args, **kwargs)
-
-    # def post(self, request, *args, **kwargs):
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         log.info(" --- Form valid!")
-    #         update_object = form.save(commit=False)
-    #         if request.GET.get('assigned_card'):
-    #             log.info(" --- prev card: %s" % request.GET.get('assigned_card'))
-    #         update_object.save()
-    #         self.success_url = '/cars/%s/card' % update_object.id
-    #         return HttpResponseRedirect(self.success_url)
-    #         # self.form_valid(form)
-    #     else:
-    #         # return self.form_invalid(form)
-    #         self.object = form.instance
-    #         return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
         if self.request.GET.get('return_url'):

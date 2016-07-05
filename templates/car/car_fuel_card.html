@@ -47,7 +47,7 @@
                          {% if object.driver.pk %}
                                      <span class="m10">Водитель <a href="/persons/{{ object.driver.person_id }}/card" class="textlink"><b>{{ object.driver.person.nick_name }} </b>{{ object.driver.person.family_name }} {{ object.driver.person.given_name }}</a></span>
                                  {% else %}
-                                    <span class="m10">Водитель <a href="#" class="textlink red">не назначен</a></span>
+                                    <span class="m10">Водитель <a href="{% url 'car_driver' object.pk  %}" class="textlink red">не назначен</a></span>
                                  {%  endif %}
                     </div>
                     {# - Ключевые значения #}

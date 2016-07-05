@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*
 
 from django.forms import *
+from django.db.models import Q
 from models import *
 from company.models import *
 from person.models import *
@@ -49,7 +50,7 @@ class CarDriverUpdateForm(ModelForm):
 
 
 class CarFuelCardUpdateForm(ModelForm):
-    fuel_card = ModelChoiceField(queryset=FuelCards.objects.all(), required=False, label="Топливная карта", help_text="Выбор топливной карты из списка доступных", empty_label="-- не привязана --")
+    fuel_card = ModelChoiceField(queryset=FuelCards.objects.exclude(assigned_to_car__isnull=False), required=False, label="Новая топливная карта", help_text="Выбор топливной карты из списка доступных", empty_label=None)
 
     class Meta:
         model = Cars
