@@ -20,7 +20,7 @@ urlpatterns = [
     # Persons
     # url(r'^get_contact_json/$', GetContactByPhoneJsonView.as_view(), name='contact_get_by_num_json'),
     # url(r'^get_contact_json/$', GetContactViewSet.as_view({'get': 'list'}), name='contact_get_by_num_json'),
-    url(r'^create_company_contact_json/$', CreateCompanyContactJsonView.as_view(), name='company_contact_create_json'),
+    # url(r'^create_company_contact_json/$', CreateCompanyContactJsonView.as_view(), name='company_contact_create_json'),
     url(r'^(?P<pk>\d+)/card/$', PersonCardView.as_view(), name='person_card'),
     url(r'^(?P<pk>\d+)/update/$', PersonUpdateView.as_view(), name='person_update'),
     url(r'^(?P<pk>\d+)/contacts/$', PersonContactsUpdateView.as_view(), name='person_contacts_update'),

@@ -10,7 +10,7 @@ from common.utils import DateTimeNowToSql
 
 
 # Base Views
-from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix
+from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonPost
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import DetailView
@@ -81,7 +81,7 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
             refuel_object = form.save(commit=False)
             # Если тип заправки "По карте" - присваиваем карты привязанную к машине
             if int(self.type_pk) == 0:
-                refuel_object.fuel_card = FuelCards.objects.get(assigned_car__pk=self.car_pk)
+                refuel_object.fuel_card = Cars.objects.get(pk=self.car_pk).fuel_card
             refuel_object.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -175,6 +175,24 @@ class RefuelsCheckListView(LoginRequiredMixin, TemplateView):
             car__pk=car_pk,
             fuel_card__pk=fuel_card_pk
         )
-
         context_data['refuels'] = refuels
+        report_dt = datetime.strptime("1/%s/%s" % (month, year), "%d/%m/%Y")
+        context_data['report_dt'] = report_dt
+        context_data['report_date_my'] = report_dt.strftime("%B %Y")
+
+        context_data['car'] = Cars.objects.get(pk=car_pk)
+        context_data['card'] = FuelCards.objects.get(pk=fuel_card_pk)
         return context_data
+
+
+class UpdateCheckedRefuelsAjax(JsonPost):
+    required_params = ['selected_ops',]
+
+    def update_data(self, request):
+        selected_ops = request.POST.getlist('selected_ops[]')
+        unselected_ops = request.POST.getlist('unselected_ops[]')
+        self.json['selected_ops'] = selected_ops
+        self.json['unselected_ops'] = unselected_ops
+        RefuelsFlow.objects.filter(checked=False, pk__in=selected_ops).update(checked=True)
+        RefuelsFlow.objects.filter(checked=True, pk__in=unselected_ops).update(checked=False)
+

@@ -2,13 +2,50 @@
 {% block content %}
 <script>
     $(document).ready(function() {
+        {#  Отметка чекбокса   #}
+        $( 'tbody#datatable').on("click", 'tr', function() {
+            var $chb = $('input', $(this));
+            console.log("Val: " + $chb.val());
+            if ($chb.prop('checked') == true) {
+                $chb.prop('checked', false);
+            } else {
+                $chb.prop('checked', true);
+            }
+        });
     });
+
+    function MarkSelected() {
+        var selected_ops = [];
+        var unselected_ops = [];
+        $('input[rel="ops"]').each(function() {
+            if ($(this).prop('checked')==true) {
+                selected_ops.push($(this).val());
+            }
+            if ($(this).prop('checked')==false) {
+                unselected_ops.push($(this).val());
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: '{% url 'refuels_check_update_selected_ajax' %}',
+            dataType: 'JSON',
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}', 'selected_ops[]': selected_ops, 'unselected_ops[]': unselected_ops}
+        })
+        .done(function(result){
+            location.reload();
+        });
+
+
+        console.log("Selected: " + selected_ops + " unselected: " + unselected_ops);
+        return false;
+    }
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Заправки</a></li>
-                <li class="active"><a href="#">Сверки топлива</a></li>
+                <li><a href="{% url 'refuels_check_report' %}?month={{ report_dt.month }}&year={{ report_dt.year }}">Заправки по картам</a></li>
+                <li class="active"><a href="#">Заправки авто <b>{{ car.nick_name }}</b></a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -19,54 +56,46 @@
                 {# Левый бар - меню карточки  #}
                 <div class="left_bar">
                     <ul>
-                        <li><a href="#" class="active">Сверка заправок по картам</a></li>
+                        <li><a href="#" class="active">Сверка заправок по операциям</a></li>
                     </ul><hr>
                 </div>
                 {# - Левый бар #}
                 <div class="data_grid_medium">
-                    <div class="form_row">
-                        <div class="">
-                            <ul class="linklist flex">
-                                <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
-                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
-                                <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form_row">
-                            <h3>Заправки по автомобилям</h3>
+                        <div class="margint10">Заправки для автомобиля <a class="textlink" href="{% url 'car_card' car.pk %}"><b>{{ car.nick_name }}</b> {{ car.reg_num }}</a> за <b>{{ report_dt|date:"F Y" }}</b></div>
+                        <div class="margint10">Топливная карта: <b>{{ card.num }}</b> топливная компания: {{ card.fuel_company.name }}</div>
+                    <div class="form_row margint10">
+                            <h4>Все заправки за период</h4>
                     </div>
                     <div class="form_row">
                         <div class="flex_block">
-                            <table class="sheet_headered  margint10 marginr10 " width="">
+                            <table class="sheet_headered marginr10 pointed" width="">
                                 <thead>
                                 <tr>
-                                    <th width="120px">Авто | ник</th>
-                                    <th>Топливная карта</th>
-                                    <th>Компания</th>
-                                    <th>Всего литров</th>
-                                    <th>Всего заправок</th>
+                                    <th width="120px">Дата / время</th>
+                                    <th>Водитель</th>
+                                    <th class="centertext">Кол-во литров</th>
+                                    <th>Километраж</th>
                                     <th>Сверено</th>
-                                    <th>Не сверено</th>
-                                    <th>Итог</th>
+                                    <th><div class="checkbox_wrapper"><input type="checkbox" name="checked_ops"></div></th>
                                 </tr>
                                 </thead>
                                 <tbody id="datatable">
                                     {% for l in refuels %}
-                                    <tr data-object_id="{{ l.car__pk }}">
-                                        <td>{{ l.car__nick_name}}</td>
-                                        <td>{{ l.car__fuel_card__num}}</td>
-                                        <td>{{ l.car__fuel_card__fuel_company__name}}</td>
-                                        <td>{{ l.total_amount }}</td>
-                                        <td>{{ l.total_refuels }}</td>
-                                        <td>{{ l.already_checked }}</td>
-                                        <td {% if not l.not_checked == 0 %} class="red"{% endif %}>{{ l.not_checked }}</td>
-                                        <td>{% if l.check_finished %}<i class="icon green" icon=""></i> {% endif %}</td>
+                                    <tr>
+                                        <td>{{ l.date|date:"d-m-y H:i"}}</td>
+                                        <td>{{ l.driver.person.family_name}} {{ l.driver.person.given_name}} {{ l.driver.person.nick_name}}</td>
+                                        <td class="centertext">{{ l.amount }}</td>
+                                        <td class="centertext">{{ l.km }}</td>
+                                        <td class="centertext">{% if l.checked %}<i class="icon green" icon=""></i> {% endif %}</td>
+                                        <td class="centertext"><input type="checkbox" rel="ops" name="checked_ops[]" value="{{ l.pk }}" {% if l.checked %}checked{% endif %}></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="form_row">
+                        <a class="button" href="#" onclick="MarkSelected();"><i class="icon pt2" icon=""></i>Отметить / Снять отметку с выбранных</a>
                     </div>
                 </div>
             </div>

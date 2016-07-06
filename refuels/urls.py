@@ -23,6 +23,7 @@ urlpatterns = [
     # url(r'^(?P<pk>\d+)/docs/$', CarDocsView.as_view(), name='car_docs'),
     # url(r'^(?P<pk>\d+)/update/$', CarUpdateView.as_view(), name='car_update'),
     url(r'^list/$', RefuelsListView.as_view(), name='refuels_list'),
+    url(r'^check/cards/update/ajax/$', UpdateCheckedRefuelsAjax.as_view(), name='refuels_check_update_selected_ajax'),
     url(r'^check/cards/$', RefuelsCheckReportView.as_view(), name='refuels_check_report'),
     url(r'^check/cards/month/(?P<month>\d{1,2})/year/(?P<year>\d{4})/car/(?P<car_pk>\d+)/card/(?P<fuel_card_pk>\d+)/$', RefuelsCheckListView.as_view(), name='refuels_check_operatios'),
 ]

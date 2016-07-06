@@ -233,3 +233,8 @@ i.dot {
     display: block;
     height: 1rem;;
 }
+div.checkbox_wrapper {
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
+}

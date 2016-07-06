@@ -108,6 +108,43 @@ class DeleteNoticeView(DeleteView):
         return context_data
 
 
+class JsonPost(View):
+
+    def __init__(self, *args, **kwargs):
+        self.json = {}
+        self.errors = []
+        self.required_params = []
+        super(JsonPost, self).__init__(*args, **kwargs)
+
+    def check_required_params(self, required_params):
+        for param in required_params:
+            if param not in self.request.POST or self.request.POST[param] == '':
+                self.errors.append("POST parameter '%s' required, but not found" % param)
+                return False
+        return True
+
+    def to_json(self, ret):
+        self.json['POST'] = self.request.POST
+        if len(self.errors) > 0:
+            self.json['result'] = 0
+            self.json['errors'] = self.errors
+        else:
+            self.json['result'] = 1
+        json_ret = json.dumps(ret, indent=2)
+        return json_ret
+
+    def update_data(self, request):
+        #
+        # Заглушка для обработки во View
+        #
+        return
+
+    def post(self, request, *args, **kwargs):
+        if self.check_required_params(self.required_params):
+            self.update_data(request)
+        return HttpResponse(self.to_json(self.json))
+
+
 class _JsonObjectViews(View):
     model_name = None
     required_params = ['pk', 'colname', 'value']
@@ -159,7 +196,7 @@ class _JsonObjectViews(View):
 
 
 class JsonUpdateObject(_JsonObjectViews):
-    def update_object(self, data):
+    def update_object(self, request, data):
         model = self._get_model(self.model_name)
         obj = self._get_object(model)
         if obj:
@@ -169,8 +206,8 @@ class JsonUpdateObject(_JsonObjectViews):
 
     def get(self, request, *args, **kwargs):
         if self.check_required_params(self.required_params):
-            self.update_object(self.update_data)
-        return HttpResponse(self.to_json(self.json), mimetype='text/plain')
+            self.update_object(request, self.update_data)
+        return HttpResponse(self.to_json(self.json))
 
 
 class JsonDeleteObject(_JsonObjectViews):

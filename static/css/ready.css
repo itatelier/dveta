@@ -80,6 +80,7 @@ form { margin: 0.5rem 2rem; width: 100%;}
 .nomargin {margin: 0!important;}
 .centertext { text-align: center !important;}
 .righttext { text-align: right !important;}
+.pt2 {padding-top: 2px;}
 
 
 div._white_bordered {

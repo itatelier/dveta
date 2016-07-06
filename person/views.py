@@ -181,6 +181,6 @@ class ContactSetMainView(JsonUpdateObject):
             all_contacts = Contacts.objects.filter(person__pk=person_pk)
             all_contacts.update(**{'is_main': False})
             self.update_data['value'] = True
-            self.update_object(self.update_data)
+            self.update_object(request, self.update_data)
         return HttpResponse(self.to_json(self.json), )
 

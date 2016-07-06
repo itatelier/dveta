@@ -46,7 +46,7 @@ class RefuelsFlow(models.Model):
     summ = models.FloatField(null=False, blank=False)
     km = models.IntegerField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
-    checked = models.IntegerField(blank=False, null=False, default=0)
+    checked = models.IntegerField(blank=False, null=False, default=False)
 
     class Meta:
         db_table = 'refuels_flow'
