@@ -115,8 +115,8 @@ class RefuelsListView(LoginRequiredMixin, TemplateView):
     template_name = 'refuels/list_refuels.html'
 
 
-class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
-    template_name = 'refuels/refuels_check_fuelcards.html'
+class RefuelsCheckReportView(LoginRequiredMixin, TemplateView):
+    template_name = 'refuels/refuels_check_report.html'
     report_month_dt = False
     report_prev_dt = False
     report_next_dt = False
@@ -134,10 +134,10 @@ class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
         report_month_firstday = self.report_month_dt.replace(day=1)
         self.report_prev_dt = report_month_firstday - timedelta(days=1)
         self.report_next_dt = report_month_firstday + timedelta(days=32) # следующий месяц это первый день текущего + 32 дня
-        return super(RefuelsCheckCardsView, self).dispatch(request, *args, **kwargs)
+        return super(RefuelsCheckReportView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(RefuelsCheckCardsView, self).get_context_data(*args, **kwargs)
+        context_data = super(RefuelsCheckReportView, self).get_context_data(*args, **kwargs)
         nowtime = datetime.now()
         last_month_num = nowtime.month - 1
         # Подготовка запроса
@@ -147,7 +147,7 @@ class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
                 not_checked,
                 function='IF', template='%(function)s(%(expressions)s=0, 1, 0)'
         )
-        context_data['refuels'] = RefuelsFlow.objects.values('car__nick_name', 'car__pk', 'car__fuel_card__num', 'car__fuel_card__fuel_company__name').annotate(
+        context_data['refuels'] = RefuelsFlow.objects.filter(type=0).values('car__nick_name', 'car__pk','fuel_card__num', 'fuel_card__pk', 'fuel_card__fuel_company__name').annotate(
             total_amount=Sum('amount'),
             total_refuels = Count('id'),
             already_checked=already_checked,
@@ -156,4 +156,25 @@ class RefuelsCheckCardsView(LoginRequiredMixin, TemplateView):
         )
         context_data['prev_month'] = last_month_num - 1
         context_data['next_month'] = last_month_num - 1
+        return context_data
+
+
+class RefuelsCheckListView(LoginRequiredMixin, TemplateView):
+    template_name = 'refuels/refuels_check_operations.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(RefuelsCheckListView, self).get_context_data(*args, **kwargs)
+        car_pk = kwargs.get('car_pk')
+        fuel_card_pk = kwargs.get('fuel_card_pk')
+        month = kwargs.get('month')
+        year = kwargs.get('year')
+        refuels = RefuelsFlow.objects.filter(
+            type=0,
+            date__year=year,
+            date__month=month,
+            car__pk=car_pk,
+            fuel_card__pk=fuel_card_pk
+        )
+
+        context_data['refuels'] = refuels
         return context_data

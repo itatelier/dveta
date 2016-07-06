@@ -29,7 +29,7 @@ class FuelCardsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FuelCards
-        fields = ('pk', 'fuel_company', 'num', 'assigned_car')
+        fields = ('pk', 'fuel_company', 'num', 'assigned_to_car')
 
 
 class RefuelsFlowSerializer(serializers.ModelSerializer):

@@ -122,6 +122,7 @@ class CarFuelCardView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        # В Карточках убираем привязанную машину, в машинах - привязанную карточку обновляем
         try:
             old_card_object = FuelCards.objects.get(assigned_to_car=self.object.pk)
             old_card_object.assigned_to_car = None
