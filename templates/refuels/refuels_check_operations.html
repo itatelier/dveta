@@ -34,9 +34,20 @@
         .done(function(result){
             location.reload();
         });
+        return false;
+    }
 
-
-        console.log("Selected: " + selected_ops + " unselected: " + unselected_ops);
+    function SelectChb()  {
+        var $switch = $('input[name="checked_ops"]');
+            if ($switch.prop('checked')==false) {
+                $('input[rel="ops"]').each(function() {
+                    $(this).prop('checked', false);
+                });
+            } else {
+                $('input[rel="ops"]').each(function() {
+                    $(this).prop('checked', true);
+                });
+            }
         return false;
     }
 </script>
@@ -76,7 +87,7 @@
                                     <th class="centertext">Кол-во литров</th>
                                     <th>Километраж</th>
                                     <th>Сверено</th>
-                                    <th><div class="checkbox_wrapper"><input type="checkbox" name="checked_ops"></div></th>
+                                    <th><div class="checkbox_wrapper"><input type="checkbox" name="checked_ops" onclick="SelectChb();"></div></th>
                                 </tr>
                                 </thead>
                                 <tbody id="datatable">

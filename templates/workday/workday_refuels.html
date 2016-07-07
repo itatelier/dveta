@@ -52,7 +52,7 @@
                                 <td>{% if l.type == 0 %}<i class="icon" icon=""></i> {% endif %}</td>
                                 <td>{{ l.amount }}</td>
                                 <td>{{ l.summ }}</td>
-                                <td>{{ l.comment }}</td>
+                                <td>{{ l.comment|default_if_none:""  }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
