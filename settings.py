@@ -64,7 +64,8 @@ INSTALLED_APPS = (
     'race',
     'dds',
     'workday',
-    'refuels'
+    'refuels',
+    'talons'
 )
 
 MIDDLEWARE_CLASSES = (
