@@ -15,6 +15,7 @@ class TalonsMoveBuyForm(ModelForm):
     type = ChoiceField(label="Тип операции", choices=TalonsFlow.operation_types, initial=0, widget=widgets.HiddenInput())
     employee_group = ChoiceField(label="Группа талонодержателей", choices=TalonsFlow.employee_groups, initial=0, widget=widgets.HiddenInput())
     dump_group = ModelChoiceField(queryset=DumpGroups.objects.all(), label="Группа полигонов",  empty_label=None, required=True,)
+    qty = IntegerField(label="Количество", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
 
 
 # class RefuelForm(ModelForm):
