@@ -9,13 +9,26 @@ from django.db.models import Count
 
 from models import *
 from common.formfields import *
-from dump.models import DumpGroups
+from common.utils import DateNowInput
+from common.forms import RuDateWidget
 
-class TalonsMoveBuyForm(ModelForm):
-    type = ChoiceField(label="Тип операции", choices=TalonsFlow.operation_types, initial=0, widget=widgets.HiddenInput())
-    employee_group = ChoiceField(label="Группа талонодержателей", choices=TalonsFlow.employee_groups, initial=0, widget=widgets.HiddenInput())
+
+class DumpPriceAdd(ModelForm):
     dump_group = ModelChoiceField(queryset=DumpGroups.objects.all(), label="Группа полигонов",  empty_label=None, required=True,)
-    qty = IntegerField(label="Количество", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
+    price = DecimalField(label="Цена", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    date_start = DateField(label="Дата начала действия цены", initial=DateNowInput(), widget=RuDateWidget())
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
+
+    class Meta:
+        model = DumpPrices
+        fields = ('dump_group', 'price', 'date_start', 'comment')
+
+
+# class TalonsMoveBuyForm(ModelForm):
+#     type = ChoiceField(label="Тип операции", choices=TalonsFlow.operation_types, initial=0, widget=widgets.HiddenInput())
+#     employee_group = ChoiceField(label="Группа талонодержателей", choices=TalonsFlow.employee_groups, initial=0, widget=widgets.HiddenInput())
+#     dump_group = ModelChoiceField(queryset=DumpGroups.objects.all(), label="Группа полигонов",  empty_label=None, required=True,)
+#     qty = IntegerField(label="Количество", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
 
 
 # class RefuelForm(ModelForm):
@@ -31,5 +44,7 @@ class TalonsMoveBuyForm(ModelForm):
 #     class Meta:
 #         model = RefuelsFlow
 #         fields = ('type', 'driver', 'car', 'fuel_card', 'amount', 'summ', 'km', 'comment')
+
+
 
 

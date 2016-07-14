@@ -1,0 +1,61 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+{% endblock %}
+{%  block js %}
+<!-- DateTime       --><script type="text/javascript" src="/static/js/datetime/jquery.datetimepicker.full.min.js"></script>
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+
+        {#    Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[name=date_start]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Талоны</a></li>
+                <li class="active"><a href="#">Новая цена на талоны</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Новая цена</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Форма объекта #}
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                        <div class="form_row">
+                            <h2>{% if update_view %}Цена на талоны{% else %}Новая цена{% endif %}</h2>
+                        </div>
+                        {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

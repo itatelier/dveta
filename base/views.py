@@ -56,7 +56,6 @@ class AutoCompliteJsonView(JsonViewMix):
         except LookupError:
             self.errors.append("Model \'%s\' not found!" % model_param_value)
             return
-        # log.info("Model param value: %s model: %s" % (model_param_value, model))
         field = self.values['field']
         default_model_manager = 'objects'
         queryset_manager = default_model_manager

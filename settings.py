@@ -65,7 +65,6 @@ INSTALLED_APPS = (
     'dds',
     'workday',
     'refuels',
-    'talons'
 )
 
 MIDDLEWARE_CLASSES = (
