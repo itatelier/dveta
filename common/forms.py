@@ -32,6 +32,11 @@ class ModelChoiceFieldNameLabel(ModelChoiceField):
             return getattr(obj, self.label_field)
 
 
+class EmployeeChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "%s %s" % (obj.person.family_name, obj.person.given_name)
+
+
 class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
     formconf = None
     form_classes = None

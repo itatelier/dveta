@@ -91,6 +91,11 @@ class EmployeeMechanicsManager(models.Manager):
         return super(EmployeeMechanicsManager, self).get_queryset().select_related('person').filter(role__pk=3)
 
 
+class EmployeeManagerManager(models.Manager):
+    def get_queryset(self):
+        return super(EmployeeManagerManager, self).get_queryset().select_related('person').filter(role__pk=4)
+
+
 class EmployeeAllDefaultManager(models.Manager):
     def get_queryset(self):
         return super(EmployeeAllDefaultManager, self).get_queryset().select_related('person', 'role', 'type', 'status')
@@ -108,6 +113,7 @@ class Employies(models.Model):
     objects = EmployeeAllDefaultManager()
     drivers = EmployeeDriversManager()
     mechanics = EmployeeMechanicsManager()
+    managers = EmployeeManagerManager()
 
     class Meta:
         db_table = 'employies'
@@ -116,6 +122,8 @@ class Employies(models.Model):
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.role)
 
+    def fullname(self):
+        return u'%s %s' % (self.person.family_name, self.person.given_name)
 
 class Driverss(Employies):
     objects = EmployeeAllDefaultManager()

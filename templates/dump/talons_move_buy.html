@@ -1,0 +1,100 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+{% endblock %}
+{%  block js %}
+<!-- DateTime       --><script type="text/javascript" src="/static/js/datetime/jquery.datetimepicker.full.min.js"></script>
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+
+        {#    Виджет datepicker #}
+        $('input[rel="price_sum"]').on('change', function(){
+            set_price();
+        });
+
+        $.datetimepicker.setLocale('ru');
+        $('input[name=date_start]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+    });
+
+    function set_price() {
+        var $qty_input = $('input[name="qty"]');
+        var $price_input = $('input[name="price"]');
+        var $label= $('#price_label');
+        var qty = $qty_input.val();
+        var price = parseInt($price_input.val());
+        var sum = qty * price;
+        console.log("Price: " + price + " QTY: " + qty + " Sum: " + sum);
+        $label.html(sum);
+        return false;
+    }
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Талоны</a></li>
+                <li class="active"><a href="#">Приобретение</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Приобретение талонов</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="flex_row">
+                        <div class="flex_block _zero m10">
+                            {# Форма объекта #}
+                            <form action="" method="POST" id="new_object">{% csrf_token %}
+                                {# Скрытые поля #}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                <div class="form_row">
+                                    <h2>{% if update_view %}Цена на талоны{% else %}Новая операция приобретния{% endif %}</h2>
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/select.html" with field=form.employee  %}
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/select.html" with field=form.dump_group  %}
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.qty  %}
+                                        {% include "form_snippets/textinput.html" with field=form.price  %}
+                                        {% include "form_snippets/empty_field.html" with label="0" legend="Стоимость талонов" label_id="price_label"%}
+                                </div>
+{#                                <div class="form_row">#}
+{#                                        {% include "form_snippets/textinput.html" with field=form.sum_paid  %}#}
+{#                                        {% include "form_snippets/empty_field.html" with label="0" legend="Оплачено талонов" %}#}
+{#                                </div>#}
+                                <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.comment  %}
+                                </div>
+                                {# Кнопки #}
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                    </span>
+                                </div>
+                                {# - Кнопки #}
+                            </form>
+                        {# - Форма объекта #}
+                        </div>
+                        <div class="flex_block m10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

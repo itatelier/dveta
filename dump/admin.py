@@ -3,4 +3,3 @@ from dump.models import *
 
 admin.site.register(DumpGroups)
 admin.site.register(Dumps)
-admin.site.register(DumpPrices)

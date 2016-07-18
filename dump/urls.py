@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 # REST
 from rest_framework import routers
 router = routers.DefaultRouter()
-# router.register(r'refuels_rest', RefuelsFlowViewSet)
+router.register(r'talons_rest', TalonsFlowViewSet)
 
 
 
@@ -17,6 +17,6 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     #
     # Persons
-    url(r'^price/add/$', DumpPriceAddView.as_view(), name='dump_price_add'),
+    url(r'^price/add/$', TalonsMoveBuyView.as_view(), name='talons_move_buy'),
 ]
 

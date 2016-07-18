@@ -10,26 +10,24 @@ from django.db.models import Count
 from models import *
 from common.formfields import *
 from common.utils import DateNowInput
-from common.forms import RuDateWidget
+from common.forms import RuDateWidget, EmployeeChoiceField, ModelChoiceFieldNameLabel
+from person.models import Employies
 
 
-class DumpPriceAdd(ModelForm):
-    dump_group = ModelChoiceField(queryset=DumpGroups.objects.all(), label="Группа полигонов",  empty_label=None, required=True,)
-    price = DecimalField(label="Цена", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
-    date_start = DateField(label="Дата начала действия цены", initial=DateNowInput(), widget=RuDateWidget())
+class TalonsMoveBuyForm(ModelForm):
+    type = ChoiceField(label="Тип операции", choices=TalonsFlow.operation_types, initial=0, widget=widgets.HiddenInput())
+    employee = EmployeeChoiceField(queryset=Employies.managers.filter(role=4), label="Менеджер по закупкам",  empty_label=None, required=True,)
+    employee_group = ChoiceField(label="Группа талонодержателей", choices=TalonsFlow.employee_groups, initial=0, widget=widgets.HiddenInput())
+    dump_group = ModelChoiceFieldNameLabel(queryset=DumpGroups.objects.all(), label="Группа полигонов",  label_field="name", empty_label=None, required=True,)
+    qty = IntegerField(label="Количество", required=True, initial=0, widget=NumberInput(attrs={'size': 4, 'rel': "price_sum", 'style': 'width: 80px; text-align: right;'}))
+    price = DecimalField(label="Цена", decimal_places=0, initial=0, required=True, widget=TextInput(attrs={'size': 6, 'rel': "price_sum", 'style': 'min-width:6rem; text-align: right;'}))
+    # sum = DecimalField(label="Стоимость талонов", decimal_places=0, initial=0, required=True, widget=widgets.HiddenInput())
+    # sum_paid = DecimalField(label="Сумма оплаты", decimal_places=0, initial=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
 
     class Meta:
-        model = DumpPrices
-        fields = ('dump_group', 'price', 'date_start', 'comment')
-
-
-# class TalonsMoveBuyForm(ModelForm):
-#     type = ChoiceField(label="Тип операции", choices=TalonsFlow.operation_types, initial=0, widget=widgets.HiddenInput())
-#     employee_group = ChoiceField(label="Группа талонодержателей", choices=TalonsFlow.employee_groups, initial=0, widget=widgets.HiddenInput())
-#     dump_group = ModelChoiceField(queryset=DumpGroups.objects.all(), label="Группа полигонов",  empty_label=None, required=True,)
-#     qty = IntegerField(label="Количество", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-
+        model = TalonsFlow
+        fields = ('type', 'employee', 'employee_group', 'dump_group', 'qty', 'price', 'comment')
 
 # class RefuelForm(ModelForm):
 #     type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())

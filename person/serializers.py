@@ -76,6 +76,15 @@ class DriverSerializer(serializers.ModelSerializer):
         fields = ('pk', 'person', 'status')
 
 
+class EmployeeSerializerShort(serializers.ModelSerializer):
+    person = PersonSerializer(many=False, required=False)
+
+    class Meta:
+        depth = 1
+        model = Employies
+        fields = ('pk', 'person')
+
+
 class EmployiesFilters(django_filters.FilterSet):
     # date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_add", lookup_type='gte')
     # request_freq = django_filters.NumberFilter(name="client_options__request_freq")
