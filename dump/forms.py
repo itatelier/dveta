@@ -29,6 +29,19 @@ class TalonsMoveBuyForm(ModelForm):
         model = TalonsFlow
         fields = ('type', 'employee', 'employee_group', 'dump_group', 'qty', 'price', 'comment')
 
+
+class TalonsMoveBetweenForm(ModelForm):
+    dump_group = ModelChoiceFieldNameLabel(queryset=DumpGroups.objects.all(), label="Группа полигонов",  label_field="name", empty_label=None, required=True,)
+    employee_from = EmployeeChoiceField(queryset=Employies.objects.filter(role__in=(2,4)), label="Снятие с сотрудника",  empty_label=None, required=True,)
+    employee_to = EmployeeChoiceField(queryset=Employies.objects.filter(role__in=(2,4)), label="Передали сотруднику",  empty_label=None, required=True,)
+    qty = IntegerField(label="Количество", required=True, initial=0, widget=NumberInput(attrs={'size': 4, 'rel': "price_sum", 'style': 'width: 80px; text-align: right;'}))
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
+
+    class Meta:
+        model = TalonsFlow
+        fields = ('employee_from', 'employee_to', 'dump_group', 'qty', 'comment')
+
+
 # class RefuelForm(ModelForm):
 #     type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())
 #     driver = ModelChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True,)

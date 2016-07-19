@@ -42,7 +42,7 @@
 
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                 {# изменение формата даты #}
-                result.results[i].date_add = date_json2hr(result.results[i].date_add);
+                result.results[i].date = date_json2hr(result.results[i].date);
 
 {#                console.log("i=" + i + " Status value=" + result.results[i].status.pk);#}
                 {# добавление параметра цвета для поля статус #}
@@ -58,20 +58,22 @@
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-person_id="{{ person.id }}">
-        <td>{{{ person.given_name }}} {{{ person.family_name }}}</td>
-        <td>{{{ person.nick_name }}}</td>
-        <td>{{{ role.val }}}</td>
-        <td>{{{ type.val }}}</td>
-        <td class="{{ status_color }}">{{{ status.val }}}</td>
+    <tr data-operation_id="{{ id }}">
+        <td>{{{ date.date }}}</td>
+        <td>{{{ operation_type }}}</td>
+        <td>{{{ employee_group }}}</td>
+        <td>{{{ employee.person.family_name }}} {{{ employee.person.given_name }}}</td>
+        <td>{{{ dump_group.name }}}</td>
+        <td>{{{ qty }}}</td>
+        <td>{{{ price }}}</td>
+        <td>{{{ sum }}}</td>
         <td>{{{ comment }}}</td>
-        <td>{{{ date_add.date }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Талоны </a></li></ul>
+            <ul><li class="active" ><a href="#">Движение талонов</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -94,46 +96,44 @@
                                 </div>
                             </div>
                         </div>
-                        {# Должность Select filter  #}
+                        {# Тип операции Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Должность</legend>
-                                <div class="input_block">
-                                    <select name="role">
-                                        <option value="">любая</option>
-                                        <option value="1">диспетчер</option>
-                                        <option value="2">водитель</option>
-                                        <option value="3">механик</option>
-                                        <option value="4">менеджер</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        {# Должность Select filter  #}
-                        <div class="form_row">
-                            <div class="input_wrapper nomargin">
-                                <legend>Тип найма</legend>
+                                <legend>Тип операции</legend>
                                 <div class="input_block">
                                     <select name="type">
                                         <option value="">любой</option>
-                                        <option value="1">аутсорсинг</option>
-                                        <option value="2">штатный</option>
-                                        <option value="3">временный</option>
+                                        <option value="0">приобретение</option>
+                                        <option value="1">расход</option>
+                                        <option value="2">передача</option>
+                                        <option value="3">снятие</option>
+                                        <option value="4">утилизация</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        {# Статус Select filter  #}
+                        {# Группа полигонов Select filter  #}
                         <div class="form_row">
                             <div class="input_wrapper nomargin">
-                                <legend>Статус</legend>
+                                <legend>Группа полигонов</legend>
                                 <div class="input_block">
                                     <select name="status">
                                         <option value="">любой</option>
-                                        {% for i in status_options %}
-                                            <option value="{{ i.id }}">{{ i.val }}</option>
+                                        {% for i in dump_groups %}
+                                            <option value="{{ i.id }}">{{ i.name }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        {# Тип клиента Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Группа сотрудников</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
+                                    <label><input type="radio" name="org_type" value="0"><p>Офис</p></label>
+                                    <label><input type="radio" name="org_type" value="1"><p>Водители</p></label>
                                 </div>
                             </div>
                         </div>
@@ -154,13 +154,15 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="sortable" rel="person__family_name" >Имя Фамилия</a></th>
-                                <th><a href="#" class="sortable active" rel="person__nick_name">Ник сотрудника</a></th>
-                                <th><a href="#" class="sortable" rel="role">Должность</a></th>
-                                <th><a href="#" class="sortable" rel="type">Тип найма</a></th>
-                                <th><a href="#" class="sortable" rel="status">Статус</a></th>
+                                <th><a href="#" class="sortable" rel="date" >Дата</a></th>
+                                <th><a href="#" class="sortable active" rel="operation_type">Тип операции</a></th>
+                                <th><a href="#" class="sortable" rel="employee_group">Группа</a></th>
+                                <th><a href="#" class="sortable" rel="type">Сотрудник</a></th>
+                                <th><a href="#" class="sortable" rel="status">Группа полигонов</a></th>
+                                <th><a href="#">Количество</a></th>
+                                <th><a href="#">Цена</a></th>
+                                <th><a href="#">Стоимость</a></th>
                                 <th><a href="#">Примечание</a></th>
-                                <th><a href="#" class="sortable" rel="status">Дата добавлен</a></th>
                             </tr>
                         </thead>
                         <tbody id="datatable" class="">

@@ -43,10 +43,12 @@
                         </ul>
                     </div>
                 </li>
-                <li><a href="listing.html"><div>&#xf145;<span>Талоны</span></div></a>
+                <li><a href="{% url 'talons_flow' %}"><div>&#xf145;<span>Талоны</span></div></a>
                     <div>
                         <ul>
+                            <li><a href="{% url 'talons_flow' %}">Движение талонов</a></li>
                             <li><a href="{% url 'talons_move_buy' %}">Приобретение талонов</a></li>
+                            <li><a href="{% url 'talons_move_between' %}">Перемещение талонов</a></li>
                         </ul>
                     </div>
                 </li>

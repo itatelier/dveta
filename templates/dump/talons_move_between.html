@@ -1,0 +1,70 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+{% endblock %}
+{%  block js %}
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'talons_flow' %}">Движение талонов</a></li>
+                <li class="active"><a href="#">Передача талонов</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Передача талонов</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="flex_row">
+                        <div class="flex_block _zero m10">
+                            {# Форма объекта #}
+                            <form action="" method="POST" id="new_object">{% csrf_token %}
+                                {# Скрытые поля #}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                <div class="form_row">
+                                    <h2>{% if update_view %}Цена на талоны{% else %}Новая операция передачи талонов{% endif %}</h2>
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/select.html" with field=form.dump_group  %}
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/select.html" with field=form.employee_from  %}
+                                        {% include "form_snippets/select.html" with field=form.employee_to  %}
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.qty  %}
+                                </div>
+                                <div class="form_row">
+                                        {% include "form_snippets/textinput.html" with field=form.comment  %}
+                                </div>
+                                {# Кнопки #}
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                    </span>
+                                </div>
+                                {# - Кнопки #}
+                            </form>
+                        {# - Форма объекта #}
+                        </div>
+                        <div class="flex_block m10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

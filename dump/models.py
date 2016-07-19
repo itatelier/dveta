@@ -1,7 +1,10 @@
 # -*- coding: utf8 -*
 
 from django.db import models
+from django.db import connection
 
+import logging
+log = logging.getLogger('django')
 
 class DumpGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
@@ -29,6 +32,23 @@ class Dumps(models.Model):
         return u'[%s] %s' % (self.id, self.name)
 
 
+class TalonsFlowManager(models.Manager):
+    def get_queryset(self):
+        return super(TalonsFlowManager, self).get_queryset().select_related('employee', 'dump_group', )
+
+    @staticmethod
+    def move_between_proc():
+    # @staticmethod
+    # def move_bunker_between_objects(operation_type, object_out_id, object_in_id, bunker_type, qty):
+    #     log.info("1: %s 2: %s 3: %s 4: %s 5: %s" % (operation_type, object_out_id, object_in_id, bunker_type, qty))
+    #
+    #     cursor = connection.cursor()
+    #     ret = cursor.callproc("move_bunker_between_objects", (operation_type, object_out_id, object_in_id, bunker_type, qty))
+    #     row = cursor.fetchone()
+    #     cursor.close()
+    #     return row
+
+
 class TalonsFlow(models.Model):
     operation_types = ([0, 'приобретение'], [1, 'расход'], [2, 'снятие'], [3, 'передача'], [4, 'утилизация'],)
     employee_groups = ([0, 'офис'], [1, 'водители'])
@@ -44,8 +64,10 @@ class TalonsFlow(models.Model):
     paid_qty = models.IntegerField(null=True, blank=True)
     price = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     sum = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
-    paid_summ = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
+    paid_sum = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     comment = models.CharField(max_length=255L, null=True, blank=True)
+
+    objects = TalonsFlowManager()
 
     class Meta:
         db_table = 'talons_flow'
