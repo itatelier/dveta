@@ -15,6 +15,8 @@ from django.apps import apps
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
+from django.db.models import Sum, Count, Func, F
+
 
 
 # API
@@ -75,13 +77,30 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+        # выясняем группу тулонодержателей
+        employee_out_role = Employies.objects.get(pk=form.data['employee_from']).role.pk
+        employee_in_role = Employies.objects.get(pk=form.data['employee_to']).role.pk
+        employee_out_group = 0
+        employee_in_group = 0
+        if employee_out_role == 2:
+            employee_out_group = 1
+        if employee_in_role == 2:
+            employee_in_group = 1
+        # выполняем процедуру перемещения
+        proc_result, proc_error = TalonsFlow.objects.move_between_proc(
+            3, # тип операции ПЕРЕДАЧА
+            form.data['dump_group'],
+            form.data['qty'],
+            form.data['employee_from'],
+            form.data['employee_to'],
+            employee_out_group,
+            employee_in_group
+        )
+        # если ессть ошибкив  процедуре добавляем ошибку в форму
+        if proc_result != 1:
+            form.add_error(None, proc_error)
         if form.is_valid():
-            flow_object = form.save(commit=False)
-            flow_object.operation_type = 0
-            flow_object.sum = flow_object.qty * flow_object.price
-            # flow_object.paid_qty = flow_object.sum_paid / flow_object.price
-            flow_object.save()
-            self.success_url = '/'
+            self.success_url = reverse('talons_flow')
             return HttpResponseRedirect(self.success_url)
         else:
             self.object = form.instance

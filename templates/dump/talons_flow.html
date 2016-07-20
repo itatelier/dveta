@@ -43,6 +43,8 @@
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                 {# изменение формата даты #}
                 result.results[i].date = date_json2hr(result.results[i].date);
+{#                if (result.results[i].is_closed == 'true')#}
+{#                result.results[i].is_closed = date_json2hr(result.results[i].date);#}
 
 {#                console.log("i=" + i + " Status value=" + result.results[i].status.pk);#}
                 {# добавление параметра цвета для поля статус #}
@@ -64,7 +66,9 @@
         <td>{{{ employee_group }}}</td>
         <td>{{{ employee.person.family_name }}} {{{ employee.person.given_name }}}</td>
         <td>{{{ dump_group.name }}}</td>
-        <td>{{{ qty }}}</td>
+        <td width="50">{{{ qty }}}</td>
+        <td width="50">{{{ remains }}}</td>
+        <td width="50">{{#is_closed}}<i class="icon inherit red" icon=""></i>{{/is_closed}}</td>
         <td>{{{ price }}}</td>
         <td>{{{ sum }}}</td>
         <td>{{{ comment }}}</td>
@@ -101,7 +105,7 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Тип операции</legend>
                                 <div class="input_block">
-                                    <select name="type">
+                                    <select name="operation_type">
                                         <option value="">любой</option>
                                         <option value="0">приобретение</option>
                                         <option value="1">расход</option>
@@ -117,7 +121,7 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Группа полигонов</legend>
                                 <div class="input_block">
-                                    <select name="status">
+                                    <select name="dump_group">
                                         <option value="">любой</option>
                                         {% for i in dump_groups %}
                                             <option value="{{ i.id }}">{{ i.name }}</option>
@@ -131,9 +135,20 @@
                             <div class="input_wrapper nomargin">
                                 <legend>Группа сотрудников</legend>
                                 <div class="input_block">
-                                    <label><input type="radio" name="org_type" value=""  checked><p>Любой тип</p></label>
-                                    <label><input type="radio" name="org_type" value="0"><p>Офис</p></label>
-                                    <label><input type="radio" name="org_type" value="1"><p>Водители</p></label>
+                                    <label><input type="radio" name="employee_group" value=""  checked><p>Любой тип</p></label>
+                                    <label><input type="radio" name="employee_group" value="0"><p>Офис</p></label>
+                                    <label><input type="radio" name="employee_group" value="1"><p>Водители</p></label>
+                                </div>
+                            </div>
+                        </div>
+                        {# Тип клиента Radio filter  #}
+                        <div class="form_row">
+                            <div class="input_wrapper nomargin">
+                                <legend>Закрытые приходы</legend>
+                                <div class="input_block">
+                                    <label><input type="radio" name="not_closed" value=""  checked><p>Любые</p></label>
+                                    <label><input type="radio" name="not_closed" value="2"><p>Только открытые</p></label>
+                                    <label><input type="radio" name="not_closed" value="3"><p>Только закрытые</p></label>
                                 </div>
                             </div>
                         </div>
@@ -160,6 +175,8 @@
                                 <th><a href="#" class="sortable" rel="type">Сотрудник</a></th>
                                 <th><a href="#" class="sortable" rel="status">Группа полигонов</a></th>
                                 <th><a href="#">Количество</a></th>
+                                <th><a href="#">Остаток</a></th>
+                                <th><a href="#">Закрыто</a></th>
                                 <th><a href="#">Цена</a></th>
                                 <th><a href="#">Стоимость</a></th>
                                 <th><a href="#">Примечание</a></th>

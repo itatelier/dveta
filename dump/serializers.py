@@ -48,7 +48,7 @@ class TalonsFlowSerializer(serializers.ModelSerializer):
     class Meta:
         model = TalonsFlow
         depth = 1
-        fields = ('pk', 'date', 'operation_type', 'employee', 'employee_group', 'dump_group', 'dds_operation', 'qty', 'price', 'sum', 'comment', )
+        fields = ('pk', 'date', 'operation_type', 'employee', 'employee_group', 'dump_group', 'dds_operation', 'qty', 'price', 'sum', 'remains', 'is_closed', 'comment', )
 
     def get_employee_group(self, obj):
         return obj.get_employee_group_display()
@@ -60,7 +60,8 @@ class TalonsFlowSerializer(serializers.ModelSerializer):
 class TalonsFlowFilters(django_filters.FilterSet):
     date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='gte')
     date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='lte')
+    not_closed = django_filters.BooleanFilter(name='is_closed', lookup_type='isnull')
 
     class Meta:
         model = TalonsFlow
-        fields = ['date_after', 'date_before', 'operation_type', 'employee', 'employee_group', 'dump_group', ]
+        fields = ['date_after', 'date_before', 'operation_type', 'employee', 'employee_group', 'dump_group', 'not_closed']

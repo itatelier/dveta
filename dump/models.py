@@ -43,7 +43,7 @@ class TalonsFlowManager(models.Manager):
         row = cursor.fetchone()
         # log.info("--- Proc result: %s Row count: %s" % (row[0], row[1]))
         cursor.close()
-        return row[0]
+        return row[0], row[1]
 
 
 class TalonsFlow(models.Model):
@@ -62,6 +62,8 @@ class TalonsFlow(models.Model):
     price = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     sum = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     paid_sum = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
+    remains = models.IntegerField(null=True, blank=True)
+    is_closed = models.NullBooleanField(null=True, blank=True)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
     objects = TalonsFlowManager()

@@ -49,6 +49,8 @@
                                 <div class="form_row">
                                         {% include "form_snippets/textinput.html" with field=form.comment  %}
                                 </div>
+                                {# ошибки формы #}
+                                {% include "form_snippets/form_errors.html" with form=form %}
                                 {# Кнопки #}
                                 <div class="form_row">
                                     <span class="button_block">
