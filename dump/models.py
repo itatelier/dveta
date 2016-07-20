@@ -37,16 +37,13 @@ class TalonsFlowManager(models.Manager):
         return super(TalonsFlowManager, self).get_queryset().select_related('employee', 'dump_group', )
 
     @staticmethod
-    def move_between_proc():
-    # @staticmethod
-    # def move_bunker_between_objects(operation_type, object_out_id, object_in_id, bunker_type, qty):
-    #     log.info("1: %s 2: %s 3: %s 4: %s 5: %s" % (operation_type, object_out_id, object_in_id, bunker_type, qty))
-    #
-    #     cursor = connection.cursor()
-    #     ret = cursor.callproc("move_bunker_between_objects", (operation_type, object_out_id, object_in_id, bunker_type, qty))
-    #     row = cursor.fetchone()
-    #     cursor.close()
-    #     return row
+    def move_between_proc(operation_type, dump_group_id, qty, employee_out_id, employee_in_id, employee_group_out_id, employee_group_in_id):
+        cursor = connection.cursor()
+        ret = cursor.callproc("talons_move", (operation_type, dump_group_id, qty, employee_out_id, employee_in_id, employee_group_out_id, employee_group_in_id))
+        row = cursor.fetchone()
+        # log.info("--- Proc result: %s Row count: %s" % (row[0], row[1]))
+        cursor.close()
+        return row[0]
 
 
 class TalonsFlow(models.Model):
