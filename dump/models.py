@@ -2,6 +2,8 @@
 
 from django.db import models
 from django.db import connection
+from common.dbtools import fetch_sql_allintuple, fetch_sql_row
+
 
 import logging
 log = logging.getLogger('django')
@@ -44,6 +46,21 @@ class TalonsFlowManager(models.Manager):
         # log.info("--- Proc result: %s Row count: %s" % (row[0], row[1]))
         cursor.close()
         return row[0], row[1]
+
+    @staticmethod
+    def report_by_dump_group():
+        query = """SELECT
+                    dump_groups.name as dump_group_name
+                    ,flow.dump_group_id,
+                    SUM(IF(flow.employee_group = 0, IFNULL(remains, qty) , NULL)) AS remains0,
+                    SUM(IF(flow.employee_group = 1, IFNULL(remains,qty) , NULL)) AS remains1
+                FROM talons_flow as flow
+                JOIN dump_groups AS dump_groups ON flow.dump_group_id = dump_groups.id
+                WHERE (is_closed IS NULL
+                    AND NOT (operation_type IN (1, 2)))
+                GROUP BY dump_group_id"""
+        result = fetch_sql_allintuple(query, params=None)
+        return result
 
 
 class TalonsFlow(models.Model):

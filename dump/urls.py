@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^talons/move/buy/$', TalonsMoveBuyView.as_view(), name='talons_move_buy'),
     url(r'^talons/move/between/$', TalonsMoveBetweenView.as_view(), name='talons_move_between'),
     url(r'^talons_flow/$', TalonsFlowView.as_view(), name='talons_flow'),
+    url(r'^talons/report/by_dump_group/$', TalonsReportRemainsByGroup.as_view(), name='talons_report_by_dump_group'),
 
 ]
 

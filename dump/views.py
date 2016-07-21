@@ -105,3 +105,16 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
         else:
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class TalonsReportRemainsByGroup(TemplateView):
+    template_name = 'dump/talons_report_remains_bygroup.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(TalonsReportRemainsByGroup, self).get_context_data(*args, **kwargs)
+        tqty = Sum(Func('remains', function='IFNULL', template='%(function)s(%(expressions)s,qty)'))
+        context_data.update({
+            #'report_data': TalonsFlow.objects.filter(is_closed__isnull=True).exclude(operation_type__in=(1, 2)).values('employee_group',).annotate(remains=tqty)
+            'report_by_dump_group' : TalonsFlow.objects.report_by_dump_group()
+        })
+        return context_data

@@ -1,0 +1,61 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+{% endblock %}
+{%  block js %}
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'company_list_clients' %}">Талоны</a></li>
+                <li class="active"><a href="#">Остаток по группам</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul><li><a href="#" class="active">Остаток по группам</a></li></ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="flex_row">
+                        <div class="flex_block _zero m10">
+                            {# Информационный блок #}
+                            <div class="sheet_row_headered">
+                                <h2>Остатки талонов по группам</h2>
+                                <table class="sheet_headered">
+                                    <thead>
+                                        <tr>
+                                            <th>Группа полигонов</th>
+                                            <th>Офис</th>
+                                            <th>Водители</th>
+                                        </tr>
+                                    </thead>
+                                    {% for row in report_by_dump_group %}
+                                    <tr>
+                                        <td>{{ row.dump_group_name }}</td>
+                                        <td>{{ row.remains0|default_if_none:"0"}}</td>
+                                        <td>{{ row.remains1|default_if_none:"0"}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            {# - Информационный блок #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
