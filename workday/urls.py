@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^(?P<date>\d{1,2}-\d{1,2}-\d{2})/car/(?P<car_pk>\d+)/races/$', WorkdayRacesView.as_view(), name='workday_races'),
     url(r'^(?P<date>\d{1,2}-\d{1,2}-\d{2})/car/(?P<car_pk>\d+)/dds/$', WorkdayDdsView.as_view(), name='workday_dds'),
     url(r'^(?P<date>\d{1,2}-\d{1,2}-\d{2})/car/(?P<car_pk>\d+)/refuels/$', WorkdayRefuelsView.as_view(), name='workday_refuels'),
+    url(r'^(?P<date>\d{1,2}-\d{1,2}-\d{2})/car/(?P<car_pk>\d+)/talons/$', WorkdayTalonsView.as_view(), name='workday_talons'),
 ]
 

@@ -43,18 +43,6 @@
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
                 {# изменение формата даты #}
                 result.results[i].date = date_json2hr(result.results[i].date);
-{#                if (result.results[i].is_closed == 'true')#}
-{#                result.results[i].is_closed = date_json2hr(result.results[i].date);#}
-
-{#                console.log("i=" + i + " Status value=" + result.results[i].status.pk);#}
-                {# добавление параметра цвета для поля статус #}
-{#                if (result.results[i].status.pk == 1) {#}
-{#                    result.results[i].status_color = "green";#}
-{#                } else if (result.results[i].status.pk == 2) {#}
-{#                    result.results[i].status_color = "blue";#}
-{#                } else if (result.results[i].status.pk == 3){#}
-{#                    result.results[i].status_color = "red";#}
-{#                }#}
             }
         }
 </script>

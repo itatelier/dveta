@@ -74,6 +74,13 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
     form_class = TalonsMoveBetweenForm
     success_url = '/dump/talons_flow'
     queryset = TalonsFlow.objects.all()
+    employee_from_pk = False
+    employee_to_pk = False
+
+    def dispatch(self, request, *args, **kwargs):
+        self.employee_from_pk = self.kwargs.get('employee_from', False)
+        self.employee_to_pk = self.kwargs.get('employee_to', False)
+        return super(TalonsMoveBetweenView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()

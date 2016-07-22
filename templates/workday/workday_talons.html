@@ -1,0 +1,95 @@
+{% extends "workday/workday_base.html" %}
+{% block jscontent %}
+    <script>
+    $(document).ready(function() {
+        {#  Переход на карточу   #}
+        $('#datatable').on("click", 'tr', function () {
+            var id = $(this).data('object_id');
+            console.log("---DAta ID: " + id);
+            var url = "/dds/operation/" + id + "/card";
+            document.location.href = url;
+        });
+    });
+    </script>
+{% endblock %}
+{% block cardriver %}{% include 'workday/workday_block_cardriver.html' %}{% endblock %}
+{% block stats %}{% include 'workday/workday_block_stats.html' %}{% endblock %}
+{% block tabdata %}
+    {% include 'workday/workday_tabs_menu.html' with sel=3 date=view.date driver_pk=view.driver_pk %}
+    <div class="flex_row">
+        <div class="sheet_block_tabbed _white_bordered">
+            {# ----------- Заголовок-бар --------- #}
+            <div class="flex_column flex_vcentered">
+                <div class="flex_block flex_end _zero flex flex_vcentered">
+                    <h2 class="blue">Сверка</h2>
+                    <div class="input_wrapper">
+                        <div class="input_block _inline">
+                            <label><input type="checkbox" name="ch1" checked><p>Талоны</p></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# ----------- Заголовок-бар --------- #}
+            <div class="flex_row">
+                <div class="flex_column marginr10">
+                    <h3 class="">Остаток талонов на руках</h3>
+                    <table class="sheet_headered  margint10 marginr10 " >
+                        <thead>
+                        <tr>
+                            <th width="320px" class="centertext">Группа полигонов</th>
+                            <th>Остаток</th>
+                        </tr>
+                        </thead>
+                        <tbody id="datatable">
+                            {% for l in talons_remains %}
+                            <tr data-object_id="{{ l.pk }}">
+                                <td>{{ l.dump_group__name }}</td>
+                                <td>{{ l.remains }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex_column">
+                    <h3 class="marginl10">Движение талонов за день</h3>
+                    <div class="flex_block m10">
+                    <table class="sheet_headered" >
+                        <thead>
+                        <tr>
+                            <th>Операция</th>
+                            <th>Группа полигонов</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                            <th>Стоимость</th>
+                        </tr>
+                        </thead>
+                        <tbody id="datatable">
+                            {% for l in talons_flow %}
+                            <tr data-object_id="{{ l.pk }}">
+                                <td>{{ l.get_operation_type_display }}</td>
+                                <td>{{ l.dump_group.name }}</td>
+                                <td>{{ l.qty }}</td>
+                                <td>{{ l.price }}</td>
+                                <td>{{ l.sum }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    </div>
+                </div>
+                <div class="flex_column marginl10">
+                    <h3 class="marginl10">Новая операция</h3>
+                    <div class="flex_block m10">
+                        <ul class="linklist">
+                            <li><a href="{% url 'refuel_create' 0 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по карте</a></li>
+                            <li><a href="{% url 'refuel_create' 1 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка за наличные</a></li>
+                            <li><a href="{% url 'refuel_create' 2 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по талону</a></li>
+                            <li><a href="{% url 'refuel_create' 3 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка ДТ на Базу</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

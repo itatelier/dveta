@@ -6,7 +6,7 @@ from django.forms.models import modelform_factory
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView
 from common.utils import GetObjectOrNone
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum
+from django.db.models import Sum, Count, Func, F
 from common.forms import *
 from datetime import datetime, timedelta
 from race.models import *
@@ -14,6 +14,8 @@ from dds.models import *
 from car.models import *
 from person.models import *
 from refuels.models import *
+from dump.models import *
+
 
 
 from person.models import Employies
@@ -104,3 +106,16 @@ class WorkdayRefuelsView(WorkdayBaseView):
         context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
         return context_data
 
+
+class WorkdayTalonsView(WorkdayBaseView):
+    template_name = 'workday/workday_talons.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(WorkdayTalonsView, self).get_context_data(*args, **kwargs)
+        tqty = Sum(Func('remains', function='IFNULL', template='%(function)s(%(expressions)s,qty)'))
+        context_data['talons_remains'] = TalonsFlow.objects.filter(is_closed__isnull=True, employee=self.driver_pk).exclude(operation_type__in=(1, 2)).values('dump_group', 'dump_group__name',).annotate(remains=tqty)
+        context_data['talons_flow'] = TalonsFlow.objects.filter(
+            date__range=(self.date.date(), self.date.date() + timedelta(days=1)),
+            employee=self.driver_pk
+        )
+        return context_data
