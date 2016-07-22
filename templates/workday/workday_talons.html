@@ -82,10 +82,8 @@
                     <h3 class="marginl10">Новая операция</h3>
                     <div class="flex_block m10">
                         <ul class="linklist">
-                            <li><a href="{% url 'refuel_create' 0 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по карте</a></li>
-                            <li><a href="{% url 'refuel_create' 1 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка за наличные</a></li>
-                            <li><a href="{% url 'refuel_create' 2 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по талону</a></li>
-                            <li><a href="{% url 'refuel_create' 3 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка ДТ на Базу</a></li>
+                            <li><a href="{% url 'talons_move_between' %}?employee_from={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Снятие талона с водителя</a></li>
+                            <li><a href="{% url 'talons_move_between' %}?employee_to={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Передча талона водителю</a></li>
                         </ul>
                     </div>
                 </div>

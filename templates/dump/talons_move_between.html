@@ -36,12 +36,28 @@
                                 <div class="form_row">
                                     <h2>{% if update_view %}Цена на талоны{% else %}Новая операция передачи талонов{% endif %}</h2>
                                 </div>
+                                {# блок информации о передающем/принимающем #}
+                                <div class="flex_row">
+                                    <table class="sheet_simple">
+                                        {% if data.employee_from %}
+                                            <tr><td>Снятие талонов с сотрудника: </td><td><b>{{ data.employee_from.person.given_name }}{{ data.employee_from.person.family_name }} [{{ data.employee_from.person.nick_name }}]</b></td></tr>
+                                        {% endif %}
+                                        {% if data.employee_to %}
+                                            <tr><td>Передча талонов сотруднику: </td><td><b>{{ data.employee_to.person.given_name }}{{ data.employee_to.person.family_name }} [{{ data.employee_to.person.nick_name }}]</b></td></tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                                {# - блок информации о передающем/принимающем #}
                                 <div class="form_row">
                                         {% include "form_snippets/select.html" with field=form.dump_group  %}
                                 </div>
                                 <div class="form_row">
+                                    {% if not view.employee_from_pk %}
                                         {% include "form_snippets/select.html" with field=form.employee_from  %}
+                                    {% endif %}
+                                    {% if not view.employee_to_pk %}
                                         {% include "form_snippets/select.html" with field=form.employee_to  %}
+                                    {% endif %}
                                 </div>
                                 <div class="form_row">
                                         {% include "form_snippets/textinput.html" with field=form.qty  %}

@@ -78,14 +78,39 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
     employee_to_pk = False
 
     def dispatch(self, request, *args, **kwargs):
-        self.employee_from_pk = self.kwargs.get('employee_from', False)
-        self.employee_to_pk = self.kwargs.get('employee_to', False)
+        self.employee_from_pk = request.GET.get('employee_from', False)
+        self.employee_to_pk = request.GET.get('employee_to', False)
         return super(TalonsMoveBetweenView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        if self.request.GET.get('return_url'):
+            return self.request.GET.get('return_url')
+        else:
+            return reverse('/')
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        self.object = None
+        # Передача параметров в форму из урла
+        initial = {}
+        data = {}    # Данные для контекста шаблона
+        if self.employee_from_pk:
+            initial['employee_from'] = self.employee_from_pk
+            form.fields['employee_from'].widget = widgets.HiddenInput()
+            data['employee_from'] = Employies.objects.select_related('person').get(pk=self.employee_from_pk)
+        if self.employee_to_pk:
+            initial['employee_to'] = self.employee_to_pk
+            form.fields['employee_to'].widget = widgets.HiddenInput()
+            data['employee_to'] = Employies.objects.select_related('person').get(pk=self.employee_to_pk)
+        form.initial = initial
+        return self.render_to_response(self.get_context_data(form=form, data=data))
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         # выясняем группу тулонодержателей
-        employee_out_role = Employies.objects.get(pk=form.data['employee_from']).role.pk
+        if 'employee_from' in form.data:
+            self.employee_from_pk = form.data['employee_from']
+        employee_out_role = Employies.objects.get(pk=self.employee_from_pk).role.pk
         employee_in_role = Employies.objects.get(pk=form.data['employee_to']).role.pk
         employee_out_group = 0
         employee_in_group = 0
@@ -98,7 +123,7 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
             3, # тип операции ПЕРЕДАЧА
             form.data['dump_group'],
             form.data['qty'],
-            form.data['employee_from'],
+            self.employee_from_pk,
             form.data['employee_to'],
             employee_out_group,
             employee_in_group
@@ -110,6 +135,7 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
             self.success_url = reverse('talons_flow')
             return HttpResponseRedirect(self.success_url)
         else:
+            data = {}  # Данные для контекста шаблона
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form))
 
