@@ -88,12 +88,10 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
         else:
             return reverse('/')
 
-    def get(self, request, *args, **kwargs):
-        form = self.get_form()
-        self.object = None
-        # Передача параметров в форму из урла
+    def get_data(self, **kwargs):
         initial = {}
         data = {}    # Данные для контекста шаблона
+        form = self.get_form()
         if self.employee_from_pk:
             initial['employee_from'] = self.employee_from_pk
             form.fields['employee_from'].widget = widgets.HiddenInput()
@@ -103,11 +101,17 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
             form.fields['employee_to'].widget = widgets.HiddenInput()
             data['employee_to'] = Employies.objects.select_related('person').get(pk=self.employee_to_pk)
         form.initial = initial
+        return form, data
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form, data = self.get_data()
         return self.render_to_response(self.get_context_data(form=form, data=data))
 
     def post(self, request, *args, **kwargs):
-        form = self.get_form()
+        form, data = self.get_data()
         # выясняем группу тулонодержателей
+        log.info("--- employee_from_pk: %s employee_to_pk: %s " % (self.employee_from_pk, self.employee_to_pk))
         if 'employee_from' in form.data:
             self.employee_from_pk = form.data['employee_from']
         employee_out_role = Employies.objects.get(pk=self.employee_from_pk).role.pk
@@ -135,9 +139,8 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
             self.success_url = reverse('talons_flow')
             return HttpResponseRedirect(self.success_url)
         else:
-            data = {}  # Данные для контекста шаблона
             self.object = form.instance
-            return self.render_to_response(self.get_context_data(form=form))
+            return self.render_to_response(self.get_context_data(form=form, data=data))
 
 
 class TalonsReportRemainsByGroup(TemplateView):

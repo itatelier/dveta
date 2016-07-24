@@ -42,8 +42,9 @@ class TalonsFlowManager(models.Manager):
     def move_between_proc(operation_type, dump_group_id, qty, employee_out_id, employee_in_id, employee_group_out_id, employee_group_in_id):
         cursor = connection.cursor()
         ret = cursor.callproc("talons_move", (operation_type, dump_group_id, qty, employee_out_id, employee_in_id, employee_group_out_id, employee_group_in_id))
+        log.info("--- Proc params: operation_type=%s dump_group_id=%s qty=%s employee_out_id=%s employee_in_id=%s employee_group_out_id=%s employee_group_in_id=%s" % (operation_type, dump_group_id, qty, employee_out_id, employee_in_id, employee_group_out_id, employee_group_in_id))
         row = cursor.fetchone()
-        # log.info("--- Proc result: %s Row count: %s" % (row[0], row[1]))
+        #log.info("--- Proc result: %s Row count: %s" % (row[0], row[1]))
         cursor.close()
         return row[0], row[1]
 
