@@ -72,7 +72,6 @@ class TalonsMoveBuyView(LoginRequiredMixin, CreateView):
 class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
     template_name = 'dump/talons_move_between.html'
     form_class = TalonsMoveBetweenForm
-    success_url = '/dump/talons_flow'
     queryset = TalonsFlow.objects.all()
     employee_from_pk = False
     employee_to_pk = False
@@ -110,34 +109,36 @@ class TalonsMoveBetweenView(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form, data = self.get_data()
-        # выясняем группу тулонодержателей
-        log.info("--- employee_from_pk: %s employee_to_pk: %s " % (self.employee_from_pk, self.employee_to_pk))
-        if 'employee_from' in form.data:
-            self.employee_from_pk = form.data['employee_from']
-        employee_out_role = Employies.objects.get(pk=self.employee_from_pk).role.pk
-        employee_in_role = Employies.objects.get(pk=form.data['employee_to']).role.pk
-        employee_out_group = 0
-        employee_in_group = 0
-        if employee_out_role == 2:
-            employee_out_group = 1
-        if employee_in_role == 2:
-            employee_in_group = 1
-        # выполняем процедуру перемещения
-        proc_result, proc_error = TalonsFlow.objects.move_between_proc(
-            3, # тип операции ПЕРЕДАЧА
-            form.data['dump_group'],
-            form.data['qty'],
-            self.employee_from_pk,
-            form.data['employee_to'],
-            employee_out_group,
-            employee_in_group
-        )
-        # если ессть ошибкив  процедуре добавляем ошибку в форму
-        if proc_result != 1:
-            form.add_error(None, proc_error)
         if form.is_valid():
-            self.success_url = reverse('talons_flow')
-            return HttpResponseRedirect(self.success_url)
+            # выясняем группу тулонодержателей
+            if 'employee_from' in form.data:
+                self.employee_from_pk = form.data['employee_from']
+            if 'employee_to' in form.data:
+                self.employee_to_pk = form.data['employee_to']
+            employee_out_role = Employies.objects.get(pk=self.employee_from_pk).role.pk
+            employee_in_role = Employies.objects.get(pk=self.employee_to_pk).role.pk
+            employee_out_group = 0
+            employee_in_group = 0
+            if employee_out_role == 2:
+                employee_out_group = 1
+            if employee_in_role == 2:
+                employee_in_group = 1
+            # выполняем процедуру перемещения
+            proc_result, proc_error = TalonsFlow.objects.move_between_proc(
+                3,  # тип операции ПЕРЕДАЧА
+                form.data['dump_group'],
+                form.data['qty'],
+                self.employee_from_pk,
+                form.data['employee_to'],
+                employee_out_group,
+                employee_in_group
+            )
+            # если ессть ошибки в процедуре добавляем ошибку в форму и повторное ее выводим
+            if proc_result != 1:
+                form.add_error(None, proc_error)
+                self.object = form.instance
+                return self.render_to_response(self.get_context_data(form=form, data=data))
+            return HttpResponseRedirect(self.get_success_url())
         else:
             self.object = form.instance
             return self.render_to_response(self.get_context_data(form=form, data=data))

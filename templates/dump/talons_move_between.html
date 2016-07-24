@@ -52,10 +52,10 @@
                                         {% include "form_snippets/select.html" with field=form.dump_group  %}
                                 </div>
                                 <div class="form_row">
-                                    {% if not view.employee_from_pk %}
+                                    {% if not form.employee_from.is_hidden %}
                                         {% include "form_snippets/select.html" with field=form.employee_from  %}
                                     {% endif %}
-                                    {% if not view.employee_to_pk %}
+                                    {% if not form.employee_to.is_hidden %}
                                         {% include "form_snippets/select.html" with field=form.employee_to  %}
                                     {% endif %}
                                 </div>
