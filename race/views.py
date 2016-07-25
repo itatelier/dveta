@@ -18,6 +18,7 @@ from contragent.models import *
 from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
 from dds.models import *
+from dump.models import TalonsFlow
 
 
 class RaceCreateView(LoginRequiredMixin, CreateView):
@@ -49,9 +50,26 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
             # В шаблоне есть hidden input: is_mark_required. Его значение устанавливается после функции инфо о клиенте
             if form.cleaned_data['is_mark_required']:
                 race_object.mark_required = True
+            log.info(u"---- Dump: %s  PAy type: %s Dump object param: %s  Object pay type: %s" % (form.cleaned_data['dump'], form.cleaned_data['dump_pay_type'], race_object.dump, race_object.dump_pay_type))
+
+            # Создаем запись в журнале талонов
+            if race_object.dump and race_object.dump_pay_type == True:
+                log.info("---- Расход талона! Dump group: %s" % race_object.dump.group.pk)
+                proc_result, proc_error = TalonsFlow.objects.move_between_proc(
+                    1,                          # Тип операции РАСХОД
+                    race_object.dump.group.pk,  # Группа полигона
+                    1,                          # Количество расходуемых талонов
+                    race_object.driver.pk,      # Сотрудник, с которого снимают талон (водитель)
+                    0,                         # Пусто, нет сотрудника для передачи талона
+                    1,                          # Группа талонодержателей ВОДИТЕЛИ
+                    0                          # Пусто, Группа талонодержателей получателя не используется
+                )
+                if proc_result != 1:
+                    form.add_error(None, proc_error)
+                    self.object = form.instance
+                    return self.render_to_response(self.get_context_data(form=form))
             # Обновление ДДС
-            if race_object.pay_way:
-                # если оплата Безналичная
+            if race_object.pay_way:  # если оплата Безналичная
                 DdsFlow.objects.flow_move(
                     item_out_id=18,
                     account_out_id=race_object.contragent.money_account.get().pk,
@@ -61,8 +79,7 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                     pay_way_in=True,
                     summ=race_object.summ
                  )
-            else:
-                # если оплата Нал
+            else:       # если оплата Нал
                 DdsFlow.objects.flow_op(
                     17,
                     # race_object.contragent.money_account.get().pk,

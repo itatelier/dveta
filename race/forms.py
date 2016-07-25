@@ -130,7 +130,7 @@ class RaceUpdateForm(ModelForm):
     recommendation = CharField(label="Примечание к рейсу", required=False, widget=Textarea(attrs={'rows': 2, 'cols': 40}))
 
     dump = ModelChoiceFieldNameLabel(queryset=Dumps.objects.all(), required=False, empty_label="Нет полигона", label="Полигон", label_field='name')
-    dump_pay_type = ChoiceField(label="Плата за полигон", choices=pay_way_choices,  widget=RadioSelect())
+    dump_pay_type = ChoiceField(label="Плата за полигон", choices=dump_pay_way_choices,  widget=RadioSelect())
     dump_cash = IntegerField(label="Сумма", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     dump_cash_extra = IntegerField(label="Доп. расход", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
     dump_cash_comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 10}))

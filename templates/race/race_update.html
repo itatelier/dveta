@@ -338,13 +338,7 @@ div.select2_result_wrapper > span > i {
 {#                                    <h2 class="blue">Сброс</h2>#}
                                     <div class="form_row">
                                         {% include "form_snippets/textinput.html" with field=form.dump  %}
-                                        <div class="input_wrapper">
-                                            <div class="input_block _inline">
-                                                <legend>Форма оплаты </legend>
-                                                <label><input type="radio" name="dump_pay_type" value="False" {% if form.dump_pay_type.value != True %}checked{% endif %}>Талон</label>
-                                                <label><input type="radio" name="dump_pay_type" value="True" {% if form.dump_pay_type.value == True %}checked{% endif %}>Наличные</label>
-                                            </div>
-                                        </div>
+                                        {% include "form_snippets/radio.html" with field=form.dump_pay_type  %}
                                         {% include "form_snippets/textinput.html" with field=form.dump_cash  %}
                                         {% include "form_snippets/textinput.html" with field=form.dump_cash_extra  %}
                                         {% include "form_snippets/textinput.html" with field=form.dump_cash_comment  %}
