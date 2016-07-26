@@ -53,7 +53,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'rest_framework',
     'common',
-    # 'dummyapp',
     'company',
     'contragent',
     'person',
@@ -65,6 +64,7 @@ INSTALLED_APPS = (
     'dds',
     'workday',
     'refuels',
+    'salary'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^refuels/', include('refuels.urls')),
     url(r'^dump/', include('dump.urls')),
     url(r'^dds/', include('dds.urls')),
+    url(r'^salary/', include('salary.urls')),
     url(r'^workday/', include('workday.urls')),
 
     # Admin
