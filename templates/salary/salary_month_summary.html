@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active" ><a href="#">Зарплата водителей</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "bunker/bunker_left_bar.html" with sel=1 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}
