@@ -26,3 +26,34 @@ class SalaryFlow(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s %s' % (self.id, self.date_add, self.sum)
+
+
+class SalaryMonthSummary(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    date_add = models.DateTimeField(auto_now_add=True)
+    year = models.IntegerField(null=False, blank=False)
+    month = models.IntegerField(null=False, blank=False)
+    employee = models.ForeignKey('person.Employies', null=False, blank=False)
+    races_done = models.IntegerField(null=False, blank=False)
+    misc_penalty = models.FloatField(null=True, blank=True)
+    bonus_amount = models.FloatField(null=True, blank=True)
+    deductions_amount = models.FloatField(null=True, blank=True)
+    compensation_amount = models.FloatField(null=True, blank=True)
+    fuel_penalty = models.FloatField(null=True, blank=True)
+    run_penalty = models.FloatField(null=True, blank=True)
+    races_salary = models.FloatField(null=True, blank=True)
+    summary_salary_amount = models.FloatField(null=True, blank=True)
+    paid_sum = models.FloatField(null=True, blank=True)
+    remain_sum = models.FloatField(null=True, blank=True)
+    is_mech_checked = models.NullBooleanField(null=True, blank=True, default=False)
+    is_office_checked = models.NullBooleanField(null=True, blank=True, default=False)
+    is_boss_checked = models.NullBooleanField(null=True, blank=True, default=False)
+    comment = models.CharField(max_length=255L, null=True, blank=True)
+
+    class Meta:
+        db_table = 'salary_month_summary'
+        managed = False
+        verbose_name_plural = 'Зарплата / Итоги месяца'
+
+    def __unicode__(self):
+        return u'[%s] %s %s' % (self.id, self.date_add, self.sum)

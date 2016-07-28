@@ -238,3 +238,46 @@ div.checkbox_wrapper {
     align-items: center;
     padding-top: 2px;
 }
+
+.colgroup_table {
+  	border-collapse:collapse;
+	margin-bottom:15px;
+	width:90%;
+}
+.colgroup_table caption {
+    text-align:left;
+    font-size:15px;
+    padding-bottom:10px;
+}
+.colgroup_table td,
+.colgroup_table th {
+        padding:5px;
+        border:1px solid #fff;
+        border-width:0 1px 1px 0;
+    /*background-color: #fdf3dd;*/
+}
+
+.colgroup_table	thead th {
+    background:#A8CABA;
+}
+.colgroup_table thead th.minus {
+    background-color: rgb(245, 213, 224);
+}
+.colgroup_table thead th.plus {
+    background-color: #d7e8c2;
+}
+.colgroup_table	thead th[colspan],
+.colgroup_table	thead th[rowspan] {
+        background:#D3D3D3;
+}
+
+.colgroup_table tbody th,
+.colgroup_table tfoot th {
+    text-align:left;
+    background: #dbdfd9;
+}
+.colgroup_table tbody td,
+.colgroup_table tfoot td {
+		text-align:center;
+		/*background:#fdf3dd;*/
+		}
