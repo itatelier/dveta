@@ -51,16 +51,21 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
         initial = {}
         data = {}    # Данные для контекста шаблона
         initial['type'] = self.type_pk
+        data['type_pk'] = self.type_pk
         if self.car_pk:
             initial['car'] = self.car_pk
             form.fields['car'].widget = widgets.HiddenInput()
             data['car'] = Cars.objects.select_related('model').get(pk=self.car_pk)
+            # Если заправка по карте
+            if int(self.type_pk) == 0:
+                initial['fuel_card'] = data['car'].fuel_card.pk
         if self.driver_pk:
             initial['driver'] = self.driver_pk
             form.fields['driver'].widget = widgets.HiddenInput()
             data['driver'] = Employies.drivers.get(pk=self.driver_pk)
-        if not int(self.type_pk) == 0:
-            form.fields['fuel_card'].widget = widgets.HiddenInput()
+        # Если тип заправки "по карте", то сумма не указывается и будет при сохранении формы рассчитана из справочника цен на топливо (FuelTypes)
+        if int(self.type_pk) == 0:
+            form.fields['sum'].widget = widgets.HiddenInput()
         form.initial = initial
         return self.render_to_response(self.get_context_data(form=form, data=data))
 
@@ -72,15 +77,22 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RefuelCreateView, self).get_context_data(*args, **kwargs)
-        context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
+        context_data['refuels'] = RefuelsFlow.objects.list_with_run_checks(car_id=self.car_pk, limit=10)
         return context_data
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+        if int(self.type_pk) == 0:
+            form.fields['sum'].required = False
+            form.fields['sum'].widget = widgets.HiddenInput()
         if form.is_valid():
             refuel_object = form.save(commit=False)
-            # Если тип заправки "По карте" - присваиваем карты привязанную к машине
+        # Если тип заправки "По карте" - присваиваем карты привязанную к машине
+        # сумма не указываетя, но получается из текущей стоимости топлива
             if int(self.type_pk) == 0:
+                # Получаем цену топлива
+                fuel_type_object = FuelTypes.objects.get(pk=1)
+                refuel_object.sum = fuel_type_object.price * form.cleaned_data['amount']
                 refuel_object.fuel_card = Cars.objects.get(pk=self.car_pk).fuel_card
             refuel_object.save()
             return HttpResponseRedirect(self.get_success_url())

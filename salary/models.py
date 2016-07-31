@@ -45,10 +45,9 @@ class SalaryMonthSummary(models.Model):
     summary_salary_amount = models.FloatField(null=True, blank=True)
     paid_sum = models.FloatField(null=True, blank=True)
     remain_sum = models.FloatField(null=True, blank=True)
-    is_mech_checked = models.NullBooleanField(null=True, blank=True, default=False)
-    is_office_checked = models.NullBooleanField(null=True, blank=True, default=False)
-    is_boss_checked = models.NullBooleanField(null=True, blank=True, default=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
+    over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
+    check_status = models.NullBooleanField(null=True, blank=True, default=False)
 
     class Meta:
         db_table = 'salary_month_summary'

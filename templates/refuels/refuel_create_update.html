@@ -36,10 +36,11 @@
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     <div class="form_row">
-                        <h2>{% if form.instance.id %} Основная инфомрация{% else %}Новая заправка{% endif %}</h2>
+                        <h2>{% if form.instance.id %} Основная инфомрация{% else %}Новая заправка {% endif %}{% if data.type_pk == "0" %}за наличные{% elif data.type_pk == "1" %}по карте{% endif %}</h2>
                     </div>
                     <div class="flex_row">
                         <div class="flex_column marginr10 flex_zero">
+
                             <div class="flex_row">
                                 <table class="sheet_simple">
                                     {% if data.driver %}
@@ -63,7 +64,9 @@
                                     <div class="form_row">{% include "form_snippets/select.html" with field=form.car %}</div>
                                 {% endif %}
                                 <div class="form_row">{% include "form_snippets/textinput.html" with field=form.amount  %}</div>
-                                <div class="form_row">{% include "form_snippets/textinput.html" with field=form.summ  %}</div>
+                                {% if not form.sum.is_hidden %}
+                                <div class="form_row">{% include "form_snippets/textinput.html" with field=form.sum  %}</div>
+                                {% endif %}
                                 <div class="form_row">{% include "form_snippets/textinput.html" with field=form.km  %}</div>
                                 <div class="form_row">{% include "form_snippets/textinput.html" with field=form.comment  %}</div>
                                 {# ошибки формы #}
@@ -85,7 +88,7 @@
                                     <tr>
                                         <th width="120px" class="centertext">Дата, время</th>
                                         <th>Километраж</th>
-                                        <th width="">Карта</th>
+                                        <th  class="centertext">Тип</th>
                                         <th width="">Литров</th>
                                         <th width="">Сумма</th>
                                         <th width="180px">Примечатние</th>
@@ -96,7 +99,7 @@
                                         <tr data-object_id="{{ l.pk }}">
                                             <td>{{ l.date|date:"d-m-y H:i"}}</td>
                                             <td>{{ l.km }}</td>
-                                            <td>{% if l.type == 0 %}<i class="icon" icon=""></i> {% endif %}</td>
+                                            <td class="centertext">{% if l.type == "0" %}<i class="icon" icon=""></i>{% else %}₽{% endif %}</td>
                                             <td>{{ l.amount }}</td>
                                             <td>{{ l.summ }}</td>
                                             <td>{{ l.comment|default_if_none:""}}</td>

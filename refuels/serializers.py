@@ -40,7 +40,7 @@ class RefuelsFlowSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 1
         model = RefuelsFlow
-        fields = ('pk', 'driver', 'car', 'date', 'type', 'fuel_card', 'amount', 'summ', 'km', 'comment', 'checked')
+        fields = ('pk', 'driver', 'car', 'date', 'type', 'fuel_card', 'amount', 'sum', 'km', 'comment', 'checked')
 
 
 class RefuelsFlowFilters(django_filters.FilterSet):

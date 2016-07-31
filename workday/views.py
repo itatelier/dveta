@@ -7,6 +7,7 @@ from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNot
 from common.utils import GetObjectOrNone
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Func, F
+from djcompoundqueryset import CompoundQueryset
 from common.forms import *
 from datetime import datetime, timedelta
 from race.models import *
@@ -103,7 +104,8 @@ class WorkdayRefuelsView(WorkdayBaseView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(WorkdayRefuelsView, self).get_context_data(*args, **kwargs)
-        context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
+        # context_data['refuels'] = RefuelsFlow.objects.filter(car__pk=self.car_pk).order_by('-date')[:10]
+        context_data['refuels'] = RefuelsFlow.objects.list_with_run_checks(car_id=self.car_pk, limit=10)
         return context_data
 
 
