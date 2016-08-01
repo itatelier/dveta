@@ -61,7 +61,7 @@ class RefuelsFlowManager(models.Manager):
     def list_with_run_checks(car_id, limit):
         query = """SELECT * FROM (
                       SELECT
-                            R.date
+                            R.date_refuel
                             ,R.km
                             ,R.type
                             ,R.amount
@@ -81,8 +81,8 @@ class RefuelsFlowManager(models.Manager):
                             ,1
                         FROM run_checks_flow AS C
                         WHERE C.car_id = %s
-                        ORDER BY date DESC LIMIT %s) AS reorder
-                    ORDER BY date ASC
+                        ORDER BY date_refuel DESC LIMIT %s) AS reorder
+                    ORDER BY date_refuel ASC
                     """
         limit = 10
         params = (car_id, car_id, limit)
@@ -93,7 +93,8 @@ class RefuelsFlowManager(models.Manager):
 class RefuelsFlow(models.Model):
     refuel_types = ([0, 'за наличные'], [1, 'покарте'])
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    date = models.DateTimeField(auto_now_add=True)
+    date_refuel = models.DateTimeField()
+    date_add = models.DateTimeField(auto_now_add=True)
     fuel_type = models.ForeignKey('refuels.FuelTypes', null=False, blank=False, default=1)
     driver = models.ForeignKey('person.Employies', null=False, blank=False)
     car = models.ForeignKey('car.Cars', null=False, blank=False)

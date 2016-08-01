@@ -37,6 +37,11 @@ class EmployeeChoiceField(ModelChoiceField):
         return "%s %s" % (obj.person.family_name, obj.person.given_name)
 
 
+class DriverChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "%s %s [%s]" % (obj.person.family_name, obj.person.given_name, obj.person.nick_name)
+
+
 class MultiFormCreate(FormMixin, TemplateResponseMixin, View):
     formconf = None
     form_classes = None

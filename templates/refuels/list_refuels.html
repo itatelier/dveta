@@ -37,11 +37,6 @@
         $( "table.listing_grid thead a.sortable" ).on("click", function() { SortUpdate(this) });
 
         {#  Переход на карточу   #}
-        $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('object_id');
-            var url = "/races/" + id +"/update";
-            document.location.href = url;
-        });
 
     });
 
@@ -53,7 +48,11 @@
 
             for (var i = 0,data_len = result.results.length; i < data_len; i++ ) {
 {#                 изменение формата даты #}
-                result.results[i].date = date_json2hr(result.results[i].date);
+                if (result.results[i].date_refuel != result.results[i].date_add) {
+                    result.results[i].later_added = 1;
+                }
+                result.results[i].date_refuel = date_json2hr(result.results[i].date_refuel);
+
                 if (parseInt(result.results[i].type) == 0) {
                     result.results[i].card = 1;
                 }
@@ -63,7 +62,8 @@
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-object_id="{{ pk }}">
-        <td width="100">{{{ date.date }}}</td>
+        <td width="100" class="centertext">{{{ date_refuel.date }}}</td>
+        <td width="20">{{#later_added }}<i class="icon" icon=""></i>{{/later_added }}</td>
         <td width="">{{{ car.nick_name }}}</td>
         <td width="">{{{ car.reg_num }}}</td>
         <td>{{{ driver.person.family_name}}} {{ driver.person.given_name }} [{{{ driver.person.nick_name }}}]</td>
@@ -164,11 +164,11 @@
                     <table class="listing_grid">
                         <thead class="">
                             <tr>
-                                <th><a href="#" class="" rel="">Дата</a></th>
+                                <th colspan="2"><a href="#" class="" rel="">Дата</a></th>
                                 <th><a href="#" class="" rel="">Машина</a></th>
                                 <th><a href="#" class="" rel="">Рег. номер</a></th>
                                 <th><a href="#" class="" rel="">Водитель</a></th>
-                                <th><a href="#" class="centertext" rel="">Карта</a></th>
+                                <th><a href="#" class="centertext" rel="">Тип</a></th>
                                 <th><a href="#" class="" rel="">Километраж</a></th>
                                 <th><a href="#" class="" rel="">Литров</a></th>
                                 <th><a href="#" class="centertext" rel="sum">Сумма</a></th>

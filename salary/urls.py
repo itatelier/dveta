@@ -16,5 +16,6 @@ urlpatterns = [
     # url(r'^api/', include(router.urls)),
     #
     url(r'^year/(?P<year>\d{4})/month/(?P<month>\d{2})/$', SalaryMonthSummaryView.as_view(), name='salary_month_summary'),
+    url(r'^year/(?P<year>\d{4})/month/(?P<month>\d{2})/$', SalaryMonthSummaryMechView.as_view(), name='salary_month_summary_mech'),
 ]
 

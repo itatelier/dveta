@@ -18,8 +18,9 @@ refuel_types_choices = [(0, 'Карта'), (1, 'Наличные'), (2, 'Тал�
 
 
 class RefuelForm(ModelForm):
+    date_refuel = DateTimeField(label="Дата заправки", required=False, input_formats=['%d-%m-%Y %H:%M:%S'], widget=widgets.HiddenInput())
     type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())
-    driver = ModelChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True,)
+    driver = DriverChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True,)
     car = ModelChoiceField(queryset=Cars.objects.filter(), label="Автомобиль",  empty_label=None, required=True, )
     fuel_card = ModelChoiceField(label="Топливная карта", queryset=FuelCards.objects.filter(), widget=widgets.HiddenInput(),  required=False, )
     amount = IntegerField(label="Кол-во литров", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}), initial=100)
@@ -29,6 +30,16 @@ class RefuelForm(ModelForm):
 
     class Meta:
         model = RefuelsFlow
-        fields = ('type', 'driver', 'car', 'fuel_card', 'amount', 'sum', 'km', 'comment')
+        fields = ('date_refuel', 'type', 'driver', 'car', 'fuel_card', 'amount', 'sum', 'km', 'comment')
 
 
+class RunCheckForm(ModelForm):
+    type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())
+    driver = ModelChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True,)
+    car = ModelChoiceField(queryset=Cars.objects.filter(), label="Автомобиль",  empty_label=None, required=True, )
+    km = IntegerField(label="Километраж", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
+
+    class Meta:
+        model = CarRunCheckFlow
+        fields = ('driver', 'car', 'km', 'comment')

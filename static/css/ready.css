@@ -421,6 +421,11 @@ a.button:active { top: 1px;
 }
 
 a.button.red_bg {border-color: #9C9292;}
+a.button._grey {
+    border-bottom: 3px solid #BDBDBD;
+    background-color: #E0E0E0;
+
+}
 
 a.textlink {
     position: relative;

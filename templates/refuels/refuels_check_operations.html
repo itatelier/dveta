@@ -93,7 +93,7 @@
                                 <tbody id="datatable">
                                     {% for l in refuels %}
                                     <tr>
-                                        <td>{{ l.date|date:"d-m-y H:i"}}</td>
+                                        <td>{{ l.date_refuel|date:"d-m-y H:i"}}</td>
                                         <td>{{ l.driver.person.family_name}} {{ l.driver.person.given_name}} {{ l.driver.person.nick_name}}</td>
                                         <td class="centertext">{{ l.amount }}</td>
                                         <td class="centertext">{{ l.km }}</td>
@@ -106,7 +106,11 @@
                         </div>
                     </div>
                     <div class="form_row">
-                        <a class="button" href="#" onclick="MarkSelected();"><i class="icon pt2" icon=""></i>Отметить / Снять отметку с выбранных</a>
+                        <div class="input_wrapper nomargin">
+                            <a class="textlink m10" href="#" onclick="window.history.back();">Вернуться к отчету</a>
+                            <a href="{% url 'refuel_create' 0 car.pk %}?return_url={{ request.path }}&later_add=1&card_pk={{ card.pk }}" class="button">Внести заправку на дату</a>
+                            <a class="button" href="#" onclick="MarkSelected();"><i class="icon pt2" icon=""></i>Отметить / Снять отметку с выбранных</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -29,8 +29,7 @@
                     <table class="sheet_headered  margint10 marginr10 " width="100%">
                         <thead>
                         <tr>
-                            <th width="120px" class="centertext">Дата, время</th>
-                            <th></th>
+                            <th colspan="2" width="120px" class="centertext">Дата, время</th>
                             <th>Километраж</th>
                             <th  class="centertext">Тип</th>
                             <th width="">Литров</th>
@@ -41,10 +40,10 @@
                         <tbody id="datatable">
                             {% for l in refuels %}
                             <tr data-object_id="{{ l.pk }}">
-                                <td>{{ l.date|date:"d-m-y H:i"}}</td>
+                                <td width="110">{{ l.date_refuel|date:"d-m-y H:i"}}</td>
                                 <td width="30">{% if l.run_check  %}<i class="icon" icon=""></i>{% endif %}</td>
                                 <td width="70">{{ l.km }}</td>
-                                <td class="centertext">{% if l.type == "0" %}<i class="icon" icon=""></i>{% else %}₽{% endif %}</td>
+                                <td class="centertext">{% if l.type == "0" %}<i class="icon" icon=""></i>{% elif l.type == "1"%}₽{% endif %}</td>
                                 <td>{{ l.amount }}</td>
                                 <td>{{ l.sum }}</td>
                                 <td>{{ l.comment|default_if_none:""  }}</td>
@@ -61,6 +60,7 @@
                             <li><a href="{% url 'refuel_create' 1 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка за наличные</a></li>
                             <li><a href="{% url 'refuel_create' 2 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка по талону</a></li>
                             <li><a href="{% url 'refuel_create' 3 view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Заправка ДТ на Базу</a></li>
+                            <li><a href="{% url 'runcheck_create' view.car_pk %}?driver_pk={{ view.driver_pk }}&return_url={{ request.path }}" class="textlink">Сверка пробега</a></li>
                         </ul>
                     </div>
                 </div>

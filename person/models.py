@@ -120,7 +120,7 @@ class Employies(models.Model):
         verbose_name_plural = 'Сотрудники'
 
     def __unicode__(self):
-        return u'[%s] %s' % (self.id, self.role)
+        return u'%s %s' % (self.person.family_name, self.person.given_name)
 
     def fullname(self):
         return u'%s %s' % (self.person.family_name, self.person.given_name)

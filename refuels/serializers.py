@@ -40,14 +40,14 @@ class RefuelsFlowSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 1
         model = RefuelsFlow
-        fields = ('pk', 'driver', 'car', 'date', 'type', 'fuel_card', 'amount', 'sum', 'km', 'comment', 'checked')
+        fields = ('pk', 'driver', 'car', 'date_refuel', 'date_add', 'type', 'fuel_card', 'amount', 'sum', 'km', 'comment', 'checked')
 
 
 class RefuelsFlowFilters(django_filters.FilterSet):
     driver_family_name_ac = django_filters.CharFilter(name="driver__person__family_name", lookup_type='icontains')
     car_name = django_filters.CharFilter(name="car__nick_name", lookup_type='icontains')
-    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='gte')
-    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date", lookup_type='lte')
+    date_after = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_refuel", lookup_type='gte')
+    date_before = django_filters.DateFilter(input_formats=('%d-%m-%Y',), name="date_refuel", lookup_type='lte')
 
     class Meta:
         model = RefuelsFlow
