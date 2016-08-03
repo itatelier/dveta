@@ -174,7 +174,6 @@ header > nav ul > li > a + div > ul {
     padding: 0;
 }
 header > nav ul > li > a + div > ul > li { display: list-item;  }
-
 header > nav ul > li > a + div > ul > li > a {
     max-width: 351px;
     font-size: 14px;
