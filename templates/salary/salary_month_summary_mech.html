@@ -15,39 +15,47 @@
             <div class="left_border"><span class="upblock"></span></div>
             {# Рабочий лист #}
             <div class="sheet">
-                    <div class="flex_row">
+                <div class="data_grid_listing">
+                    {# переключатель месяца отчета #}
+                    <div class="form_row">
+                        <div class="">
+                            <ul class="linklist flex">
+                                <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    {# - переключатель месяца отчета #}
+                    <div class="form_row">
                         <div class="flex_block m10">
                             {# Информационный блок #}
                                 {% if summary_list %}
                                     <table class="colgroup_table">
-                                        <caption>Итоги расчета заработной платы</caption>
+                                        <caption>Месячные показатели работы водителей</caption>
                                         <col>
                                         <colgroup span="4"></colgroup>
+                                        <colgroup span="3"></colgroup>
                                         <colgroup span="2"></colgroup>
-                                        <colgroup span="3"></colgroup>
-                                        <colgroup span="3"></colgroup>
+                                        <col>
                                         <thead>
                                             <tr>
                                                 <th rowspan="2" colspan="">Сотрудник</th>
-                                                <th rowspan="2" colspan="">Рейсы</th>
-                                                <th colspan="4" scope="colgroup">Вычеты и штрафы</th>
-                                                <th colspan="2" scope="colgroup">Бонусы</th>
-                                                <th colspan="3" scope="colgroup">Итоги</th>
-                                                <th colspan="3" scope="colgroup">Сверка</th>
+                                                <th colspan="4" scope="colgroup">Статистика</th>
+                                                <th colspan="3" scope="colgroup">Оценка</th>
+                                                <th colspan="2" scope="colgroup">Штрафы</th>
+                                                <th rowspan="2">Статус</th>
                                             </tr>
                                             <tr>
-                                                <th scope="col" class="minus">Топливо</th>
-                                                <th scope="col" class="minus">Пробег</th>
-                                                <th scope="col" class="minus">Прочие</th>
-                                                <th scope="col" class="minus">Вычеты</th>
-                                                <th scope="col" class="plus">Компенсация</th>
-                                                <th scope="col" class="plus">Бонусы</th>
-                                                <th scope="col">Начислено</th>
-                                                <th scope="col">Аванс</th>
-                                                <th scope="col">Остаток</th>
-                                                <th scope="col">Механик</th>
-                                                <th scope="col">Офис</th>
-                                                <th scope="col">Расчет</th>
+                                                <th scope="col" class="">Рейсы</th>
+                                                <th scope="col" class="">Ходки</th>
+                                                <th scope="col" class="">Пробег</th>
+                                                <th scope="col" class="">Расход на 100км</th>
+                                                <th scope="col">Пробег</th>
+                                                <th scope="col" class="">Расход</th>
+                                                <th scope="col" class="">Примечание</th>
+                                                <th scope="col" class="minus">Перепробег</th>
+                                                <th scope="col" class="minus">Перерасход</th>
                                             </tr>
                                         </thead>
                                         {% for row in summary_list %}
@@ -63,9 +71,6 @@
                                             <td>{{ row.summary_salary_amount|default_if_none:"0"}}</td>
                                             <td>{{ row.paid_sum|default_if_none:"0"}}</td>
                                             <td>{{ row.remain_sum|default_if_none:"0"}}</td>
-                                            <td><i class="icon {% if row.is_mech_checked %}green{% else %}gray{% endif %}" icon=""></i></td>
-                                            <td><i class="icon {% if row.is_office_checked %}green{% else %}gray{% endif %}" icon=""></i></td>
-                                            <td><i class="icon {% if row.is_boss_checked %}green{% else %}gray{% endif %}" icon=""></i></td>
                                         </tr>
                                         {% endfor %}
                                         <tfoot>
@@ -87,6 +92,7 @@
                             {# - Информационный блок #}
                         </div>
                     </div>
+                </div>
             </div>
             {# - Рабочий лист #}
             <div class="right_border"><span class="upblock"></span></div>
