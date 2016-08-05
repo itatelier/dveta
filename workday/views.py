@@ -7,7 +7,7 @@ from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNot
 from common.utils import GetObjectOrNone
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Func, F
-from djcompoundqueryset import CompoundQueryset
+#from djcompoundqueryset import CompoundQueryset
 from common.forms import *
 from datetime import datetime, timedelta
 from race.models import *

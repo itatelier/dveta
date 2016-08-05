@@ -34,20 +34,30 @@ class SalaryMonthSummary(models.Model):
     year = models.IntegerField(null=False, blank=False)
     month = models.IntegerField(null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
+
     races_done = models.IntegerField(null=False, blank=False)
+    hodkis = models.IntegerField(null=False, blank=False)
+    run_km = models.IntegerField(null=False, blank=False)
+    average_consumption = models.IntegerField(null=False, blank=False)
+
+    over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
+    over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
+    mech_comment = models.CharField(max_length=255L, null=True, blank=True)
+
+    over_run_penalty = models.FloatField(null=True, blank=True)
+    over_fuel_penalty = models.FloatField(null=True, blank=True)
     misc_penalty = models.FloatField(null=True, blank=True)
+
     bonus_amount = models.FloatField(null=True, blank=True)
     deductions_amount = models.FloatField(null=True, blank=True)
-    compensation_amount = models.FloatField(null=True, blank=True)
-    fuel_penalty = models.FloatField(null=True, blank=True)
-    run_penalty = models.FloatField(null=True, blank=True)
     races_salary = models.FloatField(null=True, blank=True)
+    compensation_amount = models.FloatField(null=True, blank=True)
+
     summary_salary_amount = models.FloatField(null=True, blank=True)
     paid_sum = models.FloatField(null=True, blank=True)
     remain_sum = models.FloatField(null=True, blank=True)
-    over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
-    over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
     check_status = models.NullBooleanField(null=True, blank=True, default=False)
+    comment = models.CharField(max_length=255L, null=True, blank=True)
 
     class Meta:
         db_table = 'salary_month_summary'
