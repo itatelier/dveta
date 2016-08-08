@@ -154,4 +154,4 @@ class SalaryMonthSummary(models.Model):
         verbose_name_plural = 'Зарплата / Итоги месяца'
 
     def __unicode__(self):
-        return u'[%s] %s %s' % (self.id, self.date_add, self.sum)
+        return u'[%s] %s' % (self.id, self.date_add)

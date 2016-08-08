@@ -44,17 +44,17 @@
                                     <table class="colgroup_table pointed swidth">
                                         <caption>Месячные показатели работы водителей</caption>
                                         <col>
+                                        <col>
                                         <colgroup span="4"></colgroup>
                                         <colgroup span="3"></colgroup>
                                         <colgroup span="2"></colgroup>
-                                        <col>
                                         <thead>
                                             <tr>
-                                                <th rowspan="2" colspan="" width="300px">Сотрудник</th>
+                                                <th rowspan="2" colspan="" width="">Сотрудник</th>
+                                                <th rowspan="2">Статус отчета</th>
                                                 <th colspan="4" scope="colgroup">Статистика</th>
                                                 <th colspan="3" scope="colgroup">Оценка</th>
                                                 <th colspan="2" scope="colgroup">Штрафы</th>
-                                                <th rowspan="2">Статус</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col" class="">Рейсы</th>
@@ -70,8 +70,11 @@
                                         </thead>
                                         <tbody id="report_table">
                                         {% for row in summary_list %}
+                                        <tr></tr>
+                                            
                                         <tr data-employee_pk="{{ row.employee.pk }}">
                                             <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
+                                            <td>{{ row.get_check_status_display }}</td>
                                             <td>{{ row.races_done|default_if_none:"0"}}</td>
                                             <td>{{ row.fuel_penalty|default_if_none:"0"}}</td>
                                             <td>{{ row.run_penalty|default_if_none:"0"}}</td>
@@ -81,12 +84,11 @@
                                             <td>{{ row.bonus_amount|default_if_none:"0"}}</td>
                                             <td>{{ row.summary_salary_amount|default_if_none:"0"}}</td>
                                             <td>{{ row.paid_sum|default_if_none:"0"}}</td>
-                                            <td>{{ row.get_check_status_display }}</td>
                                         </tr>
                                         {% endfor %}
                                         </tbody>
                                         <tfoot>
-                                            <th scope="row">Итого:</th>
+                                            <th scope="row" class="righttext">Итого:</th>
                                             <td>0</td>
                                             <td>0</td>
                                             <td>0</td>
