@@ -52,7 +52,7 @@
                             {# - Информационный блок #}
                         </div>
                         <div class="flex_block marginl30">
-                            <h2>Статистика водителя</h2>
+                            <h2>Персональные показатели работы водителя</h2>
                             <table class="sheet_simple">
                                 <tr>
                                     <td>Водитель:</td>
@@ -65,7 +65,37 @@
                                     <td><b>{{ stats_hodkis|default_if_none:0 }}</b></td>
                                 </tr>
                             </table>
-                            <h2>Статисктика по машинам</h2>
+                            <table class="colgroup_table margint10">
+                                <caption>Статистика по машинам</caption>
+                                <thead>
+                                    <th>Авто</th>
+                                    <th>Рег.Номер</th>
+                                    <th>Рейсы</th>
+                                    <th>Ходки</th>
+                                    <th>Пробег</th>
+                                    <th>КМ на Ходку</th>
+                                    <th>Расход весь</th>
+                                    <th>Расход на 100км</th>
+                                    <th>Норма</th>
+                                    <th>Перерасход</th>
+                                </thead>
+                                <tbody>
+                                    {% for row in driver_month_stats.data %}
+                                    <tr>
+                                        <td>{{ row.nick_name }}</td>
+                                        <td>{{ row.reg_num }}</td>
+                                        <td>{{ row.total_races|default_if_none:0 }}</td>
+                                        <td>{{ row.total_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_run|default_if_none:0 }}</td>
+                                        <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_lit|default_if_none:0 }}</td>
+                                        <td>{{ row.lit_on_100|default_if_none:0 }}</td>
+                                        <td>{{ row.fuel_norm|default_if_none:0 }}</td>
+                                        <td>{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
