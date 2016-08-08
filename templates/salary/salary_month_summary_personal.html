@@ -1,0 +1,76 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li class="active" ><a href="#">Зарплата водителей</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="data_grid_listing">
+                    {# переключатель месяца отчета #}
+                    <div class="form_row">
+                        <div class="">
+                            <ul class="linklist flex">
+                                <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    {# - переключатель месяца отчета #}
+                    <div class="form_row">
+                        <div class="flex_block _zero">
+                            {# Информационный блок #}
+                                {% if summary_list %}
+                                    <table class="colgroup_table">
+                                        <caption>Месячные показатели работы водителей</caption>
+                                        <col>
+                                        <col>
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2" colspan="">Сотрудник</th>
+                                                <th rowspan="2">Статус</th>
+                                            </tr>
+                                        </thead>
+                                        {% for row in summary_list %}
+                                        <tr>
+                                            <th scope="row"  width="300px">{{ row.employee.person.fio_and_nick }}</th>
+                                            <td>{{ row.get_check_status_display }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+                            {# - Информационный блок #}
+                        </div>
+                        <div class="flex_block marginl30">
+                            <h2>Статистика водителя</h2>
+                            <table class="sheet_simple">
+                                <tr>
+                                    <td>Водитель:</td>
+                                    <td><a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></td>
+                                    <td>Сверки с механиком:</td>
+                                    <td><b>{{ stats_mech_checkups }}</b></td>
+                                    <td>Выполненео рейсов:</td>
+                                    <td><b>{{ stats_races }}</b></td>
+                                    <td>Засчитано ходок:</td>
+                                    <td><b>{{ stats_hodkis|default_if_none:0 }}</b></td>
+                                </tr>
+                            </table>
+                            <h2>Статисктика по машинам</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

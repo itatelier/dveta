@@ -125,12 +125,16 @@ class Employies(models.Model):
     def fullname(self):
         return u'%s %s' % (self.person.family_name, self.person.given_name)
 
-class Driverss(Employies):
-    objects = EmployeeAllDefaultManager()
+    def fullnamenick(self):
+        return u'%s %s [%s]' % (self.person.family_name, self.person.given_name, self.person.nick_name)
 
-    class Meta:
-        verbose_name_plural = 'Водители'
-        db_table = 'employies'
+
+# class Drivers(Employies):
+#     objects = EmployeeAllDefaultManager()
+#
+#     class Meta:
+#         verbose_name_plural = 'Водители'
+#         db_table = 'employies'
 
 
 class UnitGroups(models.Model):

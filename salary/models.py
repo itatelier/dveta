@@ -29,6 +29,8 @@ class SalaryFlow(models.Model):
 
 
 class SalaryMonthSummary(models.Model):
+    check_status_choices = ([0, 'анализ'], [1, 'контроль офис'], [2, 'контроль руководитель'], [3, 'выдача'], [4, 'закрыт'],)
+
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     year = models.IntegerField(null=False, blank=False)
@@ -36,7 +38,7 @@ class SalaryMonthSummary(models.Model):
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
 
     races_done = models.IntegerField(null=False, blank=False)
-    hodkis = models.IntegerField(null=False, blank=False)
+    hodkies = models.IntegerField(null=False, blank=False)
     run_km = models.IntegerField(null=False, blank=False)
     average_consumption = models.IntegerField(null=False, blank=False)
 
@@ -56,7 +58,7 @@ class SalaryMonthSummary(models.Model):
     summary_salary_amount = models.FloatField(null=True, blank=True)
     paid_sum = models.FloatField(null=True, blank=True)
     remain_sum = models.FloatField(null=True, blank=True)
-    check_status = models.NullBooleanField(null=True, blank=True, default=False)
+    check_status = models.NullBooleanField(null=True, blank=True, default=False, choices=check_status_choices)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
     class Meta:

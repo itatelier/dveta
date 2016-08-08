@@ -71,6 +71,7 @@ form { margin: 0.5rem 2rem; /*width: 100%; */}
     height: 600px;
 }
 .fullwidth { width: 100%; }
+.swidth {  width: 75%; }
 .none { display: none !important; }
 
 .no_lr_margin {
@@ -83,6 +84,7 @@ form { margin: 0.5rem 2rem; /*width: 100%; */}
 .m20 {margin: 20px;}
 .marginr10 {margin-right: 10px;}
 .marginl10 {margin-left: 10px;}
+.marginl30 {margin-left: 30px;}
 .nomargin {margin: 0!important;}
 .centertext { text-align: center !important;}
 .righttext { text-align: right !important;}

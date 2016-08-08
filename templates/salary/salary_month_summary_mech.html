@@ -2,7 +2,17 @@
 {% block content %}
 {% load date_compare %}
 <script>
+    $(document).ready(function() {
+        {#  Переход на карточу   #}
+        var report_month = "{{ view.report_month_dt.month }}";
+        var report_year = "{{ view.report_month_dt.year }}";
+        $( 'tbody#report_table').on("click", 'tr', function(){
+            var id = $(this).data('employee_pk');
+            var url = "/salary/month_summary/driver_stats/" + id +"/?month=" + report_month + "&year=" + report_year;
+            document.location.href = url;
+        });
 
+    });
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -31,7 +41,7 @@
                         <div class="flex_block m10">
                             {# Информационный блок #}
                                 {% if summary_list %}
-                                    <table class="colgroup_table">
+                                    <table class="colgroup_table pointed swidth">
                                         <caption>Месячные показатели работы водителей</caption>
                                         <col>
                                         <colgroup span="4"></colgroup>
@@ -40,7 +50,7 @@
                                         <col>
                                         <thead>
                                             <tr>
-                                                <th rowspan="2" colspan="">Сотрудник</th>
+                                                <th rowspan="2" colspan="" width="300px">Сотрудник</th>
                                                 <th colspan="4" scope="colgroup">Статистика</th>
                                                 <th colspan="3" scope="colgroup">Оценка</th>
                                                 <th colspan="2" scope="colgroup">Штрафы</th>
@@ -58,8 +68,9 @@
                                                 <th scope="col" class="minus">Перерасход</th>
                                             </tr>
                                         </thead>
+                                        <tbody id="report_table">
                                         {% for row in summary_list %}
-                                        <tr>
+                                        <tr data-employee_pk="{{ row.employee.pk }}">
                                             <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
                                             <td>{{ row.races_done|default_if_none:"0"}}</td>
                                             <td>{{ row.fuel_penalty|default_if_none:"0"}}</td>
@@ -70,9 +81,10 @@
                                             <td>{{ row.bonus_amount|default_if_none:"0"}}</td>
                                             <td>{{ row.summary_salary_amount|default_if_none:"0"}}</td>
                                             <td>{{ row.paid_sum|default_if_none:"0"}}</td>
-                                            <td>{{ row.remain_sum|default_if_none:"0"}}</td>
+                                            <td>{{ row.get_check_status_display }}</td>
                                         </tr>
                                         {% endfor %}
+                                        </tbody>
                                         <tfoot>
                                             <th scope="row">Итого:</th>
                                             <td>0</td>
@@ -84,8 +96,6 @@
                                             <td>0</td>
                                             <td>0</td>
                                             <td>0</td>
-                                            <td>0</td>
-                                            <td colspan="3"></td>
                                         </tfoot>
                                     </table>
                                 {% endif %}
