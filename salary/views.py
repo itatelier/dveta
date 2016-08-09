@@ -80,5 +80,7 @@ class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
         context_data['driver_month_stats'] = SalaryMonthSummary.objects.driver_month_stats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=driver_pk)
 
         # Перечень всех сверок за месяц (список водителей слева)
-        context_data['summary_list'] = SalaryMonthSummary.objects.filter(month__exact=self.report_month_dt.month, year__exact=self.report_month_dt.year).select_related('employee__person')
+        context_data.update({
+            'summary_list': SalaryMonthSummary.objects.drivers_list_races_and_summary(self.report_month_dt.date(), self.report_next_dt.date())
+        })
         return context_data

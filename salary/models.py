@@ -74,7 +74,9 @@ class SalarySummaryManager(models.Manager):
                         WHERE (R.date_race BETWEEN %(date_start)s AND %(date_end)s)
                         GROUP BY driver_id
                         ) AS R2
-                LEFT OUTER JOIN salary_month_summary AS ss ON ss.employee_id = R2.driver_id"""
+                LEFT OUTER JOIN salary_month_summary AS ss ON ss.employee_id = R2.driver_id
+                	AND `ss`.`month` = MONTH(%(date_start)s)
+                    AND `ss`.`year`= YEAR(%(date_start)s)"""
         params = {'date_start': date_start, 'date_end': date_end}
         result['data'] = fetch_sql_allintuple(query, params=params)
         return result
