@@ -63,20 +63,20 @@
         <td width="80">{{{ car.nick_name }}}</td>
         <td>{{{ company.name }}}</td>
         <td>{{{ object.name }}}</td>
-        <td width="90" class="centertext">
+        <td width="90" class="text-center">
             <div class="bunker">
                 <div class="type">{{{ bunker_type.val }}}</div><div class="qty">{{{ bunker_qty }}}</div>
             </div>
         </td>
-        <td width="100" class="centertext">{{{ race_type.val }}}</td>
-        <td width="70" class="centertext">{{{ hodkis }}}</td>
+        <td width="100" class="text-center">{{{ race_type.val }}}</td>
+        <td width="70" class="text-center">{{{ hodkis }}}</td>
         <td width="80" >{{{ summ }}}</td>
-        <td width="30" class="centertext">{{#pay_way }}<i class="dot">•</i>{{/pay_way}}</td>
-        <td width="30" class="centertext">{{#paid }}<i class="icon green" icon=""></i>{{/paid}}</td>
+        <td width="30" class="text-center">{{#pay_way }}<i class="dot">•</i>{{/pay_way}}</td>
+        <td width="30" class="text-center">{{#paid }}<i class="icon green" icon=""></i>{{/paid}}</td>
         <td>{{{ dump.name }}}</td>
-        <td width="30" class="centertext">{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
-        <td width="90" class="centertext">{{{ dump_cash }}}</td>
-        <td width="90" class="centertext">{{{ dump_cash_extra }}}</td>
+        <td width="30" class="text-center">{{^dump_pay_type }} <i class="icon" icon=""></i> {{/dump_pay_type}}</td>
+        <td width="90" class="text-center">{{{ dump_cash }}}</td>
+        <td width="90" class="text-center">{{{ dump_cash_extra }}}</td>
         <!-- replace -->
     </tr>
 </script>{% endverbatim %}
@@ -197,15 +197,15 @@
                                             <th>Клиент</th>
                                             <th>Объект</th>
                                             <th width="90px">Вид работ</th>
-                                            <th width="40px" class="centertext">Ходки</th>
+                                            <th width="40px" class="text-center">Ходки</th>
                                             <th width="70px">Оплата</th>
-                                            <th width="20px" class="centertext">БН</th>
-                                            <th width="20px" class="centertext">О</th>
+                                            <th width="20px" class="text-center">БН</th>
+                                            <th width="20px" class="text-center">О</th>
                                             <th>Полигон</th>
                                             <th width="30px">Т</th>
-                                            <th width="40px" class="centertext">Нал</th>
-                                            <th width="40px" class="centertext">Доп</th>
-                                            <th width="40px" class="centertext">Груз</th>
+                                            <th width="40px" class="text-center">Нал</th>
+                                            <th width="40px" class="text-center">Доп</th>
+                                            <th width="40px" class="text-center">Груз</th>
                                             <th>Рекомендации</th>
                                         </tr>
                                     </thead>
@@ -215,7 +215,7 @@
                                             <td>{{ l.company.name }}</td>
                                             <td>{{ l.object.name }}</td>
                                             <td>{{ l.race_type.val }}</td>
-                                            <td  class="centertext">{{ l.hodkis }}</td>
+                                            <td  class="text-center">{{ l.hodkis }}</td>
                                             <td>{{ l.summ|default_if_none:"" }}</td>
                                             <td>{% if l.pay_way == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
                                             <td>{% if l.paid == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>

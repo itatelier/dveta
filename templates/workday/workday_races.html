@@ -30,15 +30,15 @@
                             <th>Клиент</th>
                             <th>Объект</th>
                             <th width="90px">Вид работ</th>
-                            <th width="40px" class="centertext">Ходки</th>
+                            <th width="40px" class="text-center">Ходки</th>
                             <th width="70px">Оплата</th>
-                            <th width="20px" class="centertext">БН</th>
-                            <th width="20px" class="centertext">О</th>
+                            <th width="20px" class="text-center">БН</th>
+                            <th width="20px" class="text-center">О</th>
                             <th>Полигон</th>
                             <th width="30px">Т</th>
-                            <th width="40px" class="centertext">Нал</th>
-                            <th width="40px" class="centertext">Доп</th>
-                            <th width="40px" class="centertext">Груз</th>
+                            <th width="40px" class="text-center">Нал</th>
+                            <th width="40px" class="text-center">Доп</th>
+                            <th width="40px" class="text-center">Груз</th>
                             <th>Рекомендации</th>
                         </tr>
                     </thead>
@@ -48,7 +48,7 @@
                             <td>{{ l.company.name }} {{ l.pk }}</td>
                             <td>{{ l.object.name }}</td>
                             <td>{{ l.race_type.val }}</td>
-                            <td  class="centertext">{{ l.hodkis }}</td>
+                            <td  class="text-center">{{ l.hodkis }}</td>
                             <td>{{ l.summ|default_if_none:"" }}</td>
                             <td>{% if l.pay_way == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>
                             <td>{% if l.paid == 1 %}<i class="icon" icon="&#xf00c;"></i>{% endif %}</td>

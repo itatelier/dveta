@@ -56,9 +56,9 @@ class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
         log.info("--- Month: %s   Year: %s" %(self.report_month_dt.month, self.report_month_dt.year))
 
         # Получаем список сформированных зарплатных листов за указанный месяц
-        summary_list = SalaryMonthSummary.objects.filter(month__exact=self.report_month_dt.month, year__exact=self.report_month_dt.year).select_related('employee__person')
+        #  summary_list = SalaryMonthSummary.objects.filter(month__exact=self.report_month_dt.month, year__exact=self.report_month_dt.year).select_related('employee__person')
         context_data.update({
-            'summary_list': summary_list
+            'summary_list': SalaryMonthSummary.objects.drivers_list_races_and_summary(self.report_month_dt.date(), self.report_next_dt.date())
         })
         return context_data
 

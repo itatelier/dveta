@@ -39,7 +39,7 @@ table { border-spacing: 0;}
     margin-right: 0!important;
 }
 .margint10 { margin-top: 1rem; }
-.centertext { text-align: center !important;}
+.text-center { text-align: center !important;}
 
 div._white_bordered {
     background-color: #ffffff;

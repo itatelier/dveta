@@ -84,7 +84,7 @@
                                 <tr>
                                     <th width="120px">Дата / время</th>
                                     <th>Водитель</th>
-                                    <th class="centertext">Кол-во литров</th>
+                                    <th class="text-center">Кол-во литров</th>
                                     <th>Километраж</th>
                                     <th>Сверено</th>
                                     <th><div class="checkbox_wrapper"><input type="checkbox" name="checked_ops" onclick="SelectChb();"></div></th>
@@ -95,10 +95,10 @@
                                     <tr>
                                         <td>{{ l.date_refuel|date:"d-m-y H:i"}}</td>
                                         <td>{{ l.driver.person.family_name}} {{ l.driver.person.given_name}} {{ l.driver.person.nick_name}}</td>
-                                        <td class="centertext">{{ l.amount }}</td>
-                                        <td class="centertext">{{ l.km }}</td>
-                                        <td class="centertext">{% if l.checked %}<i class="icon green" icon=""></i> {% endif %}</td>
-                                        <td class="centertext"><input type="checkbox" rel="ops" name="checked_ops[]" value="{{ l.pk }}" {% if l.checked %}checked{% endif %}></td>
+                                        <td class="text-center">{{ l.amount }}</td>
+                                        <td class="text-center">{{ l.km }}</td>
+                                        <td class="text-center">{% if l.checked %}<i class="icon green" icon=""></i> {% endif %}</td>
+                                        <td class="text-center"><input type="checkbox" rel="ops" name="checked_ops[]" value="{{ l.pk }}" {% if l.checked %}checked{% endif %}></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

@@ -17,7 +17,8 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li class="active" ><a href="#">Зарплата водителей</a></li>
+                <li><a href="#">Зарплата водителей</a></li>
+                <li class="active" ><a href="#">Контроль механика</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}
@@ -69,35 +70,49 @@
                                             </tr>
                                         </thead>
                                         <tbody id="report_table">
-                                        {% for row in summary_list %}
-                                        <tr></tr>
-                                            
-                                        <tr data-employee_pk="{{ row.employee.pk }}">
-                                            <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
-                                            <td>{{ row.get_check_status_display }}</td>
-                                            <td>{{ row.races_done|default_if_none:"0"}}</td>
-                                            <td>{{ row.fuel_penalty|default_if_none:"0"}}</td>
-                                            <td>{{ row.run_penalty|default_if_none:"0"}}</td>
-                                            <td>{{ row.misc_penalty|default_if_none:"0"}}</td>
-                                            <td>{{ row.deductions_amount|default_if_none:"0"}}</td>
-                                            <td>{{ row.compensation_amount|default_if_none:"0"}}</td>
-                                            <td>{{ row.bonus_amount|default_if_none:"0"}}</td>
-                                            <td>{{ row.summary_salary_amount|default_if_none:"0"}}</td>
-                                            <td>{{ row.paid_sum|default_if_none:"0"}}</td>
+                                        {% for row in summary_list.data %}
+                                        <tr data-employee_pk="{{ row.driver_id }}">
+                                            <th scope="row">{{ row.driver_family_name }} {{ row.driver_given_name }} [{{ row.driver_nick_name }}]</th>
+                                            {% if row.check_status == None %}
+                                                <td colspan="">не сформирован</td>
+                                                <td colspan="9"></td>
+                                            {% else %}
+                                                {% if row.check_status == 0 %}
+                                                    <td>анализ</td>
+                                                {% elif row.check_status == 1 %}
+                                                    <td>контроль офис</td>
+                                                {% elif row.check_status == 2 %}
+                                                    <td>контроль офис</td>
+                                                {% elif row.check_status == 3 %}
+                                                    <td>контроль руководитель</td>
+                                                {% elif row.check_status > 3 %}
+                                                    <td>подтвержден</td>
+                                                {% endif %}
+                                                <td>{{ row.races_done|default_if_none:""}}</td>
+                                                <td>{{ row.fuel_penalty|default_if_none:""}}</td>
+                                                <td>{{ row.run_penalty|default_if_none:""}}</td>
+                                                <td>{{ row.misc_penalty|default_if_none:""}}</td>
+                                                <td>{{ row.deductions_amount|default_if_none:""}}</td>
+                                                <td>{{ row.compensation_amount|default_if_none:""}}</td>
+                                                <td>{{ row.bonus_amount|default_if_none:""}}</td>
+                                                <td>{{ row.summary_salary_amount|default_if_none:""}}</td>
+                                                <td>{{ row.paid_sum|default_if_none:""}}</td>
+                                            {% endif %}
                                         </tr>
                                         {% endfor %}
                                         </tbody>
                                         <tfoot>
-                                            <th scope="row" class="righttext">Итого:</th>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <th scope="row" class="text-right">Итого:</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tfoot>
                                     </table>
                                 {% endif %}

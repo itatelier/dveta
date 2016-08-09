@@ -58,7 +58,7 @@
         <td>{{{ name }}}</td>
         <td>{{{ type.val }}}</td>
         <td width="80">{{{ balance }}}</td>
-        <td class="centertext">{{#status}}Активен{{/status}}{{^status}}<p class="red">Заблокирован</p>{{/status}}</td>
+        <td class="text-center">{{#status}}Активен{{/status}}{{^status}}<p class="red">Заблокирован</p>{{/status}}</td>
         <td>{{{ employee.person.family_name }}} {{{ employee.person.given_name }}}{{#employee.person.nick_name}} [{{{ employee.person.nick_name }}}]{{/employee.person.nick_name}}</td>
         <td>{{{ contragent.name }}}</td>
     </tr>
@@ -132,7 +132,7 @@
                                 <th><a href="#" class="sortable" rel="name">Имя</a></th>
                                 <th><a href="#" class="sortable" rel="type">Тип счета</a></th>
                                 <th><a href="#" class="sortable" rel="balance">Баланс</a></th>
-                                <th><a href="#" class="sortable centertext" rel="balance">Статус</a></th>
+                                <th><a href="#" class="sortable text-center" rel="balance">Статус</a></th>
                                 <th><a href="#" rel="">Сотрудник</a></th>
                                 <th><a href="#" class="sortable " rel="contragent">Контрагент</a></th>
                             </tr>

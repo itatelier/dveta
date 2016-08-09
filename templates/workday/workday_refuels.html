@@ -29,9 +29,9 @@
                     <table class="sheet_headered  margint10 marginr10 " width="100%">
                         <thead>
                         <tr>
-                            <th colspan="2" width="120px" class="centertext">Дата, время</th>
+                            <th colspan="2" width="120px" class="text-center">Дата, время</th>
                             <th>Километраж</th>
-                            <th  class="centertext">Тип</th>
+                            <th  class="text-center">Тип</th>
                             <th width="">Литров</th>
                             <th width="">Сумма</th>
                             <th width="180px">Примечание</th>
@@ -43,7 +43,7 @@
                                 <td width="110">{{ l.date_refuel|date:"d-m-y H:i"}}</td>
                                 <td width="30">{% if l.run_check  %}<i class="icon" icon=""></i>{% endif %}</td>
                                 <td width="70">{{ l.km }}</td>
-                                <td class="centertext">{% if l.type == "0" %}<i class="icon" icon=""></i>{% elif l.type == "1"%}₽{% endif %}</td>
+                                <td class="text-center">{% if l.type == "0" %}<i class="icon" icon=""></i>{% elif l.type == "1"%}₽{% endif %}</td>
                                 <td>{{ l.amount }}</td>
                                 <td>{{ l.sum }}</td>
                                 <td>{{ l.comment|default_if_none:""  }}</td>

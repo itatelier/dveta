@@ -62,15 +62,15 @@
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
     <tr data-object_id="{{ pk }}">
-        <td width="100" class="centertext">{{{ date_refuel.date }}}</td>
+        <td width="100" class="text-center">{{{ date_refuel.date }}}</td>
         <td width="20">{{#later_added }}<i class="icon" icon=""></i>{{/later_added }}</td>
         <td width="">{{{ car.nick_name }}}</td>
         <td width="">{{{ car.reg_num }}}</td>
         <td>{{{ driver.person.family_name}}} {{ driver.person.given_name }} [{{{ driver.person.nick_name }}}]</td>
-        <td width="80" class="centertext">{{#card}}<i class="icon" icon=""></i>{{/card}}</td>
+        <td width="80" class="text-center">{{#card}}<i class="icon" icon=""></i>{{/card}}</td>
         <td>{{{ km }}}</td>
         <td>{{{ amount }}}</td>
-        <td  width=""  class="centertext">{{{ sum }}}</td>
+        <td  width=""  class="text-center">{{{ sum }}}</td>
         <td>{{{ comment }}}</td>
     </tr>
 </script>{% endverbatim %}
@@ -168,10 +168,10 @@
                                 <th><a href="#" class="" rel="">Машина</a></th>
                                 <th><a href="#" class="" rel="">Рег. номер</a></th>
                                 <th><a href="#" class="" rel="">Водитель</a></th>
-                                <th><a href="#" class="centertext" rel="">Тип</a></th>
+                                <th><a href="#" class="text-center" rel="">Тип</a></th>
                                 <th><a href="#" class="" rel="">Километраж</a></th>
                                 <th><a href="#" class="" rel="">Литров</a></th>
-                                <th><a href="#" class="centertext" rel="sum">Сумма</a></th>
+                                <th><a href="#" class="text-center" rel="sum">Сумма</a></th>
                                 <th><a href="#" class="" rel="">Примечание</a></th>
                             </tr>
                         </thead>

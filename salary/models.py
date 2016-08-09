@@ -40,6 +40,46 @@ class SalarySummaryManager(models.Manager):
         return super(SalarySummaryManager, self).get_queryset().select_related('employee')
 
     @staticmethod
+    def drivers_list_races_and_summary(date_start, date_end):
+        result = {}
+        query = """SELECT
+                    R2.driver_id
+                    ,R2.races_done as races
+                    ,R2.driver_family_name
+                    ,R2.driver_given_name
+                    ,R2.driver_nick_name
+                    ,ss.id as summary_id
+                	,ss.check_status
+                    ,ss.date_add
+                    ,ss.races_done
+                    ,ss.hodkis
+                    ,ss.run_km
+                    ,ss.average_consumption
+                    ,ss.over_run_status
+                    ,ss.over_fuel_status
+                    ,ss.mech_comment
+                    ,ss.over_run_penalty
+                    ,ss.over_fuel_penalty
+                FROM (
+                        SELECT
+                            R.driver_id AS driver_id
+                            ,P.id
+                            ,P.nick_name AS driver_nick_name
+                            ,P.family_name AS driver_family_name
+                            ,P.given_name AS driver_given_name
+                            ,COUNT(R.id) AS races_done
+                        FROM races AS R
+                        JOIN employies AS E ON E.id = R.driver_id
+                        JOIN persons AS P ON P.id = E.person_id
+                        WHERE (R.date_race BETWEEN %(date_start)s AND %(date_end)s)
+                        GROUP BY driver_id
+                        ) AS R2
+                LEFT OUTER JOIN salary_month_summary AS ss ON ss.employee_id = R2.driver_id"""
+        params = {'date_start': date_start, 'date_end': date_end}
+        result['data'] = fetch_sql_allintuple(query, params=params)
+        return result
+
+    @staticmethod
     def driver_month_stats(date_start, date_end, driver_pk):
         result = {}
         query = """SELECT
@@ -99,17 +139,8 @@ class SalarySummaryManager(models.Manager):
                         T.km BETWEEN T2.first_km AND T2.last_km
                         AND T.driver_id = %(driver_pk)s
                     GROUP BY car_id"""
-        limit = 10
         params = {'date_start': date_start, 'date_end': date_end, 'driver_pk': driver_pk}
-        # cursor = connection.cursor()
-        # cursor.execute(query, params)
-        # for row in cursor.fetchall():
-        #     log.info("== row: " % row)
         result['data'] = fetch_sql_allintuple(query, params=params)
-        # try:
-        #     result['data'] = fetch_sql_allintuple(query, params=params)
-        # except TypeError as err:
-        #         result['error'] = "Нет данных для отчета за указанный период"
         return result
 
 
@@ -125,7 +156,7 @@ class SalaryMonthSummary(models.Model):
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
 
     races_done = models.IntegerField(null=False, blank=False)
-    hodkies = models.IntegerField(null=False, blank=False)
+    hodkis = models.IntegerField(null=False, blank=False)
     run_km = models.IntegerField(null=False, blank=False)
     average_consumption = models.IntegerField(null=False, blank=False)
 
@@ -145,7 +176,7 @@ class SalaryMonthSummary(models.Model):
     summary_salary_amount = models.FloatField(null=True, blank=True)
     paid_sum = models.FloatField(null=True, blank=True)
     remain_sum = models.FloatField(null=True, blank=True)
-    check_status = models.NullBooleanField(null=True, blank=True, default=False, choices=check_status_choices)
+    check_status = models.IntegerField(null=True, blank=True, default=False, choices=check_status_choices)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
     class Meta:

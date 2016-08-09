@@ -16,9 +16,9 @@
                         <form method="POST" id="confirm" action=".">{% csrf_token %}
                             <input type="hidden" value="yes">
                         </form>
-                        <h1 class="centertext">Вы уверены, что хотите удалить этот объект?</h1>
+                        <h1 class="text-center">Вы уверены, что хотите удалить этот объект?</h1>
                         {% if notice %}<div class="notice">{{ notice }}</div>{% endif %}
-                        <span class="button_block centertext">
+                        <span class="button_block text-center">
                             <a class="button grey_bg"  onclick="history.back();return false;">Вернуться на предыдущую страницу</a>
                             <a class="textlink red"  onclick="$('form#confirm').submit();">удалить</a>
                         </span>
