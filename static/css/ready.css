@@ -71,7 +71,8 @@ form { margin: 0.5rem 2rem; /*width: 100%; */}
     height: 600px;
 }
 .fullwidth { width: 100%; }
-.swidth {  width: 75%; }
+.width_75 {  width: 75%; }
+.width_80 { width: 80%; }
 .none { display: none !important; }
 
 .no_lr_margin {

@@ -19,9 +19,9 @@
             <div class="sheet">
                 <div class="data_grid_listing">
                     <div class="flex_row flex_justify_center">
-                        <div>
+                        <div class="width_80">
+                            {# переключатель месяца отчета #}
                             <div class="flex_row flex_vcentered">
-                        {# переключатель месяца отчета #}
                                     <div>Период формирования отчета:</div>
                                     <ul class="linklist flex">
                                         <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
@@ -29,7 +29,7 @@
                                         <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
                                     </ul>
                             </div>
-                    {# - переключатель месяца отчета #}
+                            {# - переключатель месяца отчета #}
                             <h2>Персональные показатели работы водителя</h2>
                             <table class="sheet_simple">
                                 <tr>
@@ -43,7 +43,8 @@
                                     <td><b>{{ stats_hodkis|default_if_none:0 }}</b></td>
                                 </tr>
                             </table>
-                            <table class="colgroup_table margint10">
+                            {% if driver_month_stats.data %}
+                            <table class="colgroup_table margint10 fullwidth">
                                 <caption>Статистика по машинам</caption>
                                 <thead>
                                     <th>Авто</th>
@@ -76,6 +77,9 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                                <h2>за указанный период нет данных о выполненных рейсах</h2>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

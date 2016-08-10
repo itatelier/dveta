@@ -95,6 +95,7 @@ class SalarySummaryManager(models.Manager):
                         ,J3.total_lit
                         ,J3.total_run
                         ,ROUND(((J3.total_lit / J3.total_run) * 100),1) AS lit_on_100
+                        ,ROUND(J3.total_run / SUM(RR.hodkis), 1) AS km_on_hodkis
                     FROM races AS RR
                     LEFT JOIN cars AS C ON C.id = RR.car_id
                     LEFT OUTER JOIN (
