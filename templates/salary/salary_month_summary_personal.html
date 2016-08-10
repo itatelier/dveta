@@ -74,6 +74,7 @@
                                     <th>Рег.Номер</th>
                                     <th>Рейсы</th>
                                     <th>Ходки</th>
+                                    <th>Заправки</th>
                                     <th>Пробег</th>
                                     <th>КМ на Ходку</th>
                                     <th>Расход весь</th>
@@ -88,6 +89,7 @@
                                         <td>{{ row.reg_num }}</td>
                                         <td>{{ row.total_races|default_if_none:0 }}</td>
                                         <td>{{ row.total_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_refuels }}</td>
                                         <td>{{ row.total_run|default_if_none:0 }}</td>
                                         <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
                                         <td>{{ row.total_lit|default_if_none:0 }}</td>
