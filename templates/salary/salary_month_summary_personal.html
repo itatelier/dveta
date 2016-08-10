@@ -29,31 +29,8 @@
                         </div>
                     </div>
                     {# - переключатель месяца отчета #}
-                    <div class="form_row">
-                        <div class="flex_block _zero">
-                            {# Информационный блок #}
-                                {% if summary_list %}
-                                    <table class="colgroup_table">
-                                        <caption>Месячные показатели работы водителей</caption>
-                                        <col>
-                                        <col>
-                                        <thead>
-                                            <tr>
-                                                <th rowspan="2" colspan="">Сотрудник</th>
-                                                <th rowspan="2">Статус</th>
-                                            </tr>
-                                        </thead>
-                                        {% for row in summary_list %}
-                                        <tr>
-                                            <th scope="row"  width="300px">{{ row.employee.person.fio_and_nick }}</th>
-                                            <td>{{ row.get_check_status_display }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </table>
-                                {% endif %}
-                            {# - Информационный блок #}
-                        </div>
-                        <div class="flex_block marginl30">
+                    <div class="flex_row">
+                        <div>
                             <h2>Персональные показатели работы водителя</h2>
                             <table class="sheet_simple">
                                 <tr>

@@ -71,7 +71,7 @@ class SalarySummaryManager(models.Manager):
                         FROM races AS R
                         JOIN employies AS E ON E.id = R.driver_id
                         JOIN persons AS P ON P.id = E.person_id
-                        WHERE (R.date_race BETWEEN %(date_start)s AND %(date_end)s)
+                        WHERE (R.date_race >= %(date_start)s AND R.date_race < %(date_end)s)
                         GROUP BY driver_id
                         ) AS R2
                 LEFT OUTER JOIN salary_month_summary AS ss ON ss.employee_id = R2.driver_id
@@ -122,16 +122,16 @@ class SalarySummaryManager(models.Manager):
                                                                                                                 MIN(KM) ) AS first_km
                                                                                                                 ,MAX(km) as last_km
                                                                                                             FROM refuels2 AS R1
-                                                                                                            WHERE date BETWEEN %(date_start)s AND %(date_end)s
+                                                                                                            WHERE date >= %(date_start)s AND %(date_end)s
                                                                                                             GROUP BY car_id
                                                                                     ) AS G1 ON G1.car_id = R.car_id
                                                                                     WHERE R.km = G1.last_km	
                                                     ) AS J2 ON J2.car_id = R2.car_id
-                                                    WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
+                                                    WHERE R2.km BETWEEN J2.first_km AND J2.last_km
                                                                 AND R2.driver_id = %(driver_pk)s
                                                     GROUP BY car_id
                     ) AS J3 ON J3.car_id = RR.car_id
-                    WHERE RR.date_race BETWEEN %(date_start)s AND %(date_end)s
+                    WHERE RR.date_race >= %(date_start)s AND RR.date_race < %(date_end)s
                                 AND RR.driver_id = %(driver_pk)s
                     GROUP BY car_id"""
         params = {'date_start': date_start, 'date_end': date_end, 'driver_pk': driver_pk}
