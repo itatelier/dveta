@@ -18,19 +18,18 @@
             {# Рабочий лист #}
             <div class="sheet">
                 <div class="data_grid_listing">
-                    {# переключатель месяца отчета #}
-                    <div class="form_row">
-                        <div class="">
-                            <ul class="linklist flex">
-                                <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
-                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
-                                <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    {# - переключатель месяца отчета #}
-                    <div class="flex_row">
+                    <div class="flex_row flex_justify_center">
                         <div>
+                            <div class="flex_row flex_vcentered">
+                        {# переключатель месяца отчета #}
+                                    <div>Период формирования отчета:</div>
+                                    <ul class="linklist flex">
+                                        <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                        <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                        <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                                    </ul>
+                            </div>
+                    {# - переключатель месяца отчета #}
                             <h2>Персональные показатели работы водителя</h2>
                             <table class="sheet_simple">
                                 <tr>

@@ -14,7 +14,7 @@
 .flex { display: flex;  }
 .flex_column { flex-direction: column;}
 .flex_vcentered { align-items: center;}
-.flex_hcentered { justify-content: center;}
+.flex_justify_center { justify-content: center;}
 .flex_end { align-self: flex-end;}
 .flex_zero { flex: 0 0;}
 
