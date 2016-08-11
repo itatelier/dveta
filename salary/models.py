@@ -94,13 +94,14 @@ class SalarySummaryManager(models.Manager):
                         ,J3.total_lit
                         ,J3.total_run
                         ,ROUND(((J3.total_lit / J3.total_run) * 100),1) AS lit_on_100
+                        ,(ROUND(((J3.total_lit / J3.total_run) * 100),1)) - C.fuel_norm AS fuel_overuse
                         ,ROUND(J3.total_run / SUM(RR.hodkis), 1) AS km_on_hodkis
                     FROM races AS RR
                     LEFT JOIN cars AS C ON C.id = RR.car_id
                     LEFT OUTER JOIN (
                                                     SELECT
                                                             R2.car_id
-                                                            ,COUNT(id) AS total_refuels
+                                                            ,COUNT(*) AS total_refuels
                                                             ,(SUM(R2.lit) - J2.last_refuel_lit) AS total_lit
                                                             ,J2.total_run
                                                     FROM refuels2 AS R2
@@ -122,7 +123,7 @@ class SalarySummaryManager(models.Manager):
                                                                                                                 MIN(KM) ) AS first_km
                                                                                                                 ,MAX(km) as last_km
                                                                                                             FROM refuels2 AS R1
-                                                                                                            WHERE date >= %(date_start)s AND %(date_end)s
+                                                                                                            WHERE date >= %(date_start)s AND date < %(date_end)s
                                                                                                             GROUP BY car_id
                                                                                     ) AS G1 ON G1.car_id = R.car_id
                                                                                     WHERE R.km = G1.last_km	

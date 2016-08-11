@@ -77,6 +77,31 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <h3>Суммарные и усредненные показатели</h3>
+                            <table class="colgroup_table margint10">
+                                <thead>
+                                    <th>Рейсы</th>
+                                    <th>Ходки</th>
+                                    <th>Заправки</th>
+                                    <th>Пробег</th>
+                                    <th>КМ на Ходку</th>
+                                    <th>Расход весь</th>
+                                    <th>Расход на 100км</th>
+                                    <th>Перерасход</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ average_and_sum_stats.total_races|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_refuels }}</td>
+                                        <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_lit|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.average_lit_on_100|default_if_none:0 }}</td>
+                                        <td>{% if average_and_sum_stats.fuel_overuse > 0 %}{{ average_and_sum_stats.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             {% else %}
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>
                             {% endif %}
