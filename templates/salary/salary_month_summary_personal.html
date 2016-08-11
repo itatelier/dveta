@@ -40,10 +40,10 @@
                                     <td>Выполненео рейсов:</td>
                                     <td><b>{{ stats_races }}</b></td>
                                     <td>Засчитано ходок:</td>
-                                    <td><b>{{ stats_hodkis|default_if_none:0 }}</b></td>
+                                    <td><b>{{ stats_hodkis|default_if_none:0 }}</b> {{ average_stats.a_km_on_100 }}</td>
                                 </tr>
                             </table>
-                            {% if driver_month_stats.data %}
+                            {% if driver_month_stats %}
                             <table class="colgroup_table margint10 fullwidth">
                                 <caption>Статистика по машинам</caption>
                                 <thead>
@@ -60,7 +60,7 @@
                                     <th>Перерасход</th>
                                 </thead>
                                 <tbody>
-                                    {% for row in driver_month_stats.data %}
+                                    {% for row in driver_month_stats %}
                                     <tr>
                                         <td>{{ row.nick_name }}</td>
                                         <td>{{ row.reg_num }}</td>

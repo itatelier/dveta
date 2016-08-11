@@ -77,10 +77,21 @@ class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
 
         # Список месячных показателей по каждой машине
         log.info("--- Report date_start: %s  date_end: %s" % (self.report_month_dt.date(), self.report_next_dt.date()))
-        context_data['driver_month_stats'] = SalaryMonthSummary.objects.driver_month_stats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=driver_pk)
+        driver_month_stats = SalaryMonthSummary.objects.driver_month_stats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=driver_pk)
+        context_data['driver_month_stats'] = driver_month_stats
 
         # Перечень всех сверок за месяц (список водителей слева)
-        context_data.update({
-            'summary_list': SalaryMonthSummary.objects.drivers_list_races_and_summary(self.report_month_dt.date(), self.report_next_dt.date())
-        })
+
+        summary_list = SalaryMonthSummary.objects.drivers_list_races_and_summary(self.report_month_dt.date(), self.report_next_dt.date())
+        context_data['summary_list'] = summary_list
+        log.info("== data: %s" % summary_list)
+        average_stats = {}
+        for k in driver_month_stats:
+            average_stats['total_races'] = k.total_races
+
+        log.info("= %s" % average_stats['total_races'])
+        # if len(summary_list.data.keys()) > 1:
+        #     average_stats['a_km_on_100'] = 1
+        #
+        # context_data['average_stats'] = average_stats
         return context_data

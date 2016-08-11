@@ -83,8 +83,7 @@ class SalarySummaryManager(models.Manager):
 
     @staticmethod
     def driver_month_stats(date_start, date_end, driver_pk):
-        result = {}
-        query = """SELECT 
+        query = """SELECT
                         RR.car_id
                         ,C.reg_num
                         ,C.nick_name
@@ -136,7 +135,7 @@ class SalarySummaryManager(models.Manager):
                                 AND RR.driver_id = %(driver_pk)s
                     GROUP BY car_id"""
         params = {'date_start': date_start, 'date_end': date_end, 'driver_pk': driver_pk}
-        result['data'] = fetch_sql_allintuple(query, params=params)
+        result = fetch_sql_allintuple(query, params=params)
         return result
 
 
