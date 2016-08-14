@@ -88,14 +88,13 @@ class SalarySummaryManager(models.Manager):
                         ,C.reg_num
                         ,C.nick_name
                         ,C.fuel_norm
-                        ,COUNT(RR.id) AS total_races
+                        ,COUNT(*) AS total_races
                         ,SUM(RR.hodkis) AS total_hodkis
                         ,IFNULL(J3.total_refuels,0) AS total_refuels
                         ,J3.total_lit
                         ,J3.total_run
                         ,ROUND(((J3.total_lit / J3.total_run) * 100),1) AS lit_on_100
                         ,(ROUND(((J3.total_lit / J3.total_run) * 100),1)) - C.fuel_norm AS fuel_overuse
-                        ,ROUND(J3.total_run / SUM(RR.hodkis), 1) AS km_on_hodkis
                     FROM races AS RR
                     LEFT JOIN cars AS C ON C.id = RR.car_id
                     LEFT OUTER JOIN (
@@ -113,22 +112,24 @@ class SalarySummaryManager(models.Manager):
                                                                                         ,G1.last_km
                                                                                         ,(G1.last_km - G1.first_km) AS total_run
                                                                                     FROM refuels2 AS R
-                                                                                    LEFT JOIN ( SELECT 
+                                                                                    LEFT JOIN ( SELECT
                                                                                                             car_id,
-                                                                                                            IFNULL( ( SELECT MAX(KM) 
+                                                                                                            IFNULL( ( SELECT MAX(KM)
                                                                                                                         FROM refuels2 AS R2
-                                                                                                                        WHERE date < %(date_start)s 
+                                                                                                                        WHERE date < %(date_start)s
                                                                                                                         AND R2.car_id = R1.car_id
+                                                                                                                        AND R2.driver_id = %(driver_pk)s
                                                                                                                     ),
                                                                                                                 MIN(KM) ) AS first_km
                                                                                                                 ,MAX(km) as last_km
                                                                                                             FROM refuels2 AS R1
                                                                                                             WHERE date >= %(date_start)s AND date < %(date_end)s
+                                                                                                            AND driver_id = %(driver_pk)s
                                                                                                             GROUP BY car_id
                                                                                     ) AS G1 ON G1.car_id = R.car_id
-                                                                                    WHERE R.km = G1.last_km	
+                                                                                    WHERE R.km = G1.last_km
                                                     ) AS J2 ON J2.car_id = R2.car_id
-                                                    WHERE R2.km BETWEEN J2.first_km AND J2.last_km
+                                                    WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
                                                                 AND R2.driver_id = %(driver_pk)s
                                                     GROUP BY car_id
                     ) AS J3 ON J3.car_id = RR.car_id
