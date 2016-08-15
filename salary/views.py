@@ -106,3 +106,13 @@ class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
                 log.info("=== Averaga %s: %s" % (k, v))
             context_data['average_and_sum_stats'] = average_and_sum_stats
         return context_data
+
+
+class SalaryMonthSummaryCarRefuels(SalaryMonthSummaryView):
+    template_name = 'salary/salary_month_refuels_bycar.html'
+    employee_pk = False
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SalaryMonthSummaryCarRefuels, self).get_context_data(*args, **kwargs)
+        car_pk = self.kwargs.get('car_pk', None)
+        context_data['report_refuels'] = SalaryMonthSummary.objects.refuels_on_period_for_car(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), car_pk=car_pk)

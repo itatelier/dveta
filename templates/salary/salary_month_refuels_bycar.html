@@ -1,0 +1,115 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Зарплата водителей</a></li>
+                <li><a href="{% url 'salary_month_summary_mech' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль механика</a></li>
+                <li class="active" ><a href="#">Анализ водителя: {{ driver.fullnamenick }}</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="data_grid_listing">
+                    <div class="flex_row flex_justify_center">
+                        <div class="width_80">
+                            {# переключатель месяца отчета #}
+                            <div class="flex_row flex_vcentered">
+                                    <div>Период формирования отчета:</div>
+                                    <ul class="linklist flex">
+                                        <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                        <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                        <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                                    </ul>
+                            </div>
+                            {# - переключатель месяца отчета #}
+                            <h2>Персональные показатели работы водителя</h2>
+                            <table class="sheet_simple">
+                                <tr>
+                                    <td>Водитель:</td>
+                                    <td><a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></td>
+                                    <td>Сверки с механиком:</td>
+                                    <td><b>{{ stats_mech_checkups }}</b></td>
+                                    <td>Выполненео рейсов:</td>
+                                    <td><b>{{ stats_races }}</b></td>
+                                    <td>Засчитано ходок:</td>
+                                    <td><b>{{ stats_hodkis|default_if_none:0 }}</b> {{ average_stats.a_km_on_100 }}</td>
+                                </tr>
+                            </table>
+                            {% if driver_month_stats %}
+                            <table class="colgroup_table margint10 fullwidth">
+                                <caption>Статистика по машинам</caption>
+                                <thead>
+                                    <th>Авто</th>
+                                    <th>Рег.Номер</th>
+                                    <th>Рейсы</th>
+                                    <th>Ходки</th>
+                                    <th>Заправки</th>
+                                    <th>Пробег</th>
+                                    <th>КМ на Ходку</th>
+                                    <th>Расход весь</th>
+                                    <th>Расход на 100км</th>
+                                    <th>Норма</th>
+                                    <th>Перерасход</th>
+                                </thead>
+                                <tbody>
+                                    {% for row in driver_month_stats %}
+                                    <tr>
+                                        <td>{{ row.nick_name }}</td>
+                                        <td>{{ row.reg_num }}</td>
+                                        <td>{{ row.total_races|default_if_none:0 }}</td>
+                                        <td>{{ row.total_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_refuels }}</td>
+                                        <td>{{ row.total_run|default_if_none:0 }}</td>
+                                        <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_lit|default_if_none:0 }}</td>
+                                        <td>{{ row.lit_on_100|default_if_none:0 }}</td>
+                                        <td>{{ row.fuel_norm|default_if_none:0 }}</td>
+                                        <td>{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <h3>Суммарные и усредненные показатели</h3>
+                            <table class="colgroup_table margint10">
+                                <thead>
+                                    <th>Рейсы</th>
+                                    <th>Ходки</th>
+                                    <th>Заправки</th>
+                                    <th>Пробег</th>
+                                    <th>КМ на Ходку</th>
+                                    <th>Расход весь</th>
+                                    <th>Расход на 100км</th>
+                                    <th>Перерасход</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ average_and_sum_stats.total_races|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_refuels }}</td>
+                                        <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_lit|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.average_lit_on_100|default_if_none:0 }}</td>
+                                        <td>{% if average_and_sum_stats.fuel_overuse > 0 %}{{ average_and_sum_stats.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% else %}
+                                <h2>за указанный период нет данных о выполненных рейсах</h2>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

@@ -142,6 +142,41 @@ class SalarySummaryManager(models.Manager):
         return result
 
 
+@staticmethod
+def refuels_on_period_for_car(date_start, date_end, car_pk):
+    #    получаем список всех заправок от (последней ПЕРЕД периодом или первой ВНУТРИ периода) до последней ВНУТРИ 
+    #    периода. Cписок для расчета "пробега" и показа в отчете по всем заправкам за период
+    #    БЕЗ УЧЕТА ДРАЙВЕРА, для КОНКРЕТНОЙ машины    
+    query = """SELECT
+                    R2.car_id
+                    ,R2.date
+                    ,R2.driver_id
+                    ,R2.lit
+                    ,R2.km
+                FROM refuels2 AS R2
+                LEFT OUTER JOIN ( 
+                        SELECT 
+                        car_id,
+                        IFNULL( ( SELECT MAX(KM) 
+                                    FROM refuels2 AS R2
+                                    WHERE date < %(date_start)s 
+                                        AND R2.car_id = R1.car_id
+                                        AND R2.car_id = %(car_pk)s
+                                ),
+                            MIN(KM) ) AS first_km
+                            ,MAX(km) as last_km
+                        FROM refuels2 AS R1
+                        WHERE date >= %(date_start)s AND date < %(date_end)s
+                        AND R1.car_id = %(car_pk)s
+                        GROUP BY car_id
+                ) AS J2 ON J2.car_id = R2.car_id
+                WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
+                """
+    params = {'date_start': date_start, 'date_end': date_end, 'car_pk': car_pk}
+    result = fetch_sql_allintuple(query, params=params)
+    return result
+
+
 class SalaryMonthSummary(models.Model):
     check_status_choices = ([0, 'анализ'], [1, 'контроль офис'], [2, 'контроль руководитель'], [3, 'выдача'], [4, 'закрыт'],)
 
