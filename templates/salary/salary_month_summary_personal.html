@@ -66,10 +66,10 @@
                                         <td>{{ row.reg_num }}</td>
                                         <td>{{ row.total_races|default_if_none:0 }}</td>
                                         <td>{{ row.total_hodkis|default_if_none:0 }}</td>
-                                        <td>{{ row.total_refuels }}</td>
+                                        <td><a href="{% url 'salary_month_summary_refuels_by_car' row.car_id %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">{{ row.total_refuels }}</a></td>
                                         <td>{{ row.total_run|default_if_none:0 }}</td>
                                         <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
-                                        <td>{{ row.total_lit|default_if_none:0 }}</td>
+                                        <td>{{ row.total_amount|default_if_none:0 }}</td>
                                         <td>{{ row.lit_on_100|default_if_none:0 }}</td>
                                         <td>{{ row.fuel_norm|default_if_none:0 }}</td>
                                         <td>{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>

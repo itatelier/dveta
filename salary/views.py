@@ -6,6 +6,7 @@ from company.models import *
 from forms import *
 from refuels.models import CarRunCheckFlow
 from race.models import Races
+from car.models import Cars
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
@@ -77,7 +78,7 @@ class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
         context_data['driver_month_stats'] = driver_month_stats
         report_stats = {}
         average_and_sum_stats = {'fuel_overuse': 0}
-        report_stats_keys = ['total_races', 'total_hodkis', 'total_refuels', 'total_lit', 'total_run', 'lit_on_100', 'km_on_hodkis']
+        report_stats_keys = ['total_races', 'total_hodkis', 'total_refuels', 'total_amount', 'total_run', 'lit_on_100', 'km_on_hodkis']
         report_len = len(driver_month_stats)
         if report_len > 0:
             for key in report_stats_keys:
@@ -108,11 +109,14 @@ class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
         return context_data
 
 
-class SalaryMonthSummaryCarRefuels(SalaryMonthSummaryView):
+class SalaryMonthSummaryCarRefuelsView(SalaryMonthSummaryView):
     template_name = 'salary/salary_month_refuels_bycar.html'
     employee_pk = False
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(SalaryMonthSummaryCarRefuels, self).get_context_data(*args, **kwargs)
+        context_data = super(SalaryMonthSummaryCarRefuelsView, self).get_context_data(*args, **kwargs)
         car_pk = self.kwargs.get('car_pk', None)
-        context_data['report_refuels'] = SalaryMonthSummary.objects.refuels_on_period_for_car(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), car_pk=car_pk)
+        context_data['car'] = Cars.objects.get(pk=car_pk)
+        refuels_on_period_for_car =  SalaryMonthSummary.objects.refuels_on_period_for_car(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), car_pk=car_pk)
+        context_data['refuels_on_period_for_car'] = refuels_on_period_for_car
+        return context_data

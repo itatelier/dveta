@@ -83,98 +83,105 @@ class SalarySummaryManager(models.Manager):
 
     @staticmethod
     def driver_month_stats(date_start, date_end, driver_pk):
-        query = """SELECT
-                        RR.car_id
-                        ,C.reg_num
-                        ,C.nick_name
-                        ,C.fuel_norm
-                        ,COUNT(*) AS total_races
-                        ,SUM(RR.hodkis) AS total_hodkis
-                        ,IFNULL(J3.total_refuels,0) AS total_refuels
-                        ,J3.total_lit
-                        ,J3.total_run
-                        ,ROUND(((J3.total_lit / J3.total_run) * 100),1) AS lit_on_100
-                        ,(ROUND(((J3.total_lit / J3.total_run) * 100),1)) - C.fuel_norm AS fuel_overuse
-                        ,ROUND(J3.total_run / SUM(RR.hodkis), 1) AS km_on_hodkis
-                    FROM races AS RR
-                    LEFT JOIN cars AS C ON C.id = RR.car_id
-                    LEFT OUTER JOIN (
-                                                    SELECT
-                                                            R2.car_id
-                                                            ,COUNT(*) AS total_refuels
-                                                            ,(SUM(R2.lit) - J2.last_refuel_lit) AS total_lit
-                                                            ,J2.total_run
-                                                    FROM refuels2 AS R2
-                                                    LEFT OUTER JOIN (
-                                                                                    SELECT
-                                                                                        R.car_id
-                                                                                        ,R.lit AS last_refuel_lit
-                                                                                        ,G1.first_km
-                                                                                        ,G1.last_km
-                                                                                        ,(G1.last_km - G1.first_km) AS total_run
-                                                                                    FROM refuels2 AS R
-                                                                                    LEFT JOIN ( SELECT
-                                                                                                            car_id,
-                                                                                                            IFNULL( ( SELECT MAX(KM)
-                                                                                                                        FROM refuels2 AS R2
-                                                                                                                        WHERE date < %(date_start)s
-                                                                                                                        AND R2.car_id = R1.car_id
-                                                                                                                        AND R2.driver_id = %(driver_pk)s
-                                                                                                                    ),
-                                                                                                                MIN(KM) ) AS first_km
-                                                                                                                ,MAX(km) as last_km
-                                                                                                            FROM refuels2 AS R1
-                                                                                                            WHERE date >= %(date_start)s AND date < %(date_end)s
-                                                                                                            AND driver_id = %(driver_pk)s
-                                                                                                            GROUP BY car_id
-                                                                                    ) AS G1 ON G1.car_id = R.car_id
-                                                                                    WHERE R.km = G1.last_km
-                                                    ) AS J2 ON J2.car_id = R2.car_id
-                                                    WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
-                                                                AND R2.driver_id = %(driver_pk)s
-                                                    GROUP BY car_id
-                    ) AS J3 ON J3.car_id = RR.car_id
-                    WHERE RR.date_race >= %(date_start)s AND RR.date_race < %(date_end)s
-                                AND RR.driver_id = %(driver_pk)s
-                    GROUP BY car_id"""
+        query = """SELECT 
+                    RR.car_id
+                    ,C.reg_num
+                    ,C.nick_name
+                    ,C.fuel_norm
+                    ,COUNT(*) AS total_races
+                    ,SUM(RR.hodkis) AS total_hodkis
+                    ,IFNULL(J3.total_refuels,0) AS total_refuels
+                    ,J3.total_amount
+                    ,J3.total_run
+                    ,ROUND(((J3.total_amount / J3.total_run) * 100),1) AS lit_on_100
+                    ,ROUND(J3.total_run / SUM(RR.hodkis), 1) AS km_on_hodkis
+                    ,(ROUND(((J3.total_amount / J3.total_run) * 100),1)) - C.fuel_norm AS fuel_overuse
+                FROM races AS RR
+                LEFT JOIN cars AS C ON C.id = RR.car_id
+                LEFT OUTER JOIN (
+                                                SELECT
+                                                        R2.car_id
+                                                        ,COUNT(*) AS total_refuels
+                                                        ,(SUM(R2.amount) - J2.last_refuel_amount) AS total_amount
+                                                        ,J2.total_run
+                                                FROM refuels_flow AS R2
+                                                LEFT OUTER JOIN (
+                                                                                SELECT
+                                                                                    R.car_id
+                                                                                    ,R.amount AS last_refuel_amount
+                                                                                    ,G1.first_km
+                                                                                    ,G1.last_km
+                                                                                    ,(G1.last_km - G1.first_km) AS total_run
+                                                                                FROM refuels_flow AS R
+                                                                                LEFT JOIN ( SELECT 
+                                                                                                        car_id,
+                                                                                                        IFNULL( ( SELECT MAX(KM) 
+                                                                                                                    FROM refuels_flow AS R2
+                                                                                                                    WHERE date_refuel < %(date_start)s 
+                                                                                                                    AND R2.car_id = R1.car_id
+                                                                                                                    AND R2.driver_id = %(driver_pk)s
+                                                                                                                ),
+                                                                                                            MIN(KM) ) AS first_km
+                                                                                                            ,MAX(km) as last_km
+                                                                                                        FROM refuels_flow AS R1
+                                                                                                        WHERE date_refuel >= %(date_start)s AND date_refuel < %(date_end)s
+                                                                                                        AND driver_id = %(driver_pk)s
+                                                                                                        GROUP BY car_id
+                                                                                ) AS G1 ON G1.car_id = R.car_id
+                                                                                WHERE R.km = G1.last_km	
+                                                                                
+                                                ) AS J2 ON J2.car_id = R2.car_id
+                                                WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
+                                                AND R2.driver_id = %(driver_pk)s
+                                                GROUP BY car_id
+                ) AS J3 ON J3.car_id = RR.car_id
+                WHERE RR.date_race >= %(date_start)s AND RR.date_race < %(date_end)s
+                
+                GROUP BY car_id"""
         params = {'date_start': date_start, 'date_end': date_end, 'driver_pk': driver_pk}
         result = fetch_sql_allintuple(query, params=params)
         return result
 
-
-@staticmethod
-def refuels_on_period_for_car(date_start, date_end, car_pk):
-    #    получаем список всех заправок от (последней ПЕРЕД периодом или первой ВНУТРИ периода) до последней ВНУТРИ 
-    #    периода. Cписок для расчета "пробега" и показа в отчете по всем заправкам за период
-    #    БЕЗ УЧЕТА ДРАЙВЕРА, для КОНКРЕТНОЙ машины    
-    query = """SELECT
-                    R2.car_id
-                    ,R2.date
-                    ,R2.driver_id
-                    ,R2.lit
-                    ,R2.km
-                FROM refuels2 AS R2
-                LEFT OUTER JOIN ( 
-                        SELECT 
+    @staticmethod
+    def refuels_on_period_for_car(date_start, date_end, car_pk):
+        #    получаем список всех заправок от (последней ПЕРЕД периодом или первой ВНУТРИ периода) до последней ВНУТРИ
+        #    периода. Cписок для расчета "пробега" и показа в отчете по всем заправкам за период
+        #    БЕЗ УЧЕТА ДРАЙВЕРА, для КОНКРЕТНОЙ машины
+        query = """SELECT
+                        R2.car_id
+                        ,R2.date_refuel
+                        ,R2.driver_id
+                        ,P.id AS driver_person_id
+                        ,P.family_name
+                        ,P.given_name
+                        ,P.nick_name
+                        ,R2.amount
+                        ,R2.km
+                        ,R2.sum
+                        ,R2.checked
+                FROM refuels_flow AS R2
+                LEFT JOIN employies AS E ON E.id = R2.driver_id
+                LEFT JOIN persons AS P ON P.id = E.person_id
+                LEFT OUTER JOIN (
+                        SELECT
                         car_id,
-                        IFNULL( ( SELECT MAX(KM) 
-                                    FROM refuels2 AS R2
-                                    WHERE date < %(date_start)s 
+                        IFNULL( ( SELECT MAX(KM)
+                                    FROM refuels_flow AS R2
+                                    WHERE date_refuel < %(date_start)s
                                         AND R2.car_id = R1.car_id
                                         AND R2.car_id = %(car_pk)s
                                 ),
                             MIN(KM) ) AS first_km
                             ,MAX(km) as last_km
-                        FROM refuels2 AS R1
-                        WHERE date >= %(date_start)s AND date < %(date_end)s
+                        FROM refuels_flow AS R1
+                        WHERE date_refuel >= %(date_start)s AND date_refuel < %(date_end)s
                         AND R1.car_id = %(car_pk)s
                         GROUP BY car_id
                 ) AS J2 ON J2.car_id = R2.car_id
-                WHERE	R2.km BETWEEN J2.first_km AND J2.last_km
-                """
-    params = {'date_start': date_start, 'date_end': date_end, 'car_pk': car_pk}
-    result = fetch_sql_allintuple(query, params=params)
-    return result
+                WHERE	R2.km BETWEEN J2.first_km AND J2.last_km"""
+        params = {'date_start': date_start, 'date_end': date_end, 'car_pk': car_pk}
+        result = fetch_sql_allintuple(query, params=params)
+        return result
 
 
 class SalaryMonthSummary(models.Model):
