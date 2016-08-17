@@ -39,7 +39,7 @@ class Races(models.Model):
     cargo_type = models.ForeignKey('RaceCargoTypes', null=True, blank=True, editable=True, )
     object = models.ForeignKey('object.Objects', null=True, blank=True, editable=True, )
 
-    date_race = models.DateField()
+    date_race = models.DateTimeField()
     price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     summ = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     pay_way = models.BooleanField()

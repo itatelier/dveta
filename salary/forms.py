@@ -16,22 +16,22 @@ from contragent.models import Contragents
 
 
 class SalaryMechCheckForm(ModelForm):
+    over_run_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
+    over_fuel_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
+
     races_done = IntegerField(label="Выполнено рейсов", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
     hodkis = DecimalField(label="Засчитано ходок", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     run_km = IntegerField(label="Общий пробег", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
     average_consumption = DecimalField(label="Средний расход топлива на 100км", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
-
+    over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
+    over_fuel_status = ChoiceField(label="Оценка расхода топлива", choices=over_fuel_status_choices, initial=False, widget=widgets.RadioSelect())
     mech_comment = CharField(label="Примечание механика", required=False, widget=TextInput(attrs={'size': 50}))
 
-#     date_refuel = DateTimeField(label="Дата заправки", required=False, input_formats=['%d-%m-%Y %H:%M:%S'], widget=widgets.HiddenInput())
-#     type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())
-#    driver = DriverChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True, widget=widgets.HiddenInput())
-#     car = ModelChoiceField(queryset=Cars.objects.filter(), label="Автомобиль",  empty_label=None, required=True, )
-#     fuel_card = ModelChoiceField(label="Топливная карта", queryset=FuelCards.objects.filter(), widget=widgets.HiddenInput(),  required=False, )
-#     amount = IntegerField(label="Кол-во литров", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}), initial=100)
-#     sum = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
-#     km = IntegerField(label="Километраж", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-#
+    class Meta:
+        model = SalaryMonthSummary
+        fields = ('races_done', 'hodkis', 'run_km', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
+
+
     # id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     #
     # races_done = models.IntegerField(null=False, blank=False)

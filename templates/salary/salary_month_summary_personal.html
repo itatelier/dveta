@@ -105,6 +105,32 @@
                             {% else %}
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>
                             {% endif %}
+                            {# Форма объекта #}
+                            <h3>Данные для занесения в зарплатный лист</h3>
+                            <form action="" method="POST" id="new_object">{% csrf_token %}
+                                {# Скрытые поля #}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                <div class="form_row">
+                                    {% include "form_snippets/textinput.html" with field=form.races_done  %}
+                                    {% include "form_snippets/textinput.html" with field=form.hodkis  %}
+                                    {% include "form_snippets/textinput.html" with field=form.run_km  %}
+                                    {% include "form_snippets/textinput.html" with field=form.average_consumption  %}
+                                </div>
+                                <div class="form_row">
+                                    {% include "form_snippets/radio.html" with field=form.over_run_status  %}
+                                    {% include "form_snippets/radio.html" with field=form.over_fuel_status  %}
+                                </div>
+                                {# ошибки формы #}
+                                {% include "form_snippets/form_errors.html" with form=form %}
+                                {# Кнопки #}
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                    </span>
+                                </div>
+                                {# - Кнопки #}
+                            </form>
+                            {# - Форма объекта #}
                         </div>
                     </div>
                 </div>

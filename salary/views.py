@@ -61,9 +61,12 @@ class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
         return context_data
 
 
-class SalaryMonthSummaryPersonalView(SalaryMonthSummaryView):
+class SalaryMonthSummaryPersonalView(CreateView, SalaryMonthSummaryView):
     template_name = 'salary/salary_month_summary_personal.html'
     employee_pk = False
+    form_class = SalaryMechCheckForm
+    model = SalaryMonthSummary
+    object = None
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryPersonalView, self).get_context_data(*args, **kwargs)
