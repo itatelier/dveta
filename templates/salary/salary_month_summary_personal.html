@@ -19,7 +19,7 @@
             <div class="sheet">
                 <div class="data_grid_listing">
                     <div class="flex_row flex_justify_center">
-                        <div class="width_80">
+                        <div class="width_min80">
                             {# переключатель месяца отчета #}
                             <div class="flex_row flex_vcentered">
                                     <div>Период формирования отчета:</div>
@@ -91,13 +91,13 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{ average_and_sum_stats.total_races|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.races_done|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_refuels }}</td>
                                         <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.total_lit|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.average_lit_on_100|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.average_km_on_hodka|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.total_amount|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.average_consumption|default_if_none:0 }}</td>
                                         <td>{% if average_and_sum_stats.fuel_overuse > 0 %}{{ average_and_sum_stats.fuel_overuse }}{% else %}нет{% endif %} </td>
                                     </tr>
                                 </tbody>
@@ -106,14 +106,22 @@
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>
                             {% endif %}
                             {# Форма объекта #}
+                            <div class="form_row">
+                                <hr>
+                            </div>
                             <h3>Данные для занесения в зарплатный лист</h3>
+                            {% if object %}
+                                <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>
+                            {% endif %}
                             <form action="" method="POST" id="new_object">{% csrf_token %}
                                 {# Скрытые поля #}
                                 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                                 <div class="form_row">
                                     {% include "form_snippets/textinput.html" with field=form.races_done  %}
-                                    {% include "form_snippets/textinput.html" with field=form.hodkis  %}
-                                    {% include "form_snippets/textinput.html" with field=form.run_km  %}
+                                    {% include "form_snippets/textinput.html" with field=form.total_hodkis  %}
+                                    {% include "form_snippets/textinput.html" with field=form.total_run  %}
+                                    {% include "form_snippets/textinput.html" with field=form.km_on_hodkis  %}
+                                    {% include "form_snippets/textinput.html" with field=form.total_amount  %}
                                     {% include "form_snippets/textinput.html" with field=form.average_consumption  %}
                                 </div>
                                 <div class="form_row">

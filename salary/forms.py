@@ -20,16 +20,18 @@ class SalaryMechCheckForm(ModelForm):
     over_fuel_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
 
     races_done = IntegerField(label="Выполнено рейсов", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-    hodkis = DecimalField(label="Засчитано ходок", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
-    run_km = IntegerField(label="Общий пробег", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-    average_consumption = DecimalField(label="Средний расход топлива на 100км", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    total_hodkis = DecimalField(label="Засчитано ходок", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    total_run = IntegerField(label="Общий пробег", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
+    km_on_hodkis = DecimalField(label="КМ на Ходку", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    total_amount = DecimalField(label="Расход топлива", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    average_consumption = DecimalField(label="Расход на 100км", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
     over_fuel_status = ChoiceField(label="Оценка расхода топлива", choices=over_fuel_status_choices, initial=False, widget=widgets.RadioSelect())
     mech_comment = CharField(label="Примечание механика", required=False, widget=TextInput(attrs={'size': 50}))
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('races_done', 'hodkis', 'run_km', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
+        fields = ('races_done', 'total_hodkis', 'total_run', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
 
 
     # id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)

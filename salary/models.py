@@ -52,8 +52,8 @@ class SalarySummaryManager(models.Manager):
                 	,ss.check_status
                     ,ss.date_add
                     ,ss.races_done
-                    ,ss.hodkis
-                    ,ss.run_km
+                    ,ss.total_hodkis
+                    ,ss.total_run
                     ,ss.average_consumption
                     ,ss.over_run_status
                     ,ss.over_fuel_status
@@ -88,7 +88,7 @@ class SalarySummaryManager(models.Manager):
                     ,C.reg_num
                     ,C.nick_name
                     ,C.fuel_norm
-                    ,COUNT(*) AS total_races
+                    ,COUNT(*) AS races_done
                     ,SUM(RR.hodkis) AS total_hodkis
                     ,IFNULL(J3.total_refuels,0) AS total_refuels
                     ,J3.total_amount
@@ -196,8 +196,9 @@ class SalaryMonthSummary(models.Model):
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
 
     races_done = models.IntegerField(null=False, blank=False)
-    hodkis = models.IntegerField(null=False, blank=False)
-    run_km = models.IntegerField(null=False, blank=False)
+    total_hodkis = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
+    km_on_hodkis = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
+    total_run = models.IntegerField(null=False, blank=False)
     average_consumption = models.IntegerField(null=False, blank=False)
 
     over_run_status = models.NullBooleanField(null=True, blank=True, default=False)

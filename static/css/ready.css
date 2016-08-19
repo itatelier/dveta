@@ -72,7 +72,7 @@ form { margin: 0.5rem 2rem; /*width: 100%; */}
 }
 .fullwidth { width: 100%; }
 .width_75 {  width: 75%; }
-.width_80 { width: 80%; }
+.width_min80 { min-width: 80%; }
 .none { display: none !important; }
 
 .no_lr_margin {
@@ -92,7 +92,11 @@ form { margin: 0.5rem 2rem; /*width: 100%; */}
 .text-right { text-align: right !important;}
 .pt2 {padding-top: 2px;}
 
-
+.notice {
+    margin: 10px 0;
+    display: block;
+    color: #fe659c;
+}
 div._white_bordered {
     background-color: #ffffff;
     box-shadow: 2px 3px 1px rgba(0,0,0,.08);
