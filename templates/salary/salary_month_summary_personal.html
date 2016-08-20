@@ -95,7 +95,7 @@
                                         <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_refuels }}</td>
                                         <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.average_km_on_hodka|default_if_none:0 }}</td>
+                                        <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_amount|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.average_consumption|default_if_none:0 }}</td>
                                         <td>{% if average_and_sum_stats.fuel_overuse > 0 %}{{ average_and_sum_stats.fuel_overuse }}{% else %}нет{% endif %} </td>

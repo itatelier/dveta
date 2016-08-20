@@ -31,7 +31,7 @@ class SalaryMechCheckForm(ModelForm):
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('races_done', 'total_hodkis', 'total_run', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
+        fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
 
 
     # id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)

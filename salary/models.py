@@ -199,7 +199,8 @@ class SalaryMonthSummary(models.Model):
     total_hodkis = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
     km_on_hodkis = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
     total_run = models.IntegerField(null=False, blank=False)
-    average_consumption = models.IntegerField(null=False, blank=False)
+    total_amount = models.IntegerField(null=False, blank=False)
+    average_consumption = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
 
     over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
     over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)

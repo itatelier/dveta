@@ -98,7 +98,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
                 if row._asdict()['fuel_overuse'] > 0:
                     average_and_sum_stats['fuel_overuse'] += row._asdict()['fuel_overuse']
             if report_stats['km_on_hodkis']['count'] > 0:
-                average_and_sum_stats['average_km_on_hodka'] = report_stats['km_on_hodkis']['value'] / report_stats['km_on_hodkis']['count']
+                average_and_sum_stats['km_on_hodkis'] = report_stats['km_on_hodkis']['value'] / report_stats['km_on_hodkis']['count']
             if report_stats['lit_on_100']['count'] > 0:
                 average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
             prepared_data['average_and_sum_stats'] = average_and_sum_stats
@@ -131,21 +131,27 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
             form_initial = {}
             for key, val in self.prepared_data['average_and_sum_stats'].items():
                 form_initial[key] = val
+                log.info("=== Initial %s : %s" % (key, val))
             self.initial = form_initial
         #return super(SalaryMonthSummaryPersonalView, self).get(request, *args, **kwargs)
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
         self.driver_pk = self.kwargs.get('driver_pk', None)
+        self.object = self.get_object(self, *args, **kwargs)
+        log.info("--- Self object: %s" %self.object)
         log.info("kwargs driver_pk in POST: %s" % self.driver_pk)
         form = self.get_form()
         if form.is_valid():
-            create_object = form.save(commit=False)
-            create_object.year = self.report_month_dt.year
-            create_object.month = self.report_month_dt.month
-            create_object.employee = Employies(pk=self.driver_pk)
-            # create_object.s
-            create_object.save()
+            if not self.object:
+                create_object = form.save(commit=False)
+                create_object.year = self.report_month_dt.year
+                create_object.month = self.report_month_dt.month
+                create_object.employee = Employies(pk=self.driver_pk)
+                # create_object.s
+                create_object.save()
+            else:
+                self.object = form.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             self.object = form.instance
