@@ -34,31 +34,3 @@ class SalaryMechCheckForm(ModelForm):
         fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
 
 
-    # id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    #
-    # races_done = models.IntegerField(null=False, blank=False)
-    # hodkis = models.IntegerField(null=False, blank=False)
-    # run_km = models.IntegerField(null=False, blank=False)
-    # average_consumption = models.IntegerField(null=False, blank=False)
-    #
-    # over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
-    # over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
-    # mech_comment = models.CharField(max_length=255L, null=True, blank=True)
-    #
-    # over_run_penalty = models.FloatField(null=True, blank=True)
-    # over_fuel_penalty = models.FloatField(null=True, blank=True)
-#     class Meta:
-#         model = RefuelsFlow
-#         fields = ('date_refuel', 'type', 'driver', 'car', 'fuel_card', 'amount', 'sum', 'km', 'comment')
-#
-#
-# class RunCheckForm(ModelForm):
-#     type = ChoiceField(label="Тип заправки", choices=refuel_types_choices, initial=0,  widget=widgets.HiddenInput())
-#     driver = ModelChoiceField(queryset=Employies.drivers.filter(), label="Водитель",  empty_label=None, required=True,)
-#     car = ModelChoiceField(queryset=Cars.objects.filter(), label="Автомобиль",  empty_label=None, required=True, )
-#     km = IntegerField(label="Километраж", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-#     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
-#
-#     class Meta:
-#         model = CarRunCheckFlow
-#         fields = ('driver', 'car', 'km', 'comment')
