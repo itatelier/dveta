@@ -12,8 +12,6 @@ import logging
 log = logging.getLogger('django')
 
 
-
-
 class SalaryFlow(models.Model):
     operation_types = ([0, 'начисление зарплаты за рейсы'], [1, 'начисление премии'], [2, 'начисление штрафа'], [3, 'выдача аванса'], [4, 'окончательный расчет'],)
 
@@ -54,6 +52,8 @@ class SalarySummaryManager(models.Manager):
                     ,ss.races_done
                     ,ss.total_hodkis
                     ,ss.total_run
+                    ,ss.km_on_hodkis
+                    ,ss.total_amount
                     ,ss.average_consumption
                     ,ss.over_run_status
                     ,ss.over_fuel_status

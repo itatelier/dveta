@@ -57,7 +57,8 @@ class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
         # Получаем список сформированных зарплатных листов за указанный месяц
-        #  summary_list = SalaryMonthSummary.objects.filter(month__exact=self.report_month_dt.month, year__exact=self.report_month_dt.year).select_related('employee__person')
+        #  summary_list = Sal
+        # aryMonthSummary.objects.filter(month__exact=self.report_month_dt.month, year__exact=self.report_month_dt.year).select_related('employee__person')
         context_data['summary_list'] = SalaryMonthSummary.objects.drivers_list_races_and_summary(self.report_month_dt.date(), self.report_next_dt.date())
         return context_data
 
@@ -71,8 +72,6 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
     prepared_data = None
 
     def prepare_data(self):
-        # context_data = super(SalaryMonthSummaryPersonalView, self).get_context_data(*args, **kwargs)
-
         prepared_data = {}
         prepared_data['driver'] = Employies.drivers.get(pk=self.driver_pk)
         prepared_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
@@ -110,8 +109,6 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
         return context_data
 
     def get_object(self, *args, **kwargs):
-
-        log.info("-- driver pk set: %s" % self.driver_pk)
         try:
             exist_object = SalaryMonthSummary.objects.get(
                 employee_id=self.driver_pk,
@@ -129,9 +126,10 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
         self.prepared_data = self.prepare_data()
         if not self.object:
             form_initial = {}
-            for key, val in self.prepared_data['average_and_sum_stats'].items():
-                form_initial[key] = val
-                log.info("=== Initial %s : %s" % (key, val))
+            if 'average_and_sum_stats' in self.prepared_data:
+                for key, val in self.prepared_data['average_and_sum_stats'].items():
+                    form_initial[key] = val
+                    log.info("=== Initial %s : %s" % (key, val))
             self.initial = form_initial
         #return super(SalaryMonthSummaryPersonalView, self).get(request, *args, **kwargs)
         return self.render_to_response(self.get_context_data())
@@ -139,8 +137,6 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
     def post(self, request, *args, **kwargs):
         self.driver_pk = self.kwargs.get('driver_pk', None)
         self.object = self.get_object(self, *args, **kwargs)
-        log.info("--- Self object: %s" %self.object)
-        log.info("kwargs driver_pk in POST: %s" % self.driver_pk)
         form = self.get_form()
         if form.is_valid():
             if not self.object:
@@ -148,6 +144,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
                 create_object.year = self.report_month_dt.year
                 create_object.month = self.report_month_dt.month
                 create_object.employee = Employies(pk=self.driver_pk)
+                create_object.check_status = 1
                 # create_object.s
                 create_object.save()
             else:
