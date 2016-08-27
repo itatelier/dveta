@@ -101,6 +101,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
             if report_stats['lit_on_100']['count'] > 0:
                 average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
             prepared_data['average_and_sum_stats'] = average_and_sum_stats
+            prepared_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month)
         return prepared_data
 
     def get_context_data(self, *args, **kwargs):
@@ -145,7 +146,6 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
                 create_object.month = self.report_month_dt.month
                 create_object.employee = Employies(pk=self.driver_pk)
                 create_object.check_status = 1
-                # create_object.s
                 create_object.save()
             else:
                 self.object = form.save()
@@ -187,6 +187,7 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryOperationCreateView, self).get_context_data(*args, **kwargs)
         context_data['employee'] = Employies.objects.get(pk=self.kwargs.get('employee_pk'))
+        context_data['type_str'] = SalaryFlow().get_type_str(self.kwargs.get('type_pk', None))
         return context_data
 
     def get_form_kwargs(self):

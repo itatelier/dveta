@@ -44,8 +44,9 @@
                                 </tr>
                             </table>
                             {% if driver_month_stats %}
+                            <h3>Статистика по машинам</h3>
                             <table class="colgroup_table margint10 fullwidth">
-                                <caption>Статистика по машинам</caption>
+                                <caption></caption>
                                 <thead>
                                     <th>Авто</th>
                                     <th>Рег.Номер</th>
@@ -105,12 +106,38 @@
                             {% else %}
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>
                             {% endif %}
-                            <h3>Взыскания</h3>
-                                <div class="form_row">
-                                    <span class="button_block">
-                                        <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}">Добавить взыскание</a>
-                                    </span>
-                                </div>
+                            {# -  премии и взыскания -  #}
+                            <h3>Премии и взыскания за отчетный период</h3>
+                            {% if accruals_list %}
+                            <table class="colgroup_table margint10">
+                                <thead>
+                                    <th>Добавлено</th>
+                                    <th>Тип начисления</th>
+                                    <th>Сумма</th>
+                                    <th>Автор</th>
+                                    <th>Примечание</th>
+                                </thead>
+                                <tbody>
+                                    {% for el in accruals_list %}
+                                    <tr>
+                                        <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
+                                        <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.get_operation_type_display }}</td>
+                                        <td>{{ el.sum}}</td>
+                                        <td></td>
+                                        <td class="text-left">{{ el.comment }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                                <div class="m10">нет начислений на отчетный период</div>
+                            {% endif %}
+                            <div class="form_row">
+                                <span class="button_block">
+                                    <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
+                                    <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 1 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
+                                </span>
+                            </div>
                             {# -------------------------------------------------------------------------------- #}
                             <div class="form_row"><hr></div>
                             <h3>Данные для занесения в зарплатный лист</h3>
