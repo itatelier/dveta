@@ -42,47 +42,62 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
     card_pk = False
     later_add = False
 
-    def dispatch(self, request, *args, **kwargs):
-        self.car_pk = self.kwargs.get('car_pk', False)
-        self.type_pk = self.kwargs.get('type_pk', False)
-        self.driver_pk = self.request.GET.get('driver_pk', False)
-        self.card_pk = self.request.GET.get('card_pk', False)
-        self.later_add = self.request.GET.get('later_add', False)
-        return super(RefuelCreateView, self).dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     self.car_pk = self.kwargs.get('car_pk', False)
+    #     self.type_pk = self.kwargs.get('type_pk', False)
+    #     self.driver_pk = self.request.GET.get('driver_pk', False)
+    #     self.card_pk = self.request.GET.get('card_pk', False)
+    #     self.later_add = self.request.GET.get('later_add', False)
+    #     return super(RefuelCreateView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        form = self.get_form()
-        self.object = None
-        # Передача параметров в форму из урла
-        initial = {'type': self.type_pk}
-        data = {'type_pk': self.type_pk}    # Данные для контекста шаблона
-        if self.car_pk:
-            initial['car'] = self.car_pk
-            form.fields['car'].widget = widgets.HiddenInput()
-            data['car'] = Cars.objects.select_related('model').get(pk=self.car_pk)
-            # Если заправка по карте
-            if int(self.type_pk) == 0:
-                initial['fuel_card'] = data['car'].fuel_card.pk
-        if self.driver_pk:
-            initial['driver'] = self.driver_pk
-            form.fields['driver'].widget = widgets.HiddenInput()
-            data['driver'] = Employies.drivers.get(pk=self.driver_pk)
-        if self.card_pk:
-            data['card'] = FuelCards.objects.select_related('fuel_company').get(pk=self.card_pk)
-        # Если тип заправки "по карте", то сумма не указывается и будет при сохранении формы рассчитана из справочника цен на топливо (FuelTypes)
-        if int(self.type_pk) == 0:
-            form.fields['sum'].widget = widgets.HiddenInput()
-        # Если заправка добавляется задним числом
-        log.info("--- Later add: %s" % self.later_add)
-
-        if int(self.later_add) == 1:
-            # form.fields['date_refuel'] = DateInput()
-            form.fields['date_refuel'].widget = RuDateWidget()
-            initial['date_refuel'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        else:
-            initial['date_refuel'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        form.initial = initial
-        return self.render_to_response(self.get_context_data(form=form, data=data))
+    def get_form_kwargs(self):
+        kwargs = super(RefuelCreateView, self).get_form_kwargs()
+        car_object =  Cars.objects.select_related('model').get(pk=self.kwargs.get('car_pk'))
+        update_params = {
+            'car': self.kwargs.get('car_pk', None),
+            'type': self.kwargs.get('type_pk', None),
+            'driver': self.request.GET.get('driver_pk', None),
+            'later_add': self.request.GET.get('later_add', None),
+        }
+        if update_params['type'] and int(update_params['type']) == 0:
+            log.info('--- Update param fuel_card num=%s' % car_object.fuel_card.pk)
+            update_params['fuel_card'] = car_object.fuel_card.pk
+        kwargs.update(update_params)
+        return kwargs
+    #
+    # def get(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     self.object = None
+    #     # Передача параметров в форму из урла
+    #     initial = {}
+    #     data = {'type_pk': self.type_pk}    # Данные для контекста шаблона
+    #     if self.car_pk:
+    #         initial['car'] = self.car_pk
+    #         form.fields['car'].widget = widgets.HiddenInput()
+    #         data['car'] = Cars.objects.select_related('model').get(pk=self.car_pk)
+    #         # Если заправка по карте
+    #         if int(self.type_pk) == 0:
+    #             initial['fuel_card'] = data['car'].fuel_card.pk
+    #     if self.driver_pk:
+    #         initial['driver'] = self.driver_pk
+    #         form.fields['driver'].widget = widgets.HiddenInput()
+    #         data['driver'] = Employies.drivers.get(pk=self.driver_pk)
+    #     if self.card_pk:
+    #         data['card'] = FuelCards.objects.select_related('fuel_company').get(pk=self.card_pk)
+    #     # Если тип заправки "по карте", то сумма не указывается и будет при сохранении формы рассчитана из справочника цен на топливо (FuelTypes)
+    #     if int(self.type_pk) == 0:
+    #         form.fields['sum'].widget = widgets.HiddenInput()
+    #     # Если заправка добавляется задним числом
+    #     log.info("--- Later add: %s" % self.later_add)
+    #
+    #     if int(self.later_add) == 1:
+    #         # form.fields['date_refuel'] = DateInput()
+    #         form.fields['date_refuel'].widget = RuDateWidget()
+    #         initial['date_refuel'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    #     else:
+    #         initial['date_refuel'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    #     form.initial = initial
+    #     return self.render_to_response(self.get_context_data(form=form, data=data))
 
     def get_success_url(self):
         if self.request.GET.get('return_url'):
@@ -92,7 +107,18 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RefuelCreateView, self).get_context_data(*args, **kwargs)
-        context_data['refuels'] = RefuelsFlow.objects.list_with_run_checks(car_id=self.car_pk, limit=10)
+        context_data['refuels'] = RefuelsFlow.objects.list_with_run_checks(car_id=self.kwargs.get('car_pk'), limit=10)
+        type_pk = self.kwargs.get('type_pk', None)
+        car_pk = self.kwargs.get('car_pk', False)
+        card_pk = self.request.GET.get('card_pk', False)
+        driver_pk = self.request.GET.get('driver_pk', False)
+        if car_pk:
+            context_data['car'] =  Cars.objects.select_related('model').get(pk=car_pk)
+        if type_pk and int(type_pk) == 0:
+            context_data['card'] = FuelCards.objects.select_related('fuel_company').get(assigned_to_car=car_pk)
+        if driver_pk:
+            context_data['driver'] = Employies.drivers.get(pk=driver_pk)
+
         return context_data
 
     def post(self, request, *args, **kwargs):
@@ -135,6 +161,7 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
 class RunCheckCreateView(LoginRequiredMixin, CreateView):
     template_name = 'refuels/run_check_create.html'
     form_class = RunCheckForm
+    object = None
     model = CarRunCheckFlow
     car_pk = False
     driver_pk = False

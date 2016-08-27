@@ -59,14 +59,14 @@
 
                             <div class="flex_row">
                                 <table class="sheet_simple">
-                                    {% if data.driver %}
-                                        <tr><td>Водитель</td><td><b>{{ data.driver.person.given_name }}{{ data.driver.person.family_name }} [{{ data.driver.person.nick_name }}]</b></td></tr>
+                                    {% if driver %}
+                                        <tr><td>Водитель</td><td><b>{{ driver.person.given_name }}{{ driver.person.family_name }} [{{ driver.person.nick_name }}]</b></td></tr>
                                     {% endif %}
-                                    {% if data.car %}
-                                        <tr><td>Автомобиль</td><td><b>{{ data.car.nick_name }} ({{ data.car.reg_num }})</b>   Модель: {{ data.car.model.val }}</td></tr>
+                                    {% if car %}
+                                        <tr><td>Автомобиль</td><td><b>{{ car.nick_name }} ({{ car.reg_num }})</b>   Модель: {{ car.model.val }}</td></tr>
                                     {% endif %}
-                                    {% if data.card %}
-                                        <tr><td>Топливная карта</td><td><b>{{ data.card.num }}</b> топливная компания: {{ data.card.fuel_company.name }}</td></tr>
+                                    {% if card %}
+                                        <tr><td>Топливная карта</td><td><b>{{ card.num }}</b> ({{ card.fuel_company.name }})</td></tr>
                                     {% endif %}
                                 </table>
                             </div>
@@ -75,11 +75,11 @@
                                 {# Скрытые поля #}
                                 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                                 {# --- Водитель --- #}
-                                {% if not view.driver_pk %}
+                                {% if not form.driver.is_hidden %}
                                     <div class="form_row">{% include "form_snippets/select.html" with field=form.driver  %}</div>
                                 {% endif %}
                                 {# --- Автомобиль --- #}
-                                {% if not view.car_pk %}
+                                {% if not form.car.is_hidden %}
                                     <div class="form_row">{% include "form_snippets/select.html" with field=form.car %}</div>
                                 {% endif %}
                                 {% if not form.date_refuel.is_hidden %}

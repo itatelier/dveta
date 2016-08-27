@@ -6,6 +6,8 @@ from django.forms.widgets import ChoiceFieldRenderer, RendererMixin, RadioFieldR
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.html import conditional_escape, format_html, html_safe
 from django.db.models import Count
+from datetime import datetime, timedelta
+
 
 from models import *
 from common.forms import *
@@ -27,6 +29,24 @@ class RefuelForm(ModelForm):
     sum = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     km = IntegerField(label="Километраж", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
+
+    def __init__(self, car=None, driver=None, type=None, later_add=None, fuel_card=None, *args, **kwargs):
+        super(RefuelForm, self).__init__(*args, **kwargs)
+        if car:
+            self.fields['car'].widget = widgets.HiddenInput()
+            self.fields['car'].initial = car
+        if driver:
+            self.fields['driver'].widget = widgets.HiddenInput()
+            self.fields['driver'].initial = driver
+        if type:
+            self.fields['type'].widget = widgets.HiddenInput()
+            self.fields['type'].initial = type
+        if type and int(type) == 0:
+            self.fields['sum'].widget = widgets.HiddenInput()
+            self.fields['fuel_card'].initial = fuel_card
+        if later_add and int(later_add) == 1:
+            self.fields['date_refuel'].widget = RuDateWidget()
+            self.fields['date_refuel'].initial = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 
     class Meta:
         model = RefuelsFlow
