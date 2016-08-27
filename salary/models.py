@@ -20,7 +20,7 @@ class SalaryFlow(models.Model):
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
     year = models.IntegerField(null=False, blank=False)
     month = models.IntegerField(null=False, blank=False)
-    type = models.IntegerField(null=False, blank=False, choices=operation_types)
+    operation_type = models.IntegerField(null=False, blank=False, choices=operation_types)
     sum = models.FloatField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 

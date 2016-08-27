@@ -88,7 +88,7 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
         if self.request.GET.get('return_url'):
             return self.request.GET.get('return_url')
         else:
-            return reverse('/')
+            return '/'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RefuelCreateView, self).get_context_data(*args, **kwargs)
@@ -164,7 +164,7 @@ class RunCheckCreateView(LoginRequiredMixin, CreateView):
         if self.request.GET.get('return_url'):
             return self.request.GET.get('return_url')
         else:
-            return reverse('/')
+            return '/'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(RunCheckCreateView, self).get_context_data(*args, **kwargs)

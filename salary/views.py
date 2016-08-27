@@ -170,3 +170,31 @@ class SalaryMonthSummaryCarRefuelsView(SalaryMonthSummaryView):
         refuels_on_period_for_car =  SalaryMonthSummary.objects.refuels_on_period_for_car(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), car_pk=car_pk)
         context_data['refuels_on_period_for_car'] = refuels_on_period_for_car
         return context_data
+
+
+class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'salary/salary_operation_create.html'
+    form_class = SalaryOperationCreateForm
+    model = SalaryFlow
+    object = None
+
+    def get_success_url(self):
+        if self.request.GET.get('return_url'):
+            return self.request.GET.get('return_url')
+        else:
+            return '/'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SalaryOperationCreateView, self).get_context_data(*args, **kwargs)
+        context_data['employee'] = Employies.objects.get(pk=self.kwargs.get('employee_pk'))
+        return context_data
+
+    def get_form_kwargs(self):
+        kwargs = super(SalaryOperationCreateView, self).get_form_kwargs()
+        kwargs.update({
+            'year': self.kwargs.get('year', None),
+            'month': self.kwargs.get('month', None),
+            'operation_type': self.kwargs.get('type_pk', None),
+            'employee': self.kwargs.get('employee_pk', None),
+        })
+        return kwargs

@@ -1,0 +1,77 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Зарплата сотрудников</a></li>
+                <li class="active" ><a href="#">Новая операция начисления</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                <div class="left_bar">
+                    <ul>
+                        <li><a href="#" class="active">Новая операция</a></li>
+                    </ul><hr>
+                </div>
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="form_row">
+                        <h2>Новая операция начисления: Штраф</h2>
+                    </div>
+                    <div class="flex_row">
+                        <div class="flex_column marginr10 flex_zero">
+                            {% if employee %}
+                                <div class="flex_row">
+                                    <table class="sheet_simple">
+                                            <tr><td>Сотрудник</td><td><b>{{ employee.person.given_name }}{{ employee.person.family_name }} [{{ employee.person.nick_name }}]</b></td></tr>
+                                    </table>
+                                </div>
+                            {% endif %}
+                            {# - Форма объекта #}
+                            <form action="" method="POST" id="new_object">{% csrf_token %}
+                                {# Скрытые поля #}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                {#  - Сотрудник -  #}
+                                {% if not form.employee.is_hidden  %}
+                                    <div class="form_row">{% include "form_snippets/select.html" with field=form.employee  %}</div>
+                                {% endif %}
+                                {#  - Тип операции -  #}
+                                {% if not form.operation_type.is_hidden  %}
+                                    <div class="form_row">{% include "form_snippets/select.html" with field=form.operation_type  %}</div>
+                                {% endif %}
+                                {#  - Год и Месяц -  #}
+                                {% if not form.year.is_hidden and not form.month.is_hidden %}
+                                    <div class="form_row">
+                                        {% include "form_snippets/select.html" with field=form.year  %}
+                                        {% include "form_snippets/select.html" with field=form.month  %}
+                                    </div>
+                                {% endif %}
+                                <div class="form_row">{% include "form_snippets/textinput.html" with field=form.sum  %}</div>
+                                <div class="form_row">{% include "form_snippets/textinput.html" with field=form.comment  %}</div>
+                                {# ошибки формы #}
+                                {% include "form_snippets/form_errors.html" with form=form %}
+                                {# Кнопки #}
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                    </span>
+                                </div>
+                                {# - Кнопки #}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

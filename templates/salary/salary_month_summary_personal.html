@@ -105,10 +105,14 @@
                             {% else %}
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>
                             {% endif %}
-                            {# Форма объекта #}
-                            <div class="form_row">
-                                <hr>
-                            </div>
+                            <h3>Взыскания</h3>
+                                <div class="form_row">
+                                    <span class="button_block">
+                                        <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}">Добавить взыскание</a>
+                                    </span>
+                                </div>
+                            {# -------------------------------------------------------------------------------- #}
+                            <div class="form_row"><hr></div>
                             <h3>Данные для занесения в зарплатный лист</h3>
                             {% if object %}
                                 <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>

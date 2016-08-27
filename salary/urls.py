@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^month_summary/report/mechanic/$', SalaryMonthSummaryViewMech.as_view(), name='salary_month_summary_mech'),
     url(r'^month_summary/driver_stats/(?P<driver_pk>\d+)/$', SalaryMonthSummaryPersonalView.as_view(), name='salary_month_summary_personal'),
     url(r'^month_summary/refuels_by_car/(?P<car_pk>\d+)/$', SalaryMonthSummaryCarRefuelsView.as_view(), name='salary_month_summary_refuels_by_car'),
+    url(r'^salary_flow/operation_create/year/(?P<year>\d{4})/month/(?P<month>\d{1,2})/type/(?P<type_pk>\d+)/employee/(?P<employee_pk>\d+)/$', SalaryOperationCreateView.as_view(), name='salary_operation_create'),
 ]
 
