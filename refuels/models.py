@@ -91,7 +91,7 @@ class RefuelsFlowManager(models.Manager):
 
 
 class RefuelsFlow(models.Model):
-    refuel_types = ([0, 'за наличные'], [1, 'покарте'])
+    refuel_types = ([0, 'за наличные'], [1, 'по карте'], [2, 'талон'],)
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date_refuel = models.DateTimeField()
     date_add = models.DateTimeField(auto_now_add=True)
@@ -101,7 +101,7 @@ class RefuelsFlow(models.Model):
     fuel_card = models.ForeignKey('FuelCards', null=True, blank=True)
     type = models.IntegerField(null=False, blank=False, choices=refuel_types)
     amount = models.IntegerField(null=False, blank=False)
-    sum = models.FloatField(null=False, blank=False)
+    sum = models.FloatField(null=True, blank=True)
     km = models.IntegerField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
     checked = models.IntegerField(blank=False, null=False, default=False)
