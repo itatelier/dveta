@@ -31,10 +31,11 @@ class SalaryMechCheckForm(ModelForm):
     over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
     over_fuel_status = ChoiceField(label="Оценка расхода топлива", choices=over_fuel_status_choices, initial=False, widget=widgets.RadioSelect())
     mech_comment = CharField(label="Примечание механика", required=False, widget=TextInput(attrs={'size': 50}))
+    check_status = IntegerField(required=False,widget=HiddenInput())
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', )
+        fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'average_consumption', 'over_run_status', 'over_fuel_status', 'mech_comment', 'check_status')
 
 
 class SalaryOperationCreateForm(ModelForm):

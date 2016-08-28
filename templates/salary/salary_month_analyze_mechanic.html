@@ -2,7 +2,15 @@
 {% block content %}
 {% load date_compare %}
 <script>
+    $(document).ready(function() {
 
+    });
+
+    function save_and_send() {
+        $('input[name="check_status"]').val(2);
+        $('form#new_object').submit();
+        return false;
+    }
 </script>
         {# Breadcrumbs #}
         <div class="breadcrumbs">
@@ -20,6 +28,7 @@
                 <div class="data_grid_listing">
                     <div class="flex_row flex_justify_center">
                         <div class="width_min80">
+                            <h2>Персональные показатели работы водителя</h2>
                             {# переключатель месяца отчета #}
                             <div class="flex_row flex_vcentered">
                                     <div>Период формирования отчета:</div>
@@ -30,8 +39,7 @@
                                     </ul>
                             </div>
                             {# - переключатель месяца отчета #}
-                            <h2>Персональные показатели работы водителя</h2>
-                            <table class="sheet_simple">
+                            <table class="colgroup_table">
                                 <tr>
                                     <td>Водитель:</td>
                                     <td><a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></td>
@@ -146,6 +154,7 @@
                             {% endif %}
                             <form action="" method="POST" id="new_object">{% csrf_token %}
                                 {# Скрытые поля #}
+                                <input type="hidden" name="check_status" value="">
                                 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                                 <div class="form_row">
                                     {% include "form_snippets/textinput.html" with field=form.races_done  %}
@@ -162,11 +171,14 @@
                                 {# ошибки формы #}
                                 {% include "form_snippets/form_errors.html" with form=form %}
                                 {# Кнопки #}
+                                {% if object.check_status < 2 %}
                                 <div class="form_row">
                                     <span class="button_block">
-                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
+                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                        <a class="button"  onclick="save_and_send();">Сохранить и передать на контроль</a>
                                     </span>
                                 </div>
+                                {% endif %}
                                 {# - Кнопки #}
                             </form>
                             {# - Форма объекта #}

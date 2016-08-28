@@ -52,7 +52,7 @@ class SalaryMonthSummaryView(TemplateView):
 
 
 class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
-    template_name = 'salary/salary_month_summary_mech.html'
+    template_name = 'salary/salary_month_summary_mechanic.html'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
@@ -64,7 +64,7 @@ class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
 
 
 class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
-    template_name = 'salary/salary_month_summary_personal.html'
+    template_name = 'salary/salary_month_analyze_mechanic.html'
     driver_pk = False
     form_class = SalaryMechCheckForm
     model = SalaryMonthSummary
@@ -101,6 +101,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
             if report_stats['lit_on_100']['count'] > 0:
                 average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
             prepared_data['average_and_sum_stats'] = average_and_sum_stats
+            # Начисления бонусов и штрафов
             prepared_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month)
         return prepared_data
 
@@ -130,9 +131,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
             if 'average_and_sum_stats' in self.prepared_data:
                 for key, val in self.prepared_data['average_and_sum_stats'].items():
                     form_initial[key] = val
-                    log.info("=== Initial %s : %s" % (key, val))
             self.initial = form_initial
-        #return super(SalaryMonthSummaryPersonalView, self).get(request, *args, **kwargs)
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
@@ -145,7 +144,7 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
                 create_object.year = self.report_month_dt.year
                 create_object.month = self.report_month_dt.month
                 create_object.employee = Employies(pk=self.driver_pk)
-                create_object.check_status = 1
+                # create_object.check_status = 1
                 create_object.save()
             else:
                 self.object = form.save()
@@ -199,3 +198,12 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
             'employee': self.kwargs.get('employee_pk', None),
         })
         return kwargs
+
+
+class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
+    template_name = 'salary/salary_month_summary_office.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
+        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(2, 3))
+        return context_data
