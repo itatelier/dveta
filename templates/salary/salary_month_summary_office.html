@@ -8,7 +8,7 @@
         var report_year = "{{ view.report_month_dt.year }}";
         $( 'tbody#report_table').on("click", 'tr', function(){
             var id = $(this).data('employee_pk');
-            var url = "/salary/month_summary/driver_stats/" + id +"/?month=" + report_month + "&year=" + report_year;
+            var url = "/salary/month_summary/analyze_office/driver/" + id +"/?month=" + report_month + "&year=" + report_year;
             document.location.href = url;
         });
 
@@ -18,7 +18,7 @@
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Зарплата водителей</a></li>
-                <li class="" ><a href="#">Контроль механика</a></li>
+                <li class="" ><a href="{% url 'salary_month_summary_mech' %}">Контроль механика</a></li>
                 <li class="active" ><a href="#">Контроль офис</a></li>
             </ul>
         </div>
@@ -42,40 +42,37 @@
                             </div>
                             {# - переключатель месяца отчета #}
                             {# Информационный блок #}
-                            {% if summary_list.data %}
+                            {% if summary_list %}
                                 <table class="colgroup_table pointed fullwidth">
                                     <caption>Месячные показатели работы водителей</caption>
                                     <col>
                                     <col>
                                     <colgroup span="6"></colgroup>
-                                    <colgroup span="3"></colgroup>
+                                    <colgroup span="2"></colgroup>
                                     <colgroup span="2"></colgroup>
                                     <thead>
                                         <tr>
                                             <th rowspan="2" colspan="" width="">Сотрудник</th>
                                             <th rowspan="2">Статус отчета</th>
-                                            <th colspan="6" scope="colgroup">Статистика</th>
-                                            <th colspan="3" scope="colgroup">Оценка</th>
-                                            <th colspan="2" scope="colgroup">Штрафы</th>
+                                            <th colspan="4" scope="colgroup">Статистика</th>
+                                            <th colspan="2" scope="colgroup">Механик</th>
+                                            <th colspan="2" scope="colgroup">Начисления</th>
                                         </tr>
                                         <tr>
                                             <th scope="col" class="">Рейсы</th>
                                             <th scope="col" class="">Ходки</th>
-                                            <th scope="col" class="">Пробег</th>
                                             <th scope="col" class="">Пробег на ходку</th>
-                                            <th scope="col" class="">Расход всего</th>
                                             <th scope="col" class="">Расход на 100км</th>
                                             <th scope="col">Пробег</th>
                                             <th scope="col" class="">Расход</th>
-                                            <th scope="col" class="">Примечание</th>
-                                            <th scope="col" class="minus">Перепробег</th>
-                                            <th scope="col" class="minus">Перерасход</th>
+                                            <th scope="col" class="">За рейсы</th>
+                                            <th scope="col" class="">Доп</th>
                                         </tr>
                                     </thead>
                                     <tbody id="report_table">
-                                    {% for row in summary_list.data %}
-                                    <tr data-employee_pk="{{ row.driver_id }}">
-                                        <th scope="row">{{ row.driver_family_name }} {{ row.driver_given_name }} [{{ row.driver_nick_name }}]</th>
+                                    {% for row in summary_list %}
+                                    <tr data-employee_pk="{{ row.employee_id }}">
+                                        <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
                                         {% if row.check_status == None %}
                                             <td colspan="">не сформирован</td>
                                             <td colspan="9"></td>
@@ -93,9 +90,7 @@
                                             {% endif %}
                                             <td>{{ row.races_done|default_if_none:""}}</td>
                                             <td>{{ row.total_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.total_run|default_if_none:""}}</td>
                                             <td>{{ row.km_on_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.total_amount|default_if_none:""}}</td>
                                             <td>{{ row.average_consumption|default_if_none:""}}</td>
                                             <td>{% if row.over_run_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перепробег</span>{% endif %}</td>
                                             <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
@@ -106,19 +101,6 @@
                                     </tr>
                                     {% endfor %}
                                     </tbody>
-                                    <tfoot>
-                                        <th scope="row" class="text-right">Итого:</th>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tfoot>
                                 </table>
                             {% else %}
                                 <h2>за указанный период нет данных о выполненных рейсах</h2>

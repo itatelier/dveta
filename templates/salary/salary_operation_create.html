@@ -48,6 +48,10 @@
                                 {% if not form.operation_type.is_hidden  %}
                                     <div class="form_row">{% include "form_snippets/select.html" with field=form.operation_type  %}</div>
                                 {% endif %}
+                                {#  - Наименование операции -  #}
+                                {% if not form.operation_name.is_hidden  %}
+                                    <div class="form_row">{% include "form_snippets/select.html" with field=form.operation_name  %}</div>
+                                {% endif %}
                                 {#  - Год и Месяц -  #}
                                 {% if not form.year.is_hidden and not form.month.is_hidden %}
                                     <div class="form_row">

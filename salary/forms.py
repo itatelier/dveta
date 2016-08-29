@@ -48,7 +48,8 @@ class SalaryOperationCreateForm(ModelForm):
     month = ChoiceField(label="Месяц", choices=month_choices, required=True, widget=Select(attrs={'style': 'min-width:6rem; text-align: center;'}))
     sum = DecimalField(label="Сумма", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
-    operation_type = ChoiceField(label="Тип начисления", choices=SalaryFlow.operation_types, required=True, widget=Select())
+    operation_type = ChoiceField(label="Тип начисления", choices=SalaryOperationNames.operation_types, required=True, widget=Select())
+    operation_name = ModelChoiceField(label="Наименование операции", empty_label=None, queryset=SalaryOperationNames.objects.all(), required=True, widget=Select())
     employee = ModelChoiceField(label="Сотрудник", queryset=Employies.objects.select_related('person'), empty_label=None)
 
     def __init__(self, operation_type=None, employee=None, year=None, month=None, *args, **kwargs):
@@ -61,10 +62,11 @@ class SalaryOperationCreateForm(ModelForm):
         if operation_type:
             self.fields['operation_type'].widget = widgets.HiddenInput()
             self.fields['operation_type'].initial = operation_type
+            self.fields['operation_name'].queryset = SalaryOperationNames.objects.filter(group=operation_type)
         if employee:
             self.fields['employee'].widget = widgets.HiddenInput()
             self.fields['employee'].initial = employee
 
     class Meta:
         model = SalaryFlow
-        fields = ('sum', 'comment', 'year', 'month', 'operation_type', 'employee')
+        fields = ('sum', 'comment', 'year', 'month', 'operation_type', 'operation_name', 'employee')

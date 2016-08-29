@@ -12,15 +12,36 @@ import logging
 log = logging.getLogger('django')
 
 
+class SalaryOperationNames(models.Model):
+    operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
+
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L, null=True, blank=True)
+    group = models.IntegerField(null=False, blank=False, choices=operation_types)
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+    def get_type_str(self, type):
+        for l in self.operation_types:
+            if int(type) == l[0]:
+                return l[1]
+
+    class Meta:
+        db_table = 'salary_operation_names'
+        managed = False
+        verbose_name_plural = 'Зарплата / Наименования операций'
+
+
 class SalaryFlow(models.Model):
-    operation_types = ([0, 'зарплата за рейсы'], [1, 'премия'], [2, 'штраф'], [3, 'выдача аванса'], [4, 'окончательный расчет'],)
 
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
+    operation_name = models.ForeignKey('salary.SalaryOperationNames', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
     year = models.IntegerField(null=False, blank=False)
     month = models.IntegerField(null=False, blank=False)
-    operation_type = models.IntegerField(null=False, blank=False, choices=operation_types)
+    operation_type = models.IntegerField(null=False, blank=False, choices=SalaryOperationNames.operation_types)
     sum = models.FloatField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
@@ -32,10 +53,6 @@ class SalaryFlow(models.Model):
     def __unicode__(self):
         return u'[%s] %s %s' % (self.id, self.date_add, self.sum)
 
-    def get_type_str(self, type):
-        for l in self.operation_types:
-            if int(type) == l[0]:
-                return l[1]
 
 
 class SalarySummaryManager(models.Manager):

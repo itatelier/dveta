@@ -63,7 +63,7 @@ class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
         return context_data
 
 
-class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
+class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
     template_name = 'salary/salary_month_analyze_mechanic.html'
     driver_pk = False
     form_class = SalaryMechCheckForm
@@ -102,11 +102,11 @@ class SalaryMonthSummaryPersonalView(UpdateView, SalaryMonthSummaryView):
                 average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
             prepared_data['average_and_sum_stats'] = average_and_sum_stats
             # Начисления бонусов и штрафов
-            prepared_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month)
+            prepared_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month).select_related('operation_name')
         return prepared_data
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(SalaryMonthSummaryPersonalView, self).get_context_data(*args, **kwargs)
+        context_data = super(SalaryMonthAnalyzeMechanicView, self).get_context_data(*args, **kwargs)
         context_data.update(self.prepared_data)
         return context_data
 
@@ -186,7 +186,7 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryOperationCreateView, self).get_context_data(*args, **kwargs)
         context_data['employee'] = Employies.objects.get(pk=self.kwargs.get('employee_pk'))
-        context_data['type_str'] = SalaryFlow().get_type_str(self.kwargs.get('type_pk', None))
+        context_data['type_str'] = SalaryOperationNames().get_type_str(self.kwargs.get('type_pk', None))
         return context_data
 
     def get_form_kwargs(self):
@@ -205,5 +205,39 @@ class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
+        log.info("--- QS Y: %s M:%s" % (
+            self.report_month_dt.year,
+            self.report_month_dt.month
+        ))
         context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(2, 3))
         return context_data
+
+
+class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
+    template_name = 'salary/salary_month_analyze_office.html'
+    driver_pk = False
+    form_class = SalaryMechCheckForm
+    model = SalaryMonthSummary
+    object = None
+    prepared_data = None
+
+    def get_object(self, *args, **kwargs):
+        try:
+            exist_object = SalaryMonthSummary.objects.get(
+                employee_id=self.driver_pk,
+                year=self.report_month_dt.year,
+                month=self.report_month_dt.month
+            )
+            return exist_object
+        except SalaryMonthSummary.DoesNotExist:
+            return None
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
+        return context_data
+
+    def get(self, request, *args, **kwargs):
+        # получаем объект формы
+        self.driver_pk = self.kwargs.get('driver_pk', None)
+        self.object = self.get_object(self, *args, **kwargs)
+        return self.render_to_response(self.get_context_data())
