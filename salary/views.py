@@ -234,6 +234,15 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
+        context_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk,
+                                                                   year=self.report_month_dt.year,
+                                                                   month=self.report_month_dt.month).select_related(
+            'operation_name')
+        context_data['talons_remains'] = SalaryFlow.objects.filter(employee=self.driver_pk,
+                                                                   year=self.report_month_dt.year,
+                                                                   month=self.report_month_dt.month
+                                                                   ).values('operation_type', 'operation_name__name',).annotate(remains=tqty)
+
         return context_data
 
     def get(self, request, *args, **kwargs):

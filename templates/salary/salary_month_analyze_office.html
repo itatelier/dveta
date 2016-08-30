@@ -68,10 +68,10 @@
                                 <h2>Зарлатаная карта за указанный период не сформирована</h2>
                             {% endif %}
                             <h3>Оценка механика</h3>
-                                <ul class="">
-                                    <li>Перепробег<span></span></li>
-                                    <li>Перерасход<span></span></li>
-                                </ul>
+                                <table class="sheet_simple">
+                                    <tr><td>Пробег</td><td>{% if object.over_run > 0 %}<span class="red">перепробег</span>{% else %}<span>норма</span>{% endif %}</td></tr>
+                                    <tr><td>Расход</td><td>{% if object.over_fuel > 0 %}<span class="red">перепробег</span>{% else %}<span>норма</span>{% endif %}</td></tr>
+                                </table>
                             {# -  премии и взыскания -  #}
                             <h3>Премии и взыскания за отчетный период</h3>
                             {% if accruals_list %}
