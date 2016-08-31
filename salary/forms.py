@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*
+ # -*- coding: utf8 -*
 
 from re import sub
 from django.forms import *
@@ -46,13 +46,14 @@ class SalaryOperationCreateForm(ModelForm):
 
     year = ChoiceField(label="Год", choices=year_choices, required=True, widget=Select(attrs={'style': 'min-width:6rem; text-align: center;'}))
     month = ChoiceField(label="Месяц", choices=month_choices, required=True, widget=Select(attrs={'style': 'min-width:6rem; text-align: center;'}))
-    sum = DecimalField(label="Сумма", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
+    sum = DecimalField(label="Сумма", decimal_places=0, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 50}))
-    operation_type = ChoiceField(label="Тип начисления", choices=SalaryOperationNames.operation_types, required=True, widget=Select())
+    operation_type = ModelChoiceField(label="Тип начисления", queryset=SalaryOperationTypes.objects.all(), required=True, widget=Select())
     operation_name = ModelChoiceField(label="Наименование операции", empty_label=None, queryset=SalaryOperationNames.objects.all(), required=True, widget=Select())
+    operation_direction = BooleanField(required=False, initial=False, widget=HiddenInput())
     employee = ModelChoiceField(label="Сотрудник", queryset=Employies.objects.select_related('person'), empty_label=None)
 
-    def __init__(self, operation_type=None, employee=None, year=None, month=None, *args, **kwargs):
+    def __init__(self, operation_type=None, operation_direction=None, employee=None, year=None, month=None, *args, **kwargs):
         super(SalaryOperationCreateForm, self).__init__(*args, **kwargs)
         if year and month:
             self.fields['year'].widget = widgets.HiddenInput()
@@ -62,11 +63,21 @@ class SalaryOperationCreateForm(ModelForm):
         if operation_type:
             self.fields['operation_type'].widget = widgets.HiddenInput()
             self.fields['operation_type'].initial = operation_type
-            self.fields['operation_name'].queryset = SalaryOperationNames.objects.filter(group=operation_type)
+            self.fields['operation_name'].queryset = SalaryOperationNames.objects.filter(type=operation_type)
         if employee:
             self.fields['employee'].widget = widgets.HiddenInput()
             self.fields['employee'].initial = employee
+        if operation_direction:
+            self.fields['operation_direction'].initial = True
+
+    def clean(self):
+        # Если направление операции == 0, добавляем отрицательный знак к сумме
+        cleaned_data = super(SalaryOperationCreateForm, self).clean()
+        direction = cleaned_data.get("operation_direction", '')
+        if not direction:
+            cleaned_data['sum'] = -(abs(cleaned_data['sum']))
+        return cleaned_data
 
     class Meta:
         model = SalaryFlow
-        fields = ('sum', 'comment', 'year', 'month', 'operation_type', 'operation_name', 'employee')
+        fields = ('sum', 'comment', 'year', 'month', 'operation_type', 'operation_name', 'employee', 'operation_direction')

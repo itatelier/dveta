@@ -666,6 +666,8 @@ div.values_block._header_top > span > p { line-height: 1.8rem;  }
 .__dark {
     background-color: #ddd;
 }
+
+/* ========== TABS ============= */
 .tabs{
 	display:inline-block;
 }
@@ -700,6 +702,7 @@ div.values_block._header_top > span > p { line-height: 1.8rem;  }
 	background:#d6d6d7;
 }
 
+/* ================== LINK LIST ============= */
 ul.linklist {
 	background:#F6F5F3;
     padding: 1rem;
@@ -715,3 +718,10 @@ ul.linklist li {
 ul.linklist a {
     text-decoration: none;
 }
+/* ================ CONTENT BLOCKS =================== */
+
+.margin_wrapper_80 {
+    margin: 0 auto;
+    min-width: 80%;
+}
+

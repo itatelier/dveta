@@ -12,12 +12,26 @@ import logging
 log = logging.getLogger('django')
 
 
+class SalaryOperationTypes(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    type = models.CharField(max_length=255L, null=True, blank=True)
+    direction = models.BooleanField()
+
+    def __unicode__(self):
+        return u'%s' % self.type
+
+    class Meta:
+        db_table = 'salary_operation_types'
+        managed = False
+        verbose_name_plural = 'Зарплата / Типы операций'
+
+
 class SalaryOperationNames(models.Model):
     operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
 
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=True, blank=True)
-    group = models.IntegerField(null=False, blank=False, choices=operation_types)
+    type = models.ForeignKey('SalaryOperationTypes', null=False, blank=False)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -41,7 +55,7 @@ class SalaryFlow(models.Model):
     employee = models.ForeignKey('person.Employies', null=False, blank=False)
     year = models.IntegerField(null=False, blank=False)
     month = models.IntegerField(null=False, blank=False)
-    operation_type = models.IntegerField(null=False, blank=False, choices=SalaryOperationNames.operation_types)
+    operation_type = models.ForeignKey('SalaryOperationTypes', null=False, blank=False)
     sum = models.FloatField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 

@@ -23,6 +23,8 @@ from django.http import HttpResponseRedirect
 from django.db.models import Sum, Count, Func, F
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from django.db.models import Sum, Count, Func, F
+
 
 import logging
 log = logging.getLogger('django')
@@ -144,6 +146,7 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
                 create_object.year = self.report_month_dt.year
                 create_object.month = self.report_month_dt.month
                 create_object.employee = Employies(pk=self.driver_pk)
+                # if create_object.operation_type in ()
                 # create_object.check_status = 1
                 create_object.save()
             else:
@@ -176,6 +179,9 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
     form_class = SalaryOperationCreateForm
     model = SalaryFlow
     object = None
+    operation_type = False
+    operation_type_object = False
+    operation_direction = False
 
     def get_success_url(self):
         if self.request.GET.get('return_url'):
@@ -186,17 +192,23 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryOperationCreateView, self).get_context_data(*args, **kwargs)
         context_data['employee'] = Employies.objects.get(pk=self.kwargs.get('employee_pk'))
-        context_data['type_str'] = SalaryOperationNames().get_type_str(self.kwargs.get('type_pk', None))
+        context_data['operation_type_object'] = self.operation_type_object
         return context_data
 
     def get_form_kwargs(self):
         kwargs = super(SalaryOperationCreateView, self).get_form_kwargs()
+        self.operation_type = self.kwargs.get('type_pk', None)
         kwargs.update({
             'year': self.kwargs.get('year', None),
             'month': self.kwargs.get('month', None),
-            'operation_type': self.kwargs.get('type_pk', None),
+            'operation_type': self.operation_type,
             'employee': self.kwargs.get('employee_pk', None),
         })
+        # Направление начисление - плюс или минус
+        if self.operation_type:
+            self.operation_type_object = SalaryOperationTypes.objects.get(pk=self.operation_type)
+            self.operation_direction = self.operation_type_object.direction
+            kwargs.update({'operation_direction': self.operation_direction})
         return kwargs
 
 
@@ -234,15 +246,18 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
+        context_data['driver'] = Employies.drivers.get(pk=self.driver_pk)
+        # список всех начислений
         context_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk,
                                                                    year=self.report_month_dt.year,
                                                                    month=self.report_month_dt.month).select_related(
             'operation_name')
-        context_data['talons_remains'] = SalaryFlow.objects.filter(employee=self.driver_pk,
-                                                                   year=self.report_month_dt.year,
-                                                                   month=self.report_month_dt.month
-                                                                   ).values('operation_type', 'operation_name__name',).annotate(remains=tqty)
-
+        # Суммарные показатели начислений (group_by type)
+        context_data['accruals_summary'] = SalaryFlow.objects.values_list('operation_type__type').annotate(total=Sum('sum'))
+        accruals_sum = 0
+        for el in context_data['accruals_summary']:
+            accruals_sum += el[1]
+        context_data['accruals_sum'] = accruals_sum
         return context_data
 
     def get(self, request, *args, **kwargs):
