@@ -109,7 +109,7 @@
                             {% endif %}
                         </div>
                         <div class="flex_block m10">
-                            <h3>Сводный состав начислений</h3>
+                            <h3>Сводный отчет о начислениях</h3>
                             {% if accruals_summary %}
                             <table class="colgroup_table margint10">
                                 <thead>
@@ -131,6 +131,22 @@
                             {% else %}
                                 <div class="m10">нет начислений на отчетный период</div>
                             {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex_row">
+                        <div class="flex_block">
+                            <h3>Расчет оплаты</h3>
+                            <div class="flex_row">
+                                <div class="big_values">
+                                    <span><p>{{ races_salary }}</p><em>за рейсы</em></span>
+                                </div>
+                                <div class="big_values">
+                                    <span><p>{{ accruals_sum }}</p><em>доп.расходы</em></span>
+                                </div>
+                                <div class="big_values">
+                                    <span><p>= {{ total_salary }}</p><em>итого</em></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex_row">

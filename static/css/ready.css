@@ -663,6 +663,22 @@ div.values_block > span > textarea { display: block; margin-top: 5px;  }
 
 div.values_block._header_top > span > p { line-height: 1.8rem;  }
 
+/* ===================== Values block single =============== */
+div.big_values {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 0 0 0.5rem;
+    margin: 1rem 0;
+}
+div.big_values > span { display: flex; flex-direction: column; align-items: flex-end; padding: 0.5rem 0;}
+div.big_values > span > p { font-weight: bold; font-size: 2.0rem; line-height: 1.1rem;  }
+div.big_values > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; color: #9CAEB9;}
+
+
+
+
 .__dark {
     background-color: #ddd;
 }

@@ -8,6 +8,7 @@ from company.models import *
 from refuels.models import CarRunCheckFlow
 from race.models import Races
 from car.models import Cars
+from common.models import Variables
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
@@ -248,16 +249,28 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
         context_data['driver'] = Employies.drivers.get(pk=self.driver_pk)
         # список всех начислений
-        context_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk,
-                                                                   year=self.report_month_dt.year,
-                                                                   month=self.report_month_dt.month).select_related(
-            'operation_name')
+        context_data['accruals_list'] = SalaryFlow.objects.filter(
+            employee=self.driver_pk,
+            year=self.report_month_dt.year,
+            month=self.report_month_dt.month).select_related('operation_name')
         # Суммарные показатели начислений (group_by type)
         context_data['accruals_summary'] = SalaryFlow.objects.values_list('operation_type__type').annotate(total=Sum('sum'))
         accruals_sum = 0
         for el in context_data['accruals_summary']:
             accruals_sum += el[1]
         context_data['accruals_sum'] = accruals_sum
+        # Сумма вознаграждения за рейсы. Если > 100 тариф2
+        salary_variables = Variables.objects.filter(id__in=(1,2)).order_by('id')
+        races_done = self.object.races_done
+        races_salary = 0
+        if races_done and races_done >= 100:
+            races_salary = races_done * salary_variables[1].val
+        elif races_done and races_done < 100:
+            races_salary = float(races_done * salary_variables[0].val)
+        context_data['races_salary'] = races_salary
+        log.info("--- Standart: %s  Extra: %s Races: %s  Salary: %s" % (salary_variables[0].val, salary_variables[1].val, races_done, races_salary))
+        # Суммарная зарплата
+        context_data['total_salary'] = races_salary + accruals_sum
         return context_data
 
     def get(self, request, *args, **kwargs):
