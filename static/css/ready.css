@@ -293,7 +293,7 @@ table.sheet_headered > thead > tr > th {
 }
 
 table.sheet_headered > tbody > tr > td { padding: 0.5rem;  border-top: 1px solid #e2e2e2; }
-table.sheet_headered > tbody > tr:nth-child(even) {background: #FFF;}
+table.sheet_headered > tbody > tr:nth-child(even) {background: #ecebeb;}
 table.sheet_headered.dotted > tbody > tr > td {
     border-bottom: 1px dotted lightgray;
     padding: 8px 0 8px;

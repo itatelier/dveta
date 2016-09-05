@@ -151,42 +151,23 @@
                     </div>
                     <div class="flex_row">
                         <div class="flex_block">
+                            <h3>Итоги</h3>
+                            <table class="colgroup_table margint10">
+                                <tbody>
+                                    <tr><td class="text-left">Остаток пред. периода</td><td>{{ last_month_remains }}</td></tr>
+                                    <tr><td class="text-left">Начисление за текущий период</td><td>{{ report_month_accruals|default_if_none:0 }}</td></tr>
+                                    <tr><td class="text-left">Выдан аванс</td><td>{{ report_month_avances|default_if_none:0 }}</td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <th>Остаток на руки</th><th></th>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="flex_row">
+                        <div class="flex_block">
                             {# -------------------------------------------------------------------------------- #}
                             <div class="form_row"><hr></div>
-                            <h3>Данные для занесения в зарплатный лист</h3>
-                            {% if object %}
-                                <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>
-                            {% endif %}
-                            <form action="" method="POST" id="new_object">{% csrf_token %}
-                                {# Скрытые поля #}
-                                <input type="hidden" name="check_status" value="">
-                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
-                                <div class="form_row">
-                                    {% include "form_snippets/textinput.html" with field=form.races_done  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_hodkis  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_run  %}
-                                    {% include "form_snippets/textinput.html" with field=form.km_on_hodkis  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_amount  %}
-                                    {% include "form_snippets/textinput.html" with field=form.average_consumption  %}
-                                </div>
-                                <div class="form_row">
-                                    {% include "form_snippets/radio.html" with field=form.over_run_status  %}
-                                    {% include "form_snippets/radio.html" with field=form.over_fuel_status  %}
-                                </div>
-                                {# ошибки формы #}
-                                {% include "form_snippets/form_errors.html" with form=form %}
-                                {# Кнопки #}
-                                {% if object.check_status < 2 %}
-                                <div class="form_row">
-                                    <span class="button_block">
-                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
-                                        <a class="button"  onclick="save_and_send();">Сохранить и передать на контроль</a>
-                                    </span>
-                                </div>
-                                {% endif %}
-                                {# - Кнопки #}
-                            </form>
-                            {# - Форма объекта #}
                         </div>
                     </div>
                 {% else %}

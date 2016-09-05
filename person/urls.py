@@ -28,8 +28,12 @@ urlpatterns = [
     url(r'^(?P<person_pk>\d+)/contacts/setmain/ajax/$', ContactSetMainView.as_view(), name='contact_set_main'),
 
     # Employies
+    url(r'^employee/(?P<pk>\d+)/card/$', EmployeeCardView.as_view(), name='employee_card'),
+    url(r'^employee/(?P<pk>\d+)/salary/settings$', EmployeeUpdateSalaryView.as_view(), name='employee_salary_settings'),
     url(r'^employee_create/$', EmployeeCreateView.as_view(), name='employee_create'),
     url(r'^employies_list/$', EmployiesListView.as_view(), name='employies_list'),
+    url(r'^employies/update_live_onbase/ajax/$', UpdateLiveOnbaseStatus.as_view(), name='employies_update_live_onbase'),
+
 
 ]
 

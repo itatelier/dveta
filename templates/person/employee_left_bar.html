@@ -1,0 +1,9 @@
+                <div class="left_bar">
+                    <ul><li><a href="{% url 'employee_card' object.pk %}" class="{% if sel == 1 %}active{% endif %}">Карточка сотрудника</a></li></ul><hr>
+                    <h3>Управление</h3>
+                    <ul>
+                        <li><a class="{% if sel == 2 %}active{% endif %}" href="{% url 'person_update' pk=object.person.pk %}">Персона</a></li>
+                        <li><a class="{% if sel == 3 %}active{% endif %}" href="{% url 'employee_salary_settings' pk=object.pk %}">Зарплата</a></li>
+                        <li><a class="{% if sel == 4 %}active{% endif %}" href="{% url 'person_contacts_update' pk=object.person.pk %}">Контакты</a></li>
+                    </ul>
+                </div>

@@ -1,0 +1,108 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- Jquery UI      --><script type="text/javascript" src="{% static 'js/ui/jquery-ui.min.js' %}"></script>
+<!-- Datepicker RU  --><script type="text/javascript" src="{% static 'js/ui/datepicker-ru.js ' %}"></script>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.theme.min.css' %}'/>
+<!-- Jquery UI CSS  --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/ui/jquery-ui.structure.min.css' %}'/>
+
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+{#        UpdateLiveOnbaseStatus("on", 1);#}
+        {#    Виджет datepicker #}
+        $('input[name=date_ofbirth]').datepicker(
+            {
+                'dateFormat':'dd-mm-yy',
+                'changeMonth': true,
+                'changeYear':true,
+                'yearRange': "1950:1998"
+                });
+    });
+
+    function UpdateLiveOnbaseStatus(action, employee_pk) {
+{#        var $obj = $(obj);#}
+        $.ajax({
+            url: '{% url 'employies_update_live_onbase' %}',
+            dataType: "json",
+            data: { employee_pk: employee_pk, action: action }
+        })
+        .done(function (result) {
+            console.log("Done!");
+{#            if (result.result == 1) {#}
+{#                $('i[rel="main_icon"]').removeClass('gold').addClass('gray').attr('icon', '');#}
+{#                $('i', $obj).addClass('gold').attr('icon', '');#}
+{#            } else {#}
+{#                LogJsonResultError(result);#}
+{#            }#}
+        });
+        location.reload();
+        return false;
+    }
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Cотрудники</a></li>
+                <li class="" ><a href="#"><b>{{ object.person.nick_name }}</b> <i>{{ object.person.given_name }} {{ object.person.family_name}}</i></a></li>
+                <li class="active"><a href="#">Зарплата</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар   #}
+                {%  include "person/employee_left_bar.html" with object=object sel=3 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    <div class="form-row"><h2>Основная информация</h2></div>
+                    <div class="form-row">
+                        {# Форма объекта #}
+                        <form action="" method="POST" id="new_object">{% csrf_token %}
+                            {# Скрытые поля #}
+                            {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                            <div class="form_row">{% include "form_snippets/textinput.html" with field=form.acr_ndfl_sum  %}</div>
+                            <div class="form_row">{% include "form_snippets/radio.html" with field=form.acr_mobile_compensation  %}</div>
+                            {# Кнопки #}
+                            <div class="form_row">
+                                <span class="button_block">
+                                    <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                </span>
+                            </div>
+                            {# - Кнопки #}
+                        </form>
+                        {# - Форма объекта #}
+                    </div>
+                    <div class="form-row">
+                        <h2>Проживание на базе</h2>
+                        {# Информационный блок - журнал проживания на базе #}
+                        {% if live_onbase_jornal %}
+                        <div class="sheet_row_headered">
+                            <table class="sheet_headered m10">
+                                {% for l in live_onbase_jornal %}
+                                <tr>
+                                    <td>c {{ l.date_add|date:"d-m-Y" }} </td>
+                                    <td>{% if l.is_closed == True %} окончен {{ l.date_closed|date:"d-m-Y" }}{% else %}активен{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        {% endif %}
+                        {# - Информационный блок - контакты #}
+                        <span class="button_block">
+                        {%  if is_live_now %}
+                            Проживает в данный момент. <a class="button red_bg"  onclick="UpdateLiveOnbaseStatus('off', {{ object.pk }});">Выселить</a>
+                        {% else %}
+                            <a class="button"  onclick="UpdateLiveOnbaseStatus('on', {{ object.pk }});">Заселить</a>
+                        {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

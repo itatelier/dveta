@@ -27,8 +27,8 @@
 
         {#  Переход на карточу   #}
         $( 'tbody#datatable').on("click", 'tr', function(){
-            var id = $(this).data('person_id');
-            var url = "/persons/" + id +"/card/";
+            var id = $(this).data('employee_id');
+            var url = "/persons/employee/" + id +"/card/";
             document.location.href = url;
         });
 
@@ -58,7 +58,7 @@
 </script>
 {# Шаблон основной таблицы #}
 <script type="text/template" id="tmpl_table">{% verbatim %}
-    <tr data-person_id="{{ person.id }}">
+    <tr data-employee_id="{{ pk }}">
         <td>{{{ person.given_name }}} {{{ person.family_name }}}</td>
         <td>{{{ person.nick_name }}}</td>
         <td>{{{ role.val }}}</td>

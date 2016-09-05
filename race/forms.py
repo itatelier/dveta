@@ -126,7 +126,7 @@ class RaceUpdateForm(ModelForm):
     price = IntegerField(label="Цена", help_text="цена вывоза одного бункера", required=False, widget=TextInput(attrs={'size': 5, 'maxlength': 6}))
 
     pay_way = ChoiceField(label="Форма оплаты", choices=pay_way_choices,  required=True, initial=True, widget=RadioSelect())
-    summ = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 1, 'style': 'min-width:6rem;'}))
+    sum = DecimalField(label="Сумма", required=True, widget=TextInput(attrs={'size': 1, 'style': 'min-width:6rem;'}))
     recommendation = CharField(label="Примечание к рейсу", required=False, widget=Textarea(attrs={'rows': 2, 'cols': 40}))
 
     dump = ModelChoiceFieldNameLabel(queryset=Dumps.objects.all(), required=False, empty_label="Нет полигона", label="Полигон", label_field='name')
@@ -138,5 +138,5 @@ class RaceUpdateForm(ModelForm):
 
     class Meta:
         model = Races
-        fields = ('race_type', 'cargo_type', 'price', 'pay_way', 'hodkis', 'date_race', 'summ',
+        fields = ('race_type', 'cargo_type', 'price', 'pay_way', 'hodkis', 'date_race', 'sum',
                   'bunker_type', 'bunker_qty', 'dump', 'dump_pay_type', 'dump_cash', 'dump_cash_extra', 'dump_cash_comment', 'dump_comment', )

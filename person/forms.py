@@ -112,6 +112,16 @@ class EmployeeEditForm(ModelForm):
         fields = ('type', 'role', 'comment')
 
 
+class EmployeeUpdateSalaryForm(ModelForm):
+    mobile_compensation = [(False, 'Не начисляется'), (True, 'Начисляется')]
+
+    acr_ndfl_sum = DecimalField(label="Сумма налога НДФЛ для удержания (руб.)", required=True, decimal_places=0, widget=TextInput(attrs={'size': 3, 'style': 'min-width:6rem;'}))
+    acr_mobile_compensation = ChoiceField(label="Компенсация за мобильную связь", choices=mobile_compensation, initial=False, widget=widgets.RadioSelect())
+
+    class Meta:
+        model = Employies
+        fields = ('acr_ndfl_sum', 'acr_mobile_compensation')
+
 
 
 

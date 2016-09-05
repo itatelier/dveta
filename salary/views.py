@@ -254,7 +254,7 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             year=self.report_month_dt.year,
             month=self.report_month_dt.month).select_related('operation_name')
         # Суммарные показатели начислений (group_by type)
-        context_data['accruals_summary'] = SalaryFlow.objects.values_list('operation_type__type').annotate(total=Sum('sum'))
+        context_data['accruals_summary'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type').annotate(total=Sum('sum'))
         accruals_sum = 0
         for el in context_data['accruals_summary']:
             accruals_sum += el[1]
@@ -271,6 +271,12 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
         log.info("--- Standart: %s  Extra: %s Races: %s  Salary: %s" % (salary_variables[0].val, salary_variables[1].val, races_done, races_salary))
         # Суммарная зарплата
         context_data['total_salary'] = races_salary + accruals_sum
+        # Остаток предыдущего месяца
+        context_data['last_month_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
+        # Начисления отчетного месяца
+        context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5)).aggregate(Sum('sum'))['sum__sum']
+        # Выданы авансы
+        context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
         return context_data
 
     def get(self, request, *args, **kwargs):

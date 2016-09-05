@@ -4,6 +4,9 @@
 from models import *
 from company.models import *
 from forms import *
+from common.mixins import JsonViewMix
+from datetime import datetime
+
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
@@ -14,6 +17,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.apps import apps
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # API
@@ -36,8 +40,44 @@ class PersonCardView(LoginRequiredMixin, TemplateView):
             'object': object,
             'client_contacts': CompanyContacts.objects.select_related('company', 'contact', 'contact__person').filter(contact__person__pk=person_pk),
             'contacts': Contacts.objects.select_related('person').filter(person__pk=person_pk),
-            'positions': Employies.objects.select_related('person').filter(person__pk=person_pk)
+            'positions': Employies.objects.select_related('person', 'role', 'type').filter(person__pk=person_pk)
         })
+        # Контакты
+        contacts_list = Contacts.objects.select_related('person').filter(person__pk=person_pk)
+        if len(contacts_list) >= 1:
+            context_data['contacts'] = contacts_list
+        return context_data
+
+
+class EmployeeUpdateSalaryView(LoginRequiredMixin, UpdateView):
+    template_name = 'person/employee_update_salary.html'
+    form_class = EmployeeUpdateSalaryForm
+    model = Employies
+
+    def get_success_url(self, *args, **kwargs):
+        pk = self.kwargs.get('pk', None)
+        return "/persons/employee/%s/salary/settings" % pk
+
+    def get_context_data(self, **kwargs):
+        context_data = super(EmployeeUpdateSalaryView, self).get_context_data(**kwargs)
+        live_jormal = LiveOnbaseJornal.objects.filter(employee=self.kwargs.get('pk'))
+        if len(live_jormal) > 0 and live_jormal.last().is_closed == False:
+            context_data['is_live_now'] = True
+        context_data['live_onbase_jornal'] = live_jormal
+        return context_data
+
+
+class EmployeeCardView(LoginRequiredMixin, TemplateView):
+    template_name = "person/employee_card.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(EmployeeCardView, self).get_context_data(*args, **kwargs)
+        object_pk = kwargs['pk']
+        object = Employies.objects.select_related('person', 'type', 'role').get(pk=object_pk)
+        context_data['object'] = object
+        contacts_list = Contacts.objects.select_related('person').filter(person__pk=object.person.pk)
+        if len(contacts_list) >= 1:
+            context_data['contacts'] = contacts_list
         return context_data
 
 
@@ -183,4 +223,37 @@ class ContactSetMainView(JsonUpdateObject):
             self.update_data['value'] = True
             self.update_object(request, self.update_data)
         return HttpResponse(self.to_json(self.json), )
+
+
+class UpdateLiveOnbaseStatus(JsonViewMix):
+    param_names = ['action', 'employee_pk']
+    model = LiveOnbaseJornal
+
+    def prepare(self, *args, **kwargs):
+        # Првоеряем статус
+        jornal_object = None
+        action = self.values['action']
+        employe_pk = self.values['employee_pk']
+        try:
+            jornal_object = self.model.objects.get(employee=employe_pk, is_closed=False)
+        except ObjectDoesNotExist:
+            pass
+        if action == "on":
+            if jornal_object:
+                self.errors.append("Employee already in Live status")
+                return
+            else:
+                employee_object = Employies(pk=employe_pk)
+                create_object = self.model(employee=employee_object)
+                create_object.save()
+                return
+        elif action == "off":
+            if not jornal_object:
+                self.errors.append("Jornal status not found for employee")
+                return
+            else:
+                jornal_object.date_closed = datetime.now()
+                jornal_object.is_closed = True
+                jornal_object.save()
+            return
 

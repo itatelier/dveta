@@ -43,8 +43,6 @@ class Contacts(models.Model):
         verbose_name_plural = 'Контакты'
 
 
-
-
 class EmployeeTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=200L, null=False, blank=False)
@@ -110,6 +108,11 @@ class Employies(models.Model):
     date_update = models.DateTimeField(auto_now=True)
     comment = models.CharField(max_length=250L, null=True, blank=True)
     status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
+
+    # Доп параметры зарплаты
+    acr_ndfl_sum = models.DecimalField(max_digits=10, decimal_places=0, blank=False, null=False)  # Настройки ЗП, начислять НДФЛ
+    acr_mobile_compensation = models.BooleanField(default=True)  # Компенасация мобильной связи
+
     objects = EmployeeAllDefaultManager()
     drivers = EmployeeDriversManager()
     mechanics = EmployeeMechanicsManager()
@@ -148,3 +151,18 @@ class UnitGroups(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.description
+
+
+class LiveOnbaseJornal(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    employee = models.ForeignKey('Employies', null=False, blank=False)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_closed = models.DateTimeField(auto_now=False, null=True, blank=True)
+    is_closed = models.BooleanField(default=False, blank=True)
+
+    class Meta:
+        db_table = 'person_live_onbase_jornal'
+        verbose_name_plural = 'Сотрудники / Проживание на базе'
+
+    def __unicode__(self):
+        return u'%s' % self.id

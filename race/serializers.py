@@ -56,7 +56,7 @@ class RaceSerializer(serializers.ModelSerializer):
                   'cargo_type',
 
                   'price',
-                  'summ',
+                  'sum',
                   'pay_way',
                   'paid',
                   'hodkis',
