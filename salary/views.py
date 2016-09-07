@@ -21,10 +21,10 @@ from django.apps import apps
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
-from django.db.models import Sum, Count, Func, F
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from django.db.models import Sum, Count, Func, F
+import calendar
 
 
 import logging
@@ -277,6 +277,14 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
         context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5)).aggregate(Sum('sum'))['sum__sum']
         # Выданы авансы
         context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
+
+        # График - ходки по дням месяца
+        races_by_day = Races.objects.filter(date_race__year=2016, date_race__month=7).extra({'dater':"day(date_race)"}).values('dater').annotate(count=Count('hodkis'))
+        monthrange = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)
+        date_list = [x for x in range(1, monthrange[1]+1)]
+        log.info("--- Month range: %s date list: %s" % (monthrange, date_list))
+        for el in races_by_day:
+            log.info("--- Day: %s sum: %s" % (el['dater'], el['count']))
         return context_data
 
     def get(self, request, *args, **kwargs):
