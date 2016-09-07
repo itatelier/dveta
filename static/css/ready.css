@@ -669,8 +669,9 @@ div.big_values {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0 0 0 0.5rem;
-    margin: 1rem 0;
+    padding: 0.5rem 0.5rem 0;
+    margin: 1rem 1rem;
+    background-color: white;
 }
 div.big_values > span { display: flex; flex-direction: column; align-items: flex-end; padding: 0.5rem 0;}
 div.big_values > span > p { font-weight: bold; font-size: 2.0rem; line-height: 1.1rem;  }

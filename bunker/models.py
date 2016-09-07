@@ -109,6 +109,7 @@ class BunkerFlowManager(models.Manager):
         JOIN object_types AS ot ON ot.id = o.type_id
         LEFT JOIN bunker_objects_remains AS r ON o.id = r.object_id
         WHERE o.company_id = %s
+            AND ot.id = 3
         GROUP BY o.id"""
         result = fetch_sql_allintuple(query, params=(company_id,))
         return result

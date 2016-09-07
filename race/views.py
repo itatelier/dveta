@@ -19,6 +19,7 @@ from rest_framework import viewsets, generics, filters
 from django.http import HttpResponseRedirect
 from dds.models import *
 from dump.models import TalonsFlow
+from common.models import Variables
 
 
 class RaceCreateView(LoginRequiredMixin, CreateView):
@@ -60,9 +61,9 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                     race_object.dump.group.pk,  # Группа полигона
                     1,                          # Количество расходуемых талонов
                     race_object.driver.pk,      # Сотрудник, с которого снимают талон (водитель)
-                    0,                         # Пусто, нет сотрудника для передачи талона
+                    0,                          # Пусто, нет сотрудника для передачи талона
                     1,                          # Группа талонодержателей ВОДИТЕЛИ
-                    0                          # Пусто, Группа талонодержателей получателя не используется
+                    0                           # Пусто, Группа талонодержателей получателя не используется
                 )
                 if proc_result != 1:
                     form.add_error(None, proc_error)
@@ -77,7 +78,7 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                     item_in_id=4,
                     account_in_id=5,
                     pay_way_in=True,
-                    summ=race_object.summ
+                    summ=race_object.sum
                  )
             else:       # если оплата Нал
                 DdsFlow.objects.flow_op(
@@ -85,9 +86,17 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                     # race_object.contragent.money_account.get().pk,
                     race_object.driver.money_account.get().pk,
                     False, # тип оплаты - нал
-                    race_object.summ,
+                    race_object.sum,
                     True  # Тип операции - приход
                 )
+            # Расчет вознаграждения водителя
+            salary_driver_sum = 0
+            if object_obj.salary_spec_price > 0:
+                salary_driver_sum = race_object.hodkis * object_obj.salary_spec_price
+            else:
+                variable_tarif_standart_hodki = Variables.objects.get(pk=1)
+                salary_driver_sum = race_object.hodkis * variable_tarif_standart_hodki.val
+            race_object.salary_driver_sum = salary_driver_sum
             race_object.save()
             self.success_url = '/races/%s/update' % race_object.id
             return HttpResponseRedirect(self.success_url)

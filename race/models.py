@@ -64,6 +64,8 @@ class Races(models.Model):
     mark_done = models.BooleanField()
     mark_author = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, related_name="race_marked")
 
+    salary_driver_sum = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True, default=0)
+
     class Meta:
         db_table = 'races'
         verbose_name_plural = 'Рейсы'
