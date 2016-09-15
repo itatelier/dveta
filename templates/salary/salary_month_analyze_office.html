@@ -194,12 +194,19 @@
                                     <th>Сумма</th>
                                 </thead>
                                 <tbody>
-                                    <tr><td class="text-left">Стандартые</td><td>Рогатка</td><td>90</td><td>550</td><td>49500</td></tr>
-                                    <tr><td class="text-left">Стандартые</td><td>Мультилифт</td><td>15</td><td>900</td><td>13500</td></tr>
-                                    <tr><td class="text-left">Спец. цена</td><td>*</td><td><a href="#" class="textlink">10</a></td><td>*</td><td>6500</td></tr>
+                                    {% for el in races_tarif_stats %}
+                                        {% if el.salary_tarif == 1 %}
+                                            <tr><td class="text-left">Спец.цена</td><td>*</td><td>{{ el.count_races }}</td><td>*</td><td>{{ el.sum }}</td></tr>
+                                        {% elif el.salary_tarif != 1 %}
+                                            <tr><td class="text-left">Стандартые</td><td>{{ el.salary_tarif__name }}</td><td>{{ el.count_races }}</td><td>{{ el.tarif_price }}</td><td>{{ el.sum }}</td></tr>
+                                        {% endif %}
+                                    {% endfor %}
+{#                                    <tr><td class="text-left">Стандартые</td><td>Рогатка</td><td>90</td><td>550</td><td>49500</td></tr>#}
+{#                                    <tr><td class="text-left">Стандартые</td><td>Мультилифт</td><td>15</td><td>900</td><td>13500</td></tr>#}
+{#                                    <tr><td class="text-left">Спец. цена</td><td>*</td><td><a href="#" class="textlink">10</a></td><td>*</td><td>6500</td></tr>#}
                                 </tbody>
                                 <tfoot>
-                                    <th colspan="4">Итого</th><th>69500</th>
+                                    <th colspan="4">Итого</th><th>{{ races_salary_sum }}</th>
                                 </tfoot>
                             </table>
                         </div>
@@ -209,7 +216,7 @@
                             <h3>Расчет оплаты</h3>
                             <div class="flex_row">
                                 <div class="big_values">
-                                    <span><p>{{ races_salary }}</p><em>за рейсы</em></span>
+                                    <span><p>{{ races_salary_sum }}</p><em>за рейсы</em></span>
                                 </div>
                                 <div class="big_values">
                                     <span><p>{{ accruals_sum }}</p><em>доп.расходы</em></span>

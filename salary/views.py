@@ -218,10 +218,6 @@ class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
-        log.info("--- QS Y: %s M:%s" % (
-            self.report_month_dt.year,
-            self.report_month_dt.month
-        ))
         context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(2, 3))
         return context_data
 
@@ -263,17 +259,30 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             for el in context_data['accruals_summary']:
                 accruals_sum += el[1]
             context_data['accruals_sum'] = accruals_sum
-            # Сумма вознаграждения за рейсы. Если > 100 тариф2
-            salary_variables = Variables.objects.filter(id__in=(1,2)).order_by('id')
-            races_salary = 0
-            if races_done >= 100:
-                races_salary = self.object.races_done * salary_variables[1].val
-            elif races_done < 100:
-                races_salary = float(self.object.races_done * salary_variables[0].val)
-            context_data['races_salary'] = races_salary
-            log.info("--- Standart: %s  Extra: %s Races: %s  Salary: %s" % (salary_variables[0].val, salary_variables[1].val, races_done, races_salary))
+            # Расчет оплаты за ходки
+            races_tarif_stats = Races.objects.values('salary_tarif','salary_tarif__name', 'salary_tarif__plan_range', 'salary_tarif__standart_tarif', 'salary_tarif__overplan_tarif')\
+                .filter()\
+                .annotate(count_races=Count('salary_tarif'))
+                # .filter(date_race__year=self.report_month_dt.year, date_race__month=self.report_month_dt.month, driver__pk=self.driver_pk)
+            races_salary_sum = 0
+            for el in races_tarif_stats:
+                if el['salary_tarif'] == 1:
+                    el['sum'] = Races.objects.filter(driver=1, salary_tarif=1).aggregate(Sum('salary_driver_sum'))['salary_driver_sum__sum']
+                    el['sort_index'] = 2
+                    races_salary_sum += el['sum']
+                else:
+                    if el['count_races'] <= el['salary_tarif__plan_range']:
+                        el['sum'] = el['count_races'] * el['salary_tarif__standart_tarif']
+                        el['tarif_price'] = el['salary_tarif__standart_tarif']
+                    elif el['count_races'] <= el['salary_tarif__plan_range']:
+                        el['sum'] = el['count_races'] * el['salary_tarif__overplan_tarif']
+                        el['tarif_price'] = el['salary_tarif__overplan_tarif']
+                    el['sort_index'] = 1
+                    races_salary_sum += el['sum']
+            context_data['races_tarif_stats'] = sorted(races_tarif_stats, key=lambda item: item['sort_index'])  # Сортируем по значению sort_index
+            context_data['races_salary_sum'] = races_salary_sum
             # Суммарная зарплата
-            context_data['total_salary'] = races_salary + accruals_sum
+            context_data['total_salary'] = races_salary_sum + accruals_sum
             # Остаток предыдущего месяца
             context_data['last_month_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
             # Начисления отчетного месяца
@@ -281,7 +290,9 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             # Выданы авансы
             context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
             # График - ходки по дням месяца
-            races_by_day = Races.objects.filter(date_race__year=self.report_month_dt.year, date_race__month=self.report_month_dt.month).extra({'dater':"day(date_race)"}).values('dater').annotate(count=Count('hodkis'))
+            races_by_day = Races.objects.filter(date_race__year=self.report_month_dt.year, date_race__month=self.report_month_dt.month)\
+                .extra({'dater':"day(date_race)"}).values('dater')\
+                .annotate(count=Count('hodkis'))
             monthrange = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)
             date_list = [x for x in range(1, monthrange[1]+1)]
             races_graph_data = []
@@ -293,10 +304,6 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                         day_count = el['count']
                 races_graph_data.append(day_count)
             context_data['races_graph_data'] = races_graph_data
-            # таблица расчета оплаты за ходки
-            #             o = Races.objects.values('salary_tarif').annotate(tarif_count=Count('salary_tarif'))
-            # >>> o
-            # [{'tarif_count': 11, 'salary_tarif': 1L}, {'tarif_count': 29, 'salary_tarif': 2L}]
         else:
             pass
         return context_data
