@@ -7,7 +7,7 @@ from person.models import Employies
 from rest_framework import serializers
 from rest_framework import viewsets, generics, filters
 import django_filters
-from person.serializers import EmployiesSerializer, UnitGroupsSerializer
+from person.serializers import EmployiesSerializer, UnitGroupsSerializer, DriverSerializer
 
 
 class CarBrandsSerializer(serializers.ModelSerializer):
@@ -39,15 +39,15 @@ class CarStatusesSerializer(serializers.ModelSerializer):
 class CarsSerizlizer(serializers.ModelSerializer):
     model = CarModelsSerializer(many=False, read_only=True)
     fuel_type = CarFuelTypesSerializer(many=False, read_only=True)
-    mechanic = EmployiesSerializer(many=False, read_only=True)
+    mechanic = DriverSerializer(many=False, read_only=True)
     unit_group = UnitGroupsSerializer(many=False, read_only=True)
     status = CarStatusesSerializer(many=False, read_only=True)
-    driver = EmployiesSerializer(allow_null=True)
+    driver = DriverSerializer(allow_null=True)
 
     class Meta:
         depth = 1
         model = Cars
-        fields = ('pk', 'model', 'fuel_type', 'unit_group', 'reg_num', 'nick_name', 'comment', 'trailer_attached', 'date_add', 'mechanic', 'status', 'driver')
+        fields = ('pk', 'model', 'fuel_type', 'load_type', 'unit_group', 'reg_num', 'nick_name', 'comment', 'trailer_attached', 'date_add', 'status', 'driver', 'mechanic')
 
 
 class CarsSimpleSerializer(serializers.ModelSerializer):

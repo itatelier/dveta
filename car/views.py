@@ -62,7 +62,7 @@ class CarCreateView(LoginRequiredMixin, CreateView):
 class CarCardView(LoginRequiredMixin, DetailView):
     template_name = "car/car_card.html"
     model = Cars
-    queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'driver')
+    queryset = Cars.objects.select_related('model', 'model__brand', 'fuel_type', 'load_type', 'unit_group', 'car_object', 'mechanic', 'mechanic__person', 'driver')
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarCardView, self).get_context_data(*args, **kwargs)
@@ -84,7 +84,10 @@ class CarUpdateView(LoginRequiredMixin, UpdateView):
 class CarsViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     # queryset = Cars.objects.all()
-    queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object', 'status', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status')
+    queryset = Cars.objects.filter()\
+        .select_related('model', 'model__brand', 'fuel_type', 'load_type', 'unit_group', 'car_object', 'status', 'driver', 'driver__person', 'mechanic', 'mechanic__person')
+        # prefetch_related( 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status', 'driver', 'driver__person', 'driver__type', 'driver__role', 'driver__status')
+
     # queryset = Cars.objects.filter().select_related('model', 'model__brand', 'fuel_type', 'unit_group', 'car_object',
     #                                                 'status', 'mechanic', 'mechanic__person', 'mechanic__type', 'mechanic__role', 'mechanic__status',
     #                                                 'driver', 'driver__person')

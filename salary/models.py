@@ -26,6 +26,25 @@ class SalaryOperationTypes(models.Model):
         verbose_name_plural = 'Зарплата / Типы операций'
 
 
+class SalaryTarifPlans(models.Model):
+    operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
+
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    name = models.CharField(max_length=255L, null=True, blank=True)
+    car_load_type = models.ForeignKey('car.CarLoadTypes', null=True, blank=True)
+    plan_range = models.IntegerField(null=False, blank=False)
+    standart_tarif = models.IntegerField(null=False, blank=False)
+    overplan_tarif = models.IntegerField(null=False, blank=False)
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+    class Meta:
+        db_table = 'salary_race_tarifs'
+        managed = False
+        verbose_name_plural = 'Зарплата / Тарифы на рейсы'
+
+
 class SalaryOperationNames(models.Model):
     operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
 

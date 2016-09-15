@@ -43,6 +43,18 @@ class CarFuelTypes(models.Model):
         return u'[%s] %s' % (self.id, self.val)
 
 
+class CarLoadTypes(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    val = models.CharField(max_length=200L, null=False, blank=False)
+
+    class Meta:
+        db_table = 'car_load_types'
+        verbose_name_plural = 'Машины / Типы по загрузке'
+
+    def __unicode__(self):
+        return u'[%s] %s' % (self.id, self.val)
+
+
 class CarStatuses(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     val = models.CharField(max_length=200L, null=False, blank=False)
@@ -62,6 +74,7 @@ class Cars(models.Model):
     comment = models.CharField(max_length=200L, null=False, blank=False)
     model = models.ForeignKey('CarModels', null=False, blank=False, editable=True)
     fuel_type = models.ForeignKey('CarFuelTypes', null=False, blank=False, editable=True)
+    load_type = models.ForeignKey('CarLoadTypes', null=False, blank=False, editable=True)
     mechanic = models.ForeignKey('person.Employies', null=False, blank=False, editable=True, related_name="carmechanic")
     unit_group = models.ForeignKey('person.UnitGroups', null=False, blank=False, editable=True)
     fuel_norm = models.IntegerField(blank=True, null=True, default=0)

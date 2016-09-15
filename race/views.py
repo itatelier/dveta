@@ -20,7 +20,7 @@ from django.http import HttpResponseRedirect
 from dds.models import *
 from dump.models import TalonsFlow
 from common.models import Variables
-
+from salary.models import SalaryTarifPlans
 
 class RaceCreateView(LoginRequiredMixin, CreateView):
     template_name = 'race/race_create.html'
@@ -85,18 +85,29 @@ class RaceCreateView(LoginRequiredMixin, CreateView):
                     17,
                     # race_object.contragent.money_account.get().pk,
                     race_object.driver.money_account.get().pk,
-                    False, # тип оплаты - нал
+                    False,  # тип оплаты - нал
                     race_object.sum,
                     True  # Тип операции - приход
                 )
             # Расчет вознаграждения водителя
-            salary_driver_sum = 0
+            # Если в объекте указана спец.цена - она без доп. расчетов помещается в рейс, если нет, то расчет идет по
+            # тарифам в зависимости от типа загрузки: рогатка, Мультилифт и т.п.
             if object_obj.salary_spec_price > 0:
-                salary_driver_sum = race_object.hodkis * object_obj.salary_spec_price
+                race_object.salary_driver_sum = object_obj.salary_spec_price
+                race_object.salary_tarif_id = 1
             else:
-                variable_tarif_standart_hodki = Variables.objects.get(pk=1)
-                salary_driver_sum = race_object.hodkis * variable_tarif_standart_hodki.val
-            race_object.salary_driver_sum = salary_driver_sum
+                car_load_type = car_obj.load_type
+                salary_tarif_object = SalaryTarifPlans.objects.get(car_load_type=car_load_type)
+                race_object.salary_driver_sum = salary_tarif_object.standart_tarif
+                race_object.salary_tarif_id = salary_tarif_object.id
+            salary_driver_sum = 0
+            # if object_obj.salary_spec_price > 0:
+            #     salary_driver_sum = race_object.hodkis * object_obj.salary_spec_price
+            # else:
+            #     variable_tarif_standart_hodki = Variables.objects.get(pk=1)
+            #     salary_driver_sum = race_object.hodkis * variable_tarif_standart_hodki.val
+            # race_object.salary_driver_sum = salary_driver_sum
+
             race_object.save()
             self.success_url = '/races/%s/update' % race_object.id
             return HttpResponseRedirect(self.success_url)

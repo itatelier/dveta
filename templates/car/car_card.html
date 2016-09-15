@@ -46,7 +46,7 @@
                     <div class="form-row">
                          <span class="m10">Механик <a href="/persons/{{ object.mechanic.person_id }}/card" class="textlink"><b>{{ object.mechanic.person.family_name }} {{ object.mechanic.person.given_name }}</b></a></span>
                          {% if object.driver.pk %}
-                                     <span class="m10">Водитель <a href="/persons/{{ object.driver.person_id }}/card" class="textlink"><b>{{ object.driver.person.nick_name }} </b>{{ object.driver.person.family_name }} {{ object.driver.person.given_name }}</a></span>
+                                     <span class="m10">Водитель <a href="/persons/{{ object.driver.person_id }}/card" class="textlink">{{ object.driver.person.nick_name }} {{ object.driver.person.family_name }} {{ object.driver.person.given_name }}</a></span>
                                  {% else %}
                                     <span class="m10">Водитель <a href="{% url 'car_driver' object.pk %}" class="textlink red">не назначен</a></span>
                                  {%  endif %}
@@ -69,6 +69,7 @@
                                     {% endfor %}
                                 {% else %}нет{%  endif %}
                                 </td></tr>
+                            <tr><td>Тип загрузки</td><td>{{ object.load_type.val }}</td></tr>
                             <tr><td>Карточка объекта</td><td><a href="/objects/{{ object.car_object_id }}/card/" class="textlink">{{ object.car_object.name }}</a></td></tr>
                             <tr><td>Тип топлива</td><td>{{ object.fuel_type.val }}</td></tr>
                             <tr><td>Топливная карта</td><td><b>{{ object.fuel_card.num|default_if_none:"не привязана" }}</b> {{ object.fuel_card.fuel_company.name }}</td></tr>

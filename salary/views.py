@@ -248,43 +248,57 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
         context_data['driver'] = Employies.drivers.get(pk=self.driver_pk)
-        # список всех начислений
-        context_data['accruals_list'] = SalaryFlow.objects.filter(
-            employee=self.driver_pk,
-            year=self.report_month_dt.year,
-            month=self.report_month_dt.month).select_related('operation_name')
-        # Суммарные показатели начислений (group_by type)
-        context_data['accruals_summary'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type').annotate(total=Sum('sum'))
-        accruals_sum = 0
-        for el in context_data['accruals_summary']:
-            accruals_sum += el[1]
-        context_data['accruals_sum'] = accruals_sum
-        # Сумма вознаграждения за рейсы. Если > 100 тариф2
-        salary_variables = Variables.objects.filter(id__in=(1,2)).order_by('id')
-        races_done = self.object.races_done
-        races_salary = 0
-        if races_done and races_done >= 100:
-            races_salary = races_done * salary_variables[1].val
-        elif races_done and races_done < 100:
-            races_salary = float(races_done * salary_variables[0].val)
-        context_data['races_salary'] = races_salary
-        log.info("--- Standart: %s  Extra: %s Races: %s  Salary: %s" % (salary_variables[0].val, salary_variables[1].val, races_done, races_salary))
-        # Суммарная зарплата
-        context_data['total_salary'] = races_salary + accruals_sum
-        # Остаток предыдущего месяца
-        context_data['last_month_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
-        # Начисления отчетного месяца
-        context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5)).aggregate(Sum('sum'))['sum__sum']
-        # Выданы авансы
-        context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
-
-        # График - ходки по дням месяца
-        races_by_day = Races.objects.filter(date_race__year=2016, date_race__month=7).extra({'dater':"day(date_race)"}).values('dater').annotate(count=Count('hodkis'))
-        monthrange = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)
-        date_list = [x for x in range(1, monthrange[1]+1)]
-        log.info("--- Month range: %s date list: %s" % (monthrange, date_list))
-        for el in races_by_day:
-            log.info("--- Day: %s sum: %s" % (el['dater'], el['count']))
+        races_done = None
+        if hasattr(self.object, 'races_done'):
+            # Занесенные данные о выполненных рейсах
+            races_done = self.object.races_done
+            # список всех начислений
+            context_data['accruals_list'] = SalaryFlow.objects.filter(
+                employee=self.driver_pk,
+                year=self.report_month_dt.year,
+                month=self.report_month_dt.month).select_related('operation_name')
+            # Суммарные показатели начислений (group_by type)
+            context_data['accruals_summary'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type').annotate(total=Sum('sum'))
+            accruals_sum = 0
+            for el in context_data['accruals_summary']:
+                accruals_sum += el[1]
+            context_data['accruals_sum'] = accruals_sum
+            # Сумма вознаграждения за рейсы. Если > 100 тариф2
+            salary_variables = Variables.objects.filter(id__in=(1,2)).order_by('id')
+            races_salary = 0
+            if races_done >= 100:
+                races_salary = self.object.races_done * salary_variables[1].val
+            elif races_done < 100:
+                races_salary = float(self.object.races_done * salary_variables[0].val)
+            context_data['races_salary'] = races_salary
+            log.info("--- Standart: %s  Extra: %s Races: %s  Salary: %s" % (salary_variables[0].val, salary_variables[1].val, races_done, races_salary))
+            # Суммарная зарплата
+            context_data['total_salary'] = races_salary + accruals_sum
+            # Остаток предыдущего месяца
+            context_data['last_month_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
+            # Начисления отчетного месяца
+            context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5)).aggregate(Sum('sum'))['sum__sum']
+            # Выданы авансы
+            context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
+            # График - ходки по дням месяца
+            races_by_day = Races.objects.filter(date_race__year=self.report_month_dt.year, date_race__month=self.report_month_dt.month).extra({'dater':"day(date_race)"}).values('dater').annotate(count=Count('hodkis'))
+            monthrange = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)
+            date_list = [x for x in range(1, monthrange[1]+1)]
+            races_graph_data = []
+            for i in date_list:
+                day_num = i+1
+                day_count = 0
+                for el in races_by_day:
+                    if el['dater'] == day_num and el['count'] > 0:
+                        day_count = el['count']
+                races_graph_data.append(day_count)
+            context_data['races_graph_data'] = races_graph_data
+            # таблица расчета оплаты за ходки
+            #             o = Races.objects.values('salary_tarif').annotate(tarif_count=Count('salary_tarif'))
+            # >>> o
+            # [{'tarif_count': 11, 'salary_tarif': 1L}, {'tarif_count': 29, 'salary_tarif': 2L}]
+        else:
+            pass
         return context_data
 
     def get(self, request, *args, **kwargs):

@@ -29,12 +29,13 @@ class CarCreateForm(ModelForm):
     comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 60, 'maxlength': 60}))
     model = ModelChoiceField(queryset=CarModels.objects.all(), label="Модель авто", empty_label=None)
     fuel_type = ModelChoiceFieldNameLabel(queryset=CarFuelTypes.objects.all(), label_field='val', label="Тип топлива", empty_label=None)
+    load_type = ModelChoiceFieldNameLabel(queryset=CarLoadTypes.objects.all(), label_field='val', label="Тип загрузки", empty_label=None)
     mechanic = EmployeeChoiceField(queryset=Employies.mechanics.all(), label="Механик", empty_label=None)
     unit_group = ModelChoiceField(queryset=UnitGroups.objects.all(), label="Группа", empty_label=None)
 
     class Meta:
         model = Cars
-        fields = ('reg_num', 'nick_name', 'model', 'fuel_type', 'mechanic', 'unit_group', 'comment')
+        fields = ('reg_num', 'nick_name', 'model', 'fuel_type', 'load_type', 'mechanic', 'unit_group', 'comment')
 
 
 class CarCreateWithoutComment(CarCreateForm):

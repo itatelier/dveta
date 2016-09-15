@@ -73,7 +73,7 @@ class DriverSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 1
         model = Employies
-        fields = ('pk', 'person', 'status')
+        fields = ('pk', 'person', )
 
 
 class EmployeeSerializerShort(serializers.ModelSerializer):

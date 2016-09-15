@@ -12,25 +12,11 @@
             datasets: [
                 {
                     label: "Количество ходок",
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: 'rgba(134, 151, 162, 1)',
                     borderWidth: 1,
                     borderSkipped: 0,
-                    data: [1, 2, 6, 4, 5, 7, 3, 9, 4, 6, 6, 3, 8, 4, 3, 6, 7, 6, 7, 2, 0, 4, 8, 4, 5, 7, 7, 3, 6, 2, 5, ],
+                    data: [{% for el in races_graph_data %}{{ el }},{% endfor %}],
                 }
             ]
         };
@@ -97,13 +83,15 @@
                             <span class="">Водитель: <a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
                         </div>
                     </div>
+                    {% if object %}
+                    {# График рейсов по дням месяца #}
                     <div class="flex_row">
                         <div class="flex_block _zero" id="chartblock">
                             <canvas id="myChart" width="750" height="120"></canvas>
 
                         </div>
                     </div>
-                    {% if object %}
+                    {# - График рейсов по дням месяца #}
                     <div class="flex_row margint10">
                         <div class="flex_block m10 _zero">
                             <h3 class="">Показатели по рейсам и заправкам - анализ механика</h3>
