@@ -6,6 +6,7 @@ from types import NoneType
 from django.db.models.manager import Manager
 from django.db.models import Model
 import datetime
+from models import *
 
 import logging
 log = logging.getLogger('django')
@@ -352,3 +353,11 @@ def model_todict(obj, exclude=['AutoField', 'OneToOneField']):
 def get_attr_or_null(cls, val):
    val = getattr(cls, val, False)
    return val
+
+
+def get_variable(name):
+    try:
+        var_obj = Variables.objects.get(var=name)
+        return var_obj.val
+    except:
+        return False

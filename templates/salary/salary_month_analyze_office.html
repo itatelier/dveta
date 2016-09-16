@@ -8,7 +8,8 @@
     $(document).ready(function() {
         var ctx = $("#myChart");
         var data = {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", ],
+            labels: [{% for el in graph_days_list %}{{ el }},{% endfor %} ],
+{#            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", ],#}
             datasets: [
                 {
                     label: "Количество ходок",
@@ -16,8 +17,8 @@
                     borderColor: 'rgba(134, 151, 162, 1)',
                     borderWidth: 1,
                     borderSkipped: 0,
-{#                    data: [{% for el in races_graph_data %}{{ el }},{% endfor %}],#}
-                    data: ["1", "2", "6", "2", "3", "6", "7", "7", "5", "7", "4", "8", "6", "4", "7", "6", "9", "7", "4", "", "3", "1", "6", "8", "7", "9", "6", "4", "7", "9", ]
+                    data: [{% for el in races_graph_data %}{{ el }},{% endfor %}],
+{#                    data: ["1", "2", "6", "2", "3", "6", "7", "7", "5", "7", "4", "8", "6", "4", "7", "6", "9", "7", "4", "", "3", "1", "6", "8", "7", "9", "6", "4", "7", "9", ]#}
                 }
             ]
         };
@@ -69,8 +70,13 @@
             <div class="sheet">
                 <div class="margin_wrapper_80">
                     <div class="flex_row">
-                        <div class="flex_block _zero">
-                            <h2>Персональные показатели работы водителя</h2>
+                        <h2>Персональные показатели работы водителя</h2>
+                    </div>
+                    <div class="flex_row flex_vcentered">
+                        <div class="flex_block _zero ">
+                            <span class="">Водитель: <a href="{% url 'employee_card' driver.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
+                        </div>
+                        <div class="flex_block _zero marginl30">
                             <div class="flex_row flex_vcentered">
                             {# переключатель месяца отчета #}
                                     <div>Период формирования отчета:</div>
@@ -81,7 +87,6 @@
                                     </ul>
                             </div>
                             {# - переключатель месяца отчета #}
-                            <span class="">Водитель: <a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
                         </div>
                     </div>
                     {% if object %}
@@ -219,17 +224,28 @@
                                 <div class="big_values">
                                     <span><p>{{ races_salary_sum }}</p><em>за рейсы</em></span>
                                 </div>
+                                {% if accruals_sum %}
                                 <div class="big_values">
                                     <span><p>{{ accruals_sum }}</p><em>доп.расходы</em></span>
                                 </div>
+                                {% endif %}
+                                {% if acr_mobile_compensation %}
                                 <div class="big_values">
-                                    <span><p>+500</p><em>компенсация тел.</em></span>
+                                    <span><p>+{{ acr_mobile_compensation }}</p><em>компенсация тел.</em></span>
                                 </div>
+                                {%  endif %}
+                                {% if acr_basehouse_rent %}
                                 <div class="big_values">
-                                    <span><p>-1053</p><em>налог НДФЛ (13%)</em></span>
+                                    <span><p>-{{ acr_basehouse_rent }}</p><em>проживание на базе</em></span>
                                 </div>
+                                {% endif %}
+                                {% if acr_ndfl_sum %}
                                 <div class="big_values">
-                                    <span><p>= {{ total_salary }}</p><em>итого</em></span>
+                                    <span><p>-{{ acr_ndfl_sum }}</p><em>налог НДФЛ (13%)</em></span>
+                                </div>
+                                {% endif %}
+                                <div class="big_values">
+                                    <span><p>= {{ final_salary }}</p><em>итого</em></span>
                                 </div>
                             </div>
                         </div>

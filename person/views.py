@@ -49,24 +49,6 @@ class PersonCardView(LoginRequiredMixin, TemplateView):
         return context_data
 
 
-class EmployeeUpdateSalaryView(LoginRequiredMixin, UpdateView):
-    template_name = 'person/employee_update_salary.html'
-    form_class = EmployeeUpdateSalaryForm
-    model = Employies
-
-    def get_success_url(self, *args, **kwargs):
-        pk = self.kwargs.get('pk', None)
-        return "/persons/employee/%s/salary/settings" % pk
-
-    def get_context_data(self, **kwargs):
-        context_data = super(EmployeeUpdateSalaryView, self).get_context_data(**kwargs)
-        live_jormal = LiveOnbaseJornal.objects.filter(employee=self.kwargs.get('pk'))
-        if len(live_jormal) > 0 and live_jormal.last().is_closed == False:
-            context_data['is_live_now'] = True
-        context_data['live_onbase_jornal'] = live_jormal
-        return context_data
-
-
 class EmployeeCardView(LoginRequiredMixin, TemplateView):
     template_name = "person/employee_card.html"
 
@@ -223,6 +205,24 @@ class ContactSetMainView(JsonUpdateObject):
             self.update_data['value'] = True
             self.update_object(request, self.update_data)
         return HttpResponse(self.to_json(self.json), )
+
+
+class EmployeeUpdateSalaryView(LoginRequiredMixin, UpdateView):
+    template_name = 'person/employee_update_salary.html'
+    form_class = EmployeeUpdateSalaryForm
+    model = Employies
+
+    def get_success_url(self, *args, **kwargs):
+        pk = self.kwargs.get('pk', None)
+        return "/persons/employee/%s/salary/settings" % pk
+
+    def get_context_data(self, **kwargs):
+        context_data = super(EmployeeUpdateSalaryView, self).get_context_data(**kwargs)
+        live_jormal = LiveOnbaseJornal.objects.filter(employee=self.kwargs.get('pk'))
+        if len(live_jormal) > 0 and live_jormal.last().is_closed == False:
+            context_data['is_live_now'] = True
+        context_data['live_onbase_jornal'] = live_jormal
+        return context_data
 
 
 class UpdateLiveOnbaseStatus(JsonViewMix):

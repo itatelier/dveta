@@ -2,6 +2,11 @@
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.db.models import Q
+from datetime import datetime
+
+import logging
+log = logging.getLogger('django')
 
 
 class Persons(models.Model):
@@ -110,7 +115,7 @@ class Employies(models.Model):
     status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
 
     # Доп параметры зарплаты
-    acr_ndfl_sum = models.DecimalField(max_digits=10, decimal_places=0, blank=False, null=False)  # Настройки ЗП, начислять НДФЛ
+    acr_ndfl_sum = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)  # Настройки ЗП, начислять НДФЛ
     acr_mobile_compensation = models.BooleanField(default=True)  # Компенасация мобильной связи
 
     objects = EmployeeAllDefaultManager()
@@ -131,13 +136,17 @@ class Employies(models.Model):
     def fullnamenick(self):
         return u'%s %s [%s]' % (self.person.family_name, self.person.given_name, self.person.nick_name)
 
-
-# class Drivers(Employies):
-#     objects = EmployeeAllDefaultManager()
-#
-#     class Meta:
-#         verbose_name_plural = 'Водители'
-#         db_table = 'employies'
+    def report_baserent_in_period(self, dt_start, dt_end):
+        log.info("=== Start: %s End: %s" %(dt_start, dt_end))
+        qs = LiveOnbaseJornal.objects.filter(
+            Q(date_closed__gte=dt_start, date_closed__lte=dt_end, employee=self.pk) |
+            Q(date_add__lte=dt_end, date_closed__isnull=True, employee=self.pk) |
+            Q(date_add__lte=dt_start, date_closed__gte=dt_end, employee=self.pk))
+        log.info("=== QS: %s" % qs)
+        if len(qs) > 0:
+            return True
+        else:
+            return False
 
 
 class UnitGroups(models.Model):
@@ -166,3 +175,4 @@ class LiveOnbaseJornal(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.id
+

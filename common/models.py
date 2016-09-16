@@ -9,6 +9,7 @@ from django.db.models import F
 
 class Variables(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    var = models.CharField(max_length=255L, null=False, blank=False)
     name = models.CharField(max_length=255L, null=False, blank=False)
     val = models.IntegerField(null=False, blank=False)
 
@@ -18,5 +19,5 @@ class Variables(models.Model):
         verbose_name_plural = 'Система / Переменные'
 
     def __unicode__(self):
-        return u'[%s] %s %s' % (self.id, self.name, self.val)
+        return u'[%s] %s %s %s' % (self.id, self.var, self.name, self.val)
 
