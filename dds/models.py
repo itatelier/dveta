@@ -62,7 +62,7 @@ class DdsAccounts(models.Model):
     type = models.ForeignKey('dds.DdsAccountTypes', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=True, blank=True, related_name='money_account')
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True, related_name='money_account')
-    balance = models.FloatField(default=0, null=True, blank=True, )
+    balance = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True, default=0)
     status = models.BooleanField()
     objects = AccountManager()
 
@@ -162,7 +162,7 @@ class DdsTemplates(models.Model):
     account_in = models.ForeignKey('DdsAccounts', null=True, blank=True, related_name='template_account_in')
     account_in_required = models.BooleanField(default=False)
     account_in_visible = models.BooleanField(default=True)
-    summ = models.FloatField(default=0, null=True, blank=True, )
+    summ = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True, default=0)
     pay_way = models.BooleanField(default=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 

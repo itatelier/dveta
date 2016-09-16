@@ -27,7 +27,7 @@ class FuelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     name = models.CharField(max_length=255L, null=False, blank=False)
     description = models.CharField(max_length=255L, null=False, blank=False)
-    price = models.FloatField(null=False, blank=False)
+    price = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
 
     class Meta:
         db_table = 'fuel_types'
@@ -101,7 +101,7 @@ class RefuelsFlow(models.Model):
     fuel_card = models.ForeignKey('FuelCards', null=True, blank=True)
     type = models.IntegerField(null=False, blank=False, choices=refuel_types)
     amount = models.IntegerField(null=False, blank=False)
-    sum = models.FloatField(null=True, blank=True)
+    sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     km = models.IntegerField(null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
     checked = models.IntegerField(blank=False, null=False, default=False)

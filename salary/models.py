@@ -75,7 +75,7 @@ class SalaryFlow(models.Model):
     year = models.IntegerField(null=False, blank=False)
     month = models.IntegerField(null=False, blank=False)
     operation_type = models.ForeignKey('SalaryOperationTypes', null=False, blank=False)
-    sum = models.FloatField(null=False, blank=False)
+    sum = models.DecimalField(decimal_places=2, max_digits=9, null=False, blank=False)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
     class Meta:
@@ -261,18 +261,18 @@ class SalaryMonthSummary(models.Model):
     over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
     mech_comment = models.CharField(max_length=255L, null=True, blank=True)
 
-    over_run_penalty = models.FloatField(null=True, blank=True)
-    over_fuel_penalty = models.FloatField(null=True, blank=True)
-    misc_penalty = models.FloatField(null=True, blank=True)
+    over_run_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    over_fuel_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    misc_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
 
-    bonus_amount = models.FloatField(null=True, blank=True)
-    deductions_amount = models.FloatField(null=True, blank=True)
-    races_salary = models.FloatField(null=True, blank=True)
-    compensation_amount = models.FloatField(null=True, blank=True)
+    bonus_amount = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    deductions_amount = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    races_salary = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    compensation_amount = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
 
-    summary_salary_amount = models.FloatField(null=True, blank=True)
-    paid_sum = models.FloatField(null=True, blank=True)
-    remain_sum = models.FloatField(null=True, blank=True)
+    summary_salary_amount = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    paid_sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
+    remain_sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     check_status = models.IntegerField(null=True, blank=True, default=False, choices=check_status_choices)
     comment = models.CharField(max_length=255L, null=True, blank=True)
 
