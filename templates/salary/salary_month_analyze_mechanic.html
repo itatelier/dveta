@@ -7,7 +7,7 @@
     });
 
     function save_and_send() {
-        $('input[name="check_status"]').val(2);
+        $('input[name="check_status"]').val(1);
         $('form#new_object').submit();
         return false;
     }
@@ -31,26 +31,22 @@
                             <h2>Персональные показатели работы водителя</h2>
                             {# переключатель месяца отчета #}
                             <div class="flex_row flex_vcentered">
-                                    <div>Период формирования отчета:</div>
-                                    <ul class="linklist flex">
-                                        <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
-                                        <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
-                                        <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
-                                    </ul>
+                                <div class="flex_block _zero ">
+                                    <span class="">Водитель: <a href="{% url 'employee_card' driver.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
+                                </div>
+                                <div class="flex_block _zero marginl30">
+                                    <div class="flex_row flex_vcentered">
+                                    {# переключатель месяца отчета #}
+                                            <div>Период формирования отчета:</div>
+                                            <ul class="linklist flex">
+                                                <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                                <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                                <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                                            </ul>
+                                    </div>
+                                    {# - переключатель месяца отчета #}
+                                </div>
                             </div>
-                            {# - переключатель месяца отчета #}
-                            <table class="colgroup_table">
-                                <tr>
-                                    <td>Водитель:</td>
-                                    <td><a href="{% url 'person_card' driver.person.pk %}" class="textlink">{{ driver.fullnamenick }}</a></td>
-                                    <td>Сверки с механиком:</td>
-                                    <td><b>{{ stats_mech_checkups }}</b></td>
-                                    <td>Выполненео рейсов:</td>
-                                    <td><b>{{ stats_races }}</b></td>
-                                    <td>Засчитано ходок:</td>
-                                    <td><b>{{ stats_hodkis|default_if_none:0 }}</b> {{ average_stats.a_km_on_100 }}</td>
-                                </tr>
-                            </table>
                             {% if driver_month_stats %}
                             <h3>Статистика по машинам</h3>
                             <table class="colgroup_table margint10 fullwidth">
@@ -86,6 +82,14 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <h3>Сверки пробега</h3>
+                            <table class="colgroup_table">
+                                <tr>
+                                    <td>Выполнено сверок:</td>
+                                    <td><b>{{ stats_mech_checkups }}</b></td>
+                                </tr>
+                            </table>
+
                             <h3>Суммарные и усредненные показатели</h3>
                             <table class="colgroup_table margint10">
                                 <thead>
@@ -111,79 +115,107 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            {% else %}
-                                <h2>за указанный период нет данных о выполненных рейсах</h2>
-                            {% endif %}
                             {# -  премии и взыскания -  #}
                             <h3>Премии и взыскания за отчетный период</h3>
-                            {% if accruals_list %}
-                            <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Добавлено</th>
-                                    <th>Тип начисления</th>
-                                    <th>Наименование</th>
-                                    <th>Сумма</th>
-                                    <th>Автор</th>
-                                    <th>Примечание</th>
-                                </thead>
-                                <tbody>
-                                    {% for el in accruals_list %}
-                                    <tr>
-                                        <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
-                                        <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td class="text-left">{{ el.operation_name.name }}</td>
-                                        <td>{{ el.sum}}</td>
-                                        <td></td>
-                                        <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                                <div class="m10">нет начислений на отчетный период</div>
-                            {% endif %}
-                            <div class="form_row">
-                                <span class="button_block">
-                                    <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
-                                    <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
-                                </span>
-                            </div>
-                            {# -------------------------------------------------------------------------------- #}
-                            <div class="form_row"><hr></div>
-                            <h3>Данные для занесения в зарплатный лист</h3>
-                            {% if object %}
-                                <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>
-                            {% endif %}
-                            <form action="" method="POST" id="new_object">{% csrf_token %}
-                                {# Скрытые поля #}
-                                <input type="hidden" name="check_status" value="">
-                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
-                                <div class="form_row">
-                                    {% include "form_snippets/textinput.html" with field=form.races_done  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_hodkis  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_run  %}
-                                    {% include "form_snippets/textinput.html" with field=form.km_on_hodkis  %}
-                                    {% include "form_snippets/textinput.html" with field=form.total_amount  %}
-                                    {% include "form_snippets/textinput.html" with field=form.average_consumption  %}
-                                </div>
-                                <div class="form_row">
-                                    {% include "form_snippets/radio.html" with field=form.over_run_status  %}
-                                    {% include "form_snippets/radio.html" with field=form.over_fuel_status  %}
-                                </div>
-                                {# ошибки формы #}
-                                {% include "form_snippets/form_errors.html" with form=form %}
-                                {# Кнопки #}
-                                {% if object.check_status < 2 %}
+                                {% if accruals_list %}
+                                <table class="colgroup_table margint10">
+                                    <thead>
+                                        <th>Добавлено</th>
+                                        <th>Тип начисления</th>
+                                        <th>Наименование</th>
+                                        <th>Сумма</th>
+                                        <th>Автор</th>
+                                        <th>Примечание</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for el in accruals_list %}
+                                        <tr>
+                                            <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
+                                            <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
+                                            <td class="text-left">{{ el.operation_name.name }}</td>
+                                            <td>{{ el.sum}}</td>
+                                            <td></td>
+                                            <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                    <div class="m10">нет начислений на отчетный период</div>
+                                {% endif %}
                                 <div class="form_row">
                                     <span class="button_block">
-                                        <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
-                                        <a class="button"  onclick="save_and_send();">Сохранить и передать на контроль</a>
+                                        <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
+                                        <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
                                     </span>
                                 </div>
-                                {% endif %}
-                                {# - Кнопки #}
-                            </form>
-                            {# - Форма объекта #}
+                                {# -------------------------------------------------------------------------------- #}
+                                <h3>Данные для занесения в зарплатный лист</h3>
+                                <div class="flex_row">
+                                    <div class="flex_block _zero">
+                                        <div class="m10">Статус зарплатной карты:
+                                            {% if object %}
+                                                <span class="salary_check_status check_status_{{ object.check_status }}">
+                                                    {{ object.get_check_status_display }}
+                                                </span>
+                                            {% else %}
+                                                <span class="salary_check_status">
+                                                    новая
+                                                </span>
+                                            {%  endif %}
+                                        </div>
+                                    </div>
+                                    {% if object %}
+                                    <div class="flex_block">
+                                        <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <form action="" method="POST" id="new_object">{% csrf_token %}
+                                    {# Скрытые поля #}
+                                    <input type="hidden" name="check_status" value="">
+                                    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                    <div class="flex_row">
+                                        <div class="flex_block _zero">
+                                            <h3>Пробег</h3>
+                                            <div class="form_row">
+                                                {% include "form_snippets/textinput.html" with field=form.total_run  %}
+                                                {% include "form_snippets/textinput.html" with field=form.km_on_hodkis  %}
+                                                {% include "form_snippets/radio.html" with field=form.over_run_status  %}
+                                            </div>
+                                            <div class="form_row">
+                                                {% include "form_snippets/textinput.html" with field=form.run_comment  %}
+                                            </div>
+                                        </div>
+                                        <div class="flex_block _zero">
+                                            <h3>Топливо</h3>
+                                            <div class="form_row">
+                                                {% include "form_snippets/textinput.html" with field=form.total_amount  %}
+                                                {% include "form_snippets/textinput.html" with field=form.average_consumption  %}
+                                                {% include "form_snippets/radio.html" with field=form.over_fuel_status  %}
+                                            </div>
+                                            <div class="form_row">
+                                                {% include "form_snippets/textinput.html" with field=form.fuel_comment  %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {# ошибки формы #}
+                                    {% include "form_snippets/form_errors.html" with form=form %}
+                                    {# Кнопки #}
+                                    {% if object.check_status < 1 %}
+                                    <div class="form_row">
+                                        <span class="button_block">
+                                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
+                                            <a class="button"  onclick="save_and_send();">Сохранить и передать на контроль</a>
+                                        </span>
+                                    </div>
+                                    {% endif %}
+                                    {# - Кнопки #}
+                                </form>
+                                {# - Форма объекта #}
+                            {% else %}
+                                <h2 class="m10">за указанный период нет данных о выполненных рейсах</h2>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -267,12 +267,19 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             context_data['races_graph_data'] = races_graph_data
             # Занесенные данные о выполненных рейсах
             races_done = self.object.races_done
-            # список всех начислений
-            context_data['accruals_list'] = SalaryFlow.objects.filter(
+            # список начислений  Штрафы и премии
+            context_data['accruals_list_penalty_and_bonus'] = SalaryFlow.objects.filter(
                 operation_type__in=[2, 3],
                 employee=self.driver_pk,
                 year=self.report_month_dt.year,
-                month=self.report_month_dt.month).select_related('operation_name')
+                month=self.report_month_dt.month).select_related('operation_type')
+            # Суммарные показатели начислений (group_by type)
+            # список начислений авансы и зарплата
+            context_data['accruals_list_other'] = SalaryFlow.objects.filter(
+                operation_type__in=[1, 4, 5, 6, 7],
+                employee=self.driver_pk,
+                year=self.report_month_dt.year,
+                month=self.report_month_dt.month).select_related('operation_type')
             # Суммарные показатели начислений (group_by type)
             context_data['accruals_summary'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type').annotate(total=Sum('sum'))
             accruals_sum = 0
@@ -287,7 +294,7 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             races_salary_sum = 0
             for el in races_tarif_stats:
                 if el['salary_tarif'] == 1:
-                    el['sum'] = Races.objects.filter(driver=1, salary_tarif=1).aggregate(Sum('salary_driver_sum'))['salary_driver_sum__sum']
+                    el['sum'] = Races.objects.filter(driver=self.driver_pk, salary_tarif=1).aggregate(Sum('salary_driver_sum'))['salary_driver_sum__sum']
                     el['sort_index'] = 2
                     races_salary_sum += el['sum']
                 else:
@@ -302,12 +309,6 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             context_data['races_tarif_stats'] = sorted(races_tarif_stats, key=lambda item: item['sort_index'])  # Сортируем по значению sort_index
             context_data['races_salary_sum'] = races_salary_sum
             final_salary += races_salary_sum
-            # Остаток предыдущего месяца
-            context_data['last_month_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
-            # Начисления отчетного месяца
-            context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5)).aggregate(Sum('sum'))['sum__sum']
-            # Выданы авансы
-            context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7)).aggregate(Sum('sum'))['sum__sum']
             ### Вычеты и компенсации
             # Проживание на базе
             if driver_obj.report_baserent_in_period(self.report_month_dt, self.report_next_dt):
@@ -326,7 +327,18 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
             # Остаток предыдущего периода
-
+            context_data['salary_prev_period_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            # Начисления отчетного месяца
+            context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(1, 2, 3, 4, 5), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            # Выданы авансы
+            context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            # Остаток на руки
+            context_data['salary_now_remains'] = 0
+            for item in ('salary_prev_period_remains', 'report_month_accruals', 'report_month_avances'):
+                if context_data[item] is not None:
+                    context_data['salary_now_remains'] += context_data[item]
+                else:
+                    context_data[item] = 0
         else:
             pass
         return context_data

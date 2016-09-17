@@ -136,7 +136,7 @@
                         <div class="flex_block m10 _zero">
                             {# -  премии и взыскания -  #}
                             <h3>Премии и взыскания за отчетный период</h3>
-                            {% if accruals_list %}
+                            {% if accruals_list_penalty_and_bonus %}
                             <table class="colgroup_table margint10">
                                 <thead>
                                     <th>Добавлено</th>
@@ -147,12 +147,12 @@
                                     <th>Примечание</th>
                                 </thead>
                                 <tbody>
-                                    {% for el in accruals_list %}
+                                    {% for el in accruals_list_penalty_and_bonus %}
                                     <tr>
                                         <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
                                         <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
                                         <td class="text-left">{{ el.operation_name.name }}</td>
-                                        <td>{{ el.sum}}</td>
+                                        <td>{{ el.sum|floatformat}}</td>
                                         <td></td>
                                         <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
@@ -175,12 +175,12 @@
                                     {% for el in accruals_summary %}
                                     <tr>
                                         <td class="text-left">{{ el.0 }}</td>
-                                        <td>{{ el.1 }}</td>
+                                        <td>{{ el.1|floatformat }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
-                                    <th>Итого:</th><th>{{ accruals_sum }}</th>
+                                    <th>Итого:</th><th>{{ accruals_sum|floatformat }}</th>
                                 </tfoot>
                             </table>
                             {% else %}
@@ -189,7 +189,39 @@
                         </div>
                     </div>
                     <div class="flex_row">
-                        <div class="flex_block">
+                        <div class="flex_block m10 _zero">
+                            {# -  премии и взыскания -  #}
+                            <h3>Начисления, компенсации и удержания</h3>
+                            {% if accruals_list_other %}
+                            <table class="colgroup_table margint10">
+                                <thead>
+                                    <th>Добавлено</th>
+                                    <th>Тип начисления</th>
+                                    <th>Наименование</th>
+                                    <th>Сумма</th>
+                                    <th>Автор</th>
+                                    <th>Примечание</th>
+                                </thead>
+                                <tbody>
+                                    {% for el in accruals_list_other %}
+                                    <tr>
+                                        <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
+                                        <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
+                                        <td class="text-left">{{ el.operation_name.name }}</td>
+                                        <td>{{ el.sum|floatformat}}</td>
+                                        <td></td>
+                                        <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                                <div class="m10">нет начислений на отчетный период</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex_row">
+                        <div class="flex_block marginl10">
                             <h3>Оплата за ходки</h3>
                             <table class="colgroup_table margint10">
                                 <thead>
@@ -202,9 +234,9 @@
                                 <tbody>
                                     {% for el in races_tarif_stats %}
                                         {% if el.salary_tarif == 1 %}
-                                            <tr><td class="text-left">Спец.цена</td><td>*</td><td>{{ el.count_races }}</td><td>*</td><td>{{ el.sum }}</td></tr>
+                                            <tr><td class="text-left">Спец.цена</td><td>*</td><td>{{ el.count_races }}</td><td>*</td><td>{{ el.sum|floatformat }}</td></tr>
                                         {% elif el.salary_tarif != 1 %}
-                                            <tr><td class="text-left">Стандартые</td><td>{{ el.salary_tarif__name }}</td><td>{{ el.count_races }}</td><td>{{ el.tarif_price }}</td><td>{{ el.sum }}</td></tr>
+                                            <tr><td class="text-left">Стандартые</td><td>{{ el.salary_tarif__name }}</td><td>{{ el.count_races }}</td><td>{{ el.tarif_price|floatformat }}</td><td>{{ el.sum|floatformat }}</td></tr>
                                         {% endif %}
                                     {% endfor %}
 {#                                    <tr><td class="text-left">Стандартые</td><td>Рогатка</td><td>90</td><td>550</td><td>49500</td></tr>#}
@@ -212,55 +244,55 @@
 {#                                    <tr><td class="text-left">Спец. цена</td><td>*</td><td><a href="#" class="textlink">10</a></td><td>*</td><td>6500</td></tr>#}
                                 </tbody>
                                 <tfoot>
-                                    <th colspan="4">Итого</th><th>{{ races_salary_sum }}</th>
+                                    <th colspan="4">Итого</th><th class="text-center">{{ races_salary_sum|floatformat }}</th>
                                 </tfoot>
                             </table>
                         </div>
                     </div>
                     <div class="flex_row">
-                        <div class="flex_block">
+                        <div class="flex_block marginl10">
                             <h3>Расчет оплаты</h3>
                             <div class="flex_row">
                                 <div class="big_values">
-                                    <span><p>{{ races_salary_sum }}</p><em>за рейсы</em></span>
+                                    <span><p>{{ races_salary_sum|floatformat }}</p><em>за рейсы</em></span>
                                 </div>
                                 {% if accruals_sum %}
                                 <div class="big_values">
-                                    <span><p>{{ accruals_sum }}</p><em>доп.расходы</em></span>
+                                    <span><p>{{ accruals_sum|floatformat }}</p><em>доп.расходы</em></span>
                                 </div>
                                 {% endif %}
                                 {% if acr_mobile_compensation %}
                                 <div class="big_values">
-                                    <span><p>+{{ acr_mobile_compensation }}</p><em>компенсация тел.</em></span>
+                                    <span><p>+{{ acr_mobile_compensation|floatformat }}</p><em>компенсация тел.</em></span>
                                 </div>
                                 {%  endif %}
                                 {% if acr_basehouse_rent %}
                                 <div class="big_values">
-                                    <span><p>-{{ acr_basehouse_rent }}</p><em>проживание на базе</em></span>
+                                    <span><p>-{{ acr_basehouse_rent|floatformat }}</p><em>проживание на базе</em></span>
                                 </div>
                                 {% endif %}
                                 {% if acr_ndfl_sum %}
                                 <div class="big_values">
-                                    <span><p>-{{ acr_ndfl_sum }}</p><em>налог НДФЛ (13%)</em></span>
+                                    <span><p>-{{ acr_ndfl_sum|floatformat }}</p><em>налог НДФЛ (13%)</em></span>
                                 </div>
                                 {% endif %}
                                 <div class="big_values">
-                                    <span><p>= {{ final_salary }}</p><em>итого</em></span>
+                                    <span><p>= {{ final_salary|floatformat }}</p><em>итого</em></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="flex_row">
-                        <div class="flex_block">
+                        <div class="flex_block m10">
                             <h3>Итоги</h3>
                             <table class="colgroup_table margint10">
                                 <tbody>
-                                    <tr><td class="text-left">Остаток пред. периода</td><td>{{ last_month_remains }}</td></tr>
-                                    <tr><td class="text-left">Начисление за текущий период</td><td>{{ report_month_accruals|default_if_none:0 }}</td></tr>
-                                    <tr><td class="text-left">Выдан аванс</td><td>{{ report_month_avances|default_if_none:0 }}</td></tr>
+                                    <tr><td class="text-left">Остаток пред. периода</td><td>{{ salary_prev_period_remains|floatformat }}</td></tr>
+                                    <tr><td class="text-left">Начисление за текущий период</td><td>{{ report_month_accruals|floatformat }}</td></tr>
+                                    <tr><td class="text-left">Выдан аванс</td><td>{{ report_month_avances|floatformat }}</td></tr>
                                 </tbody>
                                 <tfoot>
-                                    <th>Остаток на руки</th><th></th>
+                                    <th>Остаток на руки</th><th>{{ salary_now_remains|floatformat }}</th>
                                 </tfoot>
                             </table>
                         </div>

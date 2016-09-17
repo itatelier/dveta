@@ -280,3 +280,22 @@ div.checkbox_wrapper {
 		text-align:center;
 		/*background:#fdf3dd;*/
 		}
+
+.salary_check_status {
+    padding: 3px 5px;
+}
+.check_status_0 {
+    background-color: #F7A3A3;
+}
+.check_status_1 {
+    background-color: #c1d8e6;
+}
+.check_status_2 {
+    background-color: #00abee;
+}
+.check_status_3 {
+    background-color: #43dc44;
+}
+.check_status_4 {
+    background-color: #cbcfc9;
+}

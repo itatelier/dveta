@@ -112,7 +112,8 @@ class SalarySummaryManager(models.Manager):
                     ,ss.average_consumption
                     ,ss.over_run_status
                     ,ss.over_fuel_status
-                    ,ss.mech_comment
+                    ,ss.fuel_comment
+                    ,ss.run_comment
                     ,ss.over_run_penalty
                     ,ss.over_fuel_penalty
                 FROM (
@@ -259,7 +260,8 @@ class SalaryMonthSummary(models.Model):
 
     over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
     over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
-    mech_comment = models.CharField(max_length=255L, null=True, blank=True)
+    fuel_comment = models.CharField(max_length=255L, null=True, blank=True)
+    run_comment = models.CharField(max_length=255L, null=True, blank=True)
 
     over_run_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     over_fuel_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
