@@ -269,6 +269,7 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             races_done = self.object.races_done
             # список всех начислений
             context_data['accruals_list'] = SalaryFlow.objects.filter(
+                operation_type__in=[2, 3],
                 employee=self.driver_pk,
                 year=self.report_month_dt.year,
                 month=self.report_month_dt.month).select_related('operation_name')
@@ -324,6 +325,8 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 final_salary += mobile_comp_sum
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
+            # Остаток предыдущего периода
+
         else:
             pass
         return context_data
