@@ -102,11 +102,12 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
                     average_and_sum_stats['fuel_overuse'] += row._asdict()['fuel_overuse']
             if report_stats['km_on_hodkis']['count'] > 0:
                 average_and_sum_stats['km_on_hodkis'] = report_stats['km_on_hodkis']['value'] / report_stats['km_on_hodkis']['count']
-            if report_stats['lit_on_100']['count'] > 0:
-                average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
+            # if report_stats['lit_on_100']['count'] > 0:
+            #     average_and_sum_stats['average_consumption'] = "%.1f" % (report_stats['lit_on_100']['value'] / report_stats['lit_on_100']['count'])
             prepared_data['average_and_sum_stats'] = average_and_sum_stats
-            # Начисления бонусов и штрафов
-            prepared_data['accruals_list'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month).select_related('operation_name')
+            # Начисления - штрафы и бонусы
+            prepared_data['accruals_list_penalties'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type=3).select_related('operation_type')
+            prepared_data['accruals_list_bonuses'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type=2).select_related('operation_type')
         return prepared_data
 
     def get_context_data(self, *args, **kwargs):

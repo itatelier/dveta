@@ -48,21 +48,19 @@
                                     <col>
                                     <col>
                                     <colgroup span="6"></colgroup>
-                                    <colgroup span="3"></colgroup>
+                                    <colgroup span="2"></colgroup>
                                     <thead>
                                         <tr>
                                             <th rowspan="2" colspan="" width="">Сотрудник</th>
                                             <th rowspan="2">Статус отчета</th>
-                                            <th colspan="6" scope="colgroup">Статистика</th>
+                                            <th colspan="4" scope="colgroup">Статистика</th>
                                             <th colspan="2" scope="colgroup">Оценка</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="">Рейсы</th>
                                             <th scope="col" class="">Ходки</th>
                                             <th scope="col" class="">Пробег</th>
                                             <th scope="col" class="">Пробег на ходку</th>
-                                            <th scope="col" class="">Расход всего</th>
-                                            <th scope="col" class="">Расход на 100км</th>
+                                            <th scope="col" class="">Расход топлива</th>
                                             <th scope="col">Пробег</th>
                                             <th scope="col" class="">Расход</th>
                                         </tr>
@@ -86,12 +84,10 @@
                                             {% elif row.check_status > 3 %}
                                                 <td>подтвержден</td>
                                             {% endif %}
-                                            <td>{{ row.races_done|default_if_none:""}}</td>
                                             <td>{{ row.total_hodkis|default_if_none:""}}</td>
                                             <td>{{ row.total_run|default_if_none:""}}</td>
                                             <td>{{ row.km_on_hodkis|default_if_none:""}}</td>
                                             <td>{{ row.total_amount|default_if_none:""}}</td>
-                                            <td>{{ row.average_consumption|default_if_none:""}}</td>
                                             <td>{% if row.over_run_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перепробег</span>{% endif %}</td>
                                             <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
                                         {% endif %}

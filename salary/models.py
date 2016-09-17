@@ -144,6 +144,7 @@ class SalarySummaryManager(models.Manager):
                     ,C.reg_num
                     ,C.nick_name
                     ,C.fuel_norm
+                    ,CM.val AS car_model
                     ,COUNT(*) AS races_done
                     ,SUM(RR.hodkis) AS total_hodkis
                     ,IFNULL(J3.total_refuels,0) AS total_refuels
@@ -154,6 +155,7 @@ class SalarySummaryManager(models.Manager):
                     ,(ROUND(((J3.total_amount / J3.total_run) * 100),1)) - C.fuel_norm AS fuel_overuse
                 FROM races AS RR
                 LEFT JOIN cars AS C ON C.id = RR.car_id
+                LEFT JOIN car_models AS CM ON CM.id = C.id
                 LEFT OUTER JOIN (
                                                 SELECT
                                                         R2.car_id
@@ -256,7 +258,7 @@ class SalaryMonthSummary(models.Model):
     km_on_hodkis = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
     total_run = models.IntegerField(null=False, blank=False)
     total_amount = models.IntegerField(null=False, blank=False)
-    average_consumption = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
+    # average_consumption = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
 
     over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
     over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
