@@ -77,9 +77,9 @@
                                         <td>{{ row.total_run|default_if_none:0 }}</td>
                                         <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
                                         <td>{{ row.total_amount|default_if_none:0 }}</td>
-                                        <td>{{ row.lit_on_100|default_if_none:0 }}</td>
+                                        <td class="{% if row.fuel_overuse > 0 %}red{% endif %}">{{ row.lit_on_100|default_if_none:0 }}</td>
                                         <td>{{ row.fuel_norm|default_if_none:0 }}</td>
-                                        <td>{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                        <td class="{% if row.fuel_overuse > 0 %}red{% endif %}">{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -186,16 +186,11 @@
                                             </span>
                                         {% else %}
                                             <span class="salary_check_status">
-                                                новая
+                                                не софрмирована
                                             </span>
                                         {%  endif %}
                                     </div>
                                 </div>
-                                {% if object %}
-                                <div class="flex_block">
-                                    <span class="notice"><i class="icon" icon=""></i> Данные в форме получены из ранее сохраненных параметров</span>
-                                </div>
-                                {% endif %}
                             </div>
                             <form action="" method="POST" id="new_object">{% csrf_token %}
                                 {# Скрытые поля #}

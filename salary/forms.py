@@ -22,16 +22,24 @@ class SalaryMechCheckForm(ModelForm):
     over_run_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
     over_fuel_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
 
-    races_done = IntegerField(required=True, widget=HiddenInput())
-    total_hodkis = DecimalField(required=True, widget=HiddenInput())
-    total_run = IntegerField(required=True, widget=HiddenInput())
-    km_on_hodkis = DecimalField(decimal_places=2, required=True, widget=HiddenInput())
-    total_amount = DecimalField(decimal_places=2, required=True, widget=HiddenInput())
     over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
     over_fuel_status = ChoiceField(label="Оценка расхода топлива", choices=over_fuel_status_choices, initial=False, widget=widgets.RadioSelect())
     fuel_comment = CharField(label="Примечание по топливу", required=False, widget=TextInput(attrs={'size': 50}))
     run_comment = CharField(label="Примечание по пробегу", required=False, widget=TextInput(attrs={'size': 50}))
     check_status = IntegerField(required=False, widget=HiddenInput(), initial=0)
+
+    class Meta:
+        model = SalaryMonthSummary
+        fields = ('over_run_status', 'over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
+
+
+class SalaryRaceStatsForm(ModelForm):
+
+    races_done = IntegerField(required=True, widget=HiddenInput())
+    total_hodkis = DecimalField(required=True, widget=HiddenInput())
+    total_run = IntegerField(required=True, widget=HiddenInput())
+    km_on_hodkis = DecimalField(decimal_places=2, required=True, widget=HiddenInput())
+    total_amount = DecimalField(decimal_places=2, required=True, widget=HiddenInput())
 
     class Meta:
         model = SalaryMonthSummary

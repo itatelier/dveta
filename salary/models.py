@@ -287,3 +287,4 @@ class SalaryMonthSummary(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.date_add)
+
