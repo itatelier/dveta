@@ -151,26 +151,16 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
+        # Список месячных показателей по каждой машине
+        driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
+        context_data['driver_month_stats'] = driver_stats.get_list()
+        context_data['average_and_sum_stats'] = driver_stats.get_summary()
         context_data['driver'] = driver_obj
         races_done = None
         final_salary = 0
         if hasattr(self.object, 'races_done'):
-            # График - ходки по дням месяца
-            races_by_day = Races.objects.filter(date_race__year=self.report_month_dt.year, date_race__month=self.report_month_dt.month)\
-                .extra({'dater': "day(date_race)"}).values('dater')\
-                .annotate(sum=Sum('hodkis'))
-            monthrange = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)
-            date_list = [x for x in range(1, monthrange[1]+1)]
-            races_graph_data = []
-            for i in date_list:
-                day_num = i
-                day_count = 0
-                for el in races_by_day:
-                    if el['dater'] == day_num and el['sum'] > 0:
-                        day_count = el['sum']
-                races_graph_data.append(day_count)
-            context_data['graph_days_list'] = date_list
-            context_data['races_graph_data'] = races_graph_data
+            context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
+            context_data['month_days_count'] = context_data['graph'].month_days[1]
             # Занесенные данные о выполненных рейсах
             races_done = self.object.races_done
             # список начислений  Штрафы и премии
@@ -312,7 +302,7 @@ class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
-        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(2, 3))
+        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(1, 2))
         return context_data
 
 

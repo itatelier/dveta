@@ -17,6 +17,7 @@
 .flex_justify_center { justify-content: center;}
 .flex_end { align-self: flex-end;}
 .flex_zero { flex: 0 0;}
+._flex_zero { flex-grow: 0!important;}
 
 html {
     height: 100%;
@@ -675,6 +676,7 @@ div.big_values {
 }
 div.big_values > span { display: flex; flex-direction: column; align-items: flex-end; padding: 0.5rem 0;}
 div.big_values > span > p { font-weight: bold; font-size: 2.0rem; line-height: 1.1rem;  }
+div.big_values > span > p > i { font-style: normal;  }
 div.big_values > span > em { text-transform: uppercase; font-style: normal; font-size: 1.0rem; color: #9CAEB9;}
 
 

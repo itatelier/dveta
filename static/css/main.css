@@ -39,6 +39,9 @@ div.sheet_block_mini {
     padding: 1rem;
     margin: 1rem;
 }
+div.sheet_block_mini > h3 {
+    color: #535651;
+}
 div.sheet_block_mini > hr {
     border: none;
     height: 1px;
@@ -46,8 +49,8 @@ div.sheet_block_mini > hr {
     margin: 0.5rem 0;
 }
 div.sheet_block_mini > table {
-    width: 100%;
-    margin: 0.5rem 1rem;
+    /*width: 100%;*/
+    /*margin: 0.5rem 1rem;*/
 }
 div.sheet_block_mini > table tr > td {
     padding: 0.5rem;

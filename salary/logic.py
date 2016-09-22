@@ -5,7 +5,8 @@ from race.models import Races
 from django.db.models import Sum
 import calendar
 
-
+import logging
+log = logging.getLogger('django')
 
 class DriverStats:
     def __init__(self, date_start, date_end, driver_pk):
@@ -38,20 +39,22 @@ class DriverStats:
 
 class RacesGraph:
 
-    def __init__(self, year, month, driver_pk):
-        self.year = year
-        self.month = month
-        self.driver_pk = driver_pk
+    def __init__(self):
+        self.year = None
+        self.month = None
+        self.driver_pk = None
         self.data = None
-        self.days_list = None
+        self.days_list = None  # массив чисел календарных дней в заданом месяце
+        self.month_days = None
 
-    def get(self):
+    def getdata(self, year, month, driver_pk):
         # График - ходки по дням месяца
-        races_qs = Races.objects.filter(date_race__year=self.year,
-                                        date_race__month=self.month) \
+        races_qs = Races.objects.filter(date_race__year=year,
+                                        date_race__month=month) \
             .extra({'dater': "day(date_race)"}).values('dater') \
             .annotate(sum=Sum('hodkis'))
-        monthrange = calendar.monthrange(self.year, self.month)
+        monthrange = calendar.monthrange(year, month)
+        self.month_days = monthrange
         self.days_list = [x for x in range(1, monthrange[1] + 1)]
         races_graph_data = []
         for i in self.days_list:
@@ -61,8 +64,8 @@ class RacesGraph:
                 if el['dater'] == day_num and el['sum'] > 0:
                     day_count = el['sum']
             races_graph_data.append(day_count)
-        context_data['graph_days_list'] = days_list
-        context_data['races_graph_data'] = races_graph_data
+        self.data = races_graph_data
+        return self
 
 
 

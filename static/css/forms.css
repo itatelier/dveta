@@ -38,6 +38,14 @@ div.form_row { display: flex;
     padding: 0.5rem 0;
 }
 
+div.form_row.bordered {
+    display: flex;
+    padding: 0.5rem;
+    border: 1px solid lightgrey;
+    margin: 1rem 0;
+}
+
+
 div.form_row legend {
     display: block;
     position: relative;
@@ -97,12 +105,18 @@ div.input_block > select > option {
     margin-right: 5px;
 }
 div.input_block > input[type=text],
-div.input_block > input[type=number],
+/*div.input_block > input[type=number],*/
 div.input_block > input[type=email],
 div.input_block > textarea {
     display: inline-block;
     padding-left: 12px;
 }
+div.input_block > input[type=number] {
+    display: inline-block;
+    padding-left: 6px;
+    padding-right: 2px;
+}
+
 div.input_block > textarea {}
 div.input_block > em {
     display: inline-block;
@@ -158,6 +172,11 @@ div.input_block > span.static_value {
     position: relative;
     top: 0.7rem;
     font-weight: bold;
+}
+div.input_block > span.large {
+    position: relative;
+    top: 0.3rem;
+    font-size: large;
 }
 div.input_wrapper > ins {
     display: inline-block;
