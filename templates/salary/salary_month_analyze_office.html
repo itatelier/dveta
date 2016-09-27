@@ -146,6 +146,42 @@
                     {# - График рейсов по дням месяца #}
                     <div class="flex_row">
                         <div class="sheet_block_mini _white_bordered _flex_zero">
+                            <h3>Статистика по машинам</h3>
+                            <table class="colgroup_table margint10 fullwidth">
+                                <caption></caption>
+                                <thead>
+                                    <th>Авто</th>
+                                    <th>Модель</th>
+                                    <th>Рег.Номер</th>
+                                    <th>Рейсы</th>
+                                    <th>Ходки</th>
+                                    <th>Заправки</th>
+                                    <th>Пробег</th>
+                                    <th>КМ на Ходку</th>
+                                    <th>Расход весь</th>
+                                    <th>Расход на 100км</th>
+                                    <th>Норма</th>
+                                    <th>Перерасход</th>
+                                </thead>
+                                <tbody>
+                                    {% for row in driver_month_stats %}
+                                    <tr>
+                                        <td>{{ row.nick_name }}</td>
+                                        <td>{{ row.car_model }}</td>
+                                        <td>{{ row.reg_num }}</td>
+                                        <td>{{ row.races_done|default_if_none:0 }}</td>
+                                        <td>{{ row.total_hodkis|default_if_none:0 }}</td>
+                                        <td><a href="{% url 'salary_month_summary_refuels_by_car' row.car_id %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">{{ row.total_refuels }}</a></td>
+                                        <td>{{ row.total_run|default_if_none:0 }}</td>
+                                        <td>{{ row.km_on_hodkis|default_if_none:0 }}</td>
+                                        <td>{{ row.total_amount|default_if_none:0 }}</td>
+                                        <td class="{% if row.fuel_overuse > 0 %}red{% endif %}">{{ row.lit_on_100|default_if_none:0 }}</td>
+                                        <td>{{ row.fuel_norm|default_if_none:0 }}</td>
+                                        <td class="{% if row.fuel_overuse > 0 %}red{% endif %}">{% if row.fuel_overuse > 0 %}{{ row.fuel_overuse }}{% else %}нет{% endif %} </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="flex_row margint10">
