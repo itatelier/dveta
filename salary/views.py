@@ -11,6 +11,7 @@ from race.models import Races
 from car.models import Cars
 from common.models import Variables
 from common.utils import *
+from decimal import Decimal
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
@@ -230,26 +231,27 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 basehouse_rent_sum = 0
                 basehouse_rent_tarif = get_variable('salary_basehouse_rent')
                 if self.object.acr_basehouse_rent_days:
-                    basehouse_rent_sum = basehouse_rent_tarif / report_month_days * self.object.acr_basehouse_rent_days
+                    basehouse_rent_sum = Decimal(basehouse_rent_tarif) / report_month_days * self.object.acr_basehouse_rent_days
+                    log.info("--- rent calc: %s / %s * %s = %s " % (basehouse_rent_tarif, report_month_days, self.object.acr_basehouse_rent_days, round(basehouse_rent_sum)))
                 else:
                     basehouse_rent_sum = basehouse_rent_tarif
                 final_salary -= basehouse_rent_sum
-                context_data['acr_basehouse_rent'] = basehouse_rent_sum
-            # Налог НДФЛ
-            if driver_obj.acr_ndfl_sum > 0:
-                final_salary -= driver_obj.acr_ndfl_sum
-                context_data['acr_ndfl_sum'] = driver_obj.acr_ndfl_sum
+                context_data['acr_basehouse_rent'] = round(basehouse_rent_sum)
             # Компенсация мобильной связи
             if driver_obj.acr_mobile_compensation:
                 mobile_comp_sum = 0
                 mobile_comp_tarif = get_variable('salary_mobile_comp')
                 # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
                 if self.object.acr_mobile_days:
-                    mobile_comp_sum = mobile_comp_tarif / report_month_days * self.object.acr_mobile_days
+                    mobile_comp_sum = Decimal(mobile_comp_tarif) / report_month_days * self.object.acr_mobile_days
                 else:
                     mobile_comp_sum = mobile_comp_tarif
-                context_data['acr_mobile_compensation'] = mobile_comp_sum
+                context_data['acr_mobile_compensation'] = round(mobile_comp_sum)
                 final_salary += mobile_comp_sum
+            # Налог НДФЛ
+            if driver_obj.acr_ndfl_sum > 0:
+                final_salary -= driver_obj.acr_ndfl_sum
+                context_data['acr_ndfl_sum'] = driver_obj.acr_ndfl_sum
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
             # Остаток предыдущего периода

@@ -78,8 +78,8 @@
 {#        var value = $input.val();#}
         var tarif = $('#mobile_acr_tarif').html();
         var sum = tarif / month_days_count * value;
-        $('#mobile_acr_sum').html(parseInt(sum));
-        $('#mobile_acr_final').html(parseInt(sum));
+        $('#mobile_acr_sum').html(Math.round(sum));
+        $('#mobile_acr_final').html(Math.round(sum));
         $('input[name="acr_mobile_days"]').val(value);
         UpdateFinalSalary();
         return false;
@@ -90,8 +90,10 @@
         var value = $obj.val();
         var tarif = $('#basehouse_rent_tarif').html();
         var sum = tarif / month_days_count * value;
-        $('#basehouse_rent_sum').html(parseInt(sum));
-        $('#basehouse_rent_final').html(parseInt(sum));
+        console.log(tarif + " / " + month_days_count + " = " + tarif / month_days_count);
+        console.log(tarif + " / " + month_days_count + " * " + value + " = " + Math.round(sum));
+        $('#basehouse_rent_sum').html(Math.round(sum));
+        $('#basehouse_rent_final').html(Math.round(sum));
         $('input[name="acr_basehouse_rent_days"]').val(value);
         UpdateFinalSalary();
         return false;
