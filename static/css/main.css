@@ -302,3 +302,10 @@ div.checkbox_wrapper {
 .check_status_4 {
     background-color: #cbcfc9;
 }
+
+.scrolly_150 {
+    max-height: 150px;
+    display: block;
+    /* overflow-x: scroll; */
+    overflow-y: scroll
+}

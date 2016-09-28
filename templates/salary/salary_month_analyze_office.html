@@ -228,23 +228,23 @@
                             <h3>Премии и взыскания за отчетный период</h3>
                             {% if accruals_list_penalty_and_bonus %}
                             <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Добавлено</th>
-                                    <th>Тип начисления</th>
-                                    <th>Наименование</th>
-                                    <th>Сумма</th>
-                                    <th>Автор</th>
-                                    <th>Примечание</th>
+                                <thead style="display: block;">
+                                    <th width="90px">Добавлено</th>
+                                    <th width="130px" >Тип начисления</th>
+                                    <th width="170px">Наименование</th>
+                                    <th width="90px">Сумма</th>
+                                    <th width="90px">Автор</th>
+                                    <th width="210px">Примечание</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="scrolly_150">
                                     {% for el in accruals_list_penalty_and_bonus %}
                                     <tr>
-                                        <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
-                                        <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td class="text-left">{{ el.operation_name.name }}</td>
-                                        <td>{{ el.sum|floatformat}}</td>
-                                        <td></td>
-                                        <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        <td width="90px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td  width="130px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
+                                        <td  width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="90px" >{{ el.sum|floatformat}}</td>
+                                        <td width="90px"></td>
+                                        <td  width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -270,7 +270,7 @@
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
-                                    <th>Итого:</th><th>{{ accruals_sum_penalty_and_bonus|floatformat }}</th>
+                                    <th>Итого:</th><th class="text-center">{{ accruals_sum_penalty_and_bonus|floatformat }}</th>
                                 </tfoot>
                             </table>
                             {% else %}
@@ -283,24 +283,24 @@
                             {# -  премии и взыскания -  #}
                             <h3>Начисления, компенсации и удержания</h3>
                             {% if accruals_list_all %}
-                            <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Добавлено</th>
-                                    <th>Тип начисления</th>
-                                    <th>Наименование</th>
-                                    <th>Сумма</th>
-                                    <th>Автор</th>
-                                    <th>Примечание</th>
+                            <table class="colgroup_table margint10 ">
+                                <thead style="display: block;">
+                                    <th width="90px">Добавлено</th>
+                                    <th width="130px" >Тип начисления</th>
+                                    <th width="170px">Наименование</th>
+                                    <th width="90px">Сумма</th>
+                                    <th width="90px">Автор</th>
+                                    <th width="210px">Примечание</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="scrolly_150">
                                     {% for el in accruals_list_all %}
                                     <tr>
-                                        <td>{{ el.date_add|date:"d-m-y H:i" }}</td>
-                                        <td class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td class="text-left">{{ el.operation_name.name }}</td>
-                                        <td>{{ el.sum|floatformat}}</td>
-                                        <td></td>
-                                        <td class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        <td width="90px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td  width="130px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
+                                        <td  width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="90px">{{ el.sum|floatformat}}</td>
+                                        <td width="90px"></td>
+                                        <td  width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -330,7 +330,7 @@
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
-                                    <th>Итого:</th><th>{{ accruals_summmary_all|floatformat }}</th>
+                                    <th>Итого:</th><th class="text-center"s>{{ accruals_summmary_all|floatformat }}</th>
                                 </tfoot>
                             </table>
                             {% else %}
@@ -431,7 +431,7 @@
                         <div class="flex_block marginl10">
                             <h3>Расчет оплаты</h3>
                             <div class="flex_row" id="salary_final">
-                                <div class="big_values"><span><p><i rel="summary_el" data-direction="1" >{{ races_salary_sum|floatformat }}</i></p><em>за рейсы</em></span></div>
+                                <div class="big_values"><span><p><i rel="summary_el" data-direction="1" >{{ races_salary_sum|floatformat }}</i></p><em>за ходки</em></span></div>
                                 {% if accruals_sum %}
                                 <div class="big_values"><span><p><i rel="summary_el" data-direction="1">{{ accruals_sum|floatformat }}</i></p><em>штрафы, премии</em></span></div>
                                 {% endif %}
