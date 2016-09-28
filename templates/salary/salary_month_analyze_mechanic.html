@@ -48,7 +48,8 @@
                                 </div>
                             </div>
                             {% if driver_month_stats %}
-                            <h3>Статистика по машинам</h3>
+                            {# Статистика по рейсам и машинам #}
+                            <h3>Статистика по рейсам и машинам</h3>
                             <table class="colgroup_table margint10 fullwidth">
                                 <caption></caption>
                                 <thead>
@@ -84,7 +85,9 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <h3>Суммарные показатели</h3>
+                            {# - Статистика по рейсам и машинам #}
+                            {#  Суммарные показатели  #}
+                            <h3>Суммарные показатели (по всем авто)</h3>
                             <table class="colgroup_table margint10">
                                 <thead>
                                     <th>Ходки</th>
@@ -96,19 +99,17 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-{#                                        <td>{{ average_and_sum_stats.races_done|default_if_none:0 }}</td>#}
                                         <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_refuels }}</td>
                                         <td>{{ stats_mech_checkups }}</td>
                                         <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
                                         <td>{{ average_and_sum_stats.total_amount|default_if_none:0 }}</td>
-{#                                        <td>{{ average_and_sum_stats.average_consumption|default_if_none:0 }}</td>#}
-{#                                        <td>{% if average_and_sum_stats.fuel_overuse > 0 %}{{ average_and_sum_stats.fuel_overuse }}{% else %}нет{% endif %} </td>#}
                                     </tr>
                                 </tbody>
                             </table>
-                            {# -  премии и взыскания -  #}
+                            {# - Суммарные показатели  #}
+                            {# Премии и штрафы -  #}
                             <div class="flex_row">
                                 <div class="flex_block marginr10">
                                     <h3>Штрафы</h3>

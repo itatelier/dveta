@@ -243,7 +243,7 @@ class SalarySummaryManager(models.Manager):
 
 
 class SalaryMonthSummary(models.Model):
-    check_status_choices = ([0, 'анализ'], [1, 'контроль офис'], [2, 'контроль руководитель'], [3, 'выдача'], [4, 'закрыт'],)
+    check_status_choices = ([0, 'анализ механика'], [1, 'контроль офис'], [2, 'контроль руководитель'], [3, 'выдача'], [4, 'закрыт'],)
 
     objects = SalarySummaryManager()
 
@@ -279,6 +279,9 @@ class SalaryMonthSummary(models.Model):
     remain_sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     check_status = models.IntegerField(null=True, blank=True, default=False, choices=check_status_choices)
     comment = models.CharField(max_length=255L, null=True, blank=True)
+
+    acr_mobile_days = models.IntegerField(null=True, blank=True)
+    acr_basehouse_rent_days = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'salary_month_summary'

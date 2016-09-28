@@ -47,14 +47,20 @@ class SalaryRaceStatsForm(ModelForm):
 
 
 class SalaryOfficeCheckForm(ModelForm):
-    total_run = IntegerField(label="Общий пробег", required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: center;'}))
-    km_on_hodkis = DecimalField(label="КМ на Ходку", decimal_places=1, required=True, widget=TextInput(attrs={'size': 6, 'style': 'min-width:6rem; text-align: right;'}))
-    run_comment = CharField(label="Примечание по пробегу", required=False, widget=TextInput(attrs={'size': 50}))
+    acr_mobile_days = CharField(label="Дней" ,required=True, widget=HiddenInput())
+    acr_basehouse_rent_days = IntegerField(label="Дней", required=True, widget=HiddenInput())
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'over_run_status', 'over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
+        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'check_status')
 
+    # def __init__(self, month_days=None, *args, **kwargs):
+    #     super(SalaryOfficeCheckForm, self).__init__(*args, **kwargs)
+    #     if month_days:
+    #         self.fields['acr_mobile_days'].widget = widgets.NumberInput(attrs={'min': 1, 'max': month_days, 'size': 2, 'style': 'min-width:6rem; text-align: center;'})
+    #         self.fields['acr_mobile_days'].initial = month_days
+    #         self.fields['acr_basehouse_rent_days'].widget = widgets.NumberInput(attrs={'min': 1, 'max': month_days, 'size': 2, 'style': 'min-width:6rem; text-align: center;'})
+    #         self.fields['acr_basehouse_rent_days'].initial = month_days
 
 # class SalaryMechCheckForm(ModelForm):
 

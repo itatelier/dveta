@@ -34,12 +34,15 @@ log = logging.getLogger('django')
 
 
 class SalaryMonthSummaryView(TemplateView):
-    template_name = False
-    report_month_dt = False
-    report_prev_dt = False
-    report_next_dt = False
+    template_name = None
+    report_month_dt = None
+    report_prev_dt = None
+    report_next_dt = None
+    report_days = None
+    driver_pk = None
 
     def dispatch(self, request, *args, **kwargs):
+        self.driver_pk = self.kwargs.get('driver_pk', None)
         # Месяц и год отчета будет предыдущий от даты "сегодня" или даты из запроса
         today = datetime.now()
         first_month_day = today.replace(day=1)  # прошлый месяц это 1е исло текщуго минус 1 день
@@ -52,6 +55,7 @@ class SalaryMonthSummaryView(TemplateView):
         report_month_firstday = self.report_month_dt.replace(day=1)
         self.report_prev_dt = report_month_firstday - timedelta(days=1)
         self.report_next_dt = report_month_firstday + relativedelta(months=1)   # первое число следующего месяца
+        self.report_days = calendar.monthrange(self.report_month_dt.year, self.report_month_dt.month)[1]
         log.info("= Report period starts at: %s till end date:  %s" %(self.report_month_dt.date(), self.report_next_dt.date()))
         return super(SalaryMonthSummaryView, self).dispatch(request, *args, **kwargs)
 
@@ -131,13 +135,14 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
 
 class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
     template_name = 'salary/salary_month_analyze_office.html'
-    driver_pk = False
-    form_class = SalaryMechCheckForm
+    # driver_pk = False
+    form_class = SalaryOfficeCheckForm
     model = SalaryMonthSummary
     object = None
     prepared_data = None
 
     def get_object(self, *args, **kwargs):
+        log.info('--- Get object def')
         try:
             exist_object = SalaryMonthSummary.objects.get(
                 employee_id=self.driver_pk,
@@ -146,21 +151,30 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             )
             return exist_object
         except SalaryMonthSummary.DoesNotExist:
+            log.info("-!- Can't get object! driver_pk: %s " % self.driver_pk)
             return None
+    # def get_form(self):
+
+    def get_success_url(self):
+        log.info("--- Exit succes!")
+        return "%s?year=%s&month=%s" % (reverse('salary_month_summary_office'), self.report_month_dt.year, self.report_month_dt.month)
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
+        context_data['driver'] = driver_obj
         # Список месячных показателей по каждой машине
         driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
         context_data['driver_month_stats'] = driver_stats.get_list()
         context_data['average_and_sum_stats'] = driver_stats.get_summary()
-        context_data['driver'] = driver_obj
+        # Сверки спидометра: количество
+        context_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
         races_done = None
         final_salary = 0
         if hasattr(self.object, 'races_done'):
             context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
-            context_data['month_days_count'] = context_data['graph'].month_days[1]
+            report_month_days = context_data['graph'].month_days[1]
+            context_data['month_days_count'] = report_month_days
             # Занесенные данные о выполненных рейсах
             races_done = self.object.races_done
             # список начислений  Штрафы и премии
@@ -168,20 +182,25 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 operation_type__in=[2, 3],
                 employee=self.driver_pk,
                 year=self.report_month_dt.year,
-                month=self.report_month_dt.month).select_related('operation_type')
-            # Суммарные показатели начислений (group_by type)
+                month=self.report_month_dt.month).select_related('operation_type', 'operation_name')
             # список начислений авансы и зарплата
-            context_data['accruals_list_other'] = SalaryFlow.objects.filter(
-                operation_type__in=[1, 4, 5, 6, 7],
+            context_data['accruals_list_all'] = SalaryFlow.objects.filter(
+                # operation_type__in=[1, 4, 5, 6, 7],
                 employee=self.driver_pk,
                 year=self.report_month_dt.year,
-                month=self.report_month_dt.month).select_related('operation_type')
+                month=self.report_month_dt.month).select_related('operation_type', 'operation_name')
+            # Суммарные показатели начислений ТОЛЬКО ПРЕМИИ И ШТРАФЫ(group_by type)
+            context_data['accruals_summary_list_penalty_and_bonus'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type',).annotate(total=Sum('sum'))
+            accruals_sum_penalty_and_bonus = 0
+            for el in context_data['accruals_summary_list_penalty_and_bonus']:
+                accruals_sum_penalty_and_bonus += el[1]
+            context_data['accruals_sum_penalty_and_bonus'] = accruals_sum_penalty_and_bonus
             # Суммарные показатели начислений (group_by type)
-            context_data['accruals_summary'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3, 4, 5)).values_list('operation_type__type').annotate(total=Sum('sum'))
+            context_data['accruals_summary_list_all'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month,).values_list('operation_type__type').annotate(total=Sum('sum'))
             accruals_sum = 0
-            for el in context_data['accruals_summary']:
+            for el in context_data['accruals_summary_list_all']:
                 accruals_sum += el[1]
-            context_data['accruals_sum'] = accruals_sum
+            context_data['accruals_summmary_all'] = accruals_sum
             final_salary += accruals_sum
             # Расчет оплаты за ходки
             races_tarif_stats = Races.objects.values('salary_tarif','salary_tarif__name', 'salary_tarif__plan_range', 'salary_tarif__standart_tarif', 'salary_tarif__overplan_tarif')\
@@ -207,8 +226,13 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             final_salary += races_salary_sum
             ### Вычеты и компенсации
             # Проживание на базе
-            if driver_obj.report_baserent_in_period(self.report_month_dt, self.report_next_dt):
-                basehouse_rent_sum = get_variable('salary_basehouse_rent')
+            if driver_obj.acr_basehouse_rent:
+                basehouse_rent_sum = 0
+                basehouse_rent_tarif = get_variable('salary_basehouse_rent')
+                if self.object.acr_basehouse_rent_days:
+                    basehouse_rent_sum = basehouse_rent_tarif / report_month_days * self.object.acr_basehouse_rent_days
+                else:
+                    basehouse_rent_sum = basehouse_rent_tarif
                 final_salary -= basehouse_rent_sum
                 context_data['acr_basehouse_rent'] = basehouse_rent_sum
             # Налог НДФЛ
@@ -217,8 +241,14 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 context_data['acr_ndfl_sum'] = driver_obj.acr_ndfl_sum
             # Компенсация мобильной связи
             if driver_obj.acr_mobile_compensation:
-                mobile_comp_sum = get_variable('salary_mobile_comp')
-                context_data['acr_mobile_compensation'] =  mobile_comp_sum
+                mobile_comp_sum = 0
+                mobile_comp_tarif = get_variable('salary_mobile_comp')
+                # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
+                if self.object.acr_mobile_days:
+                    mobile_comp_sum = mobile_comp_tarif / report_month_days * self.object.acr_mobile_days
+                else:
+                    mobile_comp_sum = mobile_comp_tarif
+                context_data['acr_mobile_compensation'] = mobile_comp_sum
                 final_salary += mobile_comp_sum
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
@@ -239,11 +269,30 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             pass
         return context_data
 
+    def get_initial(self):
+        initial = {}
+        if not self.object.acr_basehouse_rent_days:
+            initial['acr_basehouse_rent_days'] = self.report_days
+        if not self.object.acr_basehouse_rent_days:
+            initial['acr_mobile_days'] = self.report_days
+        return initial
+
     def get(self, request, *args, **kwargs):
         # получаем объект формы
-        self.driver_pk = self.kwargs.get('driver_pk', None)
         self.object = self.get_object(self, *args, **kwargs)
-        return self.render_to_response(self.get_context_data())
+        form = self.get_form()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object(self, *args, **kwargs)
+    #     form = self.get_form()
+    #     log.info("---form post instance: %s" % form.instance)
+    #     if form.is_valid():
+    #         self.object = form.save()
+    #         return HttpResponseRedirect(self.get_success_url())
+    #     else:
+    #         self.object = form.instance
+    #         return self.render_to_response(self.get_context_data(form=form))
 
 
 class SalaryMonthSummaryCarRefuelsView(SalaryMonthSummaryView):

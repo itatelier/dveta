@@ -49,7 +49,7 @@ div.sheet_block_mini > hr {
     margin: 0.5rem 0;
 }
 div.sheet_block_mini > table {
-    /*width: 100%;*/
+    width: 100%;
     /*margin: 0.5rem 1rem;*/
 }
 div.sheet_block_mini > table tr > td {

@@ -117,6 +117,7 @@ class Employies(models.Model):
     # Доп параметры зарплаты
     acr_ndfl_sum = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)  # Настройки ЗП, начислять НДФЛ
     acr_mobile_compensation = models.BooleanField(default=True)  # Компенасация мобильной связи
+    acr_basehouse_rent = models.BooleanField(default=True)  # Компенасация мобильной связи
 
     objects = EmployeeAllDefaultManager()
     drivers = EmployeeDriversManager()
@@ -136,18 +137,6 @@ class Employies(models.Model):
     def fullnamenick(self):
         return u'%s %s [%s]' % (self.person.family_name, self.person.given_name, self.person.nick_name)
 
-    def report_baserent_in_period(self, dt_start, dt_end):
-        log.info("=== Start: %s End: %s" %(dt_start, dt_end))
-        qs = LiveOnbaseJornal.objects.filter(
-            Q(date_closed__gte=dt_start, date_closed__lte=dt_end, employee=self.pk) |
-            Q(date_add__lte=dt_end, date_closed__isnull=True, employee=self.pk) |
-            Q(date_add__lte=dt_start, date_closed__gte=dt_end, employee=self.pk))
-        log.info("=== QS: %s" % qs)
-        if len(qs) > 0:
-            return True
-        else:
-            return False
-
 
 class UnitGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
@@ -161,18 +150,4 @@ class UnitGroups(models.Model):
     def __unicode__(self):
         return u'%s' % self.description
 
-
-class LiveOnbaseJornal(models.Model):
-    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    employee = models.ForeignKey('Employies', null=False, blank=False)
-    date_add = models.DateTimeField(auto_now_add=True)
-    date_closed = models.DateTimeField(auto_now=False, null=True, blank=True)
-    is_closed = models.BooleanField(default=False, blank=True)
-
-    class Meta:
-        db_table = 'person_live_onbase_jornal'
-        verbose_name_plural = 'Сотрудники / Проживание на базе'
-
-    def __unicode__(self):
-        return u'%s' % self.id
 
