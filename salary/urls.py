@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^month_summary/report/office/$', SalaryMonthSummaryViewOffice.as_view(), name='salary_month_summary_office'),
     url(r'^month_summary/analyze_mech/driver/(?P<driver_pk>\d+)/$', SalaryMonthAnalyzeMechanicView.as_view(), name='salary_month_analyze_mechanic'),
     url(r'^month_summary/analyze_office/driver/(?P<driver_pk>\d+)/$', SalaryMonthAnalyzeOfficeView.as_view(), name='salary_month_analyze_office'),
+    url(r'^month_summary/analyze_top/driver/(?P<driver_pk>\d+)/$', SalaryMonthAnalyzeTopView.as_view(), name='salary_month_analyze_top'),
     url(r'^month_summary/refuels_by_car/driver/(?P<car_pk>\d+)/$', SalaryMonthSummaryCarRefuelsView.as_view(), name='salary_month_summary_refuels_by_car'),
     url(r'^salary_flow/operation_create/year/(?P<year>\d{4})/month/(?P<month>\d{1,2})/type/(?P<type_pk>\d+)/employee/(?P<employee_pk>\d+)/$', SalaryOperationCreateView.as_view(), name='salary_operation_create'),
 ]

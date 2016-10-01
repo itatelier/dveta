@@ -264,6 +264,8 @@ class SalaryMonthSummary(models.Model):
     over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
     fuel_comment = models.CharField(max_length=255L, null=True, blank=True)
     run_comment = models.CharField(max_length=255L, null=True, blank=True)
+    office_comment = models.CharField(max_length=255L, null=True, blank=True)
+    top_comment = models.CharField(max_length=255L, null=True, blank=True)
 
     over_run_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     over_fuel_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)

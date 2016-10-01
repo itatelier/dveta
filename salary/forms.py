@@ -49,10 +49,19 @@ class SalaryRaceStatsForm(ModelForm):
 class SalaryOfficeCheckForm(ModelForm):
     acr_mobile_days = CharField(label="Дней" ,required=True, widget=HiddenInput())
     acr_basehouse_rent_days = IntegerField(label="Дней", required=True, widget=HiddenInput())
+    office_comment = CharField(label="Примечание к проверке офисом", required=False, widget=TextInput(attrs={'size': 50}))
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'check_status')
+        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'check_status', 'office_comment')
+
+
+class SalaryTopCheckForm(ModelForm):
+    top_comment = CharField(label="Примечание к проверке руководителем", required=False, widget=TextInput(attrs={'size': 50}))
+
+    class Meta:
+        model = SalaryMonthSummary
+        fields = ('check_status', 'top_comment')
 
     # def __init__(self, month_days=None, *args, **kwargs):
     #     super(SalaryOfficeCheckForm, self).__init__(*args, **kwargs)

@@ -178,6 +178,15 @@
                             <div class="form_row">
                                 <h3>Данные для занесения в зарплатный лист</h3>
                             </div>
+                            {# Комментарии #}
+                            {% if object.office_comment %}
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <div class="input_block _inline"><span><i class="icon" icon=""></i><b>офис: </b><i>{{ object.office_comment }}</i></span></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {# - Комментарии #}
                             <div class="flex_row">
                                 <div class="flex_block _zero">
                                     <div class="m10">Статус зарплатной карты:
