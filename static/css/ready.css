@@ -12,11 +12,13 @@
 .clear {display: block;	}
 .clear::after {clear: both;content: ".";display: block;height: 1px;visibility: hidden;}
 .flex { display: flex;  }
-.flex_column { flex-direction: column;}
+.block { display: block;}
+.flex_column { display: flex; flex-direction: column;}
 .flex_vcentered { align-items: center;}
 .flex_justify_center { justify-content: center;}
 .flex_end { align-self: flex-end;}
 .flex_zero { flex: 0 0;}
+.flex_one { flex: 1 0 auto;}
 ._flex_zero { flex-grow: 0!important;}
 
 html {
@@ -75,6 +77,7 @@ h2.hr {
 .fullwidth { width: 100%; }
 .width_75 {  width: 75%; }
 .width_min80 { min-width: 80%; }
+.width_min300 { min-width: 300px; }
 .none { display: none !important; }
 
 .no_lr_margin {

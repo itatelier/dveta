@@ -11,13 +11,12 @@ div.flex_row {
     flex-direction: row;
     width: 100%;
 }
-div.flex_column {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
+/*.flex_column {*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+/*}*/
 
-div.flex_block {
+.flex_block {
     flex: 1 0 auto;
 }
 div.flex_row > div.top_header { flex: 1 0 auto; }

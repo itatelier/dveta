@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% load static from staticfiles %}
 {% block add_static %}
-<!-- Kladr JS       --><script type="text/javascript" src="{% static 'js/charts/Chart.min.js' %}"></script>
+<!-- Charts JS       --><script type="text/javascript" src="{% static 'js/charts/Chart.min.js' %}"></script>
 {% endblock %}
 {% block content %}
 <script>
@@ -219,7 +219,7 @@
                     {# Премии и взыскания  #}
                     <div class="flex_row">
                         {# Премии #}
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
+                        <div class="sheet_block_mini _white_bordered _flex_zero width_min300 flex_column">
                             <div class="flex_row">
                                 <div class="flex_block">
                                     <h3>Премии</h3>
@@ -229,7 +229,7 @@
                                 </div>
                             </div>
                             {% if accruals_list_bonuses %}
-                            <table class="colgroup_table margint10">
+                            <table class="colgroup_table margint10 block flex_block">
                                 <thead style="display: block;">
                                     <th width="70px">Дата</th>
                                     <th width="170px">Наименование</th>
@@ -249,16 +249,16 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <div class="flex_block flex_end m10">
+                            <div class="flex_block flex_end _zero m10">
                                 <span>Итого премии: <b>{{ accruals_list_bonuses_sum|floatformat }}</b></span>
                             </div>
                             {% else %}
-                                <div class="m10">нет начислений на отчетный период</div>
+                                <div class="m10">нет начисленных премий</div>
                             {% endif %}
                         </div>
                         {# - Премии #}
                         {# Штрафы #}
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
+                        <div class="sheet_block_mini _white_bordered _flex_zero width_min300">
                             <div class="flex_row">
                                 <div class="flex_block"><h3>Штрафы</h3></div>
                                 <div class="flex_block _zero">
@@ -266,7 +266,7 @@
                                 </div>
                             </div>
                             {% if accruals_list_penalties %}
-                            <table class="colgroup_table margint10">
+                            <table class="colgroup_table margint10 block flex_block">
                                 <thead style="display: block;">
                                     <th width="70px">Дата</th>
                                     <th width="170px">Наименование</th>
@@ -286,11 +286,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <div class="flex_block flex_end m10">
+                            <div class="flex_block flex_end _zero m10">
                                 <span>Итого штрафы: <b class="red">{{ accruals_list_penalties_sum|floatformat }}</b></span>
                             </div>
                             {% else %}
-                                <div class="m10">нет начислений на отчетный период</div>
+                                <div class="m10">нет начисленных штрафов</div>
                             {% endif %}
                         </div>
                         {# - Штрафы #}

@@ -91,8 +91,22 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
         context_data['average_and_sum_stats'] = driver_stats.get_summary()
         # Сверки спидометра: количество
         context_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
-        context_data['accruals_list_penalties'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type=3).select_related('operation_type', 'operation_name')
-        context_data['accruals_list_bonuses'] = SalaryFlow.objects.filter(employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type=2).select_related('operation_type', 'operation_name')
+        # График ходок по дням
+        context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
+        report_month_days = context_data['graph'].month_days[1]
+        context_data['month_days_count'] = report_month_days
+        # список начислений  Штрафы и Премии
+        accruals_list_bonuses = SalaryFlow.objects \
+            .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
+            .select_related('operation_type', 'operation_name')
+        context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
+        context_data['accruals_list_bonuses'] = accruals_list_bonuses
+        # штрафы
+        accruals_list_penalties = SalaryFlow.objects \
+            .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
+            .select_related('operation_type', 'operation_name')
+        context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
+        context_data['accruals_list_penalties'] = accruals_list_penalties
         return context_data
 
     def get_object(self, *args, **kwargs):
