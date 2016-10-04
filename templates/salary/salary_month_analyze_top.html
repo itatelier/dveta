@@ -240,11 +240,11 @@
                                     {% for el in accruals_list_all %}
                                     <tr>
                                         <td width="90px">{{ el.date_add|date:"d-m-y" }}</td>
-                                        <td  width="180px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td  width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="180px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
+                                        <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
                                         <td width="90px">{{ el.sum|floatformat}}</td>
                                         <td width="90px"></td>
-                                        <td  width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

@@ -66,6 +66,7 @@ h2.hr {
 .red_bg { background-color: #F7A3A3 !important; }
 .blue_bg { background-color: #009DDA !important; }
 .grey_bg { background-color: #ededed !important; border-color: #9ea19c;}
+.wyellow_bg {background-color: #FFFDE7 !important;}
 .scroll { overflow:auto; }
 .fixedheigth {
     overflow: auto;

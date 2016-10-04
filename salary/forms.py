@@ -19,18 +19,29 @@ log = logging.getLogger('django')
 
 
 class SalaryMechCheckForm(ModelForm):
-    over_run_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
     over_fuel_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
 
-    over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
     over_fuel_status = ChoiceField(label="Оценка расхода топлива", choices=over_fuel_status_choices, initial=False, widget=widgets.RadioSelect())
     fuel_comment = CharField(label="Примечание по топливу", required=False, widget=TextInput(attrs={'size': 50}))
-    run_comment = CharField(label="Примечание по пробегу", required=False, widget=TextInput(attrs={'size': 50}))
     check_status = IntegerField(required=False, widget=HiddenInput(), initial=0)
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('over_run_status', 'over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
+        fields = ('over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
+
+
+class SalaryOfficeCheckForm(ModelForm):
+    over_run_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
+
+    acr_mobile_days = CharField(label="Дней" ,required=True, widget=HiddenInput())
+    acr_basehouse_rent_days = IntegerField(label="Дней", required=True, widget=HiddenInput())
+    over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
+    run_comment = CharField(label="Примечание по пробегу", required=False, widget=TextInput(attrs={'size': 50}))
+    office_comment = CharField(label="Примечание к проверке офисом", required=False, widget=TextInput(attrs={'size': 50}))
+
+    class Meta:
+        model = SalaryMonthSummary
+        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'over_run_status', 'run_comment', 'check_status', 'office_comment')
 
 
 class SalaryRaceStatsForm(ModelForm):
@@ -44,16 +55,6 @@ class SalaryRaceStatsForm(ModelForm):
     class Meta:
         model = SalaryMonthSummary
         fields = ('races_done', 'total_hodkis', 'total_run', 'km_on_hodkis', 'total_amount', 'over_run_status', 'over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
-
-
-class SalaryOfficeCheckForm(ModelForm):
-    acr_mobile_days = CharField(label="Дней" ,required=True, widget=HiddenInput())
-    acr_basehouse_rent_days = IntegerField(label="Дней", required=True, widget=HiddenInput())
-    office_comment = CharField(label="Примечание к проверке офисом", required=False, widget=TextInput(attrs={'size': 50}))
-
-    class Meta:
-        model = SalaryMonthSummary
-        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'check_status', 'office_comment')
 
 
 class SalaryTopCheckForm(ModelForm):

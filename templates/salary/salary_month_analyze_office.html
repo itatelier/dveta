@@ -48,7 +48,7 @@
                 }
             }
         });
-        UpdateFinalSalary();
+        // UpdateFinalSalary();
 
         /* Мобильная компенсация - изменение суммы*/
         $('input[name="mobile_days_widget"]').on('change', function(){
@@ -63,13 +63,22 @@
     function UpdateFinalSalary() {
         var $el_block = $('#salary_final');
         var final_salary = 0;
+        var remains = 0; /* остатки на руки */
         $('i[rel="summary_el"]').each(function(index,el) {
             var $i = $(el);
-            var value = parseInt($i.html());
+            var value = parseFloat(parseInt($i.html()));
             var direction = $i.data('direction');
             final_salary += value * direction;
+            /* console.log("Val: " + value + " dir: " + direction + " Final: " + final_salary);   */
         });
         $('#final_salary_value').html(final_salary);
+        $('#itogi_final_summary').html(final_salary);
+        $('#itogi_table td[rel="itogi"]').each(function(index,el) {
+            var $i = $(el);
+            var value = parseInt($i.html());
+            remains += value;
+        });
+        $('#itogi_sum').html(remains);
     }
 
     function UpdateMobileAcr($obj, month_days_count) {
@@ -157,7 +166,6 @@
                                     <th>Авто</th>
                                     <th>Модель</th>
                                     <th>Рег.Номер</th>
-                                    <th>Рейсы</th>
                                     <th>Ходки</th>
                                     <th>Заправки</th>
                                     <th>Пробег</th>
@@ -173,7 +181,6 @@
                                         <td>{{ row.nick_name }}</td>
                                         <td>{{ row.car_model }}</td>
                                         <td>{{ row.reg_num }}</td>
-                                        <td>{{ row.races_done|default_if_none:0 }}</td>
                                         <td>{{ row.total_hodkis|default_if_none:0 }}</td>
                                         <td><a href="{% url 'salary_month_summary_refuels_by_car' row.car_id %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">{{ row.total_refuels }}</a></td>
                                         <td>{{ row.total_run|default_if_none:0 }}</td>
@@ -185,159 +192,110 @@
                                     </tr>
                                     {% endfor %}
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3">Суммарно:</th>
+                                        <th class="text-center">{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</th>
+                                        <th class="text-center">{{ average_and_sum_stats.total_refuels }}</th>
+                                        <th class="text-center">{{ average_and_sum_stats.total_run|default_if_none:0 }}</th>
+                                        <th class="text-center">{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</th>
+                                        <th class="text-center">{{ average_and_sum_stats.total_amount|default_if_none:0 }}</th>
+                                        <th colspan="5"></th>
+                                    </tr>
+                                </tfoot>
                             </table>
+                            <div class="margint10">
+                                <span class="m10">Сверки спидометра:</span><span><b>{{ stats_mech_checkups }}</b></span>
+                            </div>
+                            <div class="margint10">
+                                <span class="m10">Оценка механика:</span><span>{% if object.over_fuel > 0 %}<span class="red"><b>перепробег</b></span>{% else %}<span class="green"><b>норма</b></span>{% endif %}</span>
+                                {% if object.fuel_comment %}
+                                    <span><i class="icon" icon="">{{ object.fuel_comment }}</i></span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {# - Статистика по рейсам и машинам #}
-                    {#  Суммарные показатели  #}
-                    <div class="flex_row margint10">
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
-                            <h3 class="">Суммарные показатели (по всем авто)</h3>
-                            <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Ходки</th>
-                                    <th>Заправки</th>
-                                    <th>Сверки пробега</th>
-                                    <th>Пробег</th>
-                                    <th>КМ на Ходку</th>
-                                    <th>Расход топлива</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ average_and_sum_stats.total_hodkis|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.total_refuels }}</td>
-                                        <td>{{ stats_mech_checkups }}</td>
-                                        <td>{{ average_and_sum_stats.total_run|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.km_on_hodkis|default_if_none:0 }}</td>
-                                        <td>{{ average_and_sum_stats.total_amount|default_if_none:0 }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
-                            <h3>Оценка механика</h3>
-                            <table class="sheet_simple">
-                                <tr><td>Пробег</td><td>{% if object.over_run > 0 %}<span class="red"><b>перепробег</b></span>{% else %}<span class="green"><b>норма</b></span>{% endif %}</td><td><i>{{ object.run_comment }}</i></td></tr>
-                                <tr><td>Расход</td><td>{% if object.over_fuel > 0 %}<span class="red"><b>перепробег</b></span>{% else %}<span class="green"><b>норма</b></span>{% endif %}</td><td><i>{{ object.fuel_comment }}</i></td></tr>
-                            </table>
-                        </div>
-                    </div>
+                    {# Премии и взыскания  #}
                     <div class="flex_row">
+                        {# Премии #}
                         <div class="sheet_block_mini _white_bordered _flex_zero">
-                            {# -  премии и взыскания -  #}
-                            <h3>Премии и взыскания за отчетный период</h3>
-                            {% if accruals_list_penalty_and_bonus %}
+                            <div class="flex_row">
+                                <div class="flex_block">
+                                    <h3>Премии</h3>
+                                </div>
+                                <div class="flex_block _zero">
+                                    <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
+                                </div>
+                            </div>
+                            {% if accruals_list_bonuses %}
                             <table class="colgroup_table margint10">
                                 <thead style="display: block;">
-                                    <th width="90px">Добавлено</th>
-                                    <th width="130px" >Тип начисления</th>
+                                    <th width="70px">Дата</th>
                                     <th width="170px">Наименование</th>
-                                    <th width="90px">Сумма</th>
+                                    <th width="70px">Сумма</th>
                                     <th width="90px">Автор</th>
                                     <th width="210px">Примечание</th>
                                 </thead>
                                 <tbody class="scrolly_150">
-                                    {% for el in accruals_list_penalty_and_bonus %}
+                                    {% for el in accruals_list_bonuses %}
                                     <tr>
-                                        <td width="90px">{{ el.date_add|date:"d-m-y" }}</td>
-                                        <td  width="130px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td  width="170px" class="text-left">{{ el.operation_name.name }}</td>
-                                        <td width="90px" >{{ el.sum|floatformat}}</td>
+                                        <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="70px" >{{ el.sum|floatformat}}</td>
                                         <td width="90px"></td>
-                                        <td  width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <div class="flex_block flex_end m10">
+                                <span>Итого премии: <b>{{ accruals_list_bonuses_sum|floatformat }}</b></span>
+                            </div>
                             {% else %}
                                 <div class="m10">нет начислений на отчетный период</div>
                             {% endif %}
                         </div>
+                        {# - Премии #}
+                        {# Штрафы #}
                         <div class="sheet_block_mini _white_bordered _flex_zero">
-                            <h3>Сумма премий и штрафов</h3>
-                            {% if accruals_summary_list_penalty_and_bonus %}
+                            <div class="flex_row">
+                                <div class="flex_block"><h3>Штрафы</h3></div>
+                                <div class="flex_block _zero">
+                                    <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
+                                </div>
+                            </div>
+                            {% if accruals_list_penalties %}
                             <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Тип начисления</th>
-                                    <th>Сумма</th>
-                                </thead>
-                                <tbody>
-                                    {% for el in accruals_summary_list_penalty_and_bonus %}
-                                    <tr>
-                                        <td class="text-left">{{ el.0 }}</td>
-                                        <td>{{ el.1|floatformat }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                                <tfoot>
-                                    <th>Итого:</th><th class="text-center">{{ accruals_sum_penalty_and_bonus|floatformat }}</th>
-                                </tfoot>
-                            </table>
-                            {% else %}
-                                <div class="m10">нет начислений на отчетный период</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="flex_row">
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
-                            {# -  премии и взыскания -  #}
-                            <h3>Начисления, компенсации и удержания</h3>
-                            {% if accruals_list_all %}
-                            <table class="colgroup_table margint10 ">
                                 <thead style="display: block;">
-                                    <th width="90px">Добавлено</th>
-                                    <th width="130px" >Тип начисления</th>
+                                    <th width="70px">Дата</th>
                                     <th width="170px">Наименование</th>
-                                    <th width="90px">Сумма</th>
+                                    <th width="70px">Сумма</th>
                                     <th width="90px">Автор</th>
                                     <th width="210px">Примечание</th>
                                 </thead>
                                 <tbody class="scrolly_150">
-                                    {% for el in accruals_list_all %}
+                                    {% for el in accruals_list_penalties %}
                                     <tr>
-                                        <td width="90px">{{ el.date_add|date:"d-m-y" }}</td>
-                                        <td  width="130px" class="{% if el.operation_type == 2 %}red{% elif el.operation_type == 1 %}green{% endif %}">{{ el.operation_type.type }}</td>
-                                        <td  width="170px" class="text-left">{{ el.operation_name.name }}</td>
-                                        <td width="90px">{{ el.sum|floatformat}}</td>
+                                        <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="70px" class="red">{{ el.sum|floatformat}}</td>
                                         <td width="90px"></td>
-                                        <td  width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                        <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            {% else %}
-                                <div class="m10">нет начислений на отчетный период</div>
-                            {% endif %}
-                            <span class="button_block">
-                                <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
-                                <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
-                            </span>
-                        </div>
-                        <div class="sheet_block_mini _white_bordered _flex_zero">
-                            <h3>Сводный отчет о начислениях</h3>
-                            {% if accruals_summary_list_all %}
-                            <table class="colgroup_table margint10">
-                                <thead>
-                                    <th>Тип начисления</th>
-                                    <th>Сумма</th>
-                                </thead>
-                                <tbody>
-                                    {% for el in accruals_summary_list_all %}
-                                    <tr>
-                                        <td class="text-left">{{ el.0 }}</td>
-                                        <td>{{ el.1|floatformat }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                                <tfoot>
-                                    <th>Итого:</th><th class="text-center"s>{{ accruals_summmary_all|floatformat }}</th>
-                                </tfoot>
-                            </table>
+                            <div class="flex_block flex_end m10">
+                                <span>Итого штрафы: <b class="red">{{ accruals_list_penalties_sum|floatformat }}</b></span>
+                            </div>
                             {% else %}
                                 <div class="m10">нет начислений на отчетный период</div>
                             {% endif %}
                         </div>
+                        {# - Штрафы #}
                     </div>
+                    {# - Премии и взыскания  #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         <input type="hidden" name="check_status" value="2">
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
@@ -431,9 +389,6 @@
                                 <h3>Расчет основной оплаты</h3>
                                 <div class="flex_row" id="salary_final">
                                     <div class="big_values"><span><p><i rel="summary_el" data-direction="1" >{{ races_salary_sum|floatformat }}</i></p><em>за ходки</em></span></div>
-                                    {% if accruals_sum %}
-                                        <div class="big_values"><span><p><i rel="summary_el" data-direction="1">{{ accruals_sum|floatformat }}</i></p><em>штрафы, премии</em></span></div>
-                                    {% endif %}
                                     {% if driver.acr_mobile_compensation %}
                                         <div class="big_values"><span><p>+<i rel="summary_el"  data-direction="1" id="mobile_acr_final">{{ acr_mobile_compensation_sum|floatformat }}</i></p><em>компенсация тел.</em></span></div>
                                     {%  endif %}
@@ -443,23 +398,47 @@
                                     {% if driver.acr_ndfl_sum %}
                                         <div class="big_values"><span><p>-<i rel="summary_el" data-direction="-1" >{{ acr_ndfl_sum|floatformat }}</i></p><em>налог НДФЛ (13%)</em></span></div>
                                     {% endif %}
+                                    {% if accruals_list_penalties_sum %}
+                                        <div class="big_values"><span><p><i rel="summary_el" data-direction="1">{{ accruals_list_penalties_sum|floatformat }}</i></p><em>штрафы</em></span></div>
+                                    {% endif %}
+                                    {% if accruals_list_bonuses_sum %}
+                                        <div class="big_values"><span><p>+<i rel="summary_el" data-direction="1">{{ accruals_list_bonuses_sum|floatformat }}</i></p><em>премии</em></span></div>
+                                    {% endif %}
                                     <div class="big_values"><span><p>=<i id="final_salary_value">{{ final_salary|floatformat }}</i></p><em>итого</em></span></div>
                                 </div>
                             </div>
                         </div>
                         {# - Расчет зарплаты #}
-                       {# Комментарии #}
-                        {% if object.top_comment %}
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <div class="input_block _inline"><span><i class="icon" icon=""></i><b>руководитель: </b><i>{{ object.top_comment }}</i></span></div>
+                        {# Расчет зарплаты #}
+                        <div class="flex_row">
+                            <div class="flex_block marginl10">
+                                <h3>Итоги</h3>
+                                <div class="flex_row" id="salary_final">
+                                    <div class="big_values wyellow_bg"><span><p>{{ salary_prev_period_remains|floatformat }}</p><em>Остаток преды. периода</em></span></div>
+                                    <div class="big_values wyellow_bg"><span><p>{{ report_month_avances|floatformat }}</p><em>аванс</em></span></div>
+                                    <div class="big_values wyellow_bg"><span><p>{{ salary_now_remains|floatformat }}</p><em>остаток на руки</em></span></div>
+                                </div>
                             </div>
                         </div>
-                        {% endif %}
-                        <div class="form_row">
-                            {% include "form_snippets/radio.html" with field=form.office_comment  %}
-                        </div>
-                       {# - Комментарии #}
+                        {# - Расчет зарплаты #}
+                    {#  Итоги  #}
+{#                    <div class="flex_row">#}
+{#                        <div class="flex_block m10">#}
+{#                            <h3>Итоги</h3>#}
+{#                            <table class="colgroup_table margint10" id="itogi_table">#}
+{#                                <tbody>#}
+{#                                    <tr><td class="text-left">Остаток пред. периода</td><td rel="itogi">{{ salary_prev_period_remains|floatformat }}</td></tr>#}
+{#                                    <tr><td class="text-left">Премии и штрафы</td><td rel="itogi">{{ report_month_accruals|floatformat }}</td></tr>#}
+{#                                    <tr><td class="text-left">Основная зарплата</td><td rel="itogi" id="itogi_final_summary">{{ final_salary|floatformat }}</td></tr>#}
+{#                                    <tr><td class="text-left">Выдан аванс</td><td rel="itogi">{{ report_month_avances|floatformat }}</td></tr>#}
+{#                                </tbody>#}
+{#                                <tfoot>#}
+{#                                    <th>Остаток на руки</th><th id="itogi_sum">{{ salary_now_remains|floatformat }}</th>#}
+{#                                </tfoot>#}
+{#                            </table>#}
+{#                        </div>#}
+{#                    </div>#}
+                    {#  - Итоги  #}
                     </form>
                     {# Статус объекта #}
                     <div class="flex_row">
@@ -470,6 +449,22 @@
                         </div>
                     </div>
                     {# - Статус объекта #}
+                       {# Комментарии #}
+                        {% if object.top_comment %}
+                        <div class="form_row">
+                            <div class="input_wrapper">
+                                <div class="input_block _inline"><span><i class="icon" icon=""></i><b>руководитель: </b><i>{{ object.top_comment }}</i></span></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="form_row">
+                            {% include "form_snippets/radio.html" with field=form.over_run_status  %}
+                            {% include "form_snippets/textinput.html" with field=form.run_comment  %}
+                        </div>
+                        <div class="form_row">
+                            {% include "form_snippets/radio.html" with field=form.office_comment  %}
+                        </div>
+                       {# - Комментарии #}
                     {# ошибки формы #}
                     {% include "form_snippets/form_errors.html" with form=form %}
                     {# Кнопки #}
