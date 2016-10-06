@@ -27,7 +27,7 @@ class SalaryMechCheckForm(ModelForm):
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('over_fuel_status', 'fuel_comment', 'run_comment', 'check_status')
+        fields = ('over_fuel_status', 'fuel_comment', 'check_status')
 
 
 class SalaryOfficeCheckForm(ModelForm):

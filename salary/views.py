@@ -193,7 +193,6 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
             context_data['accruals_list_bonuses'] = accruals_list_bonuses
             final_salary += context_data['accruals_list_bonuses_sum']
-            log.info("--- Final S: %s plus val accruals_list_bonuses_sum %s" % (final_salary, context_data['accruals_list_bonuses_sum']))
             # штрафы
             accruals_list_penalties = SalaryFlow.objects\
                 .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
@@ -201,14 +200,11 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
             context_data['accruals_list_penalties'] = accruals_list_penalties
             final_salary += context_data['accruals_list_penalties_sum']
-            log.info("--- Final S: %s plus val accruals_list_penalties_sum %s" % (final_salary, context_data['accruals_list_penalties_sum']))
             # список начислений авансы и зарплата
             context_data['accruals_list_all'] = SalaryFlow.objects\
                 .filter(# operation_type__in=[1, 4, 5, 6, 7],
                 employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month).select_related('operation_type', 'operation_name')
             # Суммарные показатели начислений ТОЛЬКО ПРЕМИИ И ШТРАФЫ(group_by type)
-
-
             context_data['accruals_summary_list_penalty_and_bonus'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3)).values_list('operation_type__type',).annotate(total=Sum('sum'))
             accruals_sum_penalty_and_bonus = 0
             for el in context_data['accruals_summary_list_penalty_and_bonus']:
@@ -220,14 +216,11 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             for el in context_data['accruals_summary_list_all']:
                 accruals_sum += el[1]
             context_data['accruals_summmary_all'] = accruals_sum
-            # final_salary += accruals_sum
             # Расчет оплаты за ходки
             races_tarif_stats = RacesSalaryByTarifs(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
             context_data['races_tarif_stats'] = races_tarif_stats.get_stats()
             context_data['races_salary_sum'] = races_tarif_stats.get_sum()
             final_salary += context_data['races_salary_sum']
-            log.info("--- Final S: %s plus val races_salary_sum %s" % (final_salary, context_data['races_salary_sum']))
-
             ### Вычеты и компенсации
             # Проживание на базе
             if driver_obj.acr_basehouse_rent:
@@ -240,7 +233,6 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 final_salary -= basehouse_rent_sum
                 context_data['acr_basehouse_rent_sum'] = round(basehouse_rent_sum)
                 context_data['acr_basehouse_rent_tarif'] = basehouse_rent_tarif
-            log.info("--- Final S: %s plus val acr_basehouse_rent_sum %s" % (final_salary, context_data['acr_basehouse_rent_sum']))
             # Компенсация мобильной связи
             if driver_obj.acr_mobile_compensation:
                 mobile_comp_tarif = get_variable('salary_mobile_comp')
@@ -256,25 +248,18 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             if driver_obj.acr_ndfl_sum > 0:
                 final_salary -= driver_obj.acr_ndfl_sum
                 context_data['acr_ndfl_sum'] = driver_obj.acr_ndfl_sum
-            log.info("--- Final S: %s plus val acr_ndfl_sum %s" % (final_salary, context_data['acr_ndfl_sum']))
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
-            log.info("--- Final S: %s plus val final_salary %s" % (final_salary, context_data['final_salary']))
             # Остаток предыдущего периода
-            context_data['salary_prev_period_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            salary_prev_period_remains = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
+            context_data['salary_prev_period_remains'] = salary_prev_period_remains if salary_prev_period_remains is not None else 0
             # Начисления отчетного месяца
             context_data['report_month_accruals'] = context_data['accruals_list_bonuses_sum'] + context_data['accruals_list_penalties_sum']
             # Выданы авансы
-            context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            report_month_avances = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum']
+            context_data['report_month_avances'] = report_month_avances if report_month_avances is not None else 0
             # Остаток на руки
-            # context_data['salary_now_remains'] = 0
-            # for item in ('salary_prev_period_remains', 'report_month_accruals'):
-            #     if context_data[item] is not None:
-            #         context_data['salary_now_remains'] += context_data[item]
-            #     else:
-            #         context_data[item] = 0
             context_data['salary_now_remains'] =  context_data['final_salary'] + context_data['salary_prev_period_remains'] + context_data['report_month_avances']
-            log.info("Remains= %s + %s - %s = %s " %(context_data['final_salary'],context_data['salary_prev_period_remains'],context_data['report_month_avances'],context_data['salary_now_remains']))
         else:
             pass
         return context_data

@@ -128,17 +128,17 @@
             {# Рабочий лист #}
             <div class="sheet">
                 <div class="margin_wrapper_80">
-                    <div class="flex_row">
-                        <h2>Персональные показатели работы водителя</h2>
+                    <div class="form_row">
+                        <h3>Месячные показатели работы водителя</h3>
                     </div>
                     <div class="flex_row flex_vcentered">
                         <div class="flex_block _zero ">
                             <span class="">Водитель: <a href="{% url 'employee_card' driver.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
                         </div>
                         <div class="flex_block _zero marginl30">
-                            <div class="flex_row flex_vcentered">
                             {# переключатель месяца отчета #}
-                                    <div>Период формирования отчета:</div>
+                            <div class="flex_row flex_vcentered">
+                                    <div>Период отчета:</div>
                                     <ul class="linklist flex">
                                         <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
                                         <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
@@ -385,8 +385,8 @@
                         </div>
                         {# Расчет зарплаты #}
                         <div class="flex_row">
-                            <div class="flex_block marginl10">
-                                <h3>Расчет основной оплаты</h3>
+                            <div class="flex_block marginl10 _zero">
+                                <h3>Расчет оплаты</h3>
                                 <div class="flex_row" id="salary_final">
                                     <div class="big_values"><span><p><i rel="summary_el" data-direction="1" >{{ races_salary_sum|floatformat }}</i></p><em>за ходки</em></span></div>
                                     {% if driver.acr_mobile_compensation %}
@@ -407,48 +407,23 @@
                                     <div class="big_values"><span><p>=<i id="final_salary_value">{{ final_salary|floatformat }}</i></p><em>итого</em></span></div>
                                 </div>
                             </div>
-                        </div>
-                        {# - Расчет зарплаты #}
-                        {# Расчет зарплаты #}
-                        <div class="flex_row">
-                            <div class="flex_block marginl10">
+                            <div class="flex_block marginl10 ">
                                 <h3>Итоги</h3>
                                 <div class="flex_row" id="salary_final">
-                                    <div class="big_values wyellow_bg"><span><p>{{ salary_prev_period_remains|floatformat }}</p><em>Остаток преды. периода</em></span></div>
+                                    <div class="big_values wyellow_bg"><span><p>{{ salary_prev_period_remains|floatformat }}</p><em>Остаток</em></span></div>
                                     <div class="big_values wyellow_bg"><span><p>{{ report_month_avances|floatformat }}</p><em>аванс</em></span></div>
                                     <div class="big_values wyellow_bg"><span><p>{{ salary_now_remains|floatformat }}</p><em>остаток на руки</em></span></div>
                                 </div>
                             </div>
                         </div>
                         {# - Расчет зарплаты #}
-                    {#  Итоги  #}
-{#                    <div class="flex_row">#}
-{#                        <div class="flex_block m10">#}
-{#                            <h3>Итоги</h3>#}
-{#                            <table class="colgroup_table margint10" id="itogi_table">#}
-{#                                <tbody>#}
-{#                                    <tr><td class="text-left">Остаток пред. периода</td><td rel="itogi">{{ salary_prev_period_remains|floatformat }}</td></tr>#}
-{#                                    <tr><td class="text-left">Премии и штрафы</td><td rel="itogi">{{ report_month_accruals|floatformat }}</td></tr>#}
-{#                                    <tr><td class="text-left">Основная зарплата</td><td rel="itogi" id="itogi_final_summary">{{ final_salary|floatformat }}</td></tr>#}
-{#                                    <tr><td class="text-left">Выдан аванс</td><td rel="itogi">{{ report_month_avances|floatformat }}</td></tr>#}
-{#                                </tbody>#}
-{#                                <tfoot>#}
-{#                                    <th>Остаток на руки</th><th id="itogi_sum">{{ salary_now_remains|floatformat }}</th>#}
-{#                                </tfoot>#}
-{#                            </table>#}
-{#                        </div>#}
-{#                    </div>#}
-                    {#  - Итоги  #}
-                    </form>
-                    {# Статус объекта #}
-                    <div class="flex_row">
-                        <div class="flex_block _zero">
-                            <div class="m10">Статус зарплатной карты:
-                                <span class="salary_check_status check_status_{{ object.check_status }}">{{ object.get_check_status_display }}</span>
-                            </div>
+                        {# Расчет зарплаты #}
+                        <div class="flex_row">
                         </div>
-                    </div>
-                    {# - Статус объекта #}
+                        {# - Расчет зарплаты #}
+                        <div class="form_row">
+                            <h3>Данные для занесения в зарплатный лист</h3>
+                        </div>
                        {# Комментарии #}
                         {% if object.top_comment %}
                         <div class="form_row">
@@ -465,15 +440,20 @@
                             {% include "form_snippets/radio.html" with field=form.office_comment  %}
                         </div>
                        {# - Комментарии #}
+                    </form>
                     {# ошибки формы #}
                     {% include "form_snippets/form_errors.html" with form=form %}
                     {# Кнопки #}
                     {% if object.check_status == 1 %}
-                    <div class="form_row">
-                        <span class="button_block">
+                    <div class="flex_row margint10 ">
+                        <div class="flex_block _zero">
                             <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>
                             <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
-                        </span>
+                        </div>
+                        <div class="flex_block m10 ">
+                            Статус зарплатной карты:
+                            <span class="salary_check_status check_status_{{ object.check_status }}">{{ object.get_check_status_display }}</span>
+                        </div>
                     </div>
                     {% endif %}
                     {# - Кнопки #}
