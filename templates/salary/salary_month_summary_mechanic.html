@@ -47,22 +47,16 @@
                                     <caption>Месячные показатели работы водителей</caption>
                                     <col>
                                     <col>
-                                    <colgroup span="6"></colgroup>
                                     <colgroup span="2"></colgroup>
                                     <thead>
                                         <tr>
                                             <th rowspan="2" colspan="" width="">Сотрудник</th>
                                             <th rowspan="2">Статус отчета</th>
-                                            <th colspan="4" scope="colgroup">Статистика</th>
-                                            <th colspan="2" scope="colgroup">Оценка</th>
+                                            <th colspan="2" scope="colgroup">Отметки</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="">Ходки</th>
-                                            <th scope="col" class="">Пробег</th>
-                                            <th scope="col" class="">Пробег на ходку</th>
-                                            <th scope="col" class="">Расход топлива</th>
-                                            <th scope="col">Пробег</th>
-                                            <th scope="col" class="">Расход</th>
+                                            <th scope="col" class="">Оценка расхода топлива</th>
+                                            <th scope="col" class="">Примечание по расходу</th>
                                         </tr>
                                     </thead>
                                     <tbody id="report_table">
@@ -71,25 +65,21 @@
                                         <th scope="row">{{ row.driver_family_name }} {{ row.driver_given_name }} [{{ row.driver_nick_name }}]</th>
                                         {% if row.check_status == None %}
                                             <td colspan="">не сформирован</td>
-                                            <td colspan="8"></td>
+                                            <td colspan="3"></td>
                                         {% else %}
                                             {% if row.check_status == 0 %}
-                                                <td>анализ</td>
+                                                <td><span class="salary_check_status check_status_{{ row.check_status }}">анализ</span></td>
                                             {% elif row.check_status == 1 %}
-                                                <td>контроль офис</td>
+                                                <td><span class="salary_check_status check_status_{{ row.check_status }}">контроль офис</span></td>
                                             {% elif row.check_status == 2 %}
-                                                <td>контроль офис</td>
+                                                <td><span class="salary_check_status check_status_{{ row.check_status }}">контроль руководитель</span></td>
                                             {% elif row.check_status == 3 %}
-                                                <td>контроль руководитель</td>
-                                            {% elif row.check_status > 3 %}
-                                                <td>подтвержден</td>
+                                                <td><span class="salary_check_status check_status_{{ row.check_status }}">на выдаче</span></td>
+                                            {% elif row.check_status == 4 %}
+                                                <td><span class="salary_check_status check_status_{{ row.check_status }}">выдана</span></td>
                                             {% endif %}
-                                            <td>{{ row.total_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.total_run|default_if_none:""}}</td>
-                                            <td>{{ row.km_on_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.total_amount|default_if_none:""}}</td>
-                                            <td>{% if row.over_run_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перепробег</span>{% endif %}</td>
                                             <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
+                                            <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
                                         {% endif %}
                                     </tr>
                                     {% endfor %}

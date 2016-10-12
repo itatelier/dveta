@@ -10,7 +10,7 @@ log = logging.getLogger('django')
 
 class DumpGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=200L, null=False, blank=False)
+    name = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'dump_groups'
@@ -23,7 +23,7 @@ class DumpGroups(models.Model):
 class Dumps(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     group = models.ForeignKey('DumpGroups', null=False, blank=False, editable=True, related_name='dumps')
-    name = models.CharField(max_length=200L, null=False, blank=False)
+    name = models.CharField(max_length=200, null=False, blank=False)
     pay_type = models.IntegerField(null=False, blank=False)
 
     class Meta:
@@ -82,7 +82,7 @@ class TalonsFlow(models.Model):
     paid_sum = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     remains = models.IntegerField(null=True, blank=True)
     is_closed = models.NullBooleanField(null=True, blank=True)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
 
     objects = TalonsFlowManager()
 

@@ -9,7 +9,7 @@ from django.db.models import F
 
 class DdsItemGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'dds_item_groups'
@@ -23,7 +23,7 @@ class DdsItemGroups(models.Model):
 class DdsItems(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     item_group = models.ForeignKey('DdsItemGroups', null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
     direction_type = models.BooleanField(default=False,  editable=True, blank=True)
 
     class Meta:
@@ -37,7 +37,7 @@ class DdsItems(models.Model):
 
 class DdsAccountTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'dds_account_types'
@@ -58,7 +58,7 @@ class AccountManager(models.Manager):
 
 class DdsAccounts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     type = models.ForeignKey('dds.DdsAccountTypes', null=False, blank=False)
     employee = models.ForeignKey('person.Employies', null=True, blank=True, related_name='money_account')
     contragent = models.ForeignKey('contragent.Contragents', null=True, blank=True, related_name='money_account')
@@ -125,7 +125,7 @@ class DdsFlow(models.Model):
     summ = models.DecimalField(default=0, null=True, decimal_places=0, max_digits=10, blank=True)
     op_type = models.BooleanField(default=False)  # тип операции над счетом (1 приход, 0 расход)
     pay_way = models.BooleanField(default=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
     objects = FlowManager()
 
     class Meta:
@@ -139,7 +139,7 @@ class DdsFlow(models.Model):
 
 class DdsTemplateGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'dds_template_groups'
@@ -153,7 +153,7 @@ class DdsTemplateGroups(models.Model):
 class DdsTemplates(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     group = models.ForeignKey('dds.DdsTemplateGroups', null=False, blank=False)
-    name = models.CharField(max_length=255L, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     item_out = models.ForeignKey('DdsItems', null=True, blank=True, related_name='template_item_out')
     account_out = models.ForeignKey('DdsAccounts', null=True, blank=True, related_name='template_account_out')
     account_out_required = models.BooleanField(default=False)
@@ -164,7 +164,7 @@ class DdsTemplates(models.Model):
     account_in_visible = models.BooleanField(default=True)
     summ = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True, default=0)
     pay_way = models.BooleanField(default=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'dds_templates'

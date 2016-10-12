@@ -9,8 +9,8 @@ from django.db.models import F
 
 class Variables(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    var = models.CharField(max_length=255L, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    var = models.CharField(max_length=255, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
     val = models.IntegerField(null=False, blank=False)
 
     class Meta:

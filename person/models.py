@@ -11,10 +11,10 @@ log = logging.getLogger('django')
 
 class Persons(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    family_name = models.CharField(max_length=255L, null=False, blank=False)
-    given_name = models.CharField(max_length=255L, null=False, blank=False)
-    middle_name = models.CharField(max_length=255L, blank=True, null=True)
-    nick_name = models.CharField(max_length=255L, blank=True, null=True)
+    family_name = models.CharField(max_length=255, null=False, blank=False)
+    given_name = models.CharField(max_length=255, null=False, blank=False)
+    middle_name = models.CharField(max_length=255, blank=True, null=True)
+    nick_name = models.CharField(max_length=255, blank=True, null=True)
     date_ofbirth = models.DateTimeField(null=True, blank=True)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -35,7 +35,7 @@ class Persons(models.Model):
 
 class Contacts(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    phonenumber = models.CharField(max_length=255L, blank=True, null=True)
+    phonenumber = models.CharField(max_length=255, blank=True, null=True)
     is_work = models.BooleanField(default=0, editable=False)
     is_main = models.BooleanField(default=0, editable=False)
     date_add = models.DateTimeField(auto_now_add=True)
@@ -50,7 +50,7 @@ class Contacts(models.Model):
 
 class EmployeeTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'employee_types'
@@ -62,7 +62,7 @@ class EmployeeTypes(models.Model):
 
 class EmployeeRoles(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'employee_roles'
@@ -74,7 +74,7 @@ class EmployeeRoles(models.Model):
 
 class EmployeeStatuses(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'employee_statuses'
@@ -111,7 +111,7 @@ class Employies(models.Model):
     role = models.ForeignKey('EmployeeRoles', null=False, blank=False)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
-    comment = models.CharField(max_length=250L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
     status = models.ForeignKey('EmployeeStatuses', null=True, blank=True)
 
     # Доп параметры зарплаты
@@ -140,8 +140,8 @@ class Employies(models.Model):
 
 class UnitGroups(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
-    description = models.CharField(max_length=250L, null=True, blank=True)
+    val = models.CharField(max_length=200, null=False, blank=False)
+    description = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'unit_groups'

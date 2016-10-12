@@ -61,6 +61,7 @@
     });
 
     function UpdateFinalSalary() {
+{#        #TODO: Добавить обновление цифры в итогах на руки #}
         var $el_block = $('#salary_final');
         var final_salary = 0;
         var remains = 0; /* остатки на руки */
@@ -444,7 +445,7 @@
                     {# ошибки формы #}
                     {% include "form_snippets/form_errors.html" with form=form %}
                     {# Кнопки #}
-                    {% if object.check_status == 1 %}
+                    {% if form.instance or object.check_status == 1 %}
                     <div class="flex_row margint10 ">
                         <div class="flex_block _zero">
                             <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>

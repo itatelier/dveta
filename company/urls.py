@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from views import *
 from contragent.views import *
 from object.views import ClientObjectsView

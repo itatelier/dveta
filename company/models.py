@@ -5,7 +5,7 @@ from django.db import models
 
 class CompanyAttractionSource(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'company_attraction_source'
@@ -18,7 +18,7 @@ class CompanyAttractionSource(models.Model):
 
 class CompanyRelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'company_rel_types'
@@ -31,7 +31,7 @@ class CompanyRelTypes(models.Model):
 
 class CompanyOrgTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'company_org_types'
@@ -44,8 +44,8 @@ class CompanyOrgTypes(models.Model):
 
 class CompanyStatus(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=255L, null=False, blank=False)
-    css_class = models.CharField(max_length=255L, null=False, blank=False)
+    val = models.CharField(max_length=255, null=False, blank=False)
+    css_class = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'company_status'
@@ -78,7 +78,7 @@ class Companies(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.CharField(max_length=255, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
-    www = models.CharField(max_length=255L, blank=True)
+    www = models.CharField(max_length=255, blank=True)
     org_type = models.ForeignKey('CompanyOrgTypes', null=False, blank=False)
     rel_type = models.ForeignKey('CompanyRelTypes', null=False, blank=False)
     attr_source = models.ForeignKey('CompanyAttractionSource', null=False, blank=False)
@@ -90,7 +90,7 @@ class Companies(models.Model):
 
     # objects = models.Manager()
     #main_branch = MainBranchManager()
-    #is_active = models.CharField(max_length=255L, default=1, editable=False)
+    #is_active = models.CharField(max_length=255, default=1, editable=False)
 
     class Meta:
         db_table = 'companies'
@@ -106,7 +106,7 @@ Branches
 
 class BranchTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'branch_types'
@@ -130,7 +130,7 @@ class BranchTypes(models.Model):
 
 class Branches(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L)
+    name = models.CharField(max_length=255)
     type = models.ForeignKey('BranchTypes', null=False, blank=True)
     company = models.ForeignKey('Companies', null=False, blank=True, editable=True, related_name='branches')
     address = models.OneToOneField('Addresses', null=False, blank=True, editable=True)
@@ -159,9 +159,9 @@ class Addresses(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     # branch = models.ForeignKey('Branches', null=False, blank=True, related_name='address')
     postalcode = models.IntegerField(null=True, blank=True)
-    city = models.CharField(max_length=255L, null=False, blank=False)
-    street = models.CharField(max_length=255L, null=False, blank=False)
-    app = models.CharField(max_length=255L, null=True, blank=True)
+    city = models.CharField(max_length=255, null=False, blank=False)
+    street = models.CharField(max_length=255, null=False, blank=False)
+    app = models.CharField(max_length=255, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -182,9 +182,9 @@ class CompanyContacts(models.Model):
     contact = models.ForeignKey('person.Contacts', null=False, blank=False, editable=True, related_name='contact')
     show_in_card = models.BooleanField(default=True, editable=True)
     company_main = models.BooleanField(default=0, editable=False)
-    email = models.CharField(max_length=255L, blank=True, null=True)
-    comment = models.CharField(max_length=255L, blank=True, null=True)
-    role = models.CharField(max_length=255L, blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.CharField(max_length=255, blank=True, null=True)
+    role = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = 'company_contacts'
@@ -194,7 +194,7 @@ class CompanyContacts(models.Model):
 #
 # class ContragentTypes(models.Model):
 #     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     name = models.CharField(max_length=200L, null=False, blank=False)
+#     name = models.CharField(max_length=200, null=False, blank=False)
 #
 #     class Meta:
 #         db_table = 'contragent_types'
@@ -208,12 +208,12 @@ class CompanyContacts(models.Model):
 #     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
 #     company = models.ForeignKey('Companies', null=False, blank=True, editable=True, related_name='contragents')
 #     type = models.ForeignKey('ContragentTypes', null=False, blank=True)
-#     name = models.CharField(max_length=255L, null=False, blank=False)
+#     name = models.CharField(max_length=255, null=False, blank=False)
 #     inn = models.CharField(max_length=12L, null=False, blank=True)
 #     kpp = models.CharField(max_length=9L, null=False, blank=True)
 #     ogrn = models.CharField(max_length=13L, null=False, blank=True)
-#     uraddress = models.CharField(max_length=255L, blank=True)
-#     comment = models.CharField(max_length=255L, blank=True)
+#     uraddress = models.CharField(max_length=255, blank=True)
+#     comment = models.CharField(max_length=255, blank=True)
 #     date_add = models.DateTimeField(auto_now_add=True)
 #     date_update = models.DateTimeField(auto_now=True)
 #
@@ -227,14 +227,14 @@ class CompanyContacts(models.Model):
 #
 # class BankAccounts(models.Model):
 #     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-#     bank_name = models.CharField(max_length=255L, blank=True)
+#     bank_name = models.CharField(max_length=255, blank=True)
 #     bank_bik = models.CharField(max_length=9L, blank=True)
 #     bank_ks = models.CharField(max_length=20L, blank=True)
 #     bank_rs = models.CharField(max_length=20L, blank=True)
 #     date_add = models.DateTimeField(auto_now_add=True)
 #     date_update = models.DateTimeField(auto_now=True)
 #     contragent = models.ForeignKey('Contragents', null=False, blank=True, related_name='bank_accounts')
-#     comment = models.CharField(max_length=255L, blank=True)
+#     comment = models.CharField(max_length=255, blank=True)
 #
 #     class Meta:
 #         db_table = 'bank_accounts'

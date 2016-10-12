@@ -446,7 +446,7 @@ class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
-        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(1, 2))
+        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(1, 2)).order_by('check_status')
         return context_data
 
 

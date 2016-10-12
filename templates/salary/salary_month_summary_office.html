@@ -54,19 +54,14 @@
                                         <tr>
                                             <th rowspan="2" colspan="" width="">Сотрудник</th>
                                             <th rowspan="2">Статус отчета</th>
-                                            <th colspan="4" scope="colgroup">Статистика</th>
-                                            <th colspan="2" scope="colgroup">Механик</th>
-                                            <th colspan="2" scope="colgroup">Начисления</th>
+                                            <th colspan="2" scope="colgroup">Анализ механика</th>
+                                            <th colspan="2" scope="colgroup">Анализ офис</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="">Рейсы</th>
-                                            <th scope="col" class="">Ходки</th>
-                                            <th scope="col" class="">Пробег на ходку</th>
-                                            <th scope="col" class="">Расход на 100км</th>
-                                            <th scope="col">Пробег</th>
-                                            <th scope="col" class="">Расход</th>
-                                            <th scope="col" class="">За рейсы</th>
-                                            <th scope="col" class="">Доп</th>
+                                            <th scope="col">Оценка расхода</th>
+                                            <th scope="col" class="">Примечание</th>
+                                            <th scope="col" class="">Оценка пробега</th>
+                                            <th scope="col" class="">Примечание</th>
                                         </tr>
                                     </thead>
                                     <tbody id="report_table">
@@ -75,28 +70,13 @@
                                         <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
                                         {% if row.check_status == None %}
                                             <td colspan="">не сформирован</td>
-                                            <td colspan="9"></td>
+                                            <td colspan="5"></td>
                                         {% else %}
-                                            {% if row.check_status == 0 %}
-                                                <td>анализ</td>
-                                            {% elif row.check_status == 1 %}
-                                                <td>контроль офис</td>
-                                            {% elif row.check_status == 2 %}
-                                                <td>контроль офис</td>
-                                            {% elif row.check_status == 3 %}
-                                                <td>контроль руководитель</td>
-                                            {% elif row.check_status > 3 %}
-                                                <td>подтвержден</td>
-                                            {% endif %}
-                                            <td>{{ row.races_done|default_if_none:""}}</td>
-                                            <td>{{ row.total_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.km_on_hodkis|default_if_none:""}}</td>
-                                            <td>{{ row.average_consumption|default_if_none:""}}</td>
-                                            <td>{% if row.over_run_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перепробег</span>{% endif %}</td>
+                                            <td><span class="salary_check_status check_status_{{ row.check_status }}">{{ row.get_check_status_display }}</span></td>
                                             <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
-                                            <td>{{ row.mech_comment|default_if_none:""}}</td>
-                                            <td>{{ row.mech_comment|default_if_none:""}}</td>
-                                            <td>{{ row.mech_comment|default_if_none:""}}</td>
+                                            <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
+                                            <td>{% if row.over_run_status == 0 %}<span  class="green">норма</span>{% elif row.over_run_status == 1  %}<span  class="red">перепробег</span>{% endif %}</td>
+                                            <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
                                         {% endif %}
                                     </tr>
                                     {% endfor %}

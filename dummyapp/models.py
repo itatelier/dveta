@@ -8,7 +8,7 @@ from common.dbtools import fetch_sql_allintuple, fetch_sql_row
 class DummyCompanies(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.CharField(max_length=255, blank=True, null=True)
-    www = models.CharField(max_length=255L, blank=True)
+    www = models.CharField(max_length=255, blank=True)
     org_type = models.ForeignKey('company.CompanyOrgTypes', null=False, blank=False, related_name="org_type")
     rel_type = models.ForeignKey('company.CompanyRelTypes', null=False, blank=False)
     status = models.ForeignKey('company.CompanyStatus', null=False, blank=False)

@@ -7,7 +7,7 @@ from object.models import Objects
 
 class CarBrands(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'car_brands'
@@ -19,9 +19,9 @@ class CarBrands(models.Model):
 
 class CarModels(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
     brand = models.ForeignKey('CarBrands', null=True, blank=True, editable=True, related_name='brand')
-    description = models.CharField(max_length=200L, null=False, blank=False)
+    description = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'car_models'
@@ -33,7 +33,7 @@ class CarModels(models.Model):
 
 class CarFuelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'car_fuel_types'
@@ -45,7 +45,7 @@ class CarFuelTypes(models.Model):
 
 class CarLoadTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'car_load_types'
@@ -57,7 +57,7 @@ class CarLoadTypes(models.Model):
 
 class CarStatuses(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'car_status'
@@ -69,9 +69,9 @@ class CarStatuses(models.Model):
 
 class Cars(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    reg_num = models.CharField(max_length=200L, null=False, blank=False)
-    nick_name = models.CharField(max_length=200L, null=False, blank=False)
-    comment = models.CharField(max_length=200L, null=False, blank=False)
+    reg_num = models.CharField(max_length=200, null=False, blank=False)
+    nick_name = models.CharField(max_length=200, null=False, blank=False)
+    comment = models.CharField(max_length=200, null=False, blank=False)
     model = models.ForeignKey('CarModels', null=False, blank=False, editable=True)
     fuel_type = models.ForeignKey('CarFuelTypes', null=False, blank=False, editable=True)
     load_type = models.ForeignKey('CarLoadTypes', null=False, blank=False, editable=True)

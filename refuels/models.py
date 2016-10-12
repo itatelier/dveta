@@ -12,7 +12,7 @@ from django.db.models import F
 
 class FuelCompanies(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
         db_table = 'fuel_companies'
@@ -25,8 +25,8 @@ class FuelCompanies(models.Model):
 
 class FuelTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=False, blank=False)
-    description = models.CharField(max_length=255L, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
+    description = models.CharField(max_length=255, null=False, blank=False)
     price = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
 
     class Meta:
@@ -41,7 +41,7 @@ class FuelTypes(models.Model):
 class FuelCards(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
     fuel_company = models.ForeignKey('FuelCompanies', null=False, blank=False)
-    num = models.CharField(max_length=255L, null=False, blank=False)
+    num = models.CharField(max_length=255, null=False, blank=False)
     assigned_to_car = models.ForeignKey('car.Cars', null=True, blank=True)
 
     class Meta:
@@ -103,7 +103,7 @@ class RefuelsFlow(models.Model):
     amount = models.IntegerField(null=False, blank=False)
     sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     km = models.IntegerField(null=False, blank=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
     checked = models.IntegerField(blank=False, null=False, default=False)
     objects = RefuelsFlowManager()
 
@@ -122,7 +122,7 @@ class CarRunCheckFlow(models.Model):
     driver = models.ForeignKey('person.Employies', null=False, blank=False)
     car = models.ForeignKey('car.Cars', null=False, blank=False)
     km = models.IntegerField(null=False, blank=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
     checked = models.IntegerField(blank=False, null=False, default=False)
 
     class Meta:

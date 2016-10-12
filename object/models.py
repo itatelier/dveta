@@ -6,7 +6,7 @@ from common.dbtools import fetch_sql_allintuple, fetch_sql_row
 
 class ObjectTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'object_types'
@@ -61,7 +61,7 @@ class ObjectsManagerPlus(models.Manager):
 
 class Objects(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=200L, null=False, blank=False)
+    name = models.CharField(max_length=200, null=False, blank=False)
     type = models.ForeignKey('ObjectTypes', null=False, blank=False, editable=True)
     company = models.ForeignKey('company.Companies', null=True, blank=False, editable=True)
     address = models.ForeignKey('company.Addresses', null=True, blank=False, editable=True)

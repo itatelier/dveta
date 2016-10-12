@@ -14,7 +14,7 @@ log = logging.getLogger('django')
 
 class SalaryOperationTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    type = models.CharField(max_length=255L, null=True, blank=True)
+    type = models.CharField(max_length=255, null=True, blank=True)
     direction = models.BooleanField()
 
     def __unicode__(self):
@@ -30,7 +30,7 @@ class SalaryTarifPlans(models.Model):
     operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
 
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     car_load_type = models.ForeignKey('car.CarLoadTypes', null=True, blank=True)
     plan_range = models.IntegerField(null=False, blank=False)
     standart_tarif = models.IntegerField(null=False, blank=False)
@@ -49,7 +49,7 @@ class SalaryOperationNames(models.Model):
     operation_types = ([0, 'заработная плата'], [1, 'премия'], [2, 'штраф'], [3, 'удержание'], [4, 'компенсация'], [5, 'аванс'],)
 
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    name = models.CharField(max_length=255L, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     type = models.ForeignKey('SalaryOperationTypes', null=False, blank=False)
 
     def __unicode__(self):
@@ -76,7 +76,7 @@ class SalaryFlow(models.Model):
     month = models.IntegerField(null=False, blank=False)
     operation_type = models.ForeignKey('SalaryOperationTypes', null=False, blank=False)
     sum = models.DecimalField(decimal_places=2, max_digits=9, null=False, blank=False)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'salary_flow'
@@ -260,12 +260,12 @@ class SalaryMonthSummary(models.Model):
     total_amount = models.IntegerField(null=False, blank=False)
     # average_consumption = models.DecimalField(decimal_places=1, max_digits=4, null=False, blank=False)
 
-    over_run_status = models.NullBooleanField(null=True, blank=True, default=False)
-    over_fuel_status = models.NullBooleanField(null=True, blank=True, default=False)
-    fuel_comment = models.CharField(max_length=255L, null=True, blank=True)
-    run_comment = models.CharField(max_length=255L, null=True, blank=True)
-    office_comment = models.CharField(max_length=255L, null=True, blank=True)
-    top_comment = models.CharField(max_length=255L, null=True, blank=True)
+    over_run_status = models.NullBooleanField(null=True, blank=True)
+    over_fuel_status = models.NullBooleanField(null=True, blank=True)
+    fuel_comment = models.CharField(max_length=255, null=True, blank=True)
+    run_comment = models.CharField(max_length=255, null=True, blank=True)
+    office_comment = models.CharField(max_length=255, null=True, blank=True)
+    top_comment = models.CharField(max_length=255, null=True, blank=True)
 
     over_run_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     over_fuel_penalty = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
@@ -280,7 +280,7 @@ class SalaryMonthSummary(models.Model):
     paid_sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     remain_sum = models.DecimalField(decimal_places=2, max_digits=9, null=True, blank=True)
     check_status = models.IntegerField(null=True, blank=True, default=False, choices=check_status_choices)
-    comment = models.CharField(max_length=255L, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
 
     acr_mobile_days = models.IntegerField(null=True, blank=True)
     acr_basehouse_rent_days = models.IntegerField(null=True, blank=True)

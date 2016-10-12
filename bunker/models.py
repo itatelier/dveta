@@ -9,7 +9,7 @@ log = logging.getLogger('django')
 
 class BunkerTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'bunker_types'
@@ -21,7 +21,7 @@ class BunkerTypes(models.Model):
 
 class BunkerOperationTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'bunker_operation_types'

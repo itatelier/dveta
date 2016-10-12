@@ -1,6 +1,6 @@
 from django.contrib import admin
-from models import *
-from forms import AdminItemForm
+from dds.models import *
+from dds.forms import AdminItemForm
 
 
 class ItemsAdmin(admin.ModelAdmin):

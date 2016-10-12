@@ -5,7 +5,7 @@ from django.db import models
 
 class RaceTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'race_types'
@@ -17,7 +17,7 @@ class RaceTypes(models.Model):
 
 class RaceCargoTypes(models.Model):
     id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
-    val = models.CharField(max_length=200L, null=False, blank=False)
+    val = models.CharField(max_length=200, null=False, blank=False)
 
     class Meta:
         db_table = 'race_cargo_types'
@@ -54,8 +54,8 @@ class Races(models.Model):
     dump_pay_type = models.BooleanField()
     dump_cash = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     dump_cash_extra = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    dump_cash_comment = models.CharField(max_length=200L, null=True, blank=True)
-    dump_comment = models.CharField(max_length=200L, null=True, blank=True)
+    dump_cash_comment = models.CharField(max_length=200, null=True, blank=True)
+    dump_comment = models.CharField(max_length=200, null=True, blank=True)
     recommendation = models.TextField(blank=True)
 
     date_add = models.DateTimeField(auto_now_add=True)
