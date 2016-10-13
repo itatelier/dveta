@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import pystuck; pystuck.run_server()
+# import pystuck; pystuck.run_server()
 import os
 import sys
 

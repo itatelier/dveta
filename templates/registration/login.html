@@ -97,7 +97,7 @@
         <p>Для доступа к сервису укажите верные параметры авторизации</p>
     </header>
     <div id="form">
-        <form method="post" action="{% url "django.contrib.auth.views.login" %}">
+        <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
             <div class="row">

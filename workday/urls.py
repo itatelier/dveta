@@ -2,6 +2,7 @@
 
 from django.conf.urls import url, include
 from views import *
+from django.contrib.auth import views as auth_views
 # from phones.views import *
 
 
@@ -13,6 +14,7 @@ from rest_framework import routers
 
 urlpatterns = [
     #
+    url(r'^accounts/login/$', auth_views.login, {'login': 'registration/login.html'}),
     # REST API
     # url(r'^api/', include(router.urls)),
     #
