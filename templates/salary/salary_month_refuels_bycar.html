@@ -9,7 +9,7 @@
             <ul>
                 <li><a href="#">Зарплата водителей</a></li>
                 <li><a href="{% url 'salary_month_summary_mech' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль механика</a></li>
-                <li class="active" ><a href="#">Анализ водителя: {{ driver.fullnamenick }}</a></li>
+                <li class="active" ><a href="#">Анализ заправко для автомобиля: {{ car.nick_name }}</a></li>
             </ul>
         </div>
         {# - Breadcrumbs #}

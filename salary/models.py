@@ -179,7 +179,7 @@ class SalarySummaryManager(models.Manager):
                                                     ), MIN.km)) as total_run
                                     ,MAX.last_amount
                                     ,MAX.date_refuel as date_refuel_last
-                                    ,(SUM(COUNT.amount) - MAX.last_amount) as total_amount 
+                                    ,(SUM(COUNT.amount) - MAX.last_amount) as total_amount
                                     ,COUNT(COUNT.id) as total_refuels
                                 FROM refuels_flow AS MIN
                                 JOIN (
@@ -226,6 +226,7 @@ class SalarySummaryManager(models.Manager):
         #    получаем список всех заправок от (последней ПЕРЕД периодом или первой ВНУТРИ периода) до последней ВНУТРИ
         #    периода. Cписок для расчета "пробега" и показа в отчете по всем заправкам за период
         #    БЕЗ УЧЕТА ДРАЙВЕРА, для КОНКРЕТНОЙ машины
+        log.info("--- date_start: %s, date_end: %s, car_pk: %s" % (date_start, date_end, car_pk))
         query = """SELECT
                         R2.car_id
                         ,R2.date_refuel
@@ -238,26 +239,27 @@ class SalarySummaryManager(models.Manager):
                         ,R2.km
                         ,R2.sum
                         ,R2.checked
-                FROM refuels_flow AS R2
-                LEFT JOIN employies AS E ON E.id = R2.driver_id
-                LEFT JOIN persons AS P ON P.id = E.person_id
-                LEFT OUTER JOIN (
-                        SELECT
-                        car_id,
-                        IFNULL( ( SELECT MAX(KM)
-                                    FROM refuels_flow AS R2
-                                    WHERE date_refuel < %(date_start)s
-                                        AND R2.car_id = R1.car_id
-                                        AND R2.car_id = %(car_pk)s
-                                ),
-                            MIN(KM) ) AS first_km
-                            ,MAX(km) as last_km
-                        FROM refuels_flow AS R1
-                        WHERE date_refuel >= %(date_start)s AND date_refuel < %(date_end)s
-                        AND R1.car_id = %(car_pk)s
-                        GROUP BY car_id
-                ) AS J2 ON J2.car_id = R2.car_id
-                WHERE	R2.km BETWEEN J2.first_km AND J2.last_km"""
+                    FROM refuels_flow AS R2
+                    LEFT JOIN employies AS E ON E.id = R2.driver_id
+                    LEFT JOIN persons AS P ON P.id = E.person_id
+                    LEFT OUTER JOIN (
+                                                    SELECT
+                                                            LAST.car_id
+                                                            ,IFNULL(
+                                                                            (
+                                                                                SELECT MAX(date_refuel) FROM refuels_flow
+                                                                                WHERE date_refuel < %(date_start)s
+                                                                                AND car_id = %(car_pk)s
+                                                                            ),
+                                                                            MIN(TFIRST.date_refuel)
+                                                                    ) as date_start
+                                                            ,MAX(LAST.date_refuel) as date_end
+                                                         FROM refuels_flow AS LAST
+                                                         JOIN refuels_flow AS TFIRST ON TFIRST.car_id = LAST.car_id
+                                                         WHERE LAST.date_refuel >= %(date_start)s AND LAST.date_refuel < %(date_end)s
+                                                                AND LAST.car_id = %(car_pk)s
+                    ) AS DATES_INTERVAL ON DATES_INTERVAL.car_id = R2.car_id
+                    WHERE	R2.date_refuel BETWEEN DATES_INTERVAL.date_start AND DATES_INTERVAL.date_end"""
         params = {'date_start': date_start, 'date_end': date_end, 'car_pk': car_pk}
         result = fetch_sql_allintuple(query, params=params)
         return result
