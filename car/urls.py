@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/card/$', CarCardView.as_view(), name='car_card'),
     url(r'^(?P<pk>\d+)/driver/$', CarDriverView.as_view(), name='car_driver'),
     url(r'^(?P<pk>\d+)/fuel_card/$', CarFuelCardView.as_view(), name='car_fuel_card'),
+    url(r'^(?P<pk>\d+)/speedometer/$', SpeedometerChangeAddView.as_view(), name='car_speedometer_change'),
     url(r'^(?P<pk>\d+)/docs/$', CarDocsView.as_view(), name='car_docs'),
     url(r'^(?P<pk>\d+)/update/$', CarUpdateView.as_view(), name='car_update'),
     url(r'^list/$', CarListView.as_view(), name='car_list'),

@@ -74,3 +74,14 @@ class CarDocsForm(ModelForm):
         model = CarDocs
         fields = ('owner', 'ins_number', 'ins_date_register', 'ins_date_end', 'ins_price', 'ins_comment', 'to_number', 'to_date_end', 'rent_date_end', 'fuel_card')
 
+
+class SpeedometerChangeForm(ModelForm):
+    date_change = DateField(label="Дата замены", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
+    last_km = IntegerField(label="Последнее значение пробега", required=True, widget=TextInput(attrs={'size': 7, 'maxlength': 10}))
+    start_km = IntegerField(label="Пробег нановом спидометре", required=True, widget=TextInput(attrs={'size': 7, 'maxlength': 10}))
+    comment = CharField(label="Примечание", required=False, widget=TextInput(attrs={'size': 20, 'maxlength': 200}))
+    car = ModelChoiceField(queryset=Cars.objects.all(), required=True, widget=HiddenInput())
+
+    class Meta:
+        model = SpeedometerChangeLog
+        fields = ('date_change', 'last_km', 'start_km', 'comment', 'car')

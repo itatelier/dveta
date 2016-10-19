@@ -1,0 +1,123 @@
+{% extends "main.html" %}
+{% load static from staticfiles %}
+{% block add_static %}
+<!-- DateTime CSS   --><link rel='stylesheet' media="screen" type='text/css' href='{% static 'js/datetime/jquery.datetimepicker.css' %}'/>
+{% endblock %}
+{%  block js %}
+<!-- DateTime       --><script type="text/javascript" src="/static/js/datetime/jquery.datetimepicker.full.min.js"></script>
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+
+        {#    Виджет datepicker #}
+        $.datetimepicker.setLocale('ru');
+        $('input[name=date_change]').datetimepicker({
+            format:'d-m-Y',
+            timepicker: false,
+        });
+    });
+</script>
+
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Автомобили</a></li>
+                <li><a href="{% url 'car_card' car.pk %}"><b>{{ car.nick_name }}</b> <i> {{ car.reg_num }}</i></a></li>
+                <li class="active"><a href="#">Замена спидометра</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                {# Левый бар - меню карточки  #}
+                {%  include "car/car_left_bar.html" with pk=car.pk sel=6 %}
+                {# - Левый бар #}
+                <div class="data_grid_medium">
+                    {# Ключевые значения #}
+                    <div class="flex_row">
+                        <div class="values_block">
+                            <span><p>{{ car.nick_name }}</p><em>ник авто</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ car.reg_num }}</p><em>гос номер</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ car.model.val }}</p><em>модель авто</em></span>
+                        </div>
+                        <div class="values_block">
+                            <span><p>{{ car.unit_group.description }}</p><em>группа</em></span>
+                        </div>
+                        {% if car.comment %}
+                        <div class="values_block">
+                            <span>
+                                <p class="comment">{{ car.comment }}</p>
+                                <em>примечание</em></span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-row">
+                         <span class="m10">Механик <a href="/persons/{{ car.mechanic.person_id }}/card" class="textlink"><b>{{ car.mechanic.person.family_name }} {{ car.mechanic.person.given_name }}</b></a></span>
+                         {% if car.driver.pk %}
+                                     <span class="m10">Водитель <a href="/persons/{{ car.driver.person_id }}/card" class="textlink"><b>{{ car.driver.person.nick_name }} </b>{{ car.driver.person.family_name }} {{ car.driver.person.given_name }}</a></span>
+                                 {% else %}
+                                    <span class="m10">Водитель <a href="{% url 'car_driver' car.pk  %}" class="textlink red">не назначен</a></span>
+                                 {%  endif %}
+                    </div>
+                    {# - Ключевые значения #}
+                    {# Форма объекта #}
+                    <div class="form_row">
+                        <div class="sheet_block_mini _white_bordered _flex_zero">
+                            <h3>История замены спидометра</h3>
+                            {% if view.get_speedometer_change_log %}
+                            <table class="colgroup_table margint10 fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th>Дата змены</th>
+                                        <th>Дата записи</th>
+                                        <th>Километраж снятого прибора</th>
+                                        <th>Километраж на новом приборе</th>
+                                        <th>Примечание</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for el in view.get_speedometer_change_log %}
+                                    <tr>
+                                        <td>{{ el.date_change|date:"d-m-y" }}</td>
+                                        <td>{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td>{{ el.last_km }}</td>
+                                        <td>{{ el.start_km }}</td>
+                                        <td>{{ el.comment|default_if_none:"" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                                <h3>Замены спидометра не производились</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                        {# Видимые поля #}
+                        {% include "form_snippets/formfields_as_row.html" with form=form %}
+                        {# ошибки формы #}
+                        {% include "form_snippets/form_errors.html" with form=form %}
+                        {# Кнопки #}
+                        <div class="form_row">
+                            <span class="button_block">
+                                <a class="button"  onclick="$('form#new_object').submit();">Добавить</a>
+                            </span>
+                        </div>
+                        {# - Кнопки #}
+                    </form>
+                    {# - Форма объекта #}
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

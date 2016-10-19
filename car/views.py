@@ -148,7 +148,6 @@ class CarDocsView(LoginRequiredMixin, UpdateView):
     template_name = "car/car_docs.html"
     model = CarDocs
     form_class = CarDocsForm
-    # queryset = CarDocs.objects.filter()
 
     def get_object(self):
         company_pk = self.kwargs.get('pk', None)
@@ -163,3 +162,27 @@ class CarDocsView(LoginRequiredMixin, UpdateView):
         company_pk = self.kwargs.get('pk', None)
         context_data['object'] = Cars.objects.get(pk=company_pk)
         return context_data
+
+
+class SpeedometerChangeAddView(LoginRequiredMixin, CreateView):
+    template_name = 'car/car_speedometer_change.html'
+    form_class = SpeedometerChangeForm
+    model = Cars
+
+    def get_initial(self):
+        initial = {'car': self.kwargs.get('pk', None)}
+        return initial
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SpeedometerChangeAddView, self).get_context_data(*args, **kwargs)
+        car_pk = self.kwargs.get('pk', None)
+        context_data['car'] = Cars.objects.get(pk=car_pk)
+        return context_data
+
+    def get_success_url(self):
+        car_pk = self.kwargs.get('pk', None)
+        return reverse('car_speedometer_change', args=(car_pk,))
+
+    def get_speedometer_change_log(self):
+        return SpeedometerChangeLog.objects.filter(car=self.kwargs.get('pk', None))
+

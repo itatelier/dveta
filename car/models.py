@@ -124,3 +124,20 @@ class CarDocs(models.Model):
         managed = False
         db_table = 'car_docs'
         verbose_name_plural = 'Машины / Документы'
+
+
+class SpeedometerChangeLog(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    car = models.ForeignKey('Cars', null=False, blank=False, editable=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_change = models.DateTimeField()
+    last_km = models.IntegerField(blank=True, null=True, default=0)
+    start_km = models.IntegerField(blank=True, null=True, default=0)
+    comment = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'car_speedometer_change_log'
+        verbose_name_plural = 'Машины / Замена спидометра'
+
+    def __unicode__(self):
+        return u'[%s] %s %s' % (self.id, self.car, self.date_exchange)
