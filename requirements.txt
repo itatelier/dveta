@@ -3,3 +3,8 @@ django-debug-toolbar
 djangorestframework
 django-filter
 django-crispy-forms
+django-extensions
+python-dateutil
+django-suit
+MySQL-python
+uWSGI

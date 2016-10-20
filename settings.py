@@ -22,9 +22,9 @@ USE_THOUSAND_SEPARATOR = True
 NUMBER_GROUPING = 3
 DECIMAL_SEPARATOR = ","
 
-STATIC_ROOT = 'c:/www/vetastatic'
+STATIC_ROOT = ROOT_PATH + '\static'
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (ROOT_PATH + '/static',)
+#STATICFILES_DIRS = (ROOT_PATH + '/static',)
 
 MEDIA_ROOT = ROOT_PATH + '/media'
 MEDIA_URL = '/media/'
