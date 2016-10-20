@@ -84,7 +84,7 @@ class Cars(models.Model):
     date_update = models.DateTimeField(auto_now=True)
     status = models.ForeignKey('CarStatuses', null=False, blank=False, editable=True)
     driver = models.ForeignKey('person.Employies', null=True, blank=True, editable=True, related_name="cardriver")
-    docs = models.ForeignKey('CarDocs', null=True, blank=False, editable=True, related_name="car")
+    # docs = models.ForeignKey('CarDocs', null=True, blank=False, editable=True, related_name="car")
     fuel_card = models.ForeignKey('refuels.FuelCards', null=True, blank=True, editable=True, related_name="driver")
 
     class Meta:
@@ -109,6 +109,8 @@ class CarOwners(models.Model):
 
 
 class CarDocs(models.Model):
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    car = models.ForeignKey('car.Cars', null=False, blank=False, editable=True, related_name="docs")
     owner = models.ForeignKey('CarOwners', null=True, blank=False)
     ins_date_register = models.DateTimeField(blank=True, null=True)
     ins_number = models.CharField(max_length=255, blank=True, null=True)

@@ -122,7 +122,6 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
 
     def get(self, request, *args, **kwargs):
         self.driver_pk = self.kwargs.get('driver_pk', None)
-        # получаем объект формы
         self.object = self.get_object(self, *args, **kwargs)
         return self.render_to_response(self.get_context_data())
 

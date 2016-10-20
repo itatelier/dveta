@@ -22,7 +22,7 @@
         <div class="breadcrumbs">
             <ul>
                 <li><a href="#">Автомобили</a></li>
-                <li><a href="{% url 'car_card' object.pk %}"><b>{{ object.nick_name }}</b> <i> {{ object.reg_num }}</i></a></li>
+                <li><a href="{% url 'car_card' car.pk %}"><b>{{ car.nick_name }}</b> <i> {{ car.reg_num }}</i></a></li>
                 <li class="active" ><a href="#">Документы</a></li>
             </ul>
         </div>
@@ -32,35 +32,35 @@
             {# Рабочий лист #}
             <div class="sheet">
                 {# Левый бар - меню карточки  #}
-                {%  include "car/car_left_bar.html" with pk=object.pk sel=4 %}
+                {%  include "car/car_left_bar.html" with pk=car.pk sel=4 %}
                 {# - Левый бар #}
                 <div class="data_grid_medium">
                     {# Ключевые значения #}
                     <div class="flex_row">
                         <div class="values_block">
-                            <span><p>{{ object.nick_name }}</p><em>ник авто</em></span>
+                            <span><p>{{ car.nick_name }}</p><em>ник авто</em></span>
                         </div>
                         <div class="values_block">
-                            <span><p>{{ object.reg_num }}</p><em>гос номер</em></span>
+                            <span><p>{{ car.reg_num }}</p><em>гос номер</em></span>
                         </div>
                         <div class="values_block">
-                            <span><p>{{ object.model.val }}</p><em>модель авто</em></span>
+                            <span><p>{{ car.model.val }}</p><em>модель авто</em></span>
                         </div>
                         <div class="values_block">
-                            <span><p>{{ object.unit_group.description }}</p><em>группа</em></span>
+                            <span><p>{{ car.unit_group.description }}</p><em>группа</em></span>
                         </div>
-                        {% if object.comment %}
+                        {% if car.comment %}
                         <div class="values_block">
                             <span>
-                                <p class="comment">{{ object.comment }}</p>
+                                <p class="comment">{{ car.comment }}</p>
                                 <em>примечание</em></span>
                         </div>
                         {% endif %}
                     </div>
                     <div class="form-row">
-                         <span class="m10">Механик <a href="/persons/{{ object.mechanic.person_id }}/card" class="textlink"><b>{{ object.mechanic.person.family_name }} {{ object.mechanic.person.given_name }}</b></a></span>
-                         {% if object.driver.pk %}
-                                     <span class="m10">Водитель <a href="/persons/{{ object.driver.person_id }}/card" class="textlink"><b>{{ object.driver.person.nick_name }} </b>{{ object.driver.person.family_name }} {{ object.driver.person.given_name }}</a></span>
+                         <span class="m10">Механик <a href="/persons/{{ car.mechanic.person_id }}/card" class="textlink"><b>{{ car.mechanic.person.family_name }} {{ car.mechanic.person.given_name }}</b></a></span>
+                         {% if car.driver.pk %}
+                                     <span class="m10">Водитель <a href="/persons/{{ car.driver.person_id }}/card" class="textlink"><b>{{ car.driver.person.nick_name }} </b>{{ car.driver.person.family_name }} {{ car.driver.person.given_name }}</a></span>
                                  {% else %}
                                     <span class="m10">Водитель <a href="#" class="textlink red">не назначен</a></span>
                                  {%  endif %}

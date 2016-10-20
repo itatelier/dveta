@@ -8,7 +8,7 @@ from object.models import ObjectTypes
 from forms import *
 from common.utils import DateTimeNowToSql
 from django.core.exceptions import ObjectDoesNotExist
-
+from common.view_tools import CreateUpdateView
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix
@@ -149,18 +149,22 @@ class CarDocsView(LoginRequiredMixin, UpdateView):
     model = CarDocs
     form_class = CarDocsForm
 
-    def get_object(self):
-        company_pk = self.kwargs.get('pk', None)
-        return get_object_or_404(CarDocs, car__pk=company_pk)
+    def get_object(self, queryset=None):
+        car_pk = self.kwargs.get('car_pk', None)
+        try:
+            object = CarDocs.objects.get(car=car_pk)
+            return object
+        except CarDocs.DoesNotExist:
+            return None
 
     def get_success_url(self):
         company_pk = self.kwargs.get('pk', None)
         return reverse('car_card', args=(company_pk,))
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(CarDocsView, self).get_context_data(*args, **kwargs)
-        company_pk = self.kwargs.get('pk', None)
-        context_data['object'] = Cars.objects.get(pk=company_pk)
+        context_data = super(CarDocsView, self).get_context_data(**kwargs)
+        car_pk = self.kwargs.get('car_pk', None)
+        context_data['car'] = Cars.objects.get(pk=car_pk)
         return context_data
 
 
