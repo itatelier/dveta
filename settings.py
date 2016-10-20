@@ -22,7 +22,6 @@ USE_THOUSAND_SEPARATOR = True
 NUMBER_GROUPING = 3
 DECIMAL_SEPARATOR = ","
 
-STATIC_ROOT = 'c:/www/vetastatic'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (ROOT_PATH + '/static',)
 
