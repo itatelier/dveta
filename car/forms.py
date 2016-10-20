@@ -69,10 +69,11 @@ class CarDocsForm(ModelForm):
     to_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
     rent_date_end = DateField(label="Дата окончания", required=False, input_formats=('%d-%m-%Y',), widget=RuDateWidget(attrs={'size': 10, 'maxlength': 10, 'placeholder' :"дд-мм-гггг"}))
     fuel_card = ModelChoiceField(queryset=FuelCards.objects.all(), label="Топливная карта", empty_label="-- не привязана --", required=False)
+    car = ModelChoiceField(queryset=Cars.objects.all(), required=True, widget=HiddenInput())
 
     class Meta:
         model = CarDocs
-        fields = ('owner', 'ins_number', 'ins_date_register', 'ins_date_end', 'ins_price', 'ins_comment', 'to_number', 'to_date_end', 'rent_date_end', 'fuel_card')
+        fields = ('owner', 'ins_number', 'ins_date_register', 'ins_date_end', 'ins_price', 'ins_comment', 'to_number', 'to_date_end', 'rent_date_end', 'fuel_card', 'car')
 
 
 class SpeedometerChangeForm(ModelForm):

@@ -3,6 +3,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from object.models import Objects
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 class CarBrands(models.Model):
@@ -93,6 +95,14 @@ class Cars(models.Model):
 
     def __unicode__(self):
         return u'[%s] %s %s' % (self.id, self.reg_num, self.nick_name)
+
+    @staticmethod
+    def get_docs(self, car_pk=None):
+        try:
+            obj = CarDocs.objects.get(car=car_pk)
+            return obj
+        except ObjectDoesNotExist:
+            return None
 
 
 class CarOwners(models.Model):

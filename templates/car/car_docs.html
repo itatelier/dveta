@@ -68,6 +68,8 @@
                     {# - Ключевые значения #}
                     {# Форма объекта #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
+                        {# Скрытые поля #}
+                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         <div class="form_row"><h2>Регистрационные документы</h2></div>
                         <div class="form_row">{% include "form_snippets/textinput.html" with field=form.owner  %}</div>
                         <div class="form_row"><h2>Страховка</h2></div>

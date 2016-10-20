@@ -67,6 +67,7 @@ class CarCardView(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarCardView, self).get_context_data(*args, **kwargs)
         context_data['bunkers_onboard'] = self.object.car_object.bunker_remain.all()
+        context_data['docs'] = Cars.get_docs(self, car_pk=self.kwargs.get('pk', None))
         # context_data['bunkers_onboard'] = BunkerFlow.remains.by_object_id(self.object.car_object_id)
         # context_data['bunkers_onboard'] = BunkerFlow.objects.filter(object__pk=self.object.car_object.id).aggregate(Sum('qty'))
         return context_data
@@ -157,9 +158,13 @@ class CarDocsView(LoginRequiredMixin, UpdateView):
         except CarDocs.DoesNotExist:
             return None
 
+    def get_initial(self):
+        initial = {'car': self.kwargs.get('car_pk', None)}
+        return initial
+
     def get_success_url(self):
-        company_pk = self.kwargs.get('pk', None)
-        return reverse('car_card', args=(company_pk,))
+        car_pk = self.kwargs.get('car_pk', None)
+        return reverse('car_card', args=(car_pk,))
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(CarDocsView, self).get_context_data(**kwargs)

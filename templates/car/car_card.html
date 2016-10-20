@@ -81,15 +81,15 @@
                     <div class="sheet_row_headered">
                         <h2>Документы</h2>
                         <table class="sheet_simple">
-                            <tr><td>Владелец</td><td><b>{{ object.docs.owner.val|default_if_none:"не указан" }}</b></td></tr>
+                            <tr><td>Владелец</td><td><b>{{ docs.owner.val|default_if_none:"не указан" }}</b></td></tr>
                             <tr>
                                 <td>Страховка</td>
-                                <td>{% if  object.docs.ins_date_end and object.docs.ins_price%}
-                                    до {{ object.docs.ins_date_end|date:"d-m-Y"  }}
-                                        {% if object.docs.ins_date_end|check_days_to_now:30 %}
-                                            <span class="alert">{{ object.docs.ins_date_end|check_days_to_now:30 }}!</span>
+                                <td>{% if  docs.ins_date_end and docs.ins_price%}
+                                    до {{ docs.ins_date_end|date:"d-m-Y"  }}
+                                        {% if docs.ins_date_end|check_days_to_now:30 %}
+                                            <span class="alert">{{ docs.ins_date_end|check_days_to_now:30 }}!</span>
                                         {% endif %}
-                                    цена {{ object.docs.ins_price }}р.
+                                    цена {{ docs.ins_price }}р.
                                     {% else %}
                                         <i>данные не заполнены</i>
                                     {% endif %}
@@ -98,10 +98,10 @@
                             <tr>
                                 <td>Тех осмотр</td>
                                 <td>
-                                    {% if object.docs.to_date_end %}
-                                    до {{ object.docs.to_date_end|date:"d-m-Y" }}
-                                        {% if object.docs.to_date_end|check_days_to_now:30 %}
-                                            <span class="alert">{{ object.docs.to_date_end|check_days_to_now:30 }}!</span>
+                                    {% if docs.to_date_end %}
+                                    до {{ docs.to_date_end|date:"d-m-Y" }}
+                                        {% if docs.to_date_end|check_days_to_now:30 %}
+                                            <span class="alert">{{ docs.to_date_end|check_days_to_now:30 }}!</span>
                                         {% endif %}
                                     {% else %}
                                         данные не заполнены
@@ -110,10 +110,10 @@
                             </tr>
                             <tr>
                                 <td>Договор аренды</td>
-                                <td>{% if object.docs.rent_date_end %}
-                                до {{ object.docs.rent_date_end|date:"d-m-Y" }}
-                                        {% if object.docs.rent_date_end|check_days_to_now:30 %}
-                                            <span class="alert">{{ object.docs.rent_date_end|check_days_to_now:30 }}!</span>
+                                <td>{% if docs.rent_date_end %}
+                                до {{ docs.rent_date_end|date:"d-m-Y" }}
+                                        {% if docs.rent_date_end|check_days_to_now:30 %}
+                                            <span class="alert">{{ docs.rent_date_end|check_days_to_now:30 }}!</span>
                                         {% endif %}
                                 {% else %}
                                     данные не заполнены
