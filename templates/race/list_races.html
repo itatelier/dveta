@@ -93,7 +93,7 @@
 </script>{% endverbatim %}
         {# Breadcrumbs #}
         <div class="breadcrumbs">
-            <ul><li class="active" ><a href="listing.html">Рейсы</a></li></ul>
+            <ul><li class="active" ><a href="#">Рейсы</a></li></ul>
         </div>
         {# - Breadcrumbs #}
         <div class="sheet_wrapper">
@@ -109,13 +109,17 @@
                             <input type="hidden" name="ordering" value="id"/>
                             <input type="hidden" name="offset" value="0"/>
                             <input type="hidden" name="limit" value="20"/>
+                            <input type="hidden" rel="reset" name="car" value="{{ get.car_pk }}"/>
+                            <input type="hidden" rel="reset" name="driver" value="{{ get.driver }}"/>
+                            <input type="hidden" rel="reset" name="salary_tarif" value="{{ get.salary_tarif }}"/>
+                            <input type="hidden" rel="reset" name="car__load_type" value="{{ get.car__load_type }}"/>
                             {# отображенные фильтры #}
                             <div class="flex_block _zero">
                                 <div class="form_row">
                                     <div class="input_wrapper ">
                                         <legend>Начиная с даты</legend>
                                         <div class="input_block _icon" icon="">
-                                            <input type="text" size="15" name="date_after" id="" rel="datetimepicker">
+                                            <input type="text" size="15" name="date_after" id="" rel="datetimepicker" value="{{ get.date_after }}">
                                         </div>
                                     </div>
                                 </div>
@@ -123,7 +127,7 @@
                                     <div class="input_wrapper">
                                         <legend>Дата окончания периода</legend>
                                         <div class="input_block _icon" icon="">
-                                            <input type="text" size="15" name="date_before" id="" rel="datetimepicker">
+                                            <input type="text" size="15" name="date_before" id="" rel="datetimepicker" value="{{ get.date_before }}">
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +145,7 @@
                                     <div class="input_wrapper">
                                         <legend>Автомобиль<p>ник</p></legend>
                                         <div class="input_block">
-                                            <input type="text" size="15" name="car_name" id="" class="">
+                                            <input type="text" size="15" name="car_name" id="" class="" value="{{ get.car }}">
                                         </div>
                                     </div>
                                 </div>

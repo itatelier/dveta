@@ -97,6 +97,11 @@ class RaceFilters(django_filters.FilterSet):
     class Meta:
         model = Races
         fields = [
+            'car',
+            'car__load_type',
+            'salary_tarif',
+            'driver',
+            'date_race',
             'bunker_type',
             'pay_way',
         ]

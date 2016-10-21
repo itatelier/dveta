@@ -1,0 +1,29 @@
+                            <div class="sheet_block_mini _white_bordered _flex_zero">
+                                <h3>Оплата за ходки</h3>
+                                <table class="colgroup_table margint10">
+                                    <thead>
+                                        <th>Тип ходки</th>
+                                        <th>Тип авто</th>
+                                        <th>Количество</th>
+                                        <th>Тариф</th>
+                                        <th>Сумма</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for el in races_tarif_stats %}
+                                            {% if el.salary_tarif == 1 %}
+                                                <tr>
+                                                    <td class="text-left">Спец.цена</td><td>*</td>
+                                                    <td><a href="{% url 'races_list' %}?date_after={{ report_month_dt|date:"d-m-Y" }}&date_before={{ report_next_dt|date:"d-m-Y" }}&driver={{ driver.pk }}&salary_tarif={{ el.salary_tarif }}">{{ el.count_races }}</a></td>
+                                                    <td>*</td>
+                                                    <td>{{ el.sum|floatformat }}</td>
+                                                </tr>
+                                            {% elif el.salary_tarif != 1 %}
+                                                <tr><td class="text-left">Стандартые</td><td>{{ el.salary_tarif__name }}</td><td><a href="{% url 'races_list' %}?date_after={{ report_month_dt|date:"d-m-Y" }}&date_before={{ report_next_dt|date:"d-m-Y" }}&driver={{ driver.pk }}&salary_tarif={{ el.salary_tarif }}">{{ el.count_races }}</a></td><td>{{ el.tarif_price|floatformat }}</td><td>{{ el.sum|floatformat }}</td></tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <th colspan="4">Итого</th><th class="text-center">{{ races_salary_sum|floatformat }}</th>
+                                    </tfoot>
+                                </table>
+                            </div>

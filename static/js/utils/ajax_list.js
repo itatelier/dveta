@@ -129,6 +129,7 @@ function list_data_api(Mode,Page) {
 
 function ResetFormDefault(formname) {
     document.getElementById(formname).reset();
+    $('form[name="'+formname+'"] input[rel="reset"]').val('');
     list_data_api();
     return false;
 }

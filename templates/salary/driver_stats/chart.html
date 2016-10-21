@@ -1,0 +1,40 @@
+        var ctx = $("#myChart");
+        var data = {
+            labels: [{% for el in graph.days_list %}{{ el }},{% endfor %} ],
+{#            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", ],#}
+            datasets: [
+                {
+                    label: "Количество ходок",
+                    backgroundColor: 'rgba(67, 114, 144, 1)',
+                    borderColor: 'rgba(134, 151, 162, 1)',
+                    borderWidth: 1,
+                    borderSkipped: 0,
+                    data: [{% for el in graph.data %}{{ el }},{% endfor %}],
+{#                    data: ["1", "2", "6", "2", "3", "6", "7", "7", "5", "7", "4", "8", "6", "4", "7", "6", "9", "7", "4", "", "3", "1", "6", "8", "7", "9", "6", "4", "7", "9", ]#}
+                }
+            ]
+        };
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            stacked: true,
+            options: {
+                display: false,
+                stacked: true,
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        display: false,
+                        ticks: {
+{#                            beginAtZero:true,#}
+{#                            max: 10,#}
+{#                            min: 0,#}
+{#                            stepSize: 0.5#}
+                        }
+                    }]
+                }
+            }
+        });
