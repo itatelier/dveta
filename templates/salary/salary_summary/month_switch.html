@@ -1,0 +1,10 @@
+                            {# переключатель месяца отчета #}
+                            <div class="flex_row flex_vcentered">
+                                <div>Период формирования отчета:</div>
+                                <ul class="linklist flex">
+                                    <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                    <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                    <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                                </ul>
+                            </div>
+                            {# - переключатель месяца отчета #}

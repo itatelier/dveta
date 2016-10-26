@@ -1,0 +1,103 @@
+{% extends "main.html" %}
+{% block content %}
+{% load date_compare %}
+<script>
+    $(document).ready(function() {
+        {#  Переход на карточу   #}
+        var report_month = "{{ view.report_month_dt.month }}";
+        var report_year = "{{ view.report_month_dt.year }}";
+        $( 'tbody#report_table').on("click", 'tr', function(){
+            var id = $(this).data('employee_pk');
+            var url = "/salary/month_summary/analyze_top/driver/" + id +"/?month=" + report_month + "&year=" + report_year;
+            document.location.href = url;
+        });
+
+    });
+</script>
+        {# Breadcrumbs #}
+        <div class="breadcrumbs">
+            <ul>
+                <li><a href="#">Зарплата водителей</a></li>
+                <li class="" ><a href="{% url 'salary_month_summary_mech' %}">Контроль механика</a></li>
+                <li class="active" ><a href="#">Контроль офис</a></li>
+            </ul>
+        </div>
+        {# - Breadcrumbs #}
+        <div class="sheet_wrapper">
+            <div class="left_border"><span class="upblock"></span></div>
+            {# Рабочий лист #}
+            <div class="sheet">
+                <div class="data_grid_listing">
+                    {# переключатель месяца отчета #}
+                    <div class="flex_row flex_justify_center ">
+                        <div class="width_min80">
+                            {# переключатель месяца отчета #}
+                            {% include 'salary/salary_summary/month_switch.html' %}
+                            {# - переключатель месяца отчета #}
+                            {# Информационный блок #}
+                                {% if summary_list %}
+                                    <table class="colgroup_table pointed fullwidth">
+                                        <caption>Итоги расчета заработной платы</caption>
+                                        <col>
+                                        <colgroup span="4"></colgroup>
+                                        <colgroup span="2"></colgroup>
+                                        <colgroup span="3"></colgroup>
+                                        <colgroup span="3"></colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2" colspan="">Сотрудник</th>
+                                                <th rowspan="2">Статус отчета</th>
+                                                <th colspan="4" scope="colgroup">Вычеты и штрафы</th>
+                                                <th colspan="2" scope="colgroup">Бонусы</th>
+                                                <th colspan="3" scope="colgroup">Итоги</th>
+    {#                                                <th colspan="3" scope="colgroup">Сверка</th>#}
+                                            </tr>
+                                            <tr>
+                                                <th scope="col" class="minus">Топливо</th>
+                                                <th scope="col" class="minus">Пробег</th>
+                                                <th scope="col" class="minus">Прочие</th>
+                                                <th scope="col" class="minus">Вычеты</th>
+                                                <th scope="col" class="plus">Компенсация</th>
+                                                <th scope="col" class="plus">Бонусы</th>
+                                                <th scope="col">Начислено</th>
+                                                <th scope="col">Аванс</th>
+                                                <th scope="col">Остаток</th>
+    {#                                                <th scope="col">Механик</th>#}
+    {#                                                <th scope="col">Офис</th>#}
+    {#                                                <th scope="col">Расчет</th>#}
+                                            </tr>
+                                        </thead>
+                                        <tbody  id="report_table">
+                                            {% for row in summary_list %}
+                                                <tr>
+                                                    <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
+                                                    <td><span class="salary_check_status check_status_{{ row.check_status }}">{{ row.get_check_status_display }}</span></td>
+                                                    <td>{{ row.races_done|default_if_none:"-"}}</td>
+                                                    <td>{{ row.fuel_penalty|default_if_none:"-"}}</td>
+                                                    <td>{{ row.run_penalty|default_if_none:"-"}}</td>
+                                                    <td>{{ row.misc_penalty|default_if_none:"-"}}</td>
+                                                    <td>{{ row.deductions_amount|default_if_none:"-"}}</td>
+                                                    <td>{{ row.compensation_amount|default_if_none:"-"}}</td>
+                                                    <td>{{ row.bonus_amount|default_if_none:"-"}}</td>
+                                                    <td>{{ row.summary_salary_amount|default_if_none:"-"}}</td>
+                                                    <td>{{ row.paid_sum|default_if_none:"-"}}</td>
+                                                    <td>{{ row.remain_sum|default_if_none:"-"}}</td>
+            {#                                            <td><i class="icon {% if row.is_mech_checked %}green{% else %}gray{% endif %}" icon=""></i></td>#}
+            {#                                            <td><i class="icon {% if row.is_office_checked %}green{% else %}gray{% endif %}" icon=""></i></td>#}
+            {#                                            <td><i class="icon {% if row.is_boss_checked %}green{% else %}gray{% endif %}" icon=""></i></td>#}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <h2>за указанный период нет сформированных зарплатных карт</h2>
+                                {% endif %}
+                            {# - Информационный блок #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# - Рабочий лист #}
+            <div class="right_border"><span class="upblock"></span></div>
+        </div>
+{% endblock %}

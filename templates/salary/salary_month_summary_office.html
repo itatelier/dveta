@@ -32,14 +32,7 @@
                     <div class="flex_row flex_justify_center ">
                         <div class="width_min80">
                             {# переключатель месяца отчета #}
-                            <div class="flex_row flex_vcentered">
-                                <div>Период формирования отчета:</div>
-                                <ul class="linklist flex">
-                                    <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
-                                    <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
-                                    <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
-                                </ul>
-                            </div>
+                            {% include 'salary/salary_summary/month_switch.html' %}
                             {# - переключатель месяца отчета #}
                             {# Информационный блок #}
                             {% if summary_list %}
@@ -65,21 +58,21 @@
                                         </tr>
                                     </thead>
                                     <tbody id="report_table">
-                                    {% for row in summary_list %}
-                                    <tr data-employee_pk="{{ row.employee_id }}">
-                                        <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
-                                        {% if row.check_status == None %}
-                                            <td colspan="">не сформирован</td>
-                                            <td colspan="5"></td>
-                                        {% else %}
-                                            <td><span class="salary_check_status check_status_{{ row.check_status }}">{{ row.get_check_status_display }}</span></td>
-                                            <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
-                                            <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
-                                            <td>{% if row.over_run_status == 0 %}<span  class="green">норма</span>{% elif row.over_run_status == 1  %}<span  class="red">перепробег</span>{% endif %}</td>
-                                            <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
-                                        {% endif %}
-                                    </tr>
-                                    {% endfor %}
+                                        {% for row in summary_list %}
+                                            <tr data-employee_pk="{{ row.employee_id }}">
+                                                <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
+                                                {% if row.check_status == None %}
+                                                    <td colspan="">не сформирован</td>
+                                                    <td colspan="5"></td>
+                                                {% else %}
+                                                    <td><span class="salary_check_status check_status_{{ row.check_status }}">{{ row.get_check_status_display }}</span></td>
+                                                    <td>{% if row.over_fuel_status == 0%}<span  class="green">норма</span>{% else %}<span  class="red">перерасход</span>{% endif %}</td>
+                                                    <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
+                                                    <td>{% if row.over_run_status == 0 %}<span  class="green">норма</span>{% elif row.over_run_status == 1  %}<span  class="red">перепробег</span>{% endif %}</td>
+                                                    <td class="text-left">{{ row.fuel_comment|default_if_none:""}}</td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             {% else %}

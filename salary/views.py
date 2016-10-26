@@ -60,8 +60,20 @@ class SalaryMonthSummaryView(TemplateView):
         log.info("= Report period starts at: %s till end date:  %s" %(self.report_month_dt.date(), self.report_next_dt.date()))
         return super(SalaryMonthSummaryView, self).dispatch(request, *args, **kwargs)
 
+    def get_object(self, *args, **kwargs):
+        try:
+            exist_object = SalaryMonthSummary.objects.get(
+                employee_id=self.driver_pk,
+                year=self.report_month_dt.year,
+                month=self.report_month_dt.month
+            )
+            return exist_object
+        except SalaryMonthSummary.DoesNotExist:
+            log.info("-!- Can't get object! driver_pk: %s " % self.driver_pk)
+            return None
 
-class SalaryMonthSummaryViewMech(SalaryMonthSummaryView):
+
+class SalaryMonthSummaryMechView(SalaryMonthSummaryView):
     template_name = 'salary/salary_month_summary_mechanic.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -153,18 +165,6 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
     model = SalaryMonthSummary
     object = None
     prepared_data = None
-
-    def get_object(self, *args, **kwargs):
-        try:
-            exist_object = SalaryMonthSummary.objects.get(
-                employee_id=self.driver_pk,
-                year=self.report_month_dt.year,
-                month=self.report_month_dt.month
-            )
-            return exist_object
-        except SalaryMonthSummary.DoesNotExist:
-            log.info("-!- Can't get object! driver_pk: %s " % self.driver_pk)
-            return None
 
     def get_success_url(self):
         return "%s?year=%s&month=%s" % (reverse('salary_month_summary_office'), self.report_month_dt.year, self.report_month_dt.month)
@@ -286,23 +286,11 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
     object = None
     prepared_data = None
 
-    def get_object(self, *args, **kwargs):
-        try:
-            exist_object = SalaryMonthSummary.objects.get(
-                employee_id=self.driver_pk,
-                year=self.report_month_dt.year,
-                month=self.report_month_dt.month
-            )
-            return exist_object
-        except SalaryMonthSummary.DoesNotExist:
-            log.info("-!- Can't get object! driver_pk: %s " % self.driver_pk)
-            return None
-
     def get_success_url(self):
-        return "%s?year=%s&month=%s" % (reverse('salary_month_summary_office'), self.report_month_dt.year, self.report_month_dt.month)
+        return "%s?year=%s&month=%s" % (reverse('salary_month_summary_top'), self.report_month_dt.year, self.report_month_dt.month)
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(SalaryMonthAnalyzeTopView, self).get_context_data(*args, **kwargs)
+        context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
         context_data['driver'] = driver_obj
         if hasattr(self.object, 'races_done'):
@@ -317,17 +305,36 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
             context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
             report_month_days = context_data['graph'].month_days[1]
             context_data['month_days_count'] = report_month_days
-            # Начисления лист ВСЕ
+            # список начислений  Штрафы и Премии
+            accruals_list_bonuses  = SalaryFlow.objects\
+                .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
+                .select_related('operation_type', 'operation_name')
+            context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
+            context_data['accruals_list_bonuses'] = accruals_list_bonuses
+            final_salary += context_data['accruals_list_bonuses_sum']
+            # штрафы
+            accruals_list_penalties = SalaryFlow.objects\
+                .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
+                .select_related('operation_type', 'operation_name')
+            context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
+            context_data['accruals_list_penalties'] = accruals_list_penalties
+            final_salary += context_data['accruals_list_penalties_sum']
+            # список начислений авансы и зарплата
             context_data['accruals_list_all'] = SalaryFlow.objects\
                 .filter(# operation_type__in=[1, 4, 5, 6, 7],
                 employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month).select_related('operation_type', 'operation_name')
+            # Суммарные показатели начислений ТОЛЬКО ПРЕМИИ И ШТРАФЫ(group_by type)
+            context_data['accruals_summary_list_penalty_and_bonus'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(2, 3)).values_list('operation_type__type',).annotate(total=Sum('sum'))
+            accruals_sum_penalty_and_bonus = 0
+            for el in context_data['accruals_summary_list_penalty_and_bonus']:
+                accruals_sum_penalty_and_bonus += el[1]
+            context_data['accruals_sum_penalty_and_bonus'] = accruals_sum_penalty_and_bonus
             # Суммарные показатели начислений (group_by type)
             context_data['accruals_summary_list_all'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month,).values_list('operation_type__type').annotate(total=Sum('sum'))
             accruals_sum = 0
             for el in context_data['accruals_summary_list_all']:
                 accruals_sum += el[1]
             context_data['accruals_summmary_all'] = accruals_sum
-            final_salary += accruals_sum
             # Расчет оплаты за ходки
             races_tarif_stats = RacesSalaryByTarifs(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
             context_data['races_tarif_stats'] = races_tarif_stats.get_stats()
@@ -363,24 +370,27 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
             # Итоговая зарплата
             context_data['final_salary'] = final_salary
             # Остаток предыдущего периода
-            context_data['salary_prev_period_remains'] = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            salary_prev_period_remains = SalaryFlow.objects.filter(year=self.report_prev_dt.year, month=self.report_prev_dt.month).aggregate(Sum('sum'))['sum__sum']
+            context_data['salary_prev_period_remains'] = salary_prev_period_remains if salary_prev_period_remains is not None else 0
             # Начисления отчетного месяца
-            context_data['report_month_accruals'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            context_data['report_month_accruals'] = context_data['accruals_list_bonuses_sum'] + context_data['accruals_list_penalties_sum']
             # Выданы авансы
-            context_data['report_month_avances'] = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum'] if not None else 0
+            report_month_avances = SalaryFlow.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, operation_type__in=(6, 7), employee=self.driver_pk).aggregate(Sum('sum'))['sum__sum']
+            context_data['report_month_avances'] = report_month_avances if report_month_avances is not None else 0
             # Остаток на руки
-            # context_data['salary_now_remains'] = 0
-            # for item in ('salary_prev_period_remains', 'report_month_accruals'):
-            #     if context_data[item] is not None:
-            #         context_data['salary_now_remains'] += context_data[item]
-            #     else:
-            #         context_data[item] = 0
-            context_data['salary_now_remains'] =  context_data['final_salary'] + context_data['salary_prev_period_remains'] - context_data['report_month_avances']
-            log.info("Remains= %s + %s - %s = %s " %(context_data['final_salary'],context_data['salary_prev_period_remains'],context_data['report_month_avances'],context_data['salary_now_remains']))
-
+            context_data['salary_now_remains'] =  context_data['final_salary'] + context_data['salary_prev_period_remains'] + context_data['report_month_avances']
         else:
             pass
         return context_data
+
+    def get_initial(self):
+        initial = {}
+        if self.object:
+            if not self.object.acr_basehouse_rent_days:
+                initial['acr_basehouse_rent_days'] = self.report_days
+            if not self.object.acr_basehouse_rent_days:
+                initial['acr_mobile_days'] = self.report_days
+        return initial
 
     def get(self, request, *args, **kwargs):
         # получаем объект формы
@@ -440,12 +450,19 @@ class SalaryOperationCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
 
-class SalaryMonthSummaryViewOffice(SalaryMonthSummaryView):
+class SalaryMonthSummaryOfficeView(SalaryMonthSummaryView):
     template_name = 'salary/salary_month_summary_office.html'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
-        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, check_status__in=(1, 2)).order_by('check_status')
+        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, ).order_by('check_status')
         return context_data
 
 
+class SalaryMonthSummaryTopView(SalaryMonthSummaryView):
+    template_name = 'salary/salary_month_summary_top.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
+        context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, ).order_by('check_status')
+        return context_data

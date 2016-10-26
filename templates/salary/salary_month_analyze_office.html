@@ -194,18 +194,18 @@
                     {# ошибки формы #}
                     {% include "form_snippets/form_errors.html" with form=form %}
                     {# Кнопки #}
-                    {% if form.instance or object.check_status == 1 %}
                     <div class="flex_row margint10 ">
+                    {% if object.check_status == 1 %}
                         <div class="flex_block _zero">
                             <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>
                             <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
                         </div>
+                    {% endif %}
                         <div class="flex_block m10 ">
                             Статус зарплатной карты:
                             <span class="salary_check_status check_status_{{ object.check_status }}">{{ object.get_check_status_display }}</span>
                         </div>
                     </div>
-                    {% endif %}
                     {# - Кнопки #}
                 {% else %}
                     <div class="flex_row flex_justify_center">
