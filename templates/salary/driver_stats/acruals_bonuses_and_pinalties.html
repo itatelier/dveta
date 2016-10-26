@@ -1,0 +1,80 @@
+                    {# Премии и взыскания  #}
+                    <div class="flex_row">
+                        {# Премии #}
+                        <div class="sheet_block_mini _white_bordered _flex_zero width_min300 flex_column">
+                            <div class="flex_row">
+                                <div class="flex_block">
+                                    <h3>Премии</h3>
+                                </div>
+                                <div class="flex_block _zero">
+                                    <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
+                                </div>
+                            </div>
+                            {% if accruals_list_bonuses %}
+                            <table class="colgroup_table margint10 block flex_block">
+                                <thead style="display: block;">
+                                    <th width="70px">Дата</th>
+                                    <th width="170px">Наименование</th>
+                                    <th width="70px">Сумма</th>
+                                    <th width="90px">Автор</th>
+                                    <th width="210px">Примечание</th>
+                                </thead>
+                                <tbody class="scrolly_150">
+                                    {% for el in accruals_list_bonuses %}
+                                    <tr>
+                                        <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="70px" >{{ el.sum|floatformat}}</td>
+                                        <td width="90px"></td>
+                                        <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="flex_block flex_end _zero m10">
+                                <span>Итого премии: <b>{{ accruals_list_bonuses_sum|floatformat }}</b></span>
+                            </div>
+                            {% else %}
+                                <div class="m10">нет начисленных премий</div>
+                            {% endif %}
+                        </div>
+                        {# - Премии #}
+                        {# Штрафы #}
+                        <div class="sheet_block_mini _white_bordered _flex_zero width_min300">
+                            <div class="flex_row">
+                                <div class="flex_block"><h3>Штрафы</h3></div>
+                                <div class="flex_block _zero">
+                                    <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
+                                </div>
+                            </div>
+                            {% if accruals_list_penalties %}
+                            <table class="colgroup_table margint10 block flex_block">
+                                <thead style="display: block;">
+                                    <th width="70px">Дата</th>
+                                    <th width="170px">Наименование</th>
+                                    <th width="70px">Сумма</th>
+                                    <th width="90px">Автор</th>
+                                    <th width="210px">Примечание</th>
+                                </thead>
+                                <tbody class="scrolly_150">
+                                    {% for el in accruals_list_penalties %}
+                                    <tr>
+                                        <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
+                                        <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
+                                        <td width="70px" class="red">{{ el.sum|floatformat}}</td>
+                                        <td width="90px"></td>
+                                        <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="flex_block flex_end _zero m10">
+                                <span>Итого штрафы: <b class="red">{{ accruals_list_penalties_sum|floatformat }}</b></span>
+                            </div>
+                            {% else %}
+                                <div class="m10">нет начисленных штрафов</div>
+                            {% endif %}
+                        </div>
+                        {# - Штрафы #}
+                    </div>
+                    {# - Премии и взыскания  #}

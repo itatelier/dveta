@@ -1,0 +1,32 @@
+                        <div class="flex_row">
+                            <div class="flex_block marginl10 _zero">
+                                <h3>Расчет оплаты</h3>
+                                <div class="flex_row" id="salary_final">
+                                    <div class="big_values"><span><p><i rel="summary_el" data-direction="1" >{{ races_salary_sum|floatformat }}</i></p><em>за ходки</em></span></div>
+                                    {% if driver.acr_mobile_compensation %}
+                                        <div class="big_values"><span><p>+<i rel="summary_el"  data-direction="1" id="mobile_acr_final">{{ acr_mobile_compensation_sum|floatformat }}</i></p><em>компенсация тел.</em></span></div>
+                                    {%  endif %}
+                                    {% if driver.acr_basehouse_rent %}
+                                        <div class="big_values"><span><p>-<i rel="summary_el" data-direction="-1" id="basehouse_rent_final">{{ acr_basehouse_rent_sum|floatformat }}</i></p><em>проживание на базе</em></span></div>
+                                    {% endif %}
+                                    {% if driver.acr_ndfl_sum %}
+                                        <div class="big_values"><span><p>-<i rel="summary_el" data-direction="-1" >{{ acr_ndfl_sum|floatformat }}</i></p><em>налог НДФЛ (13%)</em></span></div>
+                                    {% endif %}
+                                    {% if accruals_list_penalties_sum %}
+                                        <div class="big_values"><span><p><i rel="summary_el" data-direction="1">{{ accruals_list_penalties_sum|floatformat }}</i></p><em>штрафы</em></span></div>
+                                    {% endif %}
+                                    {% if accruals_list_bonuses_sum %}
+                                        <div class="big_values"><span><p>+<i rel="summary_el" data-direction="1">{{ accruals_list_bonuses_sum|floatformat }}</i></p><em>премии</em></span></div>
+                                    {% endif %}
+                                    <div class="big_values"><span><p>=<i id="final_salary_value">{{ final_salary|floatformat }}</i></p><em>итого</em></span></div>
+                                </div>
+                            </div>
+                            <div class="flex_block marginl10 ">
+                                <h3>Итоги</h3>
+                                <div class="flex_row" id="salary_final">
+                                    <div class="big_values wyellow_bg"><span><p>{{ salary_prev_period_remains|floatformat }}</p><em>Остаток</em></span></div>
+                                    <div class="big_values wyellow_bg"><span><p>{{ report_month_avances|floatformat }}</p><em>аванс</em></span></div>
+                                    <div class="big_values wyellow_bg"><span><p>{{ salary_now_remains|floatformat }}</p><em>остаток на руки</em></span></div>
+                                </div>
+                            </div>
+                        </div>

@@ -1,0 +1,20 @@
+                    <div class="form_row">
+                        <h3>Месячные показатели работы водителя</h3>
+                    </div>
+                    <div class="flex_row flex_vcentered">
+                        <div class="flex_block _zero ">
+                            <span class="">Водитель: <a href="{% url 'employee_card' driver.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
+                        </div>
+                        <div class="flex_block _zero marginl30">
+                            {# переключатель месяца отчета #}
+                            <div class="flex_row flex_vcentered">
+                                    <div>Период отчета:</div>
+                                    <ul class="linklist flex">
+                                        <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
+                                        <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
+                                        <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
+                                    </ul>
+                            </div>
+                            {# - переключатель месяца отчета #}
+                        </div>
+                    </div>

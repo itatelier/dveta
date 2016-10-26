@@ -34,116 +34,18 @@
             {# Рабочий лист #}
             <div class="sheet">
                 <div class="margin_wrapper_80">
-                    <div class="form_row">
-                        <h3>Месячные показатели работы водителя</h3>
-                    </div>
-                    <div class="flex_row flex_vcentered">
-                        <div class="flex_block _zero ">
-                            <span class="">Водитель: <a href="{% url 'employee_card' driver.pk %}" class="textlink">{{ driver.fullnamenick }}</a></span>
-                        </div>
-                        <div class="flex_block _zero marginl30">
-                            {# переключатель месяца отчета #}
-                            <div class="flex_row flex_vcentered">
-                                    <div>Период отчета:</div>
-                                    <ul class="linklist flex">
-                                        <li><a href="?month={{ view.report_prev_dt.month }}&year={{ view.report_prev_dt.year }}"><i class="icon big" icon="←"></i></a></li>
-                                        <li>{{ view.report_month_dt|date:"M"}} {{ view.report_month_dt.year }}</li>
-                                        <li><a href="?month={{ view.report_next_dt.month }}&year={{ view.report_next_dt.year }}"><i class="icon big" icon="→"></i></a></li>
-                                    </ul>
-                            </div>
-                            {# - переключатель месяца отчета #}
-                        </div>
-                    </div>
-                    {% if driver_month_stats %}
+                    {# Шапка отчета #}
+                    {% include "salary/driver_stats/analyze_report_header.html" %}
+                    {% if object %}
+                        {# Шапка отчета #}
                         {# График рейсов по дням месяца #}
-                        <div class="flex_row">
-                            <div class="sheet_block_mini _white_bordered _flex_zero" id="chartblock">
-                                <canvas id="myChart" width="750" height="100"></canvas>
-                            </div>
-                        </div>
+                        <div class="flex_row"><div class="sheet_block_mini _white_bordered _flex_zero" id="chartblock"><canvas id="myChart" width="750" height="100"></canvas></div></div>
                         {# - График рейсов по дням месяца #}
                         {# Статистика по рейсам и машинам #}
-                        {% include "salary/driver_stats/month_report.html" with object=object driver_month_stats=driver_month_stats  %}
+                        {% include "salary/driver_stats/month_report.html"   %}
                         {# - Статистика по рейсам и машинам #}
                         {# Премии и взыскания  #}
-                        <div class="flex_row">
-                            {# Премии #}
-                            <div class="sheet_block_mini _white_bordered _flex_zero width_min300">
-                                <div class="flex_row">
-                                    <div class="flex_block">
-                                        <h3>Премии</h3>
-                                    </div>
-                                    <div class="flex_block _zero">
-                                        <a class="textlink marginl10" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 2 driver.pk %}?return_url={{ request.path }}">Добавить премию</a>
-                                    </div>
-                                </div>
-                                {% if accruals_list_bonuses %}
-                                <table class="colgroup_table margint10 block flex_block">
-                                    <thead style="display: block;">
-                                        <th width="70px">Дата</th>
-                                        <th width="170px">Наименование</th>
-                                        <th width="70px">Сумма</th>
-                                        <th width="90px">Автор</th>
-                                        <th width="210px">Примечание</th>
-                                    </thead>
-                                    <tbody class="scrolly_150">
-                                        {% for el in accruals_list_bonuses %}
-                                        <tr>
-                                            <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
-                                            <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
-                                            <td width="70px" >{{ el.sum|floatformat}}</td>
-                                            <td width="90px"></td>
-                                            <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <div class="flex_block _zero flex_end m10">
-                                    <span>Итого премии: <b>{{ accruals_list_bonuses_sum|floatformat }}</b></span>
-                                </div>
-                                {% else %}
-                                    <div class="m10">нет начисленных премий</div>
-                                {% endif %}
-                            </div>
-                            {# - Премии #}
-                            {# Штрафы #}
-                            <div class="sheet_block_mini _white_bordered _flex_zero width_min300">
-                                <div class="flex_row">
-                                    <div class="flex_block"><h3>Штрафы</h3></div>
-                                    <div class="flex_block _zero">
-                                        <a class="textlink red" href="{% url 'salary_operation_create'  view.report_month_dt.year  view.report_month_dt.month 3 driver.pk %}?return_url={{ request.path }}">Добавить взыскание</a>
-                                    </div>
-                                </div>
-                                {% if accruals_list_penalties %}
-                                <table class="colgroup_table margint10 block flex_block">
-                                    <thead style="display: block;">
-                                        <th width="70px">Дата</th>
-                                        <th width="170px">Наименование</th>
-                                        <th width="70px">Сумма</th>
-                                        <th width="90px">Автор</th>
-                                        <th width="210px">Примечание</th>
-                                    </thead>
-                                    <tbody class="scrolly_150">
-                                        {% for el in accruals_list_penalties %}
-                                        <tr>
-                                            <td width="70px">{{ el.date_add|date:"d-m-y" }}</td>
-                                            <td width="170px" class="text-left">{{ el.operation_name.name }}</td>
-                                            <td width="70px" class="red">{{ el.sum|floatformat}}</td>
-                                            <td width="90px"></td>
-                                            <td width="190px" class="text-left">{{ el.comment|default_if_none:"" }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <div class="flex_block _zero flex_end m10">
-                                    <span>Итого штрафы: <b class="red">{{ accruals_list_penalties_sum|floatformat }}</b></span>
-                                </div>
-                                {% else %}
-                                    <div class="m10">нет начисленных штрафов</div>
-                                {% endif %}
-                            </div>
-                            {# - Штрафы #}
-                        </div>
+                        {% include "salary/driver_stats/acruals_bonuses_and_pinalties.html" %}
                         {# - Премии и взыскания  #}
                         {# -------------------------------------------------------------------------------- #}
                         <div class="form_row">
