@@ -83,6 +83,7 @@
             <ul>
                 <li><a href="#">Зарплата водителей</a></li>
                 <li><a href="{% url 'salary_month_summary_office' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль офис</a></li>
+                <li><a href="{% url 'salary_month_summary_top' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль руководитель</a></li>
                 <li class="active" ><a href="#">Зарплатная карта водителя</a></li>
             </ul>
         </div>

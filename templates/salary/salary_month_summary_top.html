@@ -69,7 +69,7 @@
                                         </thead>
                                         <tbody  id="report_table">
                                             {% for row in summary_list %}
-                                                <tr>
+                                                <tr data-employee_pk="{{ row.employee_id }}">
                                                     <th scope="row">{{ row.employee.person.fio_and_nick }}</th>
                                                     <td><span class="salary_check_status check_status_{{ row.check_status }}">{{ row.get_check_status_display }}</span></td>
                                                     <td>{{ row.races_done|default_if_none:"-"}}</td>

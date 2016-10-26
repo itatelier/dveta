@@ -290,7 +290,7 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
         return "%s?year=%s&month=%s" % (reverse('salary_month_summary_top'), self.report_month_dt.year, self.report_month_dt.month)
 
     def get_context_data(self, *args, **kwargs):
-        context_data = super(SalaryMonthAnalyzeOfficeView, self).get_context_data(*args, **kwargs)
+        context_data = super(SalaryMonthAnalyzeTopView, self).get_context_data(*args, **kwargs)
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
         context_data['driver'] = driver_obj
         if hasattr(self.object, 'races_done'):
@@ -466,3 +466,4 @@ class SalaryMonthSummaryTopView(SalaryMonthSummaryView):
         context_data = super(SalaryMonthSummaryView, self).get_context_data(*args, **kwargs)
         context_data['summary_list'] = SalaryMonthSummary.objects.filter(year=self.report_month_dt.year, month=self.report_month_dt.month, ).order_by('check_status')
         return context_data
+
