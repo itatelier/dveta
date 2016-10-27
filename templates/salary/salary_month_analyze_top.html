@@ -99,87 +99,30 @@
                     {# Шапка отчета #}
                     {# График рейсов по дням месяца #}
                     <div class="flex_row"><div class="sheet_block_mini _white_bordered _flex_zero" id="chartblock"><canvas id="myChart" width="750" height="100"></canvas></div></div>
-                    {# - График рейсов по дням месяца #}                    {# Статистика по рейсам и машинам #}
+                    {# - График рейсов по дням месяца #}
+                    {# Статистика по рейсам и машинам #}
                     {% include "salary/driver_stats/month_report.html"  %}
                     {# - Статистика по рейсам и машинам #}
                     {# Премии и взыскания  #}
                     {% include "salary/driver_stats/acruals_bonuses_and_pinalties.html" %}
                     {# - Премии и взыскания  #}
+                    {# Оплата за ходки #}
+                    <div class="flex_row">
+                        {% include "salary/driver_stats/races_tarif_stats.html" %}
+                    </div>
+                    {# - Оплата за ходки #}
+                    {# Расчет зарплаты #}
+                    {% include "salary/driver_stats/salary_calculate.html" %}
+                    {# - Расчет зарплаты #}
                     <form action="" method="POST" id="new_object">{% csrf_token %}
                         <input type="hidden" name="check_status" value="2">
                         {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
-                        <div class="flex_row">
-                            {# Оплата за ходки #}
-                            {% include "salary/driver_stats/races_tarif_stats.html" %}
-                            {# - Оплата за ходки #}
-                            {# Компенсация мобильной связи #}
-                            <div class="sheet_block_mini _white_bordered _flex_zero">
-                                <h3 class="">Компенсация мобильной связи</h3>
-                                <div class="form_row bordered flex_justify_center">
-                                    {% if driver.acr_mobile_compensation %}
-                                    <div class="input_wrapper">
-                                        <legend>Дней</legend>
-                                        <div class="input_block">
-                                            <input name="mobile_days_widget" type="number" value="{% if form.acr_mobile_days.value %}{{ form.acr_mobile_days.value }}{% else %}{{ month_days_count }}{% endif %}" min="0" max="{{ month_days_count }}" style="width: 50px;">
-                                        </div>
-                                    </div>
-                                    <div class="input_wrapper">
-                                        <legend>Тариф (мес)</legend>
-                                        <div class="input_block">
-                                            <span class="large" id="mobile_acr_tarif">{{ acr_mobile_compensation_tarif }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="input_wrapper">
-                                        <legend>Сумма</legend>
-                                        <div class="input_block">
-                                            <span class="large" id="mobile_acr_sum">{{ acr_mobile_compensation_sum|floatformat }}</span>
-                                        </div>
-                                    </div>
-                                    {% else %}
-                                        <h2 class="text-center">Не начисляется</h2>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {# - Компенсация мобильной связи #}
-                            {# проживание на базе #}
-                            <div class="sheet_block_mini _white_bordered _flex_zero">
-                                <h3 class="">Проживание на базе</h3>
-                                <div class="form_row bordered">
-                                    {% if driver.acr_basehouse_rent %}
-                                        <div class="input_wrapper">
-                                            <legend>Дней</legend>
-                                            <div class="input_block">
-                                                <input name="basehouse_rent_days_widget" type="number" value="{% if form.acr_basehouse_rent_days.value %}{{ form.acr_basehouse_rent_days.value }}{% else %}{{ month_days_count }}{% endif %}" min="0" max="{{ month_days_count }}" style="width: 50px;">
-                                            </div>
-                                        </div>
-                                        <div class="input_wrapper">
-                                            <legend>Тариф (мес)</legend>
-                                            <div class="input_block">
-                                                <span class="large" id="basehouse_rent_tarif">{{ acr_basehouse_rent_tarif }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="input_wrapper">
-                                            <legend>Сумма</legend>
-                                            <div class="input_block">
-                                                <span class="large" id="basehouse_rent_sum">{{ acr_basehouse_rent_sum|floatformat }}</span>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <h2>Не удерживается</h2>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {# - проживание на базе #}
-                        </div>
-                        {# Расчет зарплаты #}
-                        {% include "salary/driver_stats/salary_calculate.html" %}
-                        {# - Расчет зарплаты #}
                         <div class="form_row"><h3>Данные для занесения в зарплатный лист</h3></div>
                        {# Комментарии #}
                         {% if object.top_comment %}
                         <div class="form_row">
                             <div class="input_wrapper">
-                                <div class="input_block _inline"><span><i class="icon" icon=""></i><b>руководитель: </b><i>{{ object.top_comment }}</i></span></div>
+                                <div class="input_block _inline"><span><i class="icon" icon=""></i><b>Офис: </b><i>{{ object.office_comment }}</i></span></div>
                             </div>
                         </div>
                         {% endif %}
@@ -198,8 +141,8 @@
                     {% if form.instance or object.check_status == 1 %}
                     <div class="flex_row margint10 ">
                         <div class="flex_block _zero">
-                            <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>
-                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
+                            <a class="button red_bg"  onclick="save_and_send();">Венуть на проверку офиса</a>
+                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить статистику и выдать ЗП</a>
                         </div>
                         <div class="flex_block m10 ">
                             Статус зарплатной карты:

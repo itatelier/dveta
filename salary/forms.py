@@ -33,7 +33,7 @@ class SalaryMechCheckForm(ModelForm):
 class SalaryOfficeCheckForm(ModelForm):
     over_run_status_choices = [(False, 'Норма'), (True, 'Перерасход')]
 
-    acr_mobile_days = CharField(label="Дней" ,required=True, widget=HiddenInput())
+    acr_mobile_days = CharField(label="Дней",required=True, widget=HiddenInput())
     acr_basehouse_rent_days = IntegerField(label="Дней", required=True, widget=HiddenInput())
     over_run_status = ChoiceField(label="Оценка пробега", choices=over_run_status_choices, initial=False, widget=widgets.RadioSelect())
     run_comment = CharField(label="Примечание по пробегу", required=False, widget=TextInput(attrs={'size': 50}))
