@@ -41,7 +41,7 @@ class SalaryOfficeCheckForm(ModelForm):
 
     class Meta:
         model = SalaryMonthSummary
-        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'over_run_status', 'run_comment', 'check_status', 'office_comment')
+        fields = ('acr_mobile_days', 'acr_basehouse_rent_days', 'over_run_status', 'run_comment', 'check_status',)
 
 
 class SalaryRaceStatsForm(ModelForm):
@@ -118,3 +118,12 @@ class SalaryOperationCreateForm(ModelForm):
     class Meta:
         model = SalaryFlow
         fields = ('sum', 'comment', 'year', 'month', 'operation_type', 'operation_name', 'employee', 'operation_direction')
+
+
+class SalarySummaryCommentForm(ModelForm):
+    text = CharField(label="Комментарий", required=False, widget=Textarea(attrs={'size': 50}))
+    author = CharField(required=True, widget=HiddenInput())
+
+    class Meta:
+        model = SalarySummaryComments
+        fields = ('text', 'author')

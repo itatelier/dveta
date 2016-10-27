@@ -2,8 +2,7 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 
-class CreateUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin,
-        ProcessFormView):
+class CreateUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView):
 
     def get_object(self, queryset=None):
         try:

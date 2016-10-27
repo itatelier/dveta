@@ -316,3 +316,19 @@ class SalaryMonthSummary(models.Model):
     def __unicode__(self):
         return u'[%s] %s' % (self.id, self.date_add)
 
+
+class SalarySummaryComments(models.Model):
+
+    id = models.AutoField(unique=True, primary_key=True, null=False, blank=False)
+    salary_summary = models.ForeignKey('SalaryMonthSummary', null=False, blank=False)
+    author = models.CharField(max_length=255, null=False, blank=False)
+    date_add = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(null=False, blank=False)
+
+    def __unicode__(self):
+        return u'%s' % self.text
+
+    class Meta:
+        db_table = 'salary_summary_comments'
+        managed = False
+        verbose_name_plural = 'Зарплата / Комментарии'

@@ -81,7 +81,7 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="#">Зарплата водителей</a></li>
+                <li><h2>Зарплата водителей</h2></li>
                 <li><a href="{% url 'salary_month_summary_office' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль офис</a></li>
                 <li class="active" ><a href="#">Зарплатная карта водителя</a></li>
             </ul>
@@ -173,40 +173,49 @@
                         {# Расчет зарплаты #}
                         {% include "salary/driver_stats/salary_calculate.html" %}
                         {# - Расчет зарплаты #}
-                        <div class="form_row"><h3>Данные для занесения в зарплатный лист</h3></div>
-                       {# Комментарии #}
-                        {% if object.top_comment %}
-                        <div class="form_row">
-                            <div class="input_wrapper">
-                                <div class="input_block _inline"><span><i class="icon" icon=""></i><b>руководитель: </b><i>{{ object.top_comment }}</i></span></div>
+                        {# Комментарии #}
+                        {% include 'salary/includes/comments_list.html' %}
+                        {# - Комментарии #}
+                        {% if form.is_bound or object.check_status == 1 %}
+                            <div class="form_row"><h3>Данные для занесения в зарплатный лист</h3></div>
+                            <div class="form_row">
+                                {% include "form_snippets/radio.html" with field=form.over_run_status  %}
+                                {% include "form_snippets/textinput.html" with field=form.run_comment  %}
                             </div>
-                        </div>
+                            {# Текстовый комментарий #}
+                            <div class="flex_row">
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Комментарий</legend>
+                                        <div class="input_block _inline">
+                                            <textarea name="salary_comment" rows="1" cols="50" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {# - Текстовый комментарий #}
+                            {# ошибки формы #}
+                            {% include "form_snippets/form_errors.html" with form=form %}
+                            {# Кнопки #}
+                            <div class="flex_row margint10 ">
+                                <div class="flex_block _zero">
+                                    <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>
+                                    <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
+                                </div>
+                            </div>
+                            {# - Кнопки #}
                         {% endif %}
-                        <div class="form_row">
-                            {% include "form_snippets/radio.html" with field=form.over_run_status  %}
-                            {% include "form_snippets/textinput.html" with field=form.run_comment  %}
-                        </div>
-                        <div class="form_row">
-                            {% include "form_snippets/radio.html" with field=form.office_comment  %}
-                        </div>
-                       {# - Комментарии #}
                     </form>
-                    {# ошибки формы #}
-                    {% include "form_snippets/form_errors.html" with form=form %}
-                    {# Кнопки #}
                     <div class="flex_row margint10 ">
-                    {% if object.check_status == 1 %}
-                        <div class="flex_block _zero">
-                            <a class="button red_bg"  onclick="save_and_send();">Венуть механику</a>
-                            <a class="button"  onclick="$('form#new_object').submit();">Сохранить и передать на контроль</a>
-                        </div>
-                    {% endif %}
                         <div class="flex_block m10 ">
                             Статус зарплатной карты:
+                            {% if form.is_bound %}
+                            <span class="salary_check_status check_status_1">Контроль офис</span>
+                            {% else %}
                             <span class="salary_check_status check_status_{{ object.check_status }}">{{ object.get_check_status_display }}</span>
+                            {% endif %}
                         </div>
                     </div>
-                    {# - Кнопки #}
                 {% else %}
                     <div class="flex_row flex_justify_center">
                         <h2 class="m20">Зарлатаная карта за указанный период не сформирована</h2>

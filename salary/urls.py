@@ -16,6 +16,7 @@ urlpatterns = [
     # url(r'^api/', include(router.urls)),
     #
     # url(r'^year/(?P<year>\d{4})/month/(?P<month>\d{2})/$', SalaryMonthSummaryView.as_view(), name='salary_month_summary'),
+    url(r'^month_summary/post_comment/$', UpdateCheckedRefuelsAjax.as_view(), name='salary_summary_post_comment'),
     url(r'^month_summary/report/mechanic/$', SalaryMonthSummaryMechView.as_view(), name='salary_month_summary_mech'),
     url(r'^month_summary/report/office/$', SalaryMonthSummaryOfficeView.as_view(), name='salary_month_summary_office'),
     url(r'^month_summary/report/top/$', SalaryMonthSummaryTopView.as_view(), name='salary_month_summary_top'),

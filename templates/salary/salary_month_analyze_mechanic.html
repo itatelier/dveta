@@ -23,7 +23,7 @@
         {# Breadcrumbs #}
         <div class="breadcrumbs">
             <ul>
-                <li><a href="#">Зарплата водителей</a></li>
+                <li><h2>Зарплата водителей</h2></li>
                 <li><a href="{% url 'salary_month_summary_mech' %}?month={{ view.report_month_dt.month }}&year={{ view.report_month_dt.year }}">Контроль механика</a></li>
                 <li class="active" ><a href="#">Анализ водителя: {{ driver.fullnamenick }}</a></li>
             </ul>
@@ -36,7 +36,7 @@
                 <div class="margin_wrapper_80">
                     {# Шапка отчета #}
                     {% include "salary/driver_stats/analyze_report_header.html" %}
-                    {% if object %}
+                    {% if driver_month_stats %}
                         {# Шапка отчета #}
                         {# График рейсов по дням месяца #}
                         <div class="flex_row"><div class="sheet_block_mini _white_bordered _flex_zero" id="chartblock"><canvas id="myChart" width="750" height="100"></canvas></div></div>
@@ -48,19 +48,12 @@
                         {% include "salary/driver_stats/acruals_bonuses_and_pinalties.html" %}
                         {# - Премии и взыскания  #}
                         {# -------------------------------------------------------------------------------- #}
-                        <div class="form_row">
-                            <h3>Данные для занесения в зарплатный лист</h3>
-                        </div>
                         {# Комментарии #}
-                        {% if object.office_comment %}
-                            <div class="form_row">
-                                <div class="input_wrapper">
-                                    <div class="input_block _inline"><span><i class="icon" icon=""></i><b>офис: </b><i>{{ object.office_comment }}</i></span></div>
-                                </div>
-                            </div>
-                        {% endif %}
+                        {% include 'salary/includes/comments_list.html' %}
                         {# - Комментарии #}
+                        {% if object.check_status < 1 %}
                         <form action="" method="POST" id="new_object">{% csrf_token %}
+                            <div class="form_row"><h3>Данные для занесения в зарплатный лист</h3></div>
                             {# Скрытые поля #}
                             <input type="hidden" name="check_status" value="">
                             {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
@@ -72,31 +65,40 @@
                                     </div>
                                 </div>
                             </div>
+                            {# Текстовый комментарий #}
+                            <div class="flex_row">
+                                <div class="form_row">
+                                    <div class="input_wrapper">
+                                        <legend>Комментарий механика</legend>
+                                        <div class="input_block _inline">
+                                            <textarea name="salary_comment" rows="1" cols="50" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {# - Текстовый комментарий #}
                             {# ошибки формы #}
                             {% include "form_snippets/form_errors.html" with form=form %}
                             {# Кнопки #}
                             <div class="flex_row margint10 ">
-                                {% if object.check_status < 1 %}
                                 <div class="flex_block _zero">
                                     <a class="button"  onclick="$('form#new_object').submit();">Сохранить</a>
                                     <a class="button"  onclick="save_and_send();">Сохранить и передать на контроль</a>
                                 </div>
-                                {% endif %}
-                                <div class="flex_block m10 ">
-                                    Статус зарплатной карты:
-                                    {% if object %}
-                                        <span class="salary_check_status check_status_{{ object.check_status }}">
-                                            {{ object.get_check_status_display }}
-                                        </span>
-                                    {% else %}
-                                        <span class="salary_check_status">
-                                            не софрмирована
-                                        </span>
-                                    {% endif %}
-                                </div>
                             </div>
                             {# - Кнопки #}
                         </form>
+                        {% endif %}
+                        <div class="flex_row">
+                            <div class="flex_block m10 ">
+                                Статус зарплатной карты:
+                                {% if object %}
+                                    <span class="salary_check_status check_status_{{ object.check_status }}">{{ object.get_check_status_display }}</span>
+                                {% else %}
+                                    <span class="salary_check_status">не софрмирована</span>
+                                {% endif %}
+                            </div>
+                        </div>
                         {# - Форма объекта #}
                     {% else %}
                         <h2 class="m10">за указанный период нет данных о выполненных рейсах</h2>

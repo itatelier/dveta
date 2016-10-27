@@ -12,6 +12,7 @@ from car.models import Cars
 from common.models import Variables
 from common.utils import *
 from decimal import Decimal
+from common.mixins import JsonPost
 
 # Base Views
 from common.mixins import LoginRequiredMixin, PermissionRequiredMixin, DeleteNoticeView, JsonViewMix, JsonUpdateObject
@@ -60,6 +61,33 @@ class SalaryMonthSummaryView(TemplateView):
         log.info("= Report period starts at: %s till end date:  %s" %(self.report_month_dt.date(), self.report_next_dt.date()))
         return super(SalaryMonthSummaryView, self).dispatch(request, *args, **kwargs)
 
+    def get_stats(self):
+        stats = {}
+        self.driver_pk = self.kwargs.get('driver_pk')
+        stats['driver'] = Employies.drivers.get(pk=self.driver_pk)
+        # Список месячных показателей по каждой машине
+        driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
+        stats['driver_month_stats'] = driver_stats.get_list()
+        stats['average_and_sum_stats'] = driver_stats.get_summary()
+        # Сверки спидометра: количество
+        stats['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
+        # График ходок по дням
+        stats['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
+        stats['month_days_count'] = stats['graph'].month_days[1]
+        # список начислений  Штрафы и Премии
+        accruals_list_bonuses = SalaryFlow.objects \
+            .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
+            .select_related('operation_type', 'operation_name')
+        stats['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
+        stats['accruals_list_bonuses'] = accruals_list_bonuses
+        # штрафы
+        accruals_list_penalties = SalaryFlow.objects \
+            .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
+            .select_related('operation_type', 'operation_name')
+        stats['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
+        stats['accruals_list_penalties'] = accruals_list_penalties
+        return stats
+
     def get_object(self, *args, **kwargs):
         try:
             exist_object = SalaryMonthSummary.objects.get(
@@ -94,43 +122,29 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
     prepared_data = None
 
     def get_context_data(self, *args, **kwargs):
-        self.driver_pk = self.kwargs.get('driver_pk')
         context_data = super(SalaryMonthAnalyzeMechanicView, self).get_context_data(*args, **kwargs)
-        context_data['driver'] = Employies.drivers.get(pk=self.driver_pk)
-        # Список месячных показателей по каждой машине
-        driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
-        context_data['driver_month_stats'] = driver_stats.get_list()
-        context_data['average_and_sum_stats'] = driver_stats.get_summary()
-        # Сверки спидометра: количество
-        context_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
-        # График ходок по дням
-        context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
-        report_month_days = context_data['graph'].month_days[1]
-        context_data['month_days_count'] = report_month_days
-        # список начислений  Штрафы и Премии
-        accruals_list_bonuses = SalaryFlow.objects \
-            .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
-            .select_related('operation_type', 'operation_name')
-        context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
-        context_data['accruals_list_bonuses'] = accruals_list_bonuses
-        # штрафы
-        accruals_list_penalties = SalaryFlow.objects \
-            .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year, month=self.report_month_dt.month) \
-            .select_related('operation_type', 'operation_name')
-        context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
-        context_data['accruals_list_penalties'] = accruals_list_penalties
+        stats = self.get_stats()
+        stats_conext_keys = ['driver',
+                             # Список месячных показателей по каждой машине
+                             'driver_month_stats',
+                             'average_and_sum_stats',
+                             # Сверки спидометра: количество
+                             'stats_mech_checkups',
+                             # График ходок по дням
+                             'graph',
+                             'month_days_count',
+                             # список начислений  Штрафы и Премии
+                             'accruals_list_bonuses_sum',
+                             'accruals_list_bonuses',
+                             'accruals_list_penalties_sum',
+                             'accruals_list_penalties'
+                             ]
+        for key in stats_conext_keys:
+            context_data[key] = stats[key]
+        # Комментарии
+        if self.object:
+            context_data['comments'] = SalarySummaryComments.objects.filter(salary_summary=self.object.pk)
         return context_data
-
-    def get_object(self, *args, **kwargs):
-        try:
-            exist_object = SalaryMonthSummary.objects.get(
-                employee_id=self.driver_pk,
-                year=self.report_month_dt.year,
-                month=self.report_month_dt.month
-            )
-            return exist_object
-        except SalaryMonthSummary.DoesNotExist:
-            return None
 
     def get(self, request, *args, **kwargs):
         self.driver_pk = self.kwargs.get('driver_pk', None)
@@ -148,6 +162,10 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
                 create_object.month = self.report_month_dt.month
                 create_object.employee = Employies(pk=self.driver_pk)
                 create_object.save()
+                # Комментарий
+                text = request.POST.get('salary_comment')
+                author = 'Механик'
+                SalarySummaryComments.objects.create(text=text, author=author, salary_summary=SalaryMonthSummary(pk=create_object.pk))
             else:
                 self.object = form.save()
             return HttpResponseRedirect(self.get_success_url())
@@ -157,6 +175,16 @@ class SalaryMonthAnalyzeMechanicView(UpdateView, SalaryMonthSummaryView):
 
     def get_success_url(self):
         return "%s?year=%s&month=%s" % (reverse('salary_month_summary_mech'), self.report_month_dt.year, self.report_month_dt.month)
+
+
+class UpdateCheckedRefuelsAjax(JsonPost):
+    required_params = ['text', 'author', 'salary_summary_id']
+
+    def update_data(self, request):
+        text = request.POST.getlist('text')
+        author = request.POST.getlist('author')
+        salary_summary_id = request.POST.getlist('salary_summary_id')
+        SalarySummaryComments.objects.create(text, author, salary_summary=SalaryMonthSummary(pk=salary_summary_id))
 
 
 class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
@@ -174,31 +202,27 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
         context_data['driver'] = driver_obj
         if hasattr(self.object, 'races_done'):
-            # Список месячных показателей по каждой машине
-            driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
-            context_data['driver_month_stats'] = driver_stats.get_list()
-            context_data['average_and_sum_stats'] = driver_stats.get_summary()
-            # Сверки спидометра: количество
-            context_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
+            stats = self.get_stats()
+            stats_conext_keys = ['driver',
+                                 # Список месячных показателей по каждой машине
+                                 'driver_month_stats',
+                                 'average_and_sum_stats',
+                                 # Сверки спидометра: количество
+                                 'stats_mech_checkups',
+                                 # График ходок по дням
+                                 'graph',
+                                 'month_days_count',
+                                 # список начислений  Штрафы и Премии
+                                 'accruals_list_bonuses_sum',
+                                 'accruals_list_bonuses',
+                                 'accruals_list_penalties_sum',
+                                 'accruals_list_penalties'
+                                 ]
+            for key in stats_conext_keys:
+                context_data[key] = stats[key]
             final_salary = 0
-            # График ходок по дням
-            context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
-            report_month_days = context_data['graph'].month_days[1]
-            context_data['month_days_count'] = report_month_days
-            # список начислений  Штрафы и Премии
-            accruals_list_bonuses  = SalaryFlow.objects\
-                .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
-                .select_related('operation_type', 'operation_name')
-            context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
-            context_data['accruals_list_bonuses'] = accruals_list_bonuses
-            final_salary += context_data['accruals_list_bonuses_sum']
-            # штрафы
-            accruals_list_penalties = SalaryFlow.objects\
-                .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
-                .select_related('operation_type', 'operation_name')
-            context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
-            context_data['accruals_list_penalties'] = accruals_list_penalties
-            final_salary += context_data['accruals_list_penalties_sum']
+            final_salary += stats['accruals_list_bonuses_sum']
+            final_salary += stats['accruals_list_penalties_sum']
             # список начислений авансы и зарплата
             context_data['accruals_list_all'] = SalaryFlow.objects\
                 .filter(# operation_type__in=[1, 4, 5, 6, 7],
@@ -226,7 +250,7 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 basehouse_rent_tarif = get_variable('salary_basehouse_rent')
                 # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
                 if self.object.acr_basehouse_rent_days:
-                    basehouse_rent_sum = Decimal(basehouse_rent_tarif) / report_month_days * self.object.acr_basehouse_rent_days
+                    basehouse_rent_sum = Decimal(basehouse_rent_tarif) / stats['month_days_count'] * self.object.acr_basehouse_rent_days
                 else:
                     basehouse_rent_sum = basehouse_rent_tarif
                 final_salary -= basehouse_rent_sum
@@ -237,7 +261,7 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
                 mobile_comp_tarif = get_variable('salary_mobile_comp')
                 # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
                 if self.object.acr_mobile_days:
-                    mobile_comp_sum = Decimal(mobile_comp_tarif) / report_month_days * self.object.acr_mobile_days
+                    mobile_comp_sum = Decimal(mobile_comp_tarif) / stats['month_days_count'] * self.object.acr_mobile_days
                 else:
                     mobile_comp_sum = mobile_comp_tarif
                 context_data['acr_mobile_compensation_sum'] = round(mobile_comp_sum)
@@ -259,6 +283,9 @@ class SalaryMonthAnalyzeOfficeView(UpdateView, SalaryMonthSummaryView):
             context_data['report_month_avances'] = report_month_avances if report_month_avances is not None else 0
             # Остаток на руки
             context_data['salary_now_remains'] =  context_data['final_salary'] + context_data['salary_prev_period_remains'] + context_data['report_month_avances']
+            # Комментарии
+            if self.object:
+                context_data['comments'] = SalarySummaryComments.objects.filter(salary_summary=self.object.pk)
         else:
             pass
         return context_data
@@ -294,31 +321,27 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
         driver_obj = Employies.drivers.get(pk=self.driver_pk)
         context_data['driver'] = driver_obj
         if hasattr(self.object, 'races_done'):
-            # Список месячных показателей по каждой машине
-            driver_stats = DriverStats(date_start=self.report_month_dt.date(), date_end=self.report_next_dt.date(), driver_pk=self.driver_pk)
-            context_data['driver_month_stats'] = driver_stats.get_list()
-            context_data['average_and_sum_stats'] = driver_stats.get_summary()
-            # Сверки спидометра: количество
-            context_data['stats_mech_checkups'] = CarRunCheckFlow.objects.filter(date__month=self.report_month_dt.month, date__year=self.report_month_dt.year, driver_id=self.driver_pk).count()
+            stats = self.get_stats()
+            stats_conext_keys = ['driver',
+                                 # Список месячных показателей по каждой машине
+                                 'driver_month_stats',
+                                 'average_and_sum_stats',
+                                 # Сверки спидометра: количество
+                                 'stats_mech_checkups',
+                                 # График ходок по дням
+                                 'graph',
+                                 'month_days_count',
+                                 # список начислений  Штрафы и Премии
+                                 'accruals_list_bonuses_sum',
+                                 'accruals_list_bonuses',
+                                 'accruals_list_penalties_sum',
+                                 'accruals_list_penalties'
+                                 ]
+            for key in stats_conext_keys:
+                context_data[key] = stats[key]
             final_salary = 0
-            # График ходок по дням
-            context_data['graph'] = RacesGraph().getdata(year=self.report_month_dt.year, month=self.report_month_dt.month, driver_pk=self.driver_pk)
-            report_month_days = context_data['graph'].month_days[1]
-            context_data['month_days_count'] = report_month_days
-            # список начислений  Штрафы и Премии
-            accruals_list_bonuses  = SalaryFlow.objects\
-                .filter(operation_type=2, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
-                .select_related('operation_type', 'operation_name')
-            context_data['accruals_list_bonuses_sum'] = sum(row.sum for row in accruals_list_bonuses)
-            context_data['accruals_list_bonuses'] = accruals_list_bonuses
-            final_salary += context_data['accruals_list_bonuses_sum']
-            # штрафы
-            accruals_list_penalties = SalaryFlow.objects\
-                .filter(operation_type=3, employee=self.driver_pk, year=self.report_month_dt.year,month=self.report_month_dt.month)\
-                .select_related('operation_type', 'operation_name')
-            context_data['accruals_list_penalties_sum'] = sum(row.sum for row in accruals_list_penalties)
-            context_data['accruals_list_penalties'] = accruals_list_penalties
-            final_salary += context_data['accruals_list_penalties_sum']
+            final_salary += stats['accruals_list_bonuses_sum']
+            final_salary += stats['accruals_list_penalties_sum']
             # список начислений авансы и зарплата
             context_data['accruals_list_all'] = SalaryFlow.objects\
                 .filter(# operation_type__in=[1, 4, 5, 6, 7],
@@ -346,7 +369,7 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
                 basehouse_rent_tarif = get_variable('salary_basehouse_rent')
                 # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
                 if self.object.acr_basehouse_rent_days:
-                    basehouse_rent_sum = Decimal(basehouse_rent_tarif) / report_month_days * self.object.acr_basehouse_rent_days
+                    basehouse_rent_sum = Decimal(basehouse_rent_tarif) / stats['month_days_count'] * self.object.acr_basehouse_rent_days
                 else:
                     basehouse_rent_sum = basehouse_rent_tarif
                 final_salary -= basehouse_rent_sum
@@ -357,7 +380,7 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
                 mobile_comp_tarif = get_variable('salary_mobile_comp')
                 # Если в карточке уже сохранено количество дней компенсации, то рассчитать из тарифа, если нет, то взять тариф полностью
                 if self.object.acr_mobile_days:
-                    mobile_comp_sum = Decimal(mobile_comp_tarif) / report_month_days * self.object.acr_mobile_days
+                    mobile_comp_sum = Decimal(mobile_comp_tarif) / stats['month_days_count'] * self.object.acr_mobile_days
                 else:
                     mobile_comp_sum = mobile_comp_tarif
                 context_data['acr_mobile_compensation_sum'] = round(mobile_comp_sum)
@@ -379,6 +402,9 @@ class SalaryMonthAnalyzeTopView(UpdateView, SalaryMonthSummaryView):
             context_data['report_month_avances'] = report_month_avances if report_month_avances is not None else 0
             # Остаток на руки
             context_data['salary_now_remains'] =  context_data['final_salary'] + context_data['salary_prev_period_remains'] + context_data['report_month_avances']
+            # Комментарии
+            if self.object:
+                context_data['comments'] = SalarySummaryComments.objects.filter(salary_summary=self.object.pk)
         else:
             pass
         return context_data

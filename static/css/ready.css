@@ -356,6 +356,13 @@ div.content > div.breadcrumbs > ul > li > a {
     text-decoration: none;
     text-align: center;
 }
+div.content > div.breadcrumbs > ul > li > h2 {
+    padding: 3px 20px 0 5px;
+    color: #f6f6f6 !important;
+    text-shadow: 0 1px 1px rgba(0,0,0,.1);
+}
+
+
 
  /*================== main sheet  ================*/
 
@@ -748,3 +755,10 @@ ul.linklist a {
     min-width: 80%;
 }
 
+.comment_date {
+    font-size: smaller;
+    color: #9E9E9E;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 0 5px;
+}
